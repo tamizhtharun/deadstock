@@ -63,8 +63,8 @@ $success_message1 = '';
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
 						<li class="dropdown user user-menu">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<img src="/./assets/uploads/<?php echo $_SESSION['user']['photo']; ?>" class="user-image" alt="User Image">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+								<img src="../assets/uploads/<?php echo $_SESSION['user']['photo']; ?>" class="user-image" alt="User Image">
 								<span class="hidden-xs"><?php echo $_SESSION['user']['full_name']; ?></span>
 							</a>
 							<ul class="dropdown-menu">
