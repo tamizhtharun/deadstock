@@ -11,10 +11,10 @@ $error_message1 = '';
 $success_message1 = '';
 
 // Check if the user is logged in or not
-if(!isset($_SESSION['user'])) {
-	header('location: login.php');
-	exit;
-}
+// if(!isset($_SESSION['user'])) {
+// 	header('location: login.php');
+// 	exit;
+// }
 ?>
 
 <!DOCTYPE html>
@@ -64,7 +64,7 @@ if(!isset($_SESSION['user'])) {
 					<ul class="nav navbar-nav">
 						<li class="dropdown user user-menu">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<img src="../assets/uploads/<?php echo $_SESSION['user']['photo']; ?>" class="user-image" alt="User Image">
+								<img src="/./assets/uploads/<?php echo $_SESSION['user']['photo']; ?>" class="user-image" alt="User Image">
 								<span class="hidden-xs"><?php echo $_SESSION['user']['full_name']; ?></span>
 							</a>
 							<ul class="dropdown-menu">

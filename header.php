@@ -1,7 +1,9 @@
 <!-- This is main configuration File -->
 <?php
 ob_start();
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start(); // Start the session only if it hasn't been started yet
+}
 include("payment\admin\inc\config.php");
 include("payment\admin\inc\CSRF_Protect.php");
 include("payment/admin/inc/functions.php");
