@@ -1,2 +1,0 @@
-# deadstock
-deadstock.in
