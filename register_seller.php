@@ -32,7 +32,7 @@ if ($stmt->execute()) {
 
     // Execute the user_login insertion
     if ($stmt_login->execute()) {
-        echo "<script>alert('New seller registered successfully');</script>";
+        echo "<script>alert('New seller registered successfully');window.location.href='index.php';</script>";
     } else {
         echo "Error in user login: " . $stmt_login->error;
     }
