@@ -9,7 +9,7 @@ date_default_timezone_set('America/Los_Angeles');
 $dbhost = 'localhost';
 
 // Database Name
-$dbname = 'deadstock_db';
+$dbname = 'deadstock';
 
 // Database Username
 $dbuser = 'root';

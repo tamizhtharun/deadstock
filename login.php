@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     header("Location: index.php");
                     exit();
                 case 'admin':
-                    header("Location: admin_dashboard.php");
+                    header("Location: admin\header.php");
                     exit();
                 case 'seller':
                     // Check seller status
