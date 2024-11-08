@@ -1,5 +1,5 @@
 <?php
-include 'db_connection.php';
+include 'admin\inc\db_connection.php';
 
 $error_message = ""; // Variable to store error messages
 
