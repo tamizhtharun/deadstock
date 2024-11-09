@@ -60,11 +60,13 @@
 </div>
 
 <!-- login modal -->
+
+<div id="error-message" style="color: red; display: none;"></div>
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header">          
           <h1 class="modal-title fs-5" id="staticBackdropLabel">Dead Stock</h1>
           <button type="button" id="btn-close" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -137,6 +139,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 
 

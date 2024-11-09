@@ -2,6 +2,7 @@
 include 'db_connection.php';
 
 $error_message = ""; // Variable to store error messages
+$user_data = []; // Array to store user data
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
@@ -16,22 +17,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
+
+        $user_data = [
+            'id' => $user['id'],
+            'name' => $user['user_name'],
+            'email' => $user['user_email'],
+            'role' => 'admin'
+        ];
         // Verify password
         if (password_verify($password, $user['user_password'])) {
-            // Start session and store user info
+            // Start session
             session_start();
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['user_role'] = $user['user_role']; // Store user role
-
-            // Redirect based on user role
+            
+            // Store user info in session based on role
             switch ($user['user_role']) {
+                case 'admin': 
+                    $_SESSION['admin_session'] = $user_data;
+                    $_SESSION['admin_role'] = 'admin';
+                    header("Location: admin/index.php");
+                    exit();
                 case 'user':
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['user_email'] = $user['user_email'];
+                    $_SESSION['user_role'] = 'user'; // Store user role
+                    // Store user data in array
                     header("Location: index.php");
                     exit();
-                case 'admin':
-                    header("Location: admin\header.php");
-                    exit();
+                
                 case 'seller':
                     // Check seller status
                     $sql_seller = "SELECT seller_status FROM sellers WHERE seller_email = ?";
@@ -45,7 +57,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if ($seller['seller_status'] == 0) {
                             $error_message = "Your seller account is inactive.";
                         } else {
-                            header("Location: seller_dashboard.php");
+                            $_SESSION['seller_session'] = $user_data;
+                            $_SESSION['seller_email'] = $user['user_email'];
+                            $_SESSION['seller_role'] = 'seller'; // Store seller role
+                            // Store user data in array
+                            
+                            header("Location: seller/index.php");
                             exit();
                         }
                     } else {
