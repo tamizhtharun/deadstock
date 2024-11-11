@@ -1,8 +1,8 @@
 <?php
-$servername = "localhost"; // Your server name
-$username = "root";     // Your database username
-$password = "";     // Your database password
-$dbname = "deadstock";  // Your database name
+$servername = "sql12.freesqldatabase.com"; // Your server name
+$username = "sql12743731";     // Your database username
+$password = "YYFL11pyZs";     // Your database password
+$dbname = "sql12743731";  // Your database name
 
 // MySQLi Connection
 $conn = new mysqli($servername, $username, $password, $dbname);
