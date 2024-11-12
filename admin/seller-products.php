@@ -145,7 +145,8 @@ if (isset($_POST['reject_all'])) {
                                 </select>
                                 </td>
 
-                                <td><?php echo $row['ecat_name']; ?></td>
+                                <td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?></td>
+
                                 <td><?php echo $row['p_is_approve'] == 1 ? '<span class="badge badge-success" style="background-color:green;">Approved</span>' : '<span class="badge badge-danger" style="background-color:red;">Rejected</span>'; ?></td>
                                 <td>
                                     <?php if ($row['p_is_approve'] == 1) { ?>

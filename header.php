@@ -37,14 +37,13 @@ foreach ($result as $row)
           <div class="collapse navbar-collapse page-head" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item search-form" id="navbarSupportedContent">
-                <form class="d-flex" role="search">
-                  <div class="search-container">
-                    <ion-icon class="search-outline" name="search-outline" type="submit" size="small"
-                      style="padding: 5px;"></ion-icon>
-                    <input id="form-control-me-2" class="form-control me-2" type="search" placeholder="Search"
-                      aria-label="Search">
-                  </div>
-                </form>
+              <form class="d-flex" role="search" action="search-result.php" method="get">
+								<div class="search-container">
+								<form action="search-result.php" method="GET" class="d-flex">
+										<ion-icon class="search-outline" name="search-outline" type="submit" size="small" style="padding: 5px;"></ion-icon>
+										<input id="form-control-me-2" class="form-control me-2" type="search" name="search_text" placeholder="Search" aria-label="Search" required>
+										<button type="submit" style="display: none;">Search</button>
+								</form>
               </li>
               <li class="nav-item btns">
                 <button id="seller-btn" type="button" class="seller-btn btn btn-outline-secondary" onclick="window.location.href='seller_registration.php';">
