@@ -1,9 +1,9 @@
 <?php
-// footer.php
-?>
 
+?>
+<link rel="stylesheet" href="./css/index.css">
 <!-- footer -->
-<div class="footer">
+<div class="footer" style="padding-top: 0px;">
     <footer class="text-center text-lg-start bg-body-tertiary text-muted">
       <!-- Section: Links  -->
       <section class="">

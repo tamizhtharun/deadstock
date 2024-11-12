@@ -27,7 +27,7 @@
 							<?php
 							$i=0;
 							$statement = $pdo->prepare("SELECT * 
-														FROM tbl_seller_registration t1");
+														FROM sellers t1");
 							$statement->execute();
 							$result = $statement->fetchAll(PDO::FETCH_ASSOC);						
 							foreach ($result as $row) {

@@ -909,13 +909,13 @@ foreach ($result as $row) {
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab_1" data-toggle="tab">Logo</a></li>
                         <li><a href="#tab_2" data-toggle="tab">Favicon</a></li>
-                        <li><a href="#tab_3" data-toggle="tab">Footer & Contact</a></li>
+                        <!-- <li><a href="#tab_3" data-toggle="tab">Footer & Contact</a></li>
                         <li><a href="#" data-toggle="tab">Message Settings</a></li>
                         <li><a href="#" data-toggle="tab">Products</a></li>
                         <li><a href="#" data-toggle="tab">Home Settings</a></li>
                         <li><a href="#" data-toggle="tab">Banner Settings</a></li>
                         <li><a href="#" data-toggle="tab">Payment Settings</a></li>
-                        <li><a href="#" data-toggle="tab">Head & Body Scripts</a></li>
+                        <li><a href="#" data-toggle="tab">Head & Body Scripts</a></li> -->
                        <!--<li><a href="#tab_11" data-toggle="tab">Ads</a></li>-->
                     </ul>
                     <div class="tab-content">

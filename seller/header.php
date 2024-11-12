@@ -7,11 +7,11 @@ $success_message = '';
 $error_message1 = '';
 $success_message1 = '';
 
-// Check if the user is logged in or not
-// if(!isset($_SESSION['user'])) {
-// 	header('location: login.php');
-// 	exit;
-// }
+
+// echo "<pre>";
+// print_r($_SESSION['seller_session']); // Display all session variables
+// echo "</pre>";
+
 // Check if the seller is logged in or not
 if(!isset($_SESSION['seller_session'])) {
     header('location: ../index.php');
@@ -21,7 +21,7 @@ if(!isset($_SESSION['seller_session'])) {
     $stmt = $conn->prepare("SELECT * FROM sellers WHERE seller_id=? AND seller_status=?");
 
 // Bind parameters
-$seller_id = $_SESSION['seller_session']['id'];
+$seller_id = $_SESSION['seller_session']['seller_id'];
 $seller_status = 0;
 $stmt->bind_param("ii", $seller_id, $seller_status);
 
@@ -53,7 +53,7 @@ $stmt->close();
 	<title>Seller Panel</title>
 
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-
+	<link rel="icon" href="../icons\dead stock.png" type="image/x-icon">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/font-awesome.min.css">
 	<link rel="stylesheet" href="css/ionicons.min.css">
@@ -93,7 +93,7 @@ $stmt->close();
 						<li class="dropdown user user-menu">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 								<!-- <img src="../assets/uploads/<?php echo $_SESSION['user']['photo']; ?>" class="user-image" alt="User Image"> -->
-								<span class="hidden-xs"><?php echo $_SESSION['seller_session']['name']; ?></span>
+								<span class="hidden-xs"><?php echo $_SESSION['seller_session']['seller_name']; ?></span>
 							</a>
 							<ul class="dropdown-menu">
 								<li class="user-footer">

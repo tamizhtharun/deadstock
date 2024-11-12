@@ -17,18 +17,19 @@
                                 <th>S.NO</th>
                                 <th>Seller Name</th>
                                 <th>Seller Email</th>
+                                <th>Seller Address</th>
                                 <th>Product Count</th>
-                                <th>Action</th>
+                                <th>View</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
                             $i = 0;
-                            $statement = $pdo->prepare("SELECT s.id, s.seller_name, s.seller_email, COUNT(p.seller_id) AS product_count
-                                                         FROM tbl_seller_registration s
-                                                         LEFT JOIN tbl_product p ON s.id = p.seller_id
-                                                         GROUP BY s.id
-                                                         ORDER BY s.id DESC");
+                            $statement = $pdo->prepare("SELECT s.seller_id, s.seller_name, s.seller_email, s.seller_address, COUNT(p.seller_id) AS product_count
+                                                         FROM sellers s
+                                                         LEFT JOIN tbl_product p ON s.seller_id = p.seller_id
+                                                         GROUP BY s.seller_id
+                                                         ORDER BY s.seller_id DESC");
                             $statement->execute();
                             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                             foreach ($result as $row) {
@@ -38,9 +39,10 @@
                                     <td><?php echo $i; ?></td>
                                     <td><?php echo htmlspecialchars($row['seller_name']); ?></td>
                                     <td><?php echo htmlspecialchars($row['seller_email']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['seller_address']); ?></td>
                                     <td><?php echo $row['product_count']; ?></td>
                                     <td>
-                                        <a href="seller-products.php?seller_id=<?php echo $row['id']; ?>">View Products</a>
+                                        <a href="seller-products.php?seller_id=<?php echo $row['seller_id']; ?>">View Products</a>
                                     </td>
                                 </tr>
                                 <?php

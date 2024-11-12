@@ -6,7 +6,7 @@ if(!isset($_REQUEST['id'])) {
 	exit;
 } else {
 	// Check the id is valid or not
-	$statement = $pdo->prepare("SELECT * FROM tbl_seller_registration WHERE seller_id=?");
+	$statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_id=?");
 	$statement->execute(array($_REQUEST['id']));
 	$total = $statement->rowCount();
 	if( $total == 0 ) {
@@ -19,7 +19,7 @@ if(!isset($_REQUEST['id'])) {
 <?php
 
 	// Delete from tbl_seller
-	$statement = $pdo->prepare("DELETE FROM tbl_seller_registration WHERE seller_id=?");
+	$statement = $pdo->prepare("DELETE FROM sellers WHERE seller_id=?");
 	$statement->execute(array($_REQUEST['id']));
 
 	// Delete from tbl_rating

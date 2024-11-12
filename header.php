@@ -1,17 +1,25 @@
 <?php
-// header.php
+include 'db_connection.php';
+$statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
+$statement->execute();
+$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+foreach ($result as $row)
+{
+  $logo = $row['logo'];
+  $favicon = $row['favicon'];
+}
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dead Stock Processing</title>
-    <link rel="icon" href="./icons/dead stock.png">
+    <link rel="icon" href="assets\uploads\<?php echo $favicon?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="./css/index.css">
 </head>
 <body>
@@ -19,7 +27,7 @@
     <nav id="nav-bar-head" class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
         <div class="container-fluid">
           <a class="navbar-brand" href="index.php">
-            <img src="./icons/dead stock.png" alt="Logo" width="30" height="30">
+            <img src="./assets/uploads/<?php echo $logo?>" alt="Logo" width="30" height="30">
             Dead Stock
           </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -61,7 +69,7 @@
 
 <!-- login modal -->
 
-<div id="error-message" style="color: red; display: none;"></div>
+<!-- <div id="error-message" style="color: red; display: none;"></div> -->
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -140,7 +148,6 @@
       </div>
     </div>
   </div>
-  </div>
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -149,3 +156,5 @@
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
   <script src="js/index.js"></script>
 
+</body>
+</html>

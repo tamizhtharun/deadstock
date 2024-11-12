@@ -1,8 +1,15 @@
 <?php require_once('header.php'); ?>
 
 <?php
+$seller_id = $_SESSION['seller_session'];
+if (!isset($_SESSION['seller_session'])) {
+	// Handle the error, e.g., redirect to login or show a message
+	die("Seller ID is not set.");
+}
+
 if(isset($_POST['form1'])) {
 	$valid = 1;
+	$seller_id = $_SESSION['seller_session']['seller_id'];
 
     if(empty($_POST['tcat_id'])) {
         $valid = 0;
@@ -100,44 +107,46 @@ if(isset($_POST['form1'])) {
 
 		$final_name = 'product-featured-'.$ai_id.'.'.$ext;
         move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
+		
 
 		//Saving data into the waiting products table tbl_waiting_products
-		$statement = $pdo->prepare("INSERT INTO tbl_waiting_products(
-										p_name,
-										p_old_price,
-										p_current_price,
-										p_qty,
-										p_featured_photo,
-										p_description,
-										p_short_description,
-										p_feature,
-										p_condition,
-										p_return_policy,
-										p_total_view,
-										p_is_featured,
-										p_is_active,
-										ecat_id
-									) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-		$statement->execute(array(
-										$_POST['p_name'],
-										$_POST['p_old_price'],
-										$_POST['p_current_price'],
-										$_POST['p_qty'],
-										$final_name,
-										$_POST['p_description'],
-										$_POST['p_short_description'],
-										$_POST['p_feature'],
-										$_POST['p_condition'],
-										$_POST['p_return_policy'],
-										0,// Assuming total view is 0 initially
-										$_POST['p_is_featured'],
-										$_POST['p_is_active'],
-										$_POST['ecat_id']
-									));
+		$statement = $pdo->prepare("INSERT INTO tbl_product(
+			seller_id,
+			p_name,
+			p_old_price,
+			p_current_price,
+			p_qty,
+			p_featured_photo,
+			p_description,
+			p_short_description,
+			p_feature,
+			p_condition,
+			p_return_policy,
+			p_total_view,
+			
+			ecat_id
+		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		       
+		
+$statement->execute(array(
+	    	$seller_id, 
+			$_POST['p_name'],
+			$_POST['p_old_price'],
+			$_POST['p_current_price'],
+			$_POST['p_qty'],
+			$final_name,
+			$_POST['p_description'],
+			$_POST['p_short_description'],
+			$_POST['p_feature'],
+			$_POST['p_condition'],
+			$_POST['p_return_policy'],
+			0, // Assuming total view is 0 initially
+		
+			$_POST['ecat_id']
+		));
 
 		
 
-        
 	
     	$success_message = 'Product is added waiting products successfully.';
     }
@@ -220,13 +229,13 @@ if(isset($_POST['form1'])) {
 							</div>
 						</div>	
 						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Old Price <br><span style="font-size:10px;font-weight:normal;">(In USD)</span></label>
+							<label for="" class="col-sm-3 control-label">Old Price <br><span style="font-size:10px;font-weight:normal;">(In INR)</span></label>
 							<div class="col-sm-4">
 								<input type="text" name="p_old_price" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Current Price <span>*</span><br><span style="font-size:10px;font-weight:normal;">(In USD)</span></label>
+							<label for="" class="col-sm-3 control-label">Current Price <span>*</span><br><span style="font-size:10px;font-weight:normal;">(In INR)</span></label>
 							<div class="col-sm-4">
 								<input type="text" name="p_current_price" class="form-control">
 							</div>
@@ -237,22 +246,7 @@ if(isset($_POST['form1'])) {
 								<input type="text" name="p_qty" class="form-control">
 							</div>
 						</div>
-						<!-- <div class="form-group">
-							<label for="" class="col-sm-3 control-label">Select Size</label>
-							<div class="col-sm-4">
-								<select name="size[]" class="form-control select2" multiple="multiple">
-									
-								</select>
-							</div>
-						</div> -->
-						<!-- <div class="form-group">
-							<label for="" class="col-sm-3 control-label">Select Color</label>
-							<div class="col-sm-4">
-								<select name="color[]" class="form-control select2" multiple="multiple">
-									
-								</select>
-							</div>
-						</div> -->
+
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Featured Photo <span>*</span></label>
 							<div class="col-sm-4" style="padding-top:4px;">
@@ -309,7 +303,7 @@ if(isset($_POST['form1'])) {
 								<textarea name="p_return_policy" class="form-control" cols="30" rows="10" id="editor5"></textarea>
 							</div>
 						</div>
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label for="" class="col-sm-3 control-label">Is Featured?</label>
 							<div class="col-sm-8">
 								<select name="p_is_featured" class="form-control" style="width:auto;">
@@ -325,7 +319,7 @@ if(isset($_POST['form1'])) {
 									<option value="0">No</option>
 									<option value="1">Yes</option>
 								</select> 
-							</div>
+							</div> -->
 						</div>
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label"></label>

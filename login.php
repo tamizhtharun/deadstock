@@ -1,6 +1,6 @@
 <?php
 include 'db_connection.php';
-
+// include 'index.php';
 $error_message = ""; // Variable to store error messages
 $user_data = []; // Array to store user data
 
@@ -26,24 +26,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ];
         // Verify password
         if (password_verify($password, $user['user_password'])) {
-            // Start session
-            session_start();
-            
-            // Store user info in session based on role
+            // Handle user roles
             switch ($user['user_role']) {
                 case 'admin': 
+                    // Start session
+                    session_start();
                     $_SESSION['admin_session'] = $user_data;
                     $_SESSION['admin_role'] = 'admin';
                     header("Location: admin/index.php");
                     exit();
                 case 'user':
+                    // Start session
+                    session_start();
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['user_email'] = $user['user_email'];
                     $_SESSION['user_role'] = 'user'; // Store user role
-                    // Store user data in array
                     header("Location: index.php");
                     exit();
-                
                 case 'seller':
                     // Check seller status
                     $sql_seller = "SELECT seller_status FROM sellers WHERE seller_email = ?";
@@ -51,19 +50,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt_seller->bind_param("s", $email);
                     $stmt_seller->execute();
                     $result_seller = $stmt_seller->get_result();
-
+                
                     if ($result_seller->num_rows > 0) {
                         $seller = $result_seller->fetch_assoc();
+                        
+                        // Check if seller account is active
                         if ($seller['seller_status'] == 0) {
                             $error_message = "Your seller account is inactive.";
                         } else {
-                            $_SESSION['seller_session'] = $user_data;
-                            $_SESSION['seller_email'] = $user['user_email'];
-                            $_SESSION['seller_role'] = 'seller'; // Store seller role
-                            // Store user data in array
-                            
-                            header("Location: seller/index.php");
-                            exit();
+                            // Retrieve complete seller data
+                            $sql_seller_data = "SELECT * FROM sellers WHERE seller_email = ?";
+                            $stmt_seller_data = $conn->prepare($sql_seller_data);
+                            $stmt_seller_data->bind_param("s", $email);
+                            $stmt_seller_data->execute();
+                            $result_seller_data = $stmt_seller_data->get_result();
+                
+                            if ($result_seller_data->num_rows > 0) {
+                                $seller_data = $result_seller_data->fetch_assoc(); // Fetch seller data
+
+                                // Start session
+                                session_start();
+
+                                // Store seller data in session
+                                $_SESSION['seller_session'] = $seller_data;
+                                $_SESSION['seller_role'] = 'seller'; // Store seller role
+                                
+                                header("Location: seller/index.php");
+                                exit();
+                            } else {
+                                $error_message = "Seller account not found.";
+                            }
+                            $stmt_seller_data->close();
                         }
                     } else {
                         $error_message = "Seller account not found.";

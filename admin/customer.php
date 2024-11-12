@@ -45,7 +45,7 @@
                   <td><?php echo $row['username']; ?></td>
 									<td><?php echo $row['email']; ?></td>
 									<td><?php echo $row['phone_number']; ?></td>
-									<td><?php echo $row['registered_at']; ?></td>
+									<td><?php echo $row['created_at']; ?></td>
                   
 								</tr>
 								<?php

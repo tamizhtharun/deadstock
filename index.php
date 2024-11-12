@@ -1,66 +1,64 @@
-<?php include 'header.php';?>
-
+<?php require_once( 'header.php');?>
+<link rel="stylesheet" href="./css/index.css">
 
 <div class="category-pad">
-  <div class="category-box">
+<div class="category-box">
     <ul class="categories">
-      <li class="category">
-        <a class="category-link" href="#"><img src="./icons/hole.png" width="30px" height="30px">
-          <span>Category 1</span></a>
-        <ul class="subcategories">
-          <li class="subcategory">
-            <a href="#">Subcategory 1.1</a>
-            <ul class="sub-subcategories">
-              <li><a href="#">Sub-subcategory 1.1.1</a></li>
-              <li><a href="#">Sub-subcategory 1.1.2</a></li>
-              <li><a href="#">Sub-subcategory 1.1.3</a></li>
-            </ul>
-          </li>
-          <li class="subcategory">
-            <a href="#">Subcategory 1.2</a>
-            <ul class="sub-subcategories">
-              <li><a href="#">Sub-subcategory 1.2.1</a></li>
-              <li><a href="#">Sub-subcategory 1.2.2</a></li>
-            </ul>
-          </li>
-          <li class="subcategory">
-            <a href="#">Subcategory 1.3</a>
-            <ul class="sub-subcategories">
-              <li><a href="#">Sub-subcategory 1.3.1</a></li>
-              <li><a href="#">Sub-subcategory 1.3.2</a></li>
-              <li><a href="#">Sub-subcategory 1.3.3</a></li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-      <li class="category">
-        <a class="category-link" href="#"><img src="./icons/hole.png" width="30px" height="30px">
-          <span>Category 2</span></a>
-        <ul class="subcategories">
-          <li class="subcategory">
-            <a href="#">Subcategory 2.1</a>
-            <ul class="sub-subcategories">
-              <li><a href="#">Sub-subcategory 2.1.1</a></li>
-              <li><a href="#">Sub-subcategory 2.1.2</a></li>
-            </ul>
-          </li>
-          <li class="subcategory">
-            <a href="#">Subcategory 2.2</a>
-            <ul class="sub-subcategories">
-              <li><a href="#">Sub-subcategory 2.2.1</a></li>
-              <li><a href="#">Sub-subcategory 2.2.2</a></li>
-              <li><a href="#">Sub-subcategory 2.2.3</a></li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-      <!-- Add more categories and subcategories as needed -->
+        <?php
+            $statement = $pdo->prepare("SELECT * FROM tbl_top_category WHERE show_on_menu=1");
+            $statement->execute();
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($result as $row) {
+        ?>
+            <li class="category">
+                <a class="category-link" href="product-category.php?id=<?php echo $row['tcat_id']; ?>&type=top-category">
+                    <img src="./icons/hole.png" width="30px" height="30px">
+                    <span><?php echo $row['tcat_name']; ?></span>
+                </a>
+                <ul class="subcategories">
+                    <?php
+                        $statement1 = $pdo->prepare("SELECT * FROM tbl_mid_category WHERE tcat_id=?");
+                        $statement1->execute(array($row['tcat_id']));
+                        $result1 = $statement1->fetchAll(PDO::FETCH_ASSOC);
+                        foreach ($result1 as $row1) {
+                    ?>
+                        <li class="subcategory">
+                            <a class="subcategory-link" href="product-category.php?id=<?php echo $row1['mcat_id']; ?>&type=mid-category">
+                                <?php echo $row1['mcat_name']; ?>
+                            </a>
+                            <ul class="sub-subcategories">
+                                <?php
+                                    $statement2 = $pdo->prepare("SELECT * FROM tbl_end_category WHERE mcat_id=?");
+                                    $statement2->execute(array($row1['mcat_id']));
+                                    $result2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
+                                    foreach ($result2 as $row2) {
+                                ?>
+                                    <li class="sub-subcategory">
+                                        <a href="product-category.php?id=<?php echo $row2['ecat_id']; ?>&type=end-category">
+                                            <?php echo $row2['ecat_name']; ?>
+                                        </a>
+                                    </li>
+                                <?php
+                                    }
+                                ?>
+                            </ul>
+                        </li>
+                    <?php
+                        }
+                    ?>
+                </ul>
+            </li>
+        <?php
+            }
+        ?>
     </ul>
-  </div>
+</div>
+
+
   <div class="right-category-pad">
     <div class="quote-container">
       <p class="quote"><span class="quote-bold">Buy</span> at your Desired bidding price</p>
-      <img src="./icons/dead stock.png" alt="Logo" class="logo">
+      <img src="assets/uploads/<?php echo $logo?>" alt="Logo" class="logo">
     </div>
     <div class="brands">
       <div class="ind-brand">
@@ -113,7 +111,7 @@
       </div>
   </div>
   </div>
-    </div>
+</div>
 
 
 
@@ -126,26 +124,36 @@
 <div class="banner"> 
       <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
-        <div class="carousel-item active">
-          <img class="img" src="https://rukminim2.flixcart.com/fk-p-flap/1600/270/image/b35a105fe8bc8cbb.png?q=20" class="d-block w-100" alt="...">
-        </div>
-        <div class="carousel-item">
-          <img class="img" src="https://rukminim2.flixcart.com/fk-p-flap/1600/270/image/3322c8a97f524397.jpeg?q=20" class="d-block w-100" alt="...">
-        </div>
-        <div class="carousel-item">
-          <img class="img" src="https://rukminim2.flixcart.com/fk-p-flap/1600/270/image/42a2afb08834f823.jpeg?q=20" class="d-block w-100" alt="...">
-        </div>
-      </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
-    </div>
-  </div>
+        
+      <?php
+          $i = 0;
+          $statement = $pdo->prepare("SELECT * FROM tbl_slider");
+          $statement->execute();
+          $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+          foreach ($result as $row) {            
+              $activeClass = ($i === 0) ? 'active' : ''; // Only first item is active
+          ?>
+              <div class="carousel-item <?php echo $activeClass; ?>">
+                  <img class="img" src="assets/uploads/<?php echo $row['photo']; ?>" class="d-block w-100" alt="..." style="width:100%" >
+              </div>
+          <?php
+              $i++;
+          }
+          ?>
+
+                  
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+            </div>
+            
 <!-- end banner  -->
 
 <!-- Live Bidding -->
@@ -304,736 +312,89 @@
   </div>
 </div> -->
 
-<!-- categories -->
+<!-- Display the product depends od category -->
 
-<div class="wrapper">
-  <span class="cat-title">TURNING TOOLS</span>
-  <!-- <i id="left" class="fa-solid  fas fa-angle-left"></i> -->
-  <ul class="carousel">
-      <!-- <li class="card"> -->
-        <a href="#" style="text-decoration: none; color: black;">
-          <li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      <!-- </li> -->
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      
-        <a href="#" style="text-decoration: none; color: black;">
-          <li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      </li>
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      </li>
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-    
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
+<?php
+$topCategories = []; // Initialize as an empty array
+$statement = $pdo->prepare("SELECT * FROM tbl_top_category");
+$statement->execute();
+$topCategories = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-    
-      
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      
-  </ul>
-  <!-- <i id="right" class="fa-solid fas fa-angle-right"></i> -->
+// Loop through each top category
+if (!empty($topCategories)) {
+    foreach ($topCategories as $topCategory) {
+        $tcat_id = $topCategory['tcat_id']; // Get the current category ID
 
-</div>
+        // Fetch all products related to the specified tcat_id, including p_is_featured
+        $statement = $pdo->prepare("
+            SELECT p.*, m.mcat_name, e.ecat_name 
+            FROM tbl_product p
+            JOIN tbl_end_category e ON p.ecat_id = e.ecat_id
+            JOIN tbl_mid_category m ON e.mcat_id = m.mcat_id
+            WHERE m.tcat_id = ?
+        ");
 
+        if ($statement->execute([$tcat_id])) {
+            $products = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-<!--category 2-->
-<div class="wrapper">
-  <span class="cat-title">HOLEMAKING TOOLS</span>
-  <!-- <i id="left" class="fa-solid  fas fa-angle-left"></i> -->
-  <ul class="carousel">
-      <!-- <li class="card"> -->
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      <!-- </li> -->
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      </li>
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      </li>
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      </li>
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-    
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
+            // Check if there are featured products
+            $hasFeaturedProducts = false;
+            foreach ($products as $product) {
+                if ($product['p_is_featured'] == 1) {
+                    $hasFeaturedProducts = true;
+                    break; // No need to check further, we found a featured product
+                }
+            }
 
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-    
-      
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      
-  </ul>
-  <!-- <i id="right" class="fa-solid fas fa-angle-right"></i> -->
-
-</div>
-
-
-<!--category 3-->
-<div class="wrapper">
-  <span class="cat-title">THREADING TOOLS</span>
-  <!-- <i id="left" class="fa-solid  fas fa-angle-left"></i> -->
-  <ul class="carousel">
-      <!-- <li class="card"> -->
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      <!-- </li> -->
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      </li>
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      </li>
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      </li>
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-    
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-    
-      
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      
-        <a href="#" style="text-decoration: none; color: black;"><li class="cat-product-list-card swiper-slide">
-          <div class="cat-product-img">
-            <img src="./icons/dclnr-iso_ex_pvd_p_01_png.jpg" width="130px" height="100px">
-          </div>
-          <div class="product-card-lower">
-            <div class="cat-product-title">
-              <span>Shank tool - Rigid clamping</span>
-            </div>
-            <div class="cat-product-price">
-              ₹100.00
-            </div>
-            <div class="cat-product-original-price">
-              <div class="price-strike">₹500</div>
-              <div class="cat-product-discount">
-                15% OFF
-              </div>
-            </div>
-          </div>
-        </li>
-      </a>
-      
-  </ul>
-  <!-- <i id="right" class="fa-solid fas fa-angle-right"></i> -->
-
-</div>
+            // Only display the wrapper if there are featured products
+            if ($hasFeaturedProducts) {
+                ?>
+                <div class="wrapper">
+                    <span class="cat-title"><?php echo htmlspecialchars($topCategory['tcat_name'], ENT_QUOTES, 'UTF-8'); ?></span>
+                    <ul class="carousel">
+                        <?php foreach ($products as $product): ?>
+                            <?php if ($product['p_is_featured'] == 1): // Check if the product is featured ?>
+                                <li class="cat-product-list-card swiper-slide">
+                                    <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration: none; color: black;">
+                                        <div class="cat-product-img">
+                                            <img src="payment/assets/uploads/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        </div>
+                                        <div class="product-card-lower">
+                                            <div class="cat-product-title">
+                                                <span><?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?></span>
+                                            </div>
+                                            <div class="cat-product-price">
+                                                ₹<?php echo number_format($product['p_current_price'], 2); ?>
+                                            </div>
+                                            <div class="cat-product-original-price">
+                                                <?php if (!empty($product['p_old_price'])): ?>
+                                                    <div class="price-strike">₹<?php echo number_format($product['p_old_price'], 2); ?></div>
+                                                    <div class="cat-product-discount">
+                                                        <?php
+                                                        // Calculate the discount percentage
+                                                        $discount = (($product['p_old_price'] - $product['p_current_price']) / $product['p_old_price']) * 100;
+                                                        echo round($discount) . '% OFF';
+                                                        ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            <?php endif; // End of featured product check ?>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                <?php
+            }
+        } else {
+            // Handle the error if the statement failed
+            error_log("Database query failed: " . implode(", ", $statement->errorInfo()));
+        }
+    }
+} // End of top categories loop
+?>
+<!-- End Display the product depends od category -->
 
 
 <?php include 'footer.php'; ?>

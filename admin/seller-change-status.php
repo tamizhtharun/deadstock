@@ -6,7 +6,7 @@ if(!isset($_REQUEST['id'])) {
 	exit;
 } else {
 	// Check the id is valid or not
-	$statement = $pdo->prepare("SELECT * FROM tbl_seller_registration WHERE seller_id=?");
+	$statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_id=?");
 	$statement->execute(array($_REQUEST['id']));
 	$total = $statement->rowCount();
 	if( $total == 0 ) {
@@ -23,7 +23,7 @@ if(!isset($_REQUEST['id'])) {
 
 <?php
 if($seller_status == 0) {$final = 1;} else {$final = 0;}
-$statement = $pdo->prepare("UPDATE tbl_seller_registration SET seller_status=? WHERE seller_id=?");
+$statement = $pdo->prepare("UPDATE sellers SET seller_status=? WHERE seller_id=?");
 $statement->execute(array($final,$_REQUEST['id']));
 
 header('location: seller.php');
