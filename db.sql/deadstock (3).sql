@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 12, 2024 at 10:46 AM
+-- Generation Time: Nov 12, 2024 at 05:43 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -48,7 +48,8 @@ CREATE TABLE `sellers` (
 --
 
 INSERT INTO `sellers` (`seller_id`, `seller_name`, `seller_cname`, `seller_email`, `seller_phone`, `seller_gst`, `seller_address`, `seller_state`, `seller_city`, `seller_zipcode`, `seller_password`, `created_at`, `seller_status`) VALUES
-(4, 'TAMIL SELVAN V', 'MKCE', 'mailtotharun23@gmail.com', '09597049879', '123', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$Ja4zOaYUhFjhacu4S2hy3OuN1vfmmHRMMELE9SWyTg0J1ohO5RBre', '2024-11-12 09:44:32', 1);
+(4, 'TAMIL SELVAN V', 'MKCE', 'mailtotharun23@gmail.com', '09597049879', '123', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$Ja4zOaYUhFjhacu4S2hy3OuN1vfmmHRMMELE9SWyTg0J1ohO5RBre', '2024-11-12 09:44:32', 1),
+(5, 'Jana', 'IMET TOOLING INDIA PVT LTD', 'imettrichy@gmail.com', '9500612277', '33AACCI1032M1ZW', 'No.8, Patel Complex, Mannarpuram', 'Tamilnadu', 'Trichy', '620020', '$2y$10$aPmp4cjZc2/jXX5z7rbIVOP6k5IFtgcQiactxHycUUNkTRxv5OMjW', '2024-11-12 11:11:35', 1);
 
 -- --------------------------------------------------------
 
@@ -163,7 +164,8 @@ INSERT INTO `tbl_end_category` (`ecat_id`, `ecat_name`, `mcat_id`) VALUES
 (169, 'Sweepers', 84),
 (170, 'Vacuum cleaners & cleaning devices, spare parts & accessories', 84),
 (171, 'Chop Saw', 82),
-(172, 'Chop Saw', 82);
+(172, 'Chop Saw', 82),
+(174, 'Others', 89);
 
 -- --------------------------------------------------------
 
@@ -239,7 +241,8 @@ INSERT INTO `tbl_mid_category` (`mcat_id`, `mcat_name`, `tcat_id`) VALUES
 (81, 'Flap Disc', 13),
 (82, 'Power Tools', 14),
 (83, 'Pneumatic Power tools', 14),
-(84, 'Vacuum Cleaner and Cleaning Devices', 14);
+(84, 'Vacuum Cleaner and Cleaning Devices', 14),
+(89, 'Others', 15);
 
 -- --------------------------------------------------------
 
@@ -264,8 +267,18 @@ CREATE TABLE `tbl_product` (
   `p_is_featured` int(1) NOT NULL,
   `p_is_active` int(1) NOT NULL,
   `p_is_approve` int(1) NOT NULL,
-  `ecat_id` int(11) NOT NULL
+  `ecat_id` int(11) NOT NULL,
+  `product_catalogue` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `tbl_product`
+--
+
+INSERT INTO `tbl_product` (`id`, `seller_id`, `p_name`, `p_old_price`, `p_current_price`, `p_qty`, `p_featured_photo`, `p_description`, `p_short_description`, `p_feature`, `p_condition`, `p_return_policy`, `p_total_view`, `p_is_featured`, `p_is_active`, `p_is_approve`, `ecat_id`, `product_catalogue`) VALUES
+(138, 4, 'Shank tool – Rigid clamping', '500', '439', 122, 'product-featured-138.jpg', '', '', '', '', '', 17, 1, 0, 1, 97, ''),
+(139, 5, 'CNMG120408-NM4 WSM30', '896', '545', 100, 'product-featured-139.png', '', '', '', '', '', 2, 1, 1, 1, 99, ''),
+(140, 4, 'Turning Insert – Positive rhombic 80°', '580', '199', 122, 'product-featured-140.png', '', '', '', '', '', 0, 0, 0, 0, 97, 'product-catalogue-140.pdf');
 
 -- --------------------------------------------------------
 
@@ -285,6 +298,20 @@ CREATE TABLE `tbl_product_photo` (
 
 INSERT INTO `tbl_product_photo` (`pp_id`, `photo`, `p_id`) VALUES
 (0, '.png', 104);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_rating`
+--
+
+CREATE TABLE `tbl_rating` (
+  `rt_id` int(11) NOT NULL,
+  `p_id` int(11) NOT NULL,
+  `cust_id` int(11) NOT NULL,
+  `comment` text NOT NULL,
+  `rating` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -391,7 +418,8 @@ CREATE TABLE `tbl_slider` (
 
 INSERT INTO `tbl_slider` (`id`, `photo`, `heading`) VALUES
 (11, 'slider-11.jpg', ''),
-(12, 'slider-12.jpg', '');
+(12, 'slider-12.jpg', ''),
+(13, 'slider-13.jpg', '');
 
 -- --------------------------------------------------------
 
@@ -414,7 +442,8 @@ INSERT INTO `tbl_top_category` (`tcat_id`, `tcat_name`, `show_on_menu`) VALUES
 (11, 'Saw Blades', 1),
 (12, 'Hand Tools', 1),
 (13, 'Abrasive Wheels', 1),
-(14, 'Power Tools', 1);
+(14, 'Power Tools', 1),
+(15, 'Others ', 1);
 
 -- --------------------------------------------------------
 
@@ -505,7 +534,8 @@ INSERT INTO `user_login` (`id`, `user_name`, `user_email`, `user_password`, `use
 (7, 'SRIRAM R', 'testseller2@deadstock.in', '$2y$10$7kk8RHlnJb1/aTRtQ/yMzuumzXjQkrkAxoe3djkIfOGf4wOpleCUS', 'seller'),
 (8, 'TAMIL SELVAN V', 'mailtotharun23@gmail.com', '$2y$10$9Rt1x.mB8Ydqhrq0fB9j2eV8OxOzmwDQ/hohE/UslVTtQuhxpRy7W', 'seller'),
 (9, 'Super Admin', 'super@deadstock.in', '$2y$10$9Rt1x.mB8Ydqhrq0fB9j2eV8OxOzmwDQ/hohE/UslVTtQuhxpRy7W', 'admin'),
-(10, 'TAMIL SELVAN V', 'mailtotharun23@gmail.com', '$2y$10$Ja4zOaYUhFjhacu4S2hy3OuN1vfmmHRMMELE9SWyTg0J1ohO5RBre', 'seller');
+(10, 'TAMIL SELVAN V', 'mailtotharun23@gmail.com', '$2y$10$Ja4zOaYUhFjhacu4S2hy3OuN1vfmmHRMMELE9SWyTg0J1ohO5RBre', 'seller'),
+(11, 'Jana', 'imettrichy@gmail.com', '$2y$10$aPmp4cjZc2/jXX5z7rbIVOP6k5IFtgcQiactxHycUUNkTRxv5OMjW', 'seller');
 
 --
 -- Indexes for dumped tables
@@ -555,6 +585,12 @@ ALTER TABLE `tbl_product_photo`
   ADD PRIMARY KEY (`pp_id`);
 
 --
+-- Indexes for table `tbl_rating`
+--
+ALTER TABLE `tbl_rating`
+  ADD PRIMARY KEY (`rt_id`);
+
+--
 -- Indexes for table `tbl_settings`
 --
 ALTER TABLE `tbl_settings`
@@ -599,7 +635,7 @@ ALTER TABLE `user_login`
 -- AUTO_INCREMENT for table `sellers`
 --
 ALTER TABLE `sellers`
-  MODIFY `seller_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `seller_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tbl_brands`
@@ -611,7 +647,7 @@ ALTER TABLE `tbl_brands`
 -- AUTO_INCREMENT for table `tbl_end_category`
 --
 ALTER TABLE `tbl_end_category`
-  MODIFY `ecat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=173;
+  MODIFY `ecat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=175;
 
 --
 -- AUTO_INCREMENT for table `tbl_faq`
@@ -623,25 +659,25 @@ ALTER TABLE `tbl_faq`
 -- AUTO_INCREMENT for table `tbl_mid_category`
 --
 ALTER TABLE `tbl_mid_category`
-  MODIFY `mcat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
+  MODIFY `mcat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
 
 --
 -- AUTO_INCREMENT for table `tbl_product`
 --
 ALTER TABLE `tbl_product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
 
 --
 -- AUTO_INCREMENT for table `tbl_slider`
 --
 ALTER TABLE `tbl_slider`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `tbl_top_category`
 --
 ALTER TABLE `tbl_top_category`
-  MODIFY `tcat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `tcat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `tbl_waiting_products`
@@ -659,7 +695,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
