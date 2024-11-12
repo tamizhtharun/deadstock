@@ -1,13 +1,309 @@
-<?php include 'header.php';?>
+<?php include 'header.php';
+
+$error_message1= '';
+$success_message1='';
+?>
+
+<?php
+if(!isset($_REQUEST['id'])) {
+    header('location: index.php');
+    exit;
+} else {
+    // Check the id is valid or not
+    $statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
+    $statement->execute(array($_REQUEST['id']));
+    $total = $statement->rowCount();
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    if( $total == 0 ) {
+        header('location: index.php');
+        exit;
+    }
+}
+
+foreach($result as $row) {
+    $p_name = $row['p_name'];
+    $p_old_price = $row['p_old_price'];
+    $p_current_price = $row['p_current_price'];
+    $p_qty = $row['p_qty'];
+    $p_featured_photo = $row['p_featured_photo'];
+    $p_description = $row['p_description'];
+    $p_short_description = $row['p_short_description'];
+    $p_feature = $row['p_feature'];
+    $p_condition = $row['p_condition'];
+    $p_return_policy = $row['p_return_policy'];
+    $p_total_view = $row['p_total_view'];
+    $p_is_featured = $row['p_is_featured'];
+    $p_is_active = $row['p_is_active'];
+    $ecat_id = $row['ecat_id'];
+}
+
+// Getting all categories name for breadcrumb
+$statement = $pdo->prepare("SELECT
+                        t1.ecat_id,
+                        t1.ecat_name,
+                        t1.mcat_id,
+
+                        t2.mcat_id,
+                        t2.mcat_name,
+                        t2.tcat_id,
+
+                        t3.tcat_id,
+                        t3.tcat_name
+
+                        FROM tbl_end_category t1
+                        JOIN tbl_mid_category t2
+                        ON t1.mcat_id = t2.mcat_id
+                        JOIN tbl_top_category t3
+                        ON t2.tcat_id = t3.tcat_id
+                        WHERE t1.ecat_id=?");
+$statement->execute(array($ecat_id));
+$total = $statement->rowCount();
+$result = $statement->fetchAll(PDO::FETCH_ASSOC);                            
+foreach ($result as $row) {
+    $ecat_name = $row['ecat_name'];
+    $mcat_id = $row['mcat_id'];
+    $mcat_name = $row['mcat_name'];
+    $tcat_id = $row['tcat_id'];
+    $tcat_name = $row['tcat_name'];
+}
+
+
+$p_total_view = $p_total_view + 1;
+
+$statement = $pdo->prepare("UPDATE tbl_product SET p_total_view=? WHERE id=?");
+$statement->execute(array($p_total_view,$_REQUEST['id']));
+
+
+
+
+
+if(isset($_POST['form_review'])) {
+    
+    $statement = $pdo->prepare("SELECT * FROM tbl_rating WHERE id=? AND cust_id=?");
+    $statement->execute(array($_REQUEST['id'],$_SESSION['customer']['cust_id']));
+    $total = $statement->rowCount();
+    
+    if($total) {
+        $error_message = LANG_VALUE_68; 
+    } else {
+        $statement = $pdo->prepare("INSERT INTO tbl_rating (p_id,cust_id,comment,rating) VALUES (?,?,?,?)");
+        $statement->execute(array($_REQUEST['id'],$_SESSION['customer']['cust_id'],$_POST['comment'],$_POST['rating']));
+        $success_message = LANG_VALUE_163;    
+    }
+    
+}
+
+// Getting the average rating for this product
+$t_rating = 0;
+$statement = $pdo->prepare("SELECT * FROM tbl_rating WHERE p_id=?");
+$statement->execute(array($_REQUEST['id']));
+$tot_rating = $statement->rowCount();
+if($tot_rating == 0) {
+    $avg_rating = 0;
+} else {
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);                            
+    foreach ($result as $row) {
+        $t_rating = $t_rating + $row['rating'];
+    }
+    $avg_rating = $t_rating / $tot_rating;
+}
+
+if(isset($_POST['form_add_to_cart'])) {
+
+	// getting the currect stock of this product
+	$statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
+	$statement->execute(array($_REQUEST['id']));
+	$result = $statement->fetchAll(PDO::FETCH_ASSOC);							
+	foreach ($result as $row) {
+		$current_p_qty = $row['p_qty'];
+	}
+	if($_POST['p_qty'] > $current_p_qty):
+		$temp_msg = 'Sorry! There are only '.$current_p_qty.' item(s) in stock';
+		?>
+		<script type="text/javascript">alert('<?php echo $temp_msg; ?>');</script>
+		<?php
+	else:
+    if(isset($_SESSION['cart_p_id']))
+    {
+        $arr_cart_p_id = array();
+        $arr_cart_size_id = array();
+        $arr_cart_color_id = array();
+        $arr_cart_p_qty = array();
+        $arr_cart_p_current_price = array();
+
+        $i=0;
+        foreach($_SESSION['cart_p_id'] as $key => $value) 
+        {
+            $i++;
+            $arr_cart_p_id[$i] = $value;
+        }
+
+        $i=0;
+        foreach($_SESSION['cart_size_id'] as $key => $value) 
+        {
+            $i++;
+            $arr_cart_size_id[$i] = $value;
+        }
+
+        $i=0;
+        foreach($_SESSION['cart_color_id'] as $key => $value) 
+        {
+            $i++;
+            $arr_cart_color_id[$i] = $value;
+        }
+
+
+        $added = 0;
+        if(!isset($_POST['size_id'])) {
+            $size_id = 0;
+        } else {
+            $size_id = $_POST['size_id'];
+        }
+        if(!isset($_POST['color_id'])) {
+            $color_id = 0;
+        } else {
+            $color_id = $_POST['color_id'];
+        }
+        for($i=1;$i<=count($arr_cart_p_id);$i++) {
+            if( ($arr_cart_p_id[$i]==$_REQUEST['id']) && ($arr_cart_size_id[$i]==$size_id) && ($arr_cart_color_id[$i]==$color_id) ) {
+                $added = 1;
+                break;
+            }
+        }
+        if($added == 1) {
+           $error_message1 = 'This product is already added to the shopping cart.';
+        } else {
+
+            $i=0;
+            foreach($_SESSION['cart_p_id'] as $key => $res) 
+            {
+                $i++;
+            }
+            $new_key = $i+1;
+
+            if(isset($_POST['size_id'])) {
+
+                $size_id = $_POST['size_id'];
+
+                $statement = $pdo->prepare("SELECT * FROM tbl_size WHERE size_id=?");
+                $statement->execute(array($size_id));
+                $result = $statement->fetchAll(PDO::FETCH_ASSOC);                            
+                foreach ($result as $row) {
+                    $size_name = $row['size_name'];
+                }
+            } else {
+                $size_id = 0;
+                $size_name = '';
+            }
+            
+            if(isset($_POST['color_id'])) {
+                $color_id = $_POST['color_id'];
+                $statement = $pdo->prepare("SELECT * FROM tbl_color WHERE color_id=?");
+                $statement->execute(array($color_id));
+                $result = $statement->fetchAll(PDO::FETCH_ASSOC);                            
+                foreach ($result as $row) {
+                    $color_name = $row['color_name'];
+                }
+            } else {
+                $color_id = 0;
+                $color_name = '';
+            }
+          
+
+            $_SESSION['cart_p_id'][$new_key] = $_REQUEST['id'];
+            $_SESSION['cart_size_id'][$new_key] = $size_id;
+            $_SESSION['cart_size_name'][$new_key] = $size_name;
+            $_SESSION['cart_color_id'][$new_key] = $color_id;
+            $_SESSION['cart_color_name'][$new_key] = $color_name;
+            $_SESSION['cart_p_qty'][$new_key] = $_POST['p_qty'];
+            $_SESSION['cart_p_current_price'][$new_key] = $_POST['p_current_price'];
+            $_SESSION['cart_p_name'][$new_key] = $_POST['p_name'];
+            $_SESSION['cart_p_featured_photo'][$new_key] = $_POST['p_featured_photo'];
+
+            $success_message1 = 'Product is added to the cart successfully!';
+        }
+        
+    }
+    else
+    {
+
+        if(isset($_POST['size_id'])) {
+
+            $size_id = $_POST['size_id'];
+
+            $statement = $pdo->prepare("SELECT * FROM tbl_size WHERE size_id=?");
+            $statement->execute(array($size_id));
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);                            
+            foreach ($result as $row) {
+                $size_name = $row['size_name'];
+            }
+        } else {
+            $size_id = 0;
+            $size_name = '';
+        }
+        
+        if(isset($_POST['color_id'])) {
+            $color_id = $_POST['color_id'];
+            $statement = $pdo->prepare("SELECT * FROM tbl_color WHERE color_id=?");
+            $statement->execute(array($color_id));
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);                            
+            foreach ($result as $row) {
+                $color_name = $row['color_name'];
+            }
+        } else {
+            $color_id = 0;
+            $color_name = '';
+        }
+        
+
+        $_SESSION['cart_p_id'][1] = $_REQUEST['id'];
+        $_SESSION['cart_size_id'][1] = $size_id;
+        $_SESSION['cart_size_name'][1] = $size_name;
+        $_SESSION['cart_color_id'][1] = $color_id;
+        $_SESSION['cart_color_name'][1] = $color_name;
+        $_SESSION['cart_p_qty'][1] = $_POST['p_qty'];
+        $_SESSION['cart_p_current_price'][1] = $_POST['p_current_price'];
+        $_SESSION['cart_p_name'][1] = $_POST['p_name'];
+        $_SESSION['cart_p_featured_photo'][1] = $_POST['p_featured_photo'];
+
+        $success_message1 = 'Product is added to the cart successfully!';
+    }
+	endif;
+}
+?>
+
+<?php
+if($error_message1 != '') {
+    echo "<script>alert('".$error_message1."')</script>";
+}
+if($success_message1 != '') {
+    echo "<script>alert('".$success_message1."')</script>";
+    header('location: product.php?id='.$_REQUEST['id']);
+}
+?>
+
+
 
 <!-- content -->
 <section class="py-5">
-  <div class="container">
+ <div class="container" style="margin-top: -30px;"> 
+    <!-- Breadcrumb Section -->
+    <nav aria-label="breadcrumb" style="margin-left:6px;">
+      <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.php" style="text-decoration: none;">Home</a></li>
+          <li class="breadcrumb-item"><a href="products_listing.php?id=<?php echo $tcat_id; ?>" style="text-decoration: none;"><?php echo htmlspecialchars($tcat_name); ?></a></li>
+          <li class="breadcrumb-item"><a href="products_listing.php?id=<?php echo $mcat_id; ?>" style="text-decoration: none;"><?php echo htmlspecialchars($mcat_name); ?></a></li>
+          <li class="breadcrumb-item active" aria-current="page" style="text-decoration: none;"><?php echo htmlspecialchars($ecat_name); ?></li>
+      </ol>
+    </nav>
+
     <div class="row gx-5">
       <aside class="col-lg-6">
         <div class="border rounded-4 mb-3 d-flex justify-content-center">
           <a data-bs-toggle="modal" class="rounded-4" data-bs-target="#imageModal" href="#">
-            <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4" src="icons\hole.png" />
+            <!-- <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4" src="icons\hole.png" /> -->
+            <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4" src="assets/uploads/<?php echo $p_featured_photo; ?>" >
+
           </a>
         </div>
         <div class="d-flex justify-content-center mb-3">
@@ -31,8 +327,7 @@
       <main class="col-lg-6">
         <div class="ps-lg-3">
           <h4 class="title text-dark">
-            Quality Men's Hoodie for Winter, Men's Fashion <br />
-            Casual Hoodie
+          <?php echo $p_name; ?>
           </h4>
           <div class="d-flex flex-row my-3">
             <div class="text-warning mb-1 me-2">
@@ -50,27 +345,36 @@
           </div>
 
           <div class="mb-3">
-            <span class="h5">$75.00</span>
-            <span class="text-muted">/per box</span>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                  <span class="h5 mb-0" style="color: #000;">₹<?php echo $p_current_price; ?></span>
+                  <span class="h6 mb-0" style="color: #9E9E9E; text-decoration: line-through;">₹<?php echo $p_old_price; ?></span>
+                  <?php
+                        // Calculate discount if applicable
+                        if ($p_old_price > 0) {
+                            $discount = (($p_old_price - $p_current_price) / $p_old_price) * 100;
+                            // Round the discount to 0 decimal places and display
+                            echo '<span class="badge bg-success">' . round($discount) . '% OFF</span>';
+                        }
+                  ?>
+              </div>
           </div>
 
           <p>
-            Modern look and quality demo item is a streetwear-inspired collection that continues to break away from the conventions of mainstream fashion. Made in Italy, these black and brown clothing low-top shirts for
-            men.
+            <?php echo $p_short_description; ?>
           </p>
 
           <div class="row">
-            <dt class="col-3">Type:</dt>
-            <dd class="col-9">Regular</dd>
+            <dt class="col-3">Insert width</dt>
+            <dd class="col-9">1.5 mm</dd>
 
-            <dt class="col-3">Color</dt>
-            <dd class="col-9">Brown</dd>
+            <dt class="col-3">Cutting depth</dt>
+            <dd class="col-9">10 mm</dd>
 
-            <dt class="col-3">Material</dt>
-            <dd class="col-9">Cotton, Jeans</dd>
+            <dt class="col-3">Center height</dt>
+            <dd class="col-9">24 mm</dd>
 
-            <dt class="col-3">Brand</dt>
-            <dd class="col-9">Reebook</dd>
+            <dt class="col-3">Module size</dt>
+            <dd class="col-9">30 mm</dd>
           </div>
 
           <hr />
@@ -180,59 +484,59 @@
           </div>
         </div>
       </div>
+
+
+      <!-- Display Similar Products -->
+      <?php
+      // Fetch similar products from the same end category
+      $statement = $pdo->prepare("SELECT * FROM tbl_product WHERE ecat_id=? AND id != ? AND p_is_featured=? ORDER BY p_total_view DESC LIMIT 4");
+      $statement->execute(array($ecat_id, $_REQUEST['id'], 1));
+      $related_products = $statement->fetchAll(PDO::FETCH_ASSOC);
+      ?>
+      <!-- Then replace the similar items card with this code -->
       <div class="col-lg-4">
-        <div class="border rounded-2 shadow-0">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Similar items</h5>
-              <div class="d-flex mb-3">
-                <a href="#" class="me-3">
-                  <img src="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/8.webp" style="min-width: 96px; height: 96px;" class="img-thumbnail" />
-                </a>
-                <div class="info">
-                  <a href="#" class="text-decoration-none mb-1">
-                    Rucksack Backpack Large <br />
-                    Line Mounts
-                  </a>
-                  <p class="text-dark mt-1 mb-0"> <strong>$38.90</strong> </p>
-                </div>
+          <div class="border rounded-2 shadow-0">
+              <div class="card">
+                  <div class="card-body">
+                      <h5 class="card-title">Similar items</h5>
+                      <?php foreach($related_products as $related_product): ?>
+                          <div class="d-flex mb-3">
+                              <a href="product_landing.php?id=<?php echo $related_product['id']; ?>" class="me-3">
+                                  <img src="payment/assets/uploads/<?php echo $related_product['p_featured_photo']; ?>" 
+                                      style="min-width: 96px; height: 96px;" 
+                                      class="img-thumbnail" 
+                                      alt="<?php echo htmlspecialchars($related_product['p_name']); ?>" />
+                              </a>
+                              <div class="info">
+                                  <a href="product_landing.php?id=<?php echo $related_product['id']; ?>" 
+                                    class="text-decoration-none mb-1">
+                                      <?php echo htmlspecialchars($related_product['p_name']); ?>
+                                  </a>
+                                  <div class="d-flex align-items-center gap-2 mt-1">
+                                      <p class="text-dark mb-0"> 
+                                          <strong>₹<?php echo $related_product['p_current_price']; ?></strong> 
+                                      </p>
+                                      <?php if($related_product['p_old_price'] > 0): ?>
+                                          <span class="text-muted text-decoration-line-through">
+                                              ₹<?php echo $related_product['p_old_price']; ?>
+                                          </span>
+                                          <?php
+                                              $discount = (($related_product['p_old_price'] - $related_product['p_current_price']) / $related_product['p_old_price']) * 100;
+                                              echo '<span class="badge bg-success">' . round($discount) . '% OFF</span>';
+                                          ?>
+                                      <?php endif; ?>
+                                  </div>
+                              </div>
+                          </div>
+                      <?php endforeach; ?>
+                      <?php if(count($related_products) == 0): ?>
+                          <div class="text-center py-4">
+                              <p class="text-muted">No similar products found</p>
+                          </div>
+                      <?php endif; ?>
+                  </div>
               </div>
-
-              <div class="d-flex mb-3">
-                <a href="#" class="me-3">
-                  <img src="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/9.webp" style="min-width: 96px; height: 96px;" class="img-thumbnail" />
-                </a>
-                <div class="info">
-                  <a href="#" class="text-decoration-none mb-1">
-                    Summer New Men's Denim <br />
-                    Jeans Shorts
-                  </a>
-                  <p class="text-dark mt-1 mb-0"> <strong>$29.50</strong> </p>
-                </div>
-              </div>
-
-              <div class="d-flex mb-3">
-                <a href="#" class="me-3">
-                  <img src="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/10.webp" style="min-width: 96px; height: 96px;" class="img-thumbnail" />
-                </a>
-                <div class="info">
-                  <a href="#" class="text-decoration-none mb-1"> T-shirts with multiple colors, for men and lady </a>
-                  <p class="text-dark mt-1 mb-0"> <strong>$120.00</strong> </p>
-                </div>
-              </div>
-
-              <div class="d-flex">
-                <a href="#" class="me-3">
-                  <img src="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/11.webp" style="min-width: 96px; height: 96px;" class="img-thumbnail" />
-                </a>
-                <div class="info">
-                  <a href="#" class="text-decoration-none mb-1"> Blazer Suit Dress Jacket for Men, Blue color </a>
-                  <p class="text-dark mt-1 mb-0"> <strong>$339.90</strong> </p>
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
       </div>
     </div>
   </div>

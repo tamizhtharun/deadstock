@@ -29,8 +29,8 @@ if(isset($_POST['form1'])) {
 			$final_name = 'slider-'.$_REQUEST['id'].'.'.$ext;
         	move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
 
-        	$statement = $pdo->prepare("UPDATE tbl_slider SET photo=?, heading=?, content=?, button_text=?, button_url=?, position=? WHERE id=?");
-    		$statement->execute(array($final_name,$_POST['heading'],$_POST['content'],$_POST['button_text'],$_POST['button_url'],$_POST['position'],$_REQUEST['id']));
+        	$statement = $pdo->prepare("UPDATE tbl_slider SET photo=?, heading=? WHERE id=?");
+    		$statement->execute(array($final_name,$_POST['heading'],$_REQUEST['id']));
 		}	   
 
 	    $success_message = 'Slider is updated successfully!';

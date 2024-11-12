@@ -357,7 +357,7 @@ if (!empty($topCategories)) {
                                 <li class="cat-product-list-card swiper-slide">
                                     <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration: none; color: black;">
                                         <div class="cat-product-img">
-                                            <img src="payment/assets/uploads/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>">
+                                            <img src="assets/uploads/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>">
                                         </div>
                                         <div class="product-card-lower">
                                             <div class="cat-product-title">
