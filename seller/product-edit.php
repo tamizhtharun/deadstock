@@ -37,6 +37,34 @@ if(isset($_POST['form1'])) {
     $path = $_FILES['p_featured_photo']['name'];
     $path_tmp = $_FILES['p_featured_photo']['tmp_name'];
 
+	$pdf_path = $_FILES['product_catalogue']['name'];
+    $pdf_path_tmp = $_FILES['product_catalogue']['tmp_name'];
+    if($pdf_path != '') {
+        $pdf_ext = pathinfo($pdf_path, PATHINFO_EXTENSION);
+        if($pdf_ext != 'pdf') {
+            $valid = 0;
+            $error_message .= 'You must have to upload a PDF file for the product catalogue<br>';
+        }
+    }
+
+	$statement = $pdo->prepare("SHOW TABLE STATUS LIKE 'tbl_product'");
+        $statement->execute();
+        $result = $statement->fetchAll();
+        foreach($result as $row) {
+            $ai_id=$row[10];
+        }
+		// Assuming $_REQUEST['id'] contains the current product ID
+$current_product_id = $_REQUEST['id'];
+$pdf_final_name = 'product-catalogue-'.$current_product_id.'.pdf';
+
+// Move the uploaded PDF file to the server
+move_uploaded_file($pdf_path_tmp, '../assets/uploads/'.$pdf_final_name);
+
+// $old_pdf_path = '../assets/uploads/product-catalogue-'.$current_product_id.'.pdf';
+// if (file_exists($old_pdf_path)) {
+//     unlink($old_pdf_path); // Delete the old file
+// }
+
     if($path!='') {
         $ext = pathinfo( $path, PATHINFO_EXTENSION );
         $file_name = basename( $path, '.' . $ext );
@@ -99,8 +127,8 @@ if(isset($_POST['form1'])) {
         							p_short_description=?,
         							p_feature=?,
         							p_condition=?,
-        							p_return_policy=?
-        		
+        							p_return_policy=?,
+									product_catalogue=?
 
         							WHERE id=?");
         	$statement->execute(array(
@@ -113,6 +141,7 @@ if(isset($_POST['form1'])) {
         							$_POST['p_feature'],
         							$_POST['p_condition'],
         							$_POST['p_return_policy'],
+									$pdf_final_name,
         							// $_POST['p_is_featured'],
         							// $_POST['p_is_active'],
         							// $_POST['ecat_id'],
@@ -139,8 +168,8 @@ if(isset($_POST['form1'])) {
         							p_return_policy=?,
         							p_is_featured=?,
         							p_is_active=?,
-        							ecat_id=?
-
+        							ecat_id=?,
+									product_catalogue=?
         							WHERE p_id=?");
         	$statement->execute(array(
         							$_POST['p_name'],
@@ -156,6 +185,7 @@ if(isset($_POST['form1'])) {
         							$_POST['p_is_featured'],
         							$_POST['p_is_active'],
         							$_POST['ecat_id'],
+									$pdf_final_name,
         							$_REQUEST['id']
         						));
         }
@@ -366,13 +396,21 @@ foreach ($result as $row) {
 								<input type="hidden" name="current_photo" value="<?php echo $p_featured_photo; ?>">
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Change Featured Photo </label>
 							<div class="col-sm-4" style="padding-top:4px;">
 								<input type="file" name="p_featured_photo">
 							</div>
 						</div>
+
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Change Product Catalogue</label>
+							<div class="col-sm-4" style="padding-top:4px;">
+								<input type="file" name="product_catalogue">
+							</div>
+						</div>
+
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Old Price<br><span style="font-size:10px;font-weight:normal;">(In INR)</span></label>
 							<div class="col-sm-4">
