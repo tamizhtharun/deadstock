@@ -39,6 +39,11 @@ if(isset($_POST['form1'])) {
         $valid = 0;
         $error_message .= "Quantity can not be empty<br>";
     }
+	if(empty($_POST['product_brand'])) {
+        $valid = 0;
+        $error_message .= "Product Brand should be selected<br>";
+    }
+
 
     $path = $_FILES['p_featured_photo']['name'];
     $path_tmp = $_FILES['p_featured_photo']['tmp_name'];
@@ -138,8 +143,9 @@ if(isset($_POST['form1'])) {
             p_return_policy,
             p_total_view,
             ecat_id,
-            product_catalogue
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            product_catalogue,
+			product_brand
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
         $statement->execute(array(
             $seller_id, 
@@ -155,10 +161,11 @@ if(isset($_POST['form1'])) {
             $_POST['p_return_policy'],
             0, // Assuming total view is 0 initially
             $_POST['ecat_id'],
-            $pdf_final_name // Store the PDF file name
+            $pdf_final_name, // Store the PDF file name
+			$_POST['product_brand']
         ));
 
-        $success_message = 'Product is added waiting products successfully.';
+        $success_message = 'Product is added successfully, wait for your administrator approval.';
     }
 }
 ?>
@@ -199,6 +206,24 @@ if(isset($_POST['form1'])) {
 
 				<div class="box box-info">
 					<div class="box-body">
+					<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Select Brand<span>*</span></label>
+							<div class="col-sm-4">
+								<select name="product_brand" class="form-control select2 top-cat">
+									<option value="">Select Brand</option>
+									<?php
+									$statement = $pdo->prepare("SELECT brand_name FROM tbl_brands");
+									$statement->execute();
+									$result = $statement->fetchAll(PDO::FETCH_ASSOC);	
+									foreach ($result as $row) {
+										?>
+										<option value="<?php echo $row['brand_name']; ?>"><?php echo $row['brand_name']; ?></option>
+										<?php
+									}
+									?>
+								</select>
+							</div>
+						</div>
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Top Level Category Name <span>*</span></label>
 							<div class="col-sm-4">

@@ -48,11 +48,14 @@ session_start();
 										<button type="submit" style="display: none;">Search</button>
 								</form>
               </li>
+            
               <li class="nav-item btns">
+              
               <button id="seller-btn" type="button" class="seller-btn btn btn-outline-secondary" onclick="window.location.href='seller_registration.php';">
                   Sell here!
                 </button>
 
+               
                 <?php if(!isset($_SESSION['user_session'])):?>
 
                 <button type="button" id="login-btn" class="login-btn btn btn-outline-secondary"
@@ -65,7 +68,7 @@ session_start();
                     Cart
                   </button>
                   <div class="dropdown">
-                    <button class="dropbtn btn btn-outline-secondary">Hi, <?php echo $_SESSION['user_session']['name']?></button>
+                    <button class="dropbtn btn btn-outline-secondary"><?php echo $_SESSION['user_session']['name']?> ▾</button>
                     <div class="dropdown-content">
                       <a href="" >Account</a>
                       <a href="" >Settings</a>

@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";    
 $password = "";    
-$dbname = "deadstock_db";  
+$dbname = "deadstock";  
 
 // MySQLi Connection
 $conn = new mysqli($servername, $username, $password, $dbname);
