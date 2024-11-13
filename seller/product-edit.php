@@ -405,7 +405,7 @@ foreach ($result as $row) {
 						</div>
 
 						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Change ProductCatalogue</label>
+							<label for="" class="col-sm-3 control-label">Change Product Catalogue</label>
 							<div class="col-sm-4" style="padding-top:4px;">
 								<input type="file" name="product_catalogue">
 							</div>

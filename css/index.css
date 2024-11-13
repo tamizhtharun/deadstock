@@ -153,6 +153,7 @@ body::-webkit-scrollbar-thumb {
 .runningtxt marquee{
   margin-top: 2px;
   color: rgb(68, 68, 68);
+  z-index: 5;
 }
 .menu-bar{
   /* position: absolute; */

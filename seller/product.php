@@ -1,7 +1,7 @@
 <?php require_once('header.php'); ?>
 <!-- <?php
 echo "<pre>";
-print_r($_SESSION['seller_id']); // Display all session variables
+print_r($_SESSION['seller_session']); // Display all session variables
 echo "</pre>";
 ?> -->
 
