@@ -1,5 +1,5 @@
 <?php
-include 'inc/config.php';
+include '../db_connection.php';
 $now = gmdate("D, d M Y H:i:s");
 header('Content-Type: text/csv; charset=utf-8');  
 header('Content-Disposition: attachment; filename=customer_list.csv');  

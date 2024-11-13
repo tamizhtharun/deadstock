@@ -107,6 +107,12 @@ if(!isset($_SESSION['admin_session'])) {
 			          </a>
 			        </li>
 
+					<li class="treeview <?php if( ($cur_page == 'brand-edit.php') || ($cur_page == 'brand-add.php') || ($cur_page == 'brand-delete.php') ) {echo 'active';} ?>">
+									<a href="brand-management.php">
+										<i class="fa fa-user-plus"></i> <span>Brand Management</span>
+									</a>
+					</li>
+
                     <li class="treeview <?php if( ($cur_page == 'size.php') || ($cur_page == 'size-add.php') || ($cur_page == 'size-edit.php') || ($cur_page == 'color.php') || ($cur_page == 'color-add.php') || ($cur_page == 'color-edit.php') || ($cur_page == 'country.php') || ($cur_page == 'country-add.php') || ($cur_page == 'country-edit.php') || ($cur_page == 'shipping-cost.php') || ($cur_page == 'shipping-cost-edit.php') || ($cur_page == 'top-category.php') || ($cur_page == 'top-category-add.php') || ($cur_page == 'top-category-edit.php') || ($cur_page == 'mid-category.php') || ($cur_page == 'mid-category-add.php') || ($cur_page == 'mid-category-edit.php') || ($cur_page == 'end-category.php') || ($cur_page == 'end-category-add.php') || ($cur_page == 'end-category-edit.php') ) {echo 'active';} ?>">
                         <a href="#">
                             <i class="fa fa-cogs"></i>
@@ -126,7 +132,7 @@ if(!isset($_SESSION['admin_session'])) {
                     </li>
 
 
-                    <li class="treeview <?php if( ($cur_page == 'product.php') || ($cur_page == 'seller-uploaded-products.php') || ($cur_page == 'seller-approved-products.php')  || ($cur_page == 'seller-rejected-products.php')  || ($cur_page == 'seller-products.php') || ($cur_page == 'seller-approved-product-view.php') || ($cur_page == 'seller-rejected-product-view.php')) {echo 'active';} ?>">
+                    <li class="treeview <?php if( ($cur_page == '#') || ($cur_page == 'seller-uploaded-products.php') || ($cur_page == 'seller-approved-products.php')  || ($cur_page == 'seller-rejected-products.php')  || ($cur_page == 'seller-products.php') || ($cur_page == 'seller-approved-product-view.php') || ($cur_page == 'seller-rejected-product-view.php')) {echo 'active';} ?>">
                         <a href="product.php">
                             <i class="fa fa-shopping-bag"></i> <span>Product Management</span>
 														<span class="pull-right-container">
@@ -153,6 +159,7 @@ if(!isset($_SESSION['admin_session'])) {
 										<i class="fa fa-user-plus"></i> <span>Buyers</span>
 									</a>
 							</li>
+
 
                     <li class="treeview <?php if( ($cur_page == 'order.php') ) {echo 'active';} ?>">
                         <a href="#">

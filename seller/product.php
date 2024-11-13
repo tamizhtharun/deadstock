@@ -1,7 +1,7 @@
 <?php require_once('header.php'); ?>
 <!-- <?php
 echo "<pre>";
-print_r($_SESSION['seller_id']); // Display all session variables
+print_r($_SESSION['seller_session']); // Display all session variables
 echo "</pre>";
 ?> -->
 
@@ -25,12 +25,13 @@ echo "</pre>";
 							<tr>
 								<th width="10">#</th>
 								<th>Photo</th>
+								<th>Product Brand</th>
 								<th width="160">Product Name</th>
 								<th width="60">Old Price</th>
 								<th width="60">(C) Price</th>
 								<th width="60">Quantity</th>
 								<th>Featured?</th>
-								<th>Approved?</th>
+								<th>Approval Status</th>
 								<th>Category</th>
 								<th>Product Catalogue</th>
 								<th width="80">Action</th>
@@ -51,6 +52,7 @@ echo "</pre>";
 																						t1.p_is_featured,
 																						t1.p_is_approve,
 																						t1.product_catalogue,
+																						t1.product_brand,
 																						t1.ecat_id,
 																						t2.ecat_id,
 																						t2.ecat_name,
@@ -74,6 +76,7 @@ echo "</pre>";
 								<tr>
 										<td><?php echo $i; ?></td>
 										<td style="width:82px;"><img src="../assets/uploads/<?php echo $row['p_featured_photo']; ?>" alt="<?php echo $row['p_name']; ?>" style="width:80px;"></td>
+										<td><?php echo $row['product_brand']; ?></td>
 										<td><?php echo $row['p_name']; ?></td>
 										<td>₹<?php echo $row['p_old_price']; ?></td>
 										<td>₹<?php echo $row['p_current_price']; ?></td>
@@ -82,7 +85,7 @@ echo "</pre>";
 												<?php if($row['p_is_featured'] == 1) {echo '<span class="badge badge-success" style="background-color:green;">Yes</span>';} else {echo '<span class="badge badge-success" style="background-color:red;">No</span>';} ?>
 										</td>
 										<td>
-												<?php if($row['p_is_approve'] == 1) {echo '<span class="badge badge-success" style="background-color:green;">Yes</span>';} else {echo '<span class="badge badge-danger" style="background-color:red;">No</span>';} ?>
+												<?php if($row['p_is_approve'] == 1) {echo '<span class="badge badge-success" style="background-color:green;">Approved</span>';} else {echo '<span class="badge badge-danger" style="background-color:red;">No</span>';} ?>
 										</td>
 										<td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?></td>
 										<td><a href="../assets/uploads/<?php echo $row['product_catalogue']?>">View Uploaded catalogue</a> </td>
