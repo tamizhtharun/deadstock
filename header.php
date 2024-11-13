@@ -9,6 +9,9 @@ foreach ($result as $row)
   $favicon = $row['favicon'];
 }
 ?>
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,14 +48,35 @@ foreach ($result as $row)
 										<button type="submit" style="display: none;">Search</button>
 								</form>
               </li>
+            
               <li class="nav-item btns">
-                <button id="seller-btn" type="button" class="seller-btn btn btn-outline-secondary" onclick="window.location.href='seller_registration.php';">
+              
+              <button id="seller-btn" type="button" class="seller-btn btn btn-outline-secondary" onclick="window.location.href='seller_registration.php';">
                   Sell here!
                 </button>
+
+               
+                <?php if(!isset($_SESSION['user_session'])):?>
+
                 <button type="button" id="login-btn" class="login-btn btn btn-outline-secondary"
                   data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                   Login
                 </button>
+
+                <?php else: ?>
+                    <button type="button" id="login-btn" class="login-btn btn btn-outline-secondary" onclick="window.location.href='cart.php';">
+                    Cart
+                  </button>
+                  <div class="dropdown">
+                    <button class="dropbtn btn btn-outline-secondary"><?php echo $_SESSION['user_session']['name']?> ▾</button>
+                    <div class="dropdown-content">
+                      <a href="" >Account</a>
+                      <a href="" >Settings</a>
+                      <a href="" >orders</a>
+                      <a href="logout.php" >logout</a>
+                    </div>
+                  </div>
+                  <?php endif; ?>
               </li>
             </ul>
           </div>
@@ -61,8 +85,7 @@ foreach ($result as $row)
 
   <!-- runningtxt -->
   <div class="runningtxt">
-      <marquee id="marquee" onmouseover="this.stop();" onmouseout="this.start();">
-      </marquee>
+      
   </div>
 </div>
 
@@ -149,11 +172,11 @@ foreach ($result as $row)
   </div>
 
 
+  <script src="js/index.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script> 
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-  <script src="js/index.js"></script>
 
 </body>
 </html>

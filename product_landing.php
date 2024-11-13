@@ -383,13 +383,13 @@ if($success_message1 != '') {
             <div class="col-md-4 col-6 mb-3">
               <label class="mb-2 d-block">Quantity</label>
               <div class="input-group mb-3" style="width: 170px;">
-                <button class="btn btn-outline-secondary" type="button">
-                  <i class="bi bi-dash"></i>
-                </button>
-                <input type="text" class="form-control text-center" value="14" />
-                <button class="btn btn-outline-secondary" type="button">
+                <!-- <button class="btn btn-outline-secondary" type="button" id="decrease-btn"> -->
+                  <!-- <i class="bi bi-dash"></i> -->
+                <!-- </button> -->
+                <input type="number" class="form-control text-center" id="quantity-input" value="1" min="1" />
+                <!-- <button class="btn btn-outline-secondary" type="button" id="increase-btn">
                   <i class="bi bi-plus"></i>
-                </button>
+                </button> -->
               </div>
             </div>
           </div>

@@ -1,15 +1,14 @@
 <?php require_once('header.php'); ?>
-
 <?php
 $seller_id = $_SESSION['seller_session'];
 if (!isset($_SESSION['seller_session'])) {
-	// Handle the error, e.g., redirect to login or show a message
-	die("Seller ID is not set.");
+    // Handle the error, e.g., redirect to login or show a message
+    die("Seller ID is not set.");
 }
 
 if(isset($_POST['form1'])) {
-	$valid = 1;
-	$seller_id = $_SESSION['seller_session']['seller_id'];
+    $valid = 1;
+    $seller_id = $_SESSION['seller_session']['seller_id'];
 
     if(empty($_POST['tcat_id'])) {
         $valid = 0;
@@ -40,6 +39,11 @@ if(isset($_POST['form1'])) {
         $valid = 0;
         $error_message .= "Quantity can not be empty<br>";
     }
+	if(empty($_POST['product_brand'])) {
+        $valid = 0;
+        $error_message .= "Product Brand should be selected<br>";
+    }
+
 
     $path = $_FILES['p_featured_photo']['name'];
     $path_tmp = $_FILES['p_featured_photo']['tmp_name'];
@@ -52,60 +56,76 @@ if(isset($_POST['form1'])) {
             $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
         }
     } else {
-    	$valid = 0;
+        $valid = 0;
         $error_message .= 'You must have to select a featured photo<br>';
     }
 
+    // Handle PDF file upload
+    $pdf_path = $_FILES['product_catalogue']['name'];
+    $pdf_path_tmp = $_FILES['product_catalogue']['tmp_name'];
+    if($pdf_path != '') {
+        $pdf_ext = pathinfo($pdf_path, PATHINFO_EXTENSION);
+        if($pdf_ext != 'pdf') {
+            $valid = 0;
+            $error_message .= 'You must have to upload a PDF file for the product catalogue<br>';
+        }
+    } else {
+        $valid = 0;
+        $error_message .= 'You must have to select a product catalogue PDF file<br>';
+    }
 
     if($valid == 1) {
+        $statement = $pdo->prepare("SHOW TABLE STATUS LIKE 'tbl_product'");
+        $statement->execute();
+        $result = $statement->fetchAll();
+        foreach($result as $row) {
+            $ai_id=$row[10];
+        }
 
-    	$statement = $pdo->prepare("SHOW TABLE STATUS LIKE 'tbl_product'");
-		$statement->execute();
-		$result = $statement->fetchAll();
-		foreach($result as $row) {
-			$ai_id=$row[10];
-		}
+        // Move the uploaded PDF file to the server
+        $pdf_final_name = 'product-catalogue-'.$ai_id.'.pdf';
+        move_uploaded_file($pdf_path_tmp, '../assets/uploads/'.$pdf_final_name);
 
-    	if( isset($_FILES['photo']["name"]) && isset($_FILES['photo']["tmp_name"]) )
+        if( isset($_FILES['photo']["name"]) && isset($_FILES['photo']["tmp_name"]) )
         {
-        	$photo = array();
+            $photo = array();
             $photo = $_FILES['photo']["name"];
             $photo = array_values(array_filter($photo));
 
-        	$photo_temp = array();
+            $photo_temp = array();
             $photo_temp = $_FILES['photo']["tmp_name"];
             $photo_temp = array_values(array_filter($photo_temp));
 
-        	$statement = $pdo->prepare("SHOW TABLE STATUS LIKE 'tbl_product_photo'");
-			$statement->execute();
-			$result = $statement->fetchAll();
-			foreach($result as $row) {
-				$next_id1=$row[10];
-			}
-			$z = $next_id1;
+            $statement = $pdo->prepare("SHOW TABLE STATUS LIKE 'tbl_product_photo'");
+            $statement->execute();
+            $result = $statement->fetchAll();
+            foreach($result as $row) {
+                $next_id1=$row[10];
+            }
+            $z = $next_id1;
 
             $m=0;
             for($i=0;$i<count($photo);$i++)
             {
                 $my_ext1 = pathinfo( $photo[$i], PATHINFO_EXTENSION );
-		        if( $my_ext1=='jpg' || $my_ext1=='png' || $my_ext1=='jpeg' || $my_ext1=='gif' ) {
-		            $final_name1[$m] = $z.'.'.$my_ext1;
+                if( $my_ext1=='jpg' || $my_ext1=='png' || $my_ext1=='jpeg' || $my_ext1=='gif' ) {
+                    $final_name1[$m] = $z.'.'.$my_ext1;
                     move_uploaded_file($photo_temp[$i],"../assets/uploads/".$final_name1[$m]);
                     $m++;
                     $z++;
-		        }
+                }
             }
 
             if(isset($final_name1)) {
-            	for($i=0;$i<count($final_name1);$i++)
-		        {
-		        	$statement = $pdo->prepare("INSERT INTO tbl_product_photo (photo,p_id) VALUES (?,?)");
-		        	$statement->execute(array($final_name1[$i],$ai_id));
-		        }
+                for($i=0;$i<count($final_name1);$i++)
+                {
+                    $statement = $pdo->prepare("INSERT INTO tbl_product_photo (photo,p_id) VALUES (?,?)");
+                    $statement->execute(array($final_name1[$i],$ai_id));
+                }
             }            
         }
 
-		$final_name = 'product-featured-'.$ai_id.'.'.$ext;
+        $final_name = 'product-featured-'.$ai_id.'.'.$ext;
         move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
 		
 
@@ -143,13 +163,11 @@ $statement->execute(array(
 			$_POST['ecat_id']
 		));
 
-		
-
-	
-    	$success_message = 'Product is added waiting products successfully.';
+        $success_message = 'Product is added successfully, wait for your administrator approval.';
     }
 }
 ?>
+<!-- Rest of the code remains the same -->
 
 <section class="content-header">
 	<div class="content-header-left">
@@ -186,6 +204,24 @@ $statement->execute(array(
 
 				<div class="box box-info">
 					<div class="box-body">
+					<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Select Brand<span>*</span></label>
+							<div class="col-sm-4">
+								<select name="product_brand" class="form-control select2 top-cat">
+									<option value="">Select Brand</option>
+									<?php
+									$statement = $pdo->prepare("SELECT brand_name FROM tbl_brands");
+									$statement->execute();
+									$result = $statement->fetchAll(PDO::FETCH_ASSOC);	
+									foreach ($result as $row) {
+										?>
+										<option value="<?php echo $row['brand_name']; ?>"><?php echo $row['brand_name']; ?></option>
+										<?php
+									}
+									?>
+								</select>
+							</div>
+						</div>
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Top Level Category Name <span>*</span></label>
 							<div class="col-sm-4">
@@ -226,6 +262,12 @@ $statement->execute(array(
 								<input type="text" name="p_name" class="form-control">
 							</div>
 						</div>	
+						<div class="form-group">
+     						  <label for="" class="col-sm-3 control-label">Product Catalogue (PDF) <span>*</span></label>
+     							  <div class="col-sm-4" style="padding-top:4px;">
+        						   <input type="file" name="product_catalogue">
+      							 </div>
+  						 </div>
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Old Price <br><span style="font-size:10px;font-weight:normal;">(In INR)</span></label>
 							<div class="col-sm-4">

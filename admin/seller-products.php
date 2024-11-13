@@ -78,6 +78,7 @@ if (isset($_POST['reject_all'])) {
                             <tr>
                                 <th width="10">#</th>
                                 <th>Photo</th>
+                                <th>Product Brand</th>
                                 <th width="160">Product Name</th>
                                 <th width="60">Old Price</th>
                                 <th width="60">(C) Price</th>
@@ -85,6 +86,7 @@ if (isset($_POST['reject_all'])) {
                                 <th>Featured?</th>
                                 <th>Active?</th>
                                 <th>Category</th>
+                                <th>Product Catalogue</th>
                                 <th width="80">Approval Status</th>
                                 <th width="80">Action</th>
                             </tr>
@@ -104,6 +106,8 @@ if (isset($_POST['reject_all'])) {
                                                         t1.p_is_featured,
                                                         t1.p_is_active,
                                                         t1.p_is_approve,
+                                                        t1.product_catalogue,
+                                                        t1.product_brand,
                                                         t2.ecat_id,
                                                         t2.ecat_name,
                                                         t3.mcat_id,
@@ -125,9 +129,10 @@ if (isset($_POST['reject_all'])) {
                             <tr>
                                 <td><?php echo $i; ?></td>
                                 <td style="width:82px;"><img src="../assets/uploads/<?php echo $row['p_featured_photo']; ?>" alt="<?php echo $row['p_name']; ?>" style="width:80px;"></td>
+                                <td><?php echo $row['product_brand']; ?></td>
                                 <td><?php echo $row['p_name']; ?></td>
-                                <td>$<?php echo $row['p_old_price']; ?></td>
-                                <td>$<?php echo $row['p_current_price']; ?></td>
+                                <td>₹<?php echo $row['p_old_price']; ?></td>
+                                <td>₹<?php echo $row['p_current_price']; ?></td>
                                 <td><?php echo $row['p_qty']; ?></td>
                                 <!-- Update the Featured column -->
                                 <td>
@@ -146,7 +151,7 @@ if (isset($_POST['reject_all'])) {
                                 </td>
 
                                 <td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?></td>
-
+                                <td><a href="../assets/uploads/<?php echo $row['product_catalogue']?>">View catalogue</a> </td>
                                 <td><?php echo $row['p_is_approve'] == 1 ? '<span class="badge badge-success" style="background-color:green;">Approved</span>' : '<span class="badge badge-danger" style="background-color:red;">Rejected</span>'; ?></td>
                                 <td>
                                     <?php if ($row['p_is_approve'] == 1) { ?>

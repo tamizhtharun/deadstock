@@ -33,6 +33,45 @@ body::-webkit-scrollbar-thumb {
     z-index: 2;
 
 }
+.dropbtn {
+  background-color: #f8f9fa; /* Light background */
+  color: black;
+  padding: 10px 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+  background-color: #e2e6ea;
+}
 .footer{
     padding-top:1000px ;
 }
@@ -153,6 +192,7 @@ body::-webkit-scrollbar-thumb {
 .runningtxt marquee{
   margin-top: 2px;
   color: rgb(68, 68, 68);
+  z-index: 5;
 }
 .menu-bar{
   /* position: absolute; */
@@ -254,7 +294,8 @@ body::-webkit-scrollbar-thumb {
   position: relative;
   width: 340px;
   background: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Reset list styles */
@@ -264,11 +305,13 @@ body::-webkit-scrollbar-thumb {
   list-style: none;
   margin: 0;
   padding: 0;
+  
 }
 
 
 /* Main category styling */
 .category {
+  /* box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2); */
   /* position: relative; */
 }
 
@@ -279,6 +322,7 @@ body::-webkit-scrollbar-thumb {
   text-decoration: none;
   color: #333;
   transition: background-color 0.3s;
+
 }
 
 .category-link img {
@@ -286,7 +330,8 @@ body::-webkit-scrollbar-thumb {
 }
 
 .category-link:hover {
-  background-color: #f5f5f5;
+  background-color: #dedede;
+  text-decoration: none;
 }
 
 /* Subcategories styling */
@@ -296,13 +341,16 @@ body::-webkit-scrollbar-thumb {
   left: 100%;
   top: 0;
   width:300px;
-  background: #fff;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-  z-index: 100;
+  background: #ffffff;
+  /* box-shadow: 2px 2px 5px rgba(0,0,0,0.1); */
+  z-index: 1;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  
 }
 
 .category:hover > .subcategories {
   display: block;
+  min-height: 420px;
 }
 
 /* Subcategory items */
@@ -319,7 +367,8 @@ body::-webkit-scrollbar-thumb {
 }
 
 .subcategory-link:hover {
-  background-color: #f5f5f5;
+  background-color: #dedede;
+  text-decoration: none;
 }
 
 /* Sub-subcategories styling */
@@ -330,7 +379,8 @@ body::-webkit-scrollbar-thumb {
   top: 0;
   width: 250px;
   background: #fff;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  /* box-shadow: 2px 2px 5px rgba(0,0,0,0.1); */
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2); /* Adjust values for shadow */
   z-index: 101;
 }
 
@@ -348,7 +398,8 @@ body::-webkit-scrollbar-thumb {
 }
 
 .sub-subcategory a:hover {
-  background-color: #f5f5f5;
+  background-color: #dedede;
+  text-decoration: none;
 }
 
 /* Add arrow indicators for items with submenus */
