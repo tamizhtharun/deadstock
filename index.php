@@ -353,37 +353,40 @@ if (!empty($topCategories)) {
                 <div class="wrapper">
                     <span class="cat-title"><?php echo htmlspecialchars($topCategory['tcat_name'], ENT_QUOTES, 'UTF-8'); ?></span>
                     <ul class="carousel">
-                        <?php foreach ($products as $product): ?>
-                            <?php if ($product['p_is_featured'] == 1): // Check if the product is featured ?>
-                                <li class="cat-product-list-card swiper-slide">
-                                    <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration: none; color: black;">
-                                        <div class="cat-product-img">
-                                            <img src="assets/uploads/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>">
-                                        </div>
-                                        <div class="product-card-lower">
-                                            <div class="cat-product-title">
-                                                <span><?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?></span>
-                                            </div>
-                                            <div class="cat-product-price">
-                                                ₹<?php echo number_format($product['p_current_price'], 2); ?>
-                                            </div>
-                                            <div class="cat-product-original-price">
-                                                <?php if (!empty($product['p_old_price'])): ?>
-                                                    <div class="price-strike">₹<?php echo number_format($product['p_old_price'], 2); ?></div>
-                                                    <div class="cat-product-discount">
-                                                        <?php
-                                                        // Calculate the discount percentage
-                                                        $discount = (($product['p_old_price'] - $product['p_current_price']) / $product['p_old_price']) * 100;
-                                                        echo round($discount) . '% OFF';
-                                                        ?>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                            <?php endif; // End of featured product check ?>
-                        <?php endforeach; ?>
+                    <?php foreach ($products as $product): ?>
+    <?php if ($product['p_is_featured'] == 1): // Check if the product is featured ?>
+      <li class="cat-product-list-card swiper-slide">
+    <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration: none; color: black;">
+        <div class="cat-product-img">
+            <img src="assets/uploads/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>">
+        </div>
+        <div class="product-card-lower">
+            <div class="cat-product-title">
+                <span><?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?></span>
+            </div>
+            <div class="cat-product-price">
+                ₹<?php echo number_format($product['p_current_price'], 2); ?>
+            </div>
+            <div class="cat-product-original-price">
+                <?php if (!empty($product['p_old_price'])): ?>
+                    <div class="price-strike">₹<?php echo number_format($product['p_old_price'], 2); ?></div>
+                    <div class="cat-product-discount">
+                        <?php
+                        $discount = (($product['p_old_price'] - $product['p_current_price']) / $product['p_old_price']) * 100;
+                        echo round($discount) . '% OFF';
+                        ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </a>
+    <!-- <div class="button-container">
+        <button class="action-button" onclick="startBid(<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>)">Start Bid</button>
+        <button class="action-button" onclick="addToCart(<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>)">Add to Cart</button>
+    </div> -->
+</li>
+    <?php endif; // End of featured product check ?>
+<?php endforeach; ?>
                     </ul>
                 </div>
                 <?php
@@ -396,6 +399,67 @@ if (!empty($topCategories)) {
 } // End of top categories loop
 ?>
 <!-- End Display the product depends od category -->
+ <style>
+  .action-button {
+  appearance: none;
+  background-color: #FAFBFC;
+  border: 1px solid rgba(27, 31, 35, 0.15);
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+  box-sizing: border-box;
+  color: #24292E;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  list-style: none;
+  padding: 6px 16px;
+  position: relative;
+  transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+  word-wrap: break-word;
+}
+
+.action-button:hover {
+  background-color: #F3F4F6;
+  text-decoration: none;
+  transition-duration: 0.1s;
+}
+
+.action-button:disabled {
+  background-color: #FAFBFC;
+  border-color: rgba(27, 31, 35, 0.15);
+  color: #959DA5;
+  cursor: default;
+}
+
+.action-button:active {
+  background-color: #EDEFF2;
+  box-shadow: rgba(225, 228, 232, 0.2) 0 1px 0 inset;
+  transition: none 0s;
+}
+
+.action-button:focus {
+  outline: 1px transparent;
+}
+
+.action-button:before {
+  display: none;
+}
+
+.action-button:-webkit-details-marker {
+  display: none;
+}
+
+
+
+ </style>
 
 
 <?php include 'footer.php'; ?>

@@ -118,40 +118,144 @@ if ($lastpage > 1) {
 }
 /* ===================== Pagination Code Ends ================== */
 ?>
-<div class="product-page">
-            <div class="col-md-12">
-                <!-- Filter Sidebar -->
-                <div class="filter-sidebar">
-    <h3>Filters</h3>
-    <div class="filter-section">
-        <h4>Categories</h4>
-        <label><input type="checkbox" name="Categories[]" value="Cutting Tools"> Cutting Tools</label><br>
-        <label><input type="checkbox" name="Categories[]" value="Saw Blades"> Saw Blades </label><br>
-        <label><input type="checkbox" name="Categories[]" value="Hand Tools"> Hand Tools </label><br>
-        <label><input type="checkbox" name="Categories[]" value="Abrasive Wheels"> Abrasive Wheels </label><br>
-        <label><input type="checkbox" name="Categories[]" value="Power Tools"> Power Tools </label><br>
-    </div>
+<?php
+// Database connection
 
-    <div class="filter-section">
-        <h4>Price</h4>
-        <div class="price-range">
-            <input type="number" id="min-price" name="min-price" placeholder="Min" class="price-input">
-            <span>to</span>
-            <input type="number" id="max-price" name="max-price" placeholder="Max" class="price-input">
+// Fetch top categories from the database
+$statement = $pdo->prepare("SELECT * FROM tbl_top_category");
+$statement->execute();
+$top_categories = $statement->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+<style>
+    .checkbox-label {
+        margin-left: 10px; /* Adjust the value as needed */
+    }
+    .filter-section {
+        margin-bottom: 20px; /* Add space between sections */
+    }
+</style>
+        
+<div class="product-page">
+    <div class="col-md-12">
+        <!-- Filter Sidebar -->
+        <div class="filter-sidebar">
+            <!-- Existing filter structure -->
+            <h3>Filters</h3>
+            <div class="filter-section">
+                <h4>Categories</h4>
+                <?php foreach ($top_categories as $top_category): ?>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="top-category" value="<?php echo htmlspecialchars($top_category['tcat_id']); ?>">
+                        <?php echo htmlspecialchars($top_category['tcat_name']); ?>
+                    </label><br>
+                <?php endforeach; ?>
+            </div>
+
+            <!-- Mid Categories (will be displayed dynamically) -->
+            <div class="filter-section" id="mid-category-section" style="display: none;">
+                <h4>Mid Categories</h4>
+                <div id="mid-category-checkboxes"></div>
+            </div>
+
+            <!-- End Categories (will be displayed dynamically) -->
+            <div class="filter-section" id="end-category-section" style="display: none;">
+                <h4>End Categories</h4>
+                <div id="end-category-checkboxes"></div>
+            </div>
+
+            <!-- Price Range Filters -->
+            <div class="filter-section">
+                <h4>Price</h4>
+                <div class="price-range">
+                    <label for="min-price">Min:</label>
+                    <select id="min-price" name="min-price" class="price-input">
+                        <option value="500">₹500</option>
+                        <option value="1000">₹1000</option>
+                        <option value="1500">₹1500</option>
+                        <option value="2000">₹2000</option>
+                        <option value="3000">₹3000</option>
+                    </select>
+                    <label for="max-price">Max:</label>
+                    <select id="max-price" name="max-price" class="price-input">
+                        <option value="500">₹500</option>
+                        <option value="1000">₹1000</option>
+                        <option value="1500">₹1500</option>
+                        <option value="2000">₹2000</option>
+                        <option value="3000">₹3000</option>
+                        <option value="+3000">₹+3000</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+<script>
+document.querySelectorAll('.top-category').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        const selectedTopCategoryId = this.value;
+
+        // Fetch mid categories based on selected top category
+        fetch('filter_mid_categories.php?tcat_id=' + selectedTopCategoryId)
+            .then(response => response.json())
+            .then(data => {
+                const midCategorySection = document.getElementById('mid-category-section');
+                const midCategoryCheckboxes = document.getElementById('mid-category-checkboxes');
+                midCategoryCheckboxes.innerHTML = ''; // Clear previous checkboxes
+
+                if (data.length > 0) {
+                    midCategorySection.style.display = 'block';
+                    data.forEach(midCategory => {
+                        midCategoryCheckboxes.innerHTML += `
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="mid-category" value="${midCategory.mcat_id}">
+                                ${midCategory.mcat_name}
+                            </label><br>
+                        `;
+                    });
+                } else {
+                    midCategorySection.style.display = 'none';
+                }
+            });
+
+        // Fetch end categories based on selected top category
+        fetch('filter_end_categories.php?tcat_id=' + selectedTopCategoryId)
+            .then(response => response.json())
+            .then(data => {
+                const endCategorySection = document.getElementById('end-category-section');
+                const endCategoryCheckboxes = document.getElementById('end-category-checkboxes');
+                endCategoryCheckboxes.innerHTML = ''; // Clear previous checkboxes
+
+                if (data.length > 0) {
+                    endCategorySection.style.display = 'block';
+                    data.forEach(endCategory => {
+                        endCategoryCheckboxes.innerHTML += `
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="end-category" value="${endCategory.ecat_id}">
+                                ${endCategory.ecat_name}
+                            </label><br>
+                        `;
+                    });
+                } else {
+                    endCategorySection.style.display = 'none';
+                }
+            });
+    });
+});
+</script>
+
+
                 <?php
-// Function to truncate the description to a specific word limit
-function truncateDescription($description, $wordLimit = 7) {
-    $words = explode(' ', $description); // Split the description into words
-    if (count($words) > $wordLimit) {
-        return implode(' ', array_slice($words, 0, $wordLimit)) . '...'; // Truncate and append "..."
-    }
-    return $description; // Return the original description if within limit
-}
-?>
+                    // Function to truncate the description to a specific word limit
+                    function truncateDescription($description, $wordLimit = 7) {
+                        $words = explode(' ', $description); // Split the description into words
+                        if (count($words) > $wordLimit) {
+                            return implode(' ', array_slice($words, 0, $wordLimit)) . '...'; // Truncate and append "..."
+                        }
+                        return $description; // Return the original description if within limit
+                    }
+                    ?>
 
 <div class="main-content">
     <!-- Product Listings -->
@@ -165,13 +269,16 @@ function truncateDescription($description, $wordLimit = 7) {
                             <img src="assets/uploads/<?php echo htmlspecialchars($row['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" 
                                  alt="<?php echo htmlspecialchars($row['p_name'], ENT_QUOTES, 'UTF-8'); ?>" 
                                  width="150px" height="150px" style="margin-bottom: 10px;">
+                            
                             <h3 class="product-name" style="margin-bottom: 10px;">
                                 <?php echo htmlspecialchars($row['p_name'], ENT_QUOTES, 'UTF-8'); ?>
                             </h3>
-                            <div class="product-specs" style="margin-bottom: 10px;">
+                            
+                            <div class="product-specs" style="margin-bottom: 20px;">
                                 <p><?php echo htmlspecialchars(truncateDescription(strip_tags($row['p_description'])), ENT_QUOTES, 'UTF-8'); ?></p>
                             </div>
-                            <div class="product-pricing">
+                            
+                            <div class="product-pricing" style="margin-top: -20px;">
                                 <span class="current-price">₹<?php echo number_format($row['p_current_price'], 2); ?></span>
                                 <?php if (!empty($row['p_old_price'])): ?>
                                     <span class="original-price"><del>₹<?php echo number_format($row['p_old_price'], 2); ?></del></span>
@@ -183,14 +290,26 @@ function truncateDescription($description, $wordLimit = 7) {
                                     </span>
                                 <?php endif; ?>
                             </div>
+                            <div class="button-container" style="display: flex; margin-top: 10px; margin-right: 15px; margin-left: 15px;">
+                <button class="action-button" style="margin-right: 10px;" onclick="startBid(<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8'); ?>)">Start Bid</button>
+                <button class="action-button" onclick="startBid(<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8'); ?>)">Add to Cart</button>
+            </div>
+                            
+                            
+                            
+
                         </div>
                     </a>
                 </div>
             <?php endforeach; ?>
-
-            <div class="pagination">
-                <?php echo $pagination; ?>
-            </div>
         </div>
     </div>
 </div>
+                                    
+
+                                    <div class="pagination">
+                                        <?php echo $pagination; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
