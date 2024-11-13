@@ -64,7 +64,7 @@ session_start();
                 </button>
 
                 <?php else: ?>
-                    <button type="button" id="login-btn" class="login-btn btn btn-outline-secondary" onclick="window.location.href='user_cart.php';">
+                    <button type="button" id="login-btn" class="login-btn btn btn-outline-secondary" onclick="window.location.href='cart.php';">
                     Cart
                   </button>
                   <div class="dropdown">
