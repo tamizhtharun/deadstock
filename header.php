@@ -64,12 +64,13 @@ session_start();
                 </button>
 
                 <?php else: ?>
-
+                    <button type="button" id="login-btn" class="login-btn btn btn-outline-secondary" onclick="window.location.href='user_cart.php';">
+                    Cart
+                  </button>
                   <div class="dropdown">
                     <button class="dropbtn btn btn-outline-secondary"><?php echo $_SESSION['user_session']['name']?> ▾</button>
                     <div class="dropdown-content">
                       <a href="" >Account</a>
-                      <a href="cart.php" >Cart</a>
                       <a href="" >Settings</a>
                       <a href="" >orders</a>
                       <a href="logout.php" >logout</a>
