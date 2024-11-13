@@ -69,7 +69,7 @@ session_start();
                     <button class="dropbtn btn btn-outline-secondary"><?php echo $_SESSION['user_session']['name']?> ▾</button>
                     <div class="dropdown-content">
                       <a href="" >Account</a>
-                      <a href="" >Cart</a>
+                      <a href="cart.php" >Cart</a>
                       <a href="" >Settings</a>
                       <a href="" >orders</a>
                       <a href="logout.php" >logout</a>
