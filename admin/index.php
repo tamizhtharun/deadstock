@@ -52,173 +52,103 @@ $total_product = $statement->rowCount();
 
 <section class="content">
 <div class="row">
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-primary">
-                <div class="inner">
-                  <h3><?php echo $total_product; ?></h3>
-
-                  <p>Products</p>
-                </div>
-                <div class="icon">
-                  <i class="ionicons ion-android-cart"></i>
-                </div>
-                
-              </div>
+<div class="g-6 mb-6">
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card shadow border-0">
+      <div class="card-body">
+        <div class="row">
+          <div class="col">
+            <span class="card-title h4 font-semibold text-muted text-lg d-block mb-2">Budget</span>
+            <span class="h1 font-bold mb-0">$750.90</span>
+          </div>
+          <div class="col-auto">
+            <div class="icon icon-shape bg-tertiary text-white text-2xl rounded-circle">
+              <i class="bi bi-credit-card text-2xl"></i>
             </div>
-            <!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-maroon">
-                <div class="inner">
-                  <h3><?php echo $total_order_pending; ?></h3>
-
-                  <p>Pending Orders</p>
-                </div>
-                <div class="icon">
-                  <i class="ionicons ion-clipboard"></i>
-                </div>
-                
-              </div>
+          </div>
+        </div>
+        <div class="card-lower mt-2 mb-0 text-lg">
+          <span class="badge badge-pill bg-soft-success text-success me-2">
+            <i class="bi bi-arrow-up me-1 text-lg"></i>13%
+          </span>
+          <span class="text-nowrap text-base text-muted">Since last month</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card shadow border-0">
+      <div class="card-body">
+        <div class="row">
+          <div class="col">
+            <span class="card-title h4 font-semibold text-muted text-lg d-block mb-2">New projects</span>
+            <span class="h1 font-bold mb-0">215</span>
+          </div>
+          <div class="col-auto">
+            <div class="icon icon-shape bg-primary text-white text-2xl rounded-circle">
+              <i class="bi bi-people text-2xl"></i>
             </div>
-            <!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-green">
-                <div class="inner">
-                  <h3><?php echo $total_order_completed; ?></h3>
-
-                  <p>Completed Orders</p>
-                </div>
-                <div class="icon">
-                  <i class="ionicons ion-android-checkbox-outline"></i>
-                </div>
-               
-              </div>
+          </div>
+        </div>
+        <div class="card-lower mt-2 mb-0 text-lg">
+          <span class="badge badge-pill bg-soft-success text-success me-2">
+            <i class="bi bi-arrow-up me-1 text-lg"></i>30%
+          </span>
+          <span class="text-nowrap text-base text-muted">Since last month</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card shadow border-0">
+      <div class="card-body">
+        <div class="row">
+          <div class="col">
+            <span class="card-title h4 font-semibold text-muted text-lg d-block mb-2">Total hours</span>
+            <span class="h1 font-bold mb-0">1.400</span>
+          </div>
+          <div class="col-auto">
+            <div class="icon icon-shape bg-info text-white text-2xl rounded-circle">
+              <i class="bi bi-clock-history text-2xl"></i>
             </div>
-            <!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-aqua">
-                <div class="inner">
-                  <h3><?php echo $total_shipping_completed; ?></h3>
-
-                  <p>Completed Shipping</p>
-                </div>
-                <div class="icon">
-                  <i class="ionicons ion-checkmark-circled"></i>
-                </div>
-                
-              </div>
+          </div>
+        </div>
+        <div class="card-lower mt-2 mb-0 text-lg">
+          <span class="badge badge-pill bg-soft-danger text-danger me-2">
+            <i class="bi bi-arrow-down me-1 text-lg"></i>-5%
+          </span>
+          <span class="text-nowrap text-base text-muted">Since last month</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card shadow border-0">
+      <div class="card-body">
+        <div class="row">
+          <div class="col">
+            <span class="card-title h4 font-semibold text-muted text-lg d-block mb-2">Work load</span>
+            <span class="h1 font-bold mb-0">95%</span>
+          </div>
+          <div class="col-auto">
+            <div class="icon icon-shape bg-warning text-white text-2xl rounded-circle">
+              <i class="bi bi-minecart-loaded text-2xl"></i>
             </div>
-			<!-- ./col -->
-			
-			<div class="col-lg-3 col-xs-6">
-				<!-- small box -->
-				<div class="small-box bg-orange">
-				  <div class="inner">
-					<h3><?php echo $total_order_complete_shipping_pending; ?></h3>
-  
-					<p>Pending Shippings</p>
-				  </div>
-				  <div class="icon">
-					<i class="ionicons ion-load-a"></i>
-				  </div>
-				  
-				</div>
-			  </div>
-
-			  <div class="col-lg-3 col-xs-6">
-				<!-- small box -->
-				<div class="small-box bg-red">
-				  <div class="inner">
-					<h3><?php echo $total_customers; ?></h3>
-  
-					<p>Active Customers</p>
-				  </div>
-				  <div class="icon">
-					<i class="ionicons ion-person-stalker"></i>
-				  </div>
-				  
-				</div>
-			  </div>
-
-			  <div class="col-lg-3 col-xs-6">
-				<!-- small box -->
-				<div class="small-box bg-yellow">
-				  <div class="inner">
-					<h3><?php echo $total_subscriber; ?></h3>
-  
-					<p>Subscriber</p>
-				  </div>
-				  <div class="icon">
-					<i class="ionicons ion-person-add"></i>
-				  </div>
-				  
-				</div>
-			  </div>
-
-			  <div class="col-lg-3 col-xs-6">
-				<!-- small box -->
-				<div class="small-box bg-teal">
-				  <div class="inner">
-					<h3><?php echo $available_shipping; ?></h3>
-  
-					<p>Available Shippings</p>
-				  </div>
-				  <div class="icon">
-					<i class="ionicons ion-location"></i>
-				  </div>
-				  
-				</div>
-			  </div>
-
-			  <div class="col-lg-3 col-xs-6">
-				<!-- small box -->
-				<div class="small-box bg-olive">
-				  <div class="inner">
-					<h3><?php echo $total_top_category; ?></h3>
-  
-					<p>Top Categories</p>
-				  </div>
-				  <div class="icon">
-					<i class="ionicons ion-arrow-up-b"></i>
-				  </div>
-				  
-				</div>
-			  </div>
-
-			  <div class="col-lg-3 col-xs-6">
-				<!-- small box -->
-				<div class="small-box bg-blue">
-				  <div class="inner">
-					<h3><?php echo $total_mid_category; ?></h3>
-  
-					<p>Mid Categories</p>
-				  </div>
-				  <div class="icon">
-					<i class="ionicons ion-android-menu"></i>
-				  </div>
-				  
-				</div>
-			  </div>
-
-			  <div class="col-lg-3 col-xs-6">
-				<!-- small box -->
-				<div class="small-box bg-maroon">
-				  <div class="inner">
-					<h3><?php echo $total_end_category; ?></h3>
-  
-					<p>End Categories</p>
-				  </div>
-				  <div class="icon">
-					<i class="ionicons ion-arrow-down-b"></i>
-				  </div>
-				  
-				</div>
-			  </div>
-
-		  </div>
+          </div>
+        </div>
+        <div class="card-lower mt-2 mb-0 text-lg">
+          <span class="badge badge-pill bg-soft-success text-success me-2">
+            <i class="bi bi-arrow-up me-1 text-lg"></i>10%
+          </span>
+          <span class="text-nowrap text-base text-muted">Since last month</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+              
+            </div>
+            
 		  
 </section>
 
