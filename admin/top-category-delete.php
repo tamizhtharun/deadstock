@@ -1,7 +1,7 @@
 <?php require_once('header.php'); ?>
 
 <?php
-$p_ids=[];
+$p_ids = [];
 // Preventing the direct access of this page.
 if(!isset($_REQUEST['id'])) {
 	header('location: logout.php');
@@ -34,7 +34,7 @@ if(!isset($_REQUEST['id'])) {
 
 	if(isset($ecat_ids)) {
 
-		for($i=0;$i<count($ecat_ids);$i++) {
+		for($i = 0; $i < count($ecat_ids); $i++) {
 			$statement = $pdo->prepare("SELECT * FROM tbl_product WHERE ecat_id=?");
 			$statement->execute(array($ecat_ids[$i]));
 			$result = $statement->fetchAll(PDO::FETCH_ASSOC);							
@@ -43,7 +43,7 @@ if(!isset($_REQUEST['id'])) {
 			}
 		}
 
-		for($i=0;$i<count($p_ids);$i++) {
+		for($i = 0; $i < count($p_ids); $i++) {
 
 			// Getting photo ID to unlink from folder
 			$statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
@@ -70,17 +70,26 @@ if(!isset($_REQUEST['id'])) {
 			// Delete from tbl_product_photo
 			$statement = $pdo->prepare("DELETE FROM tbl_product_photo WHERE p_id=?");
 			$statement->execute(array($p_ids[$i]));
-
-
-			
 		}
 
 		// Delete from tbl_end_category
-		for($i=0;$i<count($ecat_ids);$i++) {
+		for($i = 0; $i < count($ecat_ids); $i++) {
 			$statement = $pdo->prepare("DELETE FROM tbl_end_category WHERE ecat_id=?");
 			$statement->execute(array($ecat_ids[$i]));
 		}
+	}
 
+	// Getting top category photo to unlink before deleting the record
+	$statement = $pdo->prepare("SELECT * FROM tbl_top_category WHERE tcat_id=?");
+	$statement->execute(array($_REQUEST['id']));
+	$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+	foreach ($result as $row) {
+		$photo = $row['photo'];
+	}
+
+	// Unlink the top category photo if it exists
+	if($photo != '') {
+		unlink('../assets/uploads/top-categories-images/'.$photo);	
 	}
 
 	// Delete from tbl_mid_category

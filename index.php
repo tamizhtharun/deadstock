@@ -2,57 +2,58 @@
 <link rel="stylesheet" href="./css/index.css">
 
 <div class="category-pad">
-<div class="category-box">
-    <ul class="categories">
-        <?php
-            $statement = $pdo->prepare("SELECT * FROM tbl_top_category WHERE show_on_menu=1");
-            $statement->execute();
-            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-            foreach ($result as $row) {
-        ?>
-            <li class="category">
-                <a class="category-link" href="product-category.php?id=<?php echo $row['tcat_id']; ?>&type=top-category">
-                    <img src="./icons/hole.png" width="30px" height="30px">
-                    <span><?php echo $row['tcat_name']; ?></span>
-                </a>
-                <ul class="subcategories">
-                    <?php
-                        $statement1 = $pdo->prepare("SELECT * FROM tbl_mid_category WHERE tcat_id=?");
-                        $statement1->execute(array($row['tcat_id']));
-                        $result1 = $statement1->fetchAll(PDO::FETCH_ASSOC);
-                        foreach ($result1 as $row1) {
-                    ?>
-                        <li class="subcategory">
-                            <a class="subcategory-link" href="product-category.php?id=<?php echo $row1['mcat_id']; ?>&type=mid-category">
-                                <?php echo $row1['mcat_name']; ?>
-                            </a>
-                            <ul class="sub-subcategories">
-                                <?php
-                                    $statement2 = $pdo->prepare("SELECT * FROM tbl_end_category WHERE mcat_id=?");
-                                    $statement2->execute(array($row1['mcat_id']));
-                                    $result2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
-                                    foreach ($result2 as $row2) {
-                                ?>
-                                    <li class="sub-subcategory">
-                                        <a href="product-category.php?id=<?php echo $row2['ecat_id']; ?>&type=end-category">
-                                            <?php echo $row2['ecat_name']; ?>
-                                        </a>
-                                    </li>
-                                <?php
-                                    }
-                                ?>
-                            </ul>
-                        </li>
-                    <?php
-                        }
-                    ?>
-                </ul>
-            </li>
-        <?php
-            }
-        ?>
-    </ul>
-</div>
+    <div class="category-box">
+        <ul class="categories">
+            <?php
+                $statement = $pdo->prepare("SELECT * FROM tbl_top_category WHERE show_on_menu=1");
+                $statement->execute();
+                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($result as $row) {
+            ?>
+                <li class="category">
+                    <a class="category-link" href="product-category.php?id=<?php echo $row['tcat_id']; ?>&type=top-category">
+                        <img src="./assets/uploads/top-categories-images/<?php echo $row['photo']; ?>" width="30px" height="30px" alt="<?php echo $row['tcat_name']; ?>">
+                        <span><?php echo $row['tcat_name']; ?></span>
+                    </a>
+                    <ul class="subcategories">
+                        <?php
+                            $statement1 = $pdo->prepare("SELECT * FROM tbl_mid_category WHERE tcat_id=?");
+                            $statement1->execute(array($row['tcat_id']));
+                            $result1 = $statement1->fetchAll(PDO::FETCH_ASSOC);
+                            foreach ($result1 as $row1) {
+                        ?>
+                            <li class="subcategory">
+                                <a class="subcategory-link" href="product-category.php?id=<?php echo $row1['mcat_id']; ?>&type=mid-category">
+                                    <?php echo $row1['mcat_name']; ?>
+                                </a>
+                                <ul class="sub-subcategories">
+                                    <?php
+                                        $statement2 = $pdo->prepare("SELECT * FROM tbl_end_category WHERE mcat_id=?");
+                                        $statement2->execute(array($row1['mcat_id']));
+                                        $result2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
+                                        foreach ($result2 as $row2) {
+                                    ?>
+                                        <li class="sub-subcategory">
+                                            <a href="product-category.php?id=<?php echo $row2['ecat_id']; ?>&type=end-category">
+                                                <?php echo $row2['ecat_name']; ?>
+                                            </a>
+                                        </li>
+                                    <?php
+                                        }
+                                    ?>
+                                </ul>
+                            </li>
+                        <?php
+                            }
+                        ?>
+                    </ul>
+                </li>
+            <?php
+                }
+            ?>
+        </ul>
+    </div>
+
 
 
   <div class="right-category-pad">

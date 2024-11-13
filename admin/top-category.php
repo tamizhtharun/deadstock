@@ -22,42 +22,43 @@
           <table id="example1" class="table table-bordered table-hover table-striped">
 			<thead>
 			    <tr>
-			        <th>#</th>
-			        <th>Top Category Name</th>
-                    <th>Show on Menu?</th>
-			        <th>Action</th>
+                    <th style="width: 5%;">#</th>
+                    <th style="width: 15%;">Image</th>
+                    <th style="width: 45%;">Top Category Name</th>
+                    <th style="width: 15%;">Show on Menu?</th>
+                    <th style="width: 13%;">Action</th>
 			    </tr>
 			</thead>
             <tbody>
-            	<?php
-            	$i=0;
-            	$statement = $pdo->prepare("SELECT * FROM tbl_top_category ORDER BY tcat_id DESC");
-            	$statement->execute();
-            	$result = $statement->fetchAll(PDO::FETCH_ASSOC);							
-            	foreach ($result as $row) {
-            		$i++;
-            		?>
-					<tr>
-	                    <td><?php echo $i; ?></td>
-	                    <td><?php echo $row['tcat_name']; ?></td>
+                <?php
+                $i = 0;
+                $statement = $pdo->prepare("SELECT * FROM tbl_top_category ORDER BY tcat_id DESC");
+                $statement->execute();
+                $result = $statement->fetchAll(PDO::FETCH_ASSOC);							
+                foreach ($result as $row) {
+                    $i++;
+                    ?>
+                    <tr>
+                        <td><?php echo $i; ?></td>
+                        <td>
+                            <img src="../assets/uploads/top-categories-images/<?php echo $row['photo']; ?>" alt="<?php echo $row['tcat_name']; ?>" style="width: 30px; height: 30px;">
+                        </td>
+                        <td><?php echo $row['tcat_name']; ?></td>
                         <td>
                             <?php 
-                                if($row['show_on_menu'] == 1) {
-                                    echo 'Yes';
-                                } else {
-                                    echo 'No';
-                                }
+                                echo $row['show_on_menu'] == 1 ? 'Yes' : 'No';
                             ?>
                         </td>
-	                    <td>
-	                        <a href="top-category-edit.php?id=<?php echo $row['tcat_id']; ?>" class="btn btn-primary btn-xs">Edit</a>
-	                        <a href="#" class="btn btn-danger btn-xs" data-href="top-category-delete.php?id=<?php echo $row['tcat_id']; ?>" data-toggle="modal" data-target="#confirm-delete">Delete</a>
-	                    </td>
-	                </tr>
-            		<?php
-            	}
-            	?>
+                        <td>
+                            <a href="top-category-edit.php?id=<?php echo $row['tcat_id']; ?>" class="btn btn-primary btn-xs">Edit</a>
+                            <a href="#" class="btn btn-danger btn-xs" data-href="top-category-delete.php?id=<?php echo $row['tcat_id']; ?>" data-toggle="modal" data-target="#confirm-delete">Delete</a>
+                        </td>
+                    </tr>
+                    <?php
+                }
+                ?>
             </tbody>
+
           </table>
         </div>
       </div>
