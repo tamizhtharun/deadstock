@@ -1,0 +1,95 @@
+.filter-sidebar {
+  position: absolute;
+  left: 10px;
+  width: 20%;
+  margin-right: 2%;
+  border-radius: 7px;
+  height: 70vh;
+  top: 30px; /* Align the top of the filter sidebar 30px from the top */
+  padding-left: 10px; /* Adjust this value to move content leftwards */
+
+}
+.filter-section {
+  margin: 0 auto; /* Center the filter sections */
+  display: inline-block; /* Make the sections inline-block for centering */
+}
+.filter-sidebar-content {
+  margin-left: 10px; /* Add some left margin to the content */
+}
+
+.main-content {
+  margin-left: 22%; /* Adjust this value based on the filter sidebar width */
+  margin-top: 0; /* Align the top of the main content with the filter sidebar */
+  padding-top: 0px; /* Add padding to the top of the main content */
+}
+
+.col-md-12 {
+  position: relative; /* Needed for the absolute positioning of the filter sidebar */
+  padding-top: 30px; /* Add padding to the top of the container */
+}
+
+/* Product List Section */
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Space between product cards */
+  margin-bottom: 40px; /* Increase the top margin for the product list */
+}
+
+/* Product Card Styles */
+.search-results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Reduced gap between each product card */
+  margin-top: 0; /* Remove the top margin from the search results */
+}
+.product-card:hover {
+  transform: translateY(-5px); /* Lift on hover for effect */
+}
+
+/* Product Card Styles */
+.product-card {
+  width: 270px; /* Set width to 100% to let grid control layout */
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin-top: 0; /* Remove the top margin from the product card */
+  height: auto; /* Reset the height to auto */
+}
+
+.product-card-left,
+.product-card-right {
+  height: 50%; /* Distribute the height equally between the left and right sections */
+}
+
+.product-specs {
+  font-size: 16px;
+  color: #333;
+  white-space: nowrap; /* Keeps text on one line */
+  overflow: hidden; /* Hides overflowed text */
+  text-overflow: ellipsis; /* Adds ellipsis (...) to overflowed text */
+  height: 48px; /* Reduce the height of the product description */
+  line-height: 1.5; /* Adjust line-height to fit the reduced height */
+}
+.product-name {
+  font-size: 18px;
+}
+
+.product-pricing .current-price {
+  font-size: 16px;
+  color: #e60000;
+  font-weight: bold;
+}
+
+.product-pricing .original-price {
+  font-size: 14px;
+  color: #777;
+  text-decoration: line-through;
+  font-weight: bold;
+}
+.pagination {
+  text-align: center;
+  margin-top: 20px;
+}

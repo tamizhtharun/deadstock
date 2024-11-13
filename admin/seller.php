@@ -44,7 +44,7 @@
 									</td>
 									<td><?php if($row['seller_status']==1) {echo 'Active';} else {echo 'Inactive';} ?></td>
 									<td>
-										<a href="seller-change-status.php?id=<?php echo $row['seller_id']; ?>" class="btn btn-success btn-xs">Change Status</a>
+										<a href="seller-change-status.php?id=<?php echo $row['seller_id']; ?>" class="btn btn-success btn-xs">Approve</a>
 									</td>
 									<td>
 										<a href="#" class="btn btn-danger btn-xs" data-href="seller-delete.php?id=<?php echo $row['seller_id']; ?>" data-toggle="modal" data-target="#confirm-delete">Delete</a>

@@ -118,14 +118,13 @@ if(isset($_POST['form1'])) {
 			p_qty,
 			p_featured_photo,
 			p_description,
-			p_short_description,
 			p_feature,
 			p_condition,
 			p_return_policy,
 			p_total_view,
 			
 			ecat_id
-		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
 		       
 		
 $statement->execute(array(
@@ -136,7 +135,6 @@ $statement->execute(array(
 			$_POST['p_qty'],
 			$final_name,
 			$_POST['p_description'],
-			$_POST['p_short_description'],
 			$_POST['p_feature'],
 			$_POST['p_condition'],
 			$_POST['p_return_policy'],
@@ -277,12 +275,6 @@ $statement->execute(array(
 							<label for="" class="col-sm-3 control-label">Description</label>
 							<div class="col-sm-8">
 								<textarea name="p_description" class="form-control" cols="30" rows="10" id="editor1"></textarea>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Short Description</label>
-							<div class="col-sm-8">
-								<textarea name="p_short_description" class="form-control" cols="30" rows="10" id="editor2"></textarea>
 							</div>
 						</div>
 						<div class="form-group">
