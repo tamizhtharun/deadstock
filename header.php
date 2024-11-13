@@ -9,6 +9,9 @@ foreach ($result as $row)
   $favicon = $row['favicon'];
 }
 ?>
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,13 +49,30 @@ foreach ($result as $row)
 								</form>
               </li>
               <li class="nav-item btns">
-                <button id="seller-btn" type="button" class="seller-btn btn btn-outline-secondary" onclick="window.location.href='seller_registration.php';">
+              <button id="seller-btn" type="button" class="seller-btn btn btn-outline-secondary" onclick="window.location.href='seller_registration.php';">
                   Sell here!
                 </button>
+
+                <?php if(!isset($_SESSION['user_session'])):?>
+
                 <button type="button" id="login-btn" class="login-btn btn btn-outline-secondary"
                   data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                   Login
                 </button>
+
+                <?php else: ?>
+
+                  <div class="dropdown">
+                    <button class="dropbtn btn btn-outline-secondary"><?php echo $_SESSION['user_session']['name']?></button>
+                    <div class="dropdown-content">
+                      <a href="" >Account</a>
+                      <a href="" >Cart</a>
+                      <a href="" >Settings</a>
+                      <a href="" >orders</a>
+                      <a href="logout.php" >logout</a>
+                    </div>
+                  </div>
+                  <?php endif; ?>
               </li>
             </ul>
           </div>

@@ -38,8 +38,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 case 'user':
                     // Start session
                     session_start();
-                    $_SESSION['user_id'] = $user_data;
-                    $_SESSION['user_role'] = 'user'; // Store user role
+                    $_SESSION['user_session'] = $user_data;
+                    $_SESSION['user_email'] = $user['user_email'];
+                    $_SESSION['user_role'] = 'user';
+                    $_SESSION['loggedin'] = true; // Store user role
                     header("Location: index.php");
                     exit();
                 case 'seller':
