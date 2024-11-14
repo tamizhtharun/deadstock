@@ -66,9 +66,9 @@ $total_product = $statement->rowCount();
                         <?php
                         $statement =$pdo->prepare("SELECT COUNT(*) FROM tbl_product where p_is_active=1");
                         $statement->execute();
-                        $total_product = $statement->fetchColumn();
-                        echo $total_product
-                        ?> products
+                        $total_approved_product = $statement->fetchColumn();
+                        echo $total_approved_product
+                        ?> Products
                     </h2>
                 </div>
                 <div class="col-4 text-right">
@@ -76,7 +76,16 @@ $total_product = $statement->rowCount();
                 </div>
             </div>
             <div class="progress mt-1 " data-height="8" style="height: 8px;">
-                <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;"></div>
+
+            <?php
+            $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_product");
+            $statement->execute();
+            $total_product = $statement->fetchColumn();
+            $percentage_of_approved_products = ($total_approved_product / $total_product) * 100;
+            ?>
+
+
+                <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percentage_of_approved_products?>%;"></div>
             </div>
         </div>
     </div>
@@ -104,12 +113,18 @@ $total_product = $statement->rowCount();
                 </div>
             </div>
             <div class="progress mt-1 " data-height="8" style="height: 8px;">
-                <div class="progress-bar l-bg-green" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;"></div>
+              <?php
+               $statement = $pdo->prepare("SELECT  COUNT(*) FROM sellers");
+               $statement->execute();
+              $total_sellers= $statement->fetchColumn();
+              $percentage_of_active_sellers= ($total_seller_active/$total_sellers) * 100;
+              ?>
+                <div class="progress-bar l-bg-green" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo$percentage_of_active_sellers?>%;"></div>
             </div>
         </div>
     </div>
-</div>
-<div class="col-xl-3 col-lg-3">
+<!-- </div>
+ <div class="col-xl-3 col-lg-3">
     <div class="card l-bg-green-dark">
         <div class="card-statistic-3 p-4">
             <div class="card-icon card-icon-large"><i class="fas fa-ticket-alt"></i></div>
@@ -127,7 +142,7 @@ $total_product = $statement->rowCount();
                 </div>
             </div>
             <div class="progress mt-1 " data-height="8" style="height: 8px;">
-                <div class="progress-bar l-bg-orange" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;"></div>
+                <div class="progress-bar l-bg-orange" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div>
             </div>
         </div>
     </div>
@@ -154,7 +169,7 @@ $total_product = $statement->rowCount();
             </div>
         </div>
     </div>
-</div>
+</div> -->
     </div>
               
             </div>
