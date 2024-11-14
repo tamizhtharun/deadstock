@@ -4,35 +4,71 @@
 if(isset($_POST['form1'])) {
 	$valid = 1;
 
-    if(empty($_POST['tcat_name'])) {
-        $valid = 0;
-        $error_message .= "Top Category Name can not be empty<br>";
-    } else {
+	$path = $_FILES['photo']['name'];
+	$path_tmp = $_FILES['photo']['tmp_name'];
+	
+	if($path != '') {
+		$ext = pathinfo($path, PATHINFO_EXTENSION);
+		$file_name = basename($path, '.' . $ext);
+		if($ext != 'jpg' && $ext != 'png' && $ext != 'jpeg' && $ext != 'gif') {
+			$valid = 0;
+			$error_message .= 'You must have to upload jpg, jpeg, gif, or png file<br>';
+		}
+	}
+	
+	if(empty($_POST['tcat_name'])) {
+		$valid = 0;
+		$error_message .= "Top Category Name cannot be empty<br>";
+	} else {
 		// Duplicate Top Category checking
-    	// current Top Category name that is in the database
-    	$statement = $pdo->prepare("SELECT * FROM tbl_top_category WHERE tcat_id=?");
+		// current Top Category name that is in the database
+		$statement = $pdo->prepare("SELECT * FROM tbl_top_category WHERE tcat_id=?");
 		$statement->execute(array($_REQUEST['id']));
 		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 		foreach($result as $row) {
 			$current_tcat_name = $row['tcat_name'];
 		}
 
-		$statement = $pdo->prepare("SELECT * FROM tbl_top_category WHERE tcat_name=? and tcat_name!=?");
-    	$statement->execute(array($_POST['tcat_name'],$current_tcat_name));
-    	$total = $statement->rowCount();							
-    	if($total) {
-    		$valid = 0;
-        	$error_message .= 'Top Category name already exists<br>';
-    	}
-    }
+		$statement = $pdo->prepare("SELECT * FROM tbl_top_category WHERE tcat_name=? AND tcat_name!=?");
+		$statement->execute(array($_POST['tcat_name'], $current_tcat_name));
+		$total = $statement->rowCount();							
+		if($total) {
+			$valid = 0;
+			$error_message .= 'Top Category name already exists<br>';
+		}
+	}
 
-    if($valid == 1) {    	
-		// updating into the database
-		$statement = $pdo->prepare("UPDATE tbl_top_category SET tcat_name=?,show_on_menu=? WHERE tcat_id=?");
-		$statement->execute(array($_POST['tcat_name'],$_POST['show_on_menu'],$_REQUEST['id']));
+	if($valid == 1) {
+		// Update category details in the database
+		$statement = $pdo->prepare("UPDATE tbl_top_category SET tcat_name=?, show_on_menu=? WHERE tcat_id=?");
+		$statement->execute(array($_POST['tcat_name'], $_POST['show_on_menu'], $_REQUEST['id']));
+		
+		// Handle photo upload
+		if($path != '') {
+			// Get the current photo to delete
+			$statement = $pdo->prepare("SELECT * FROM tbl_top_category WHERE tcat_id=?");
+			$statement->execute(array($_REQUEST['id']));
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			foreach($result as $row) {
+				$current_photo = $row['photo'];
+			}
 
-    	$success_message = 'Top Category is updated successfully.';
-    }
+			// Remove the current photo if it exists
+			if($current_photo != '') {
+				unlink('../assets/uploads/top-categories-images/' . $current_photo);
+			}
+
+			// Upload the new photo
+			$final_name = 'top-category-image' . $_REQUEST['id'] . '.' . $ext;
+			move_uploaded_file($path_tmp, '../assets/uploads/top-categories-images/' . $final_name);
+
+			// Update the database with the new photo name
+			$statement = $pdo->prepare("UPDATE tbl_top_category SET photo=? WHERE tcat_id=?");
+			$statement->execute(array($final_name, $_REQUEST['id']));
+		}
+
+		$success_message = 'Top Category is updated successfully.';
+	}
 }
 ?>
 
@@ -41,12 +77,12 @@ if(!isset($_REQUEST['id'])) {
 	header('location: logout.php');
 	exit;
 } else {
-	// Check the id is valid or not
+	// Check if the id is valid
 	$statement = $pdo->prepare("SELECT * FROM tbl_top_category WHERE tcat_id=?");
 	$statement->execute(array($_REQUEST['id']));
 	$total = $statement->rowCount();
 	$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-	if( $total == 0 ) {
+	if($total == 0) {
 		header('location: logout.php');
 		exit;
 	}
@@ -62,91 +98,70 @@ if(!isset($_REQUEST['id'])) {
 	</div>
 </section>
 
-
-<?php							
+<?php
 foreach ($result as $row) {
 	$tcat_name = $row['tcat_name'];
-    $show_on_menu = $row['show_on_menu'];
+	$show_on_menu = $row['show_on_menu'];
+	$photo = $row['photo'];
 }
 ?>
 
 <section class="content">
+	<div class="row">
+		<div class="col-md-12">
+			<?php if($error_message): ?>
+				<div class="callout callout-danger">
+					<p><?php echo $error_message; ?></p>
+				</div>
+			<?php endif; ?>
 
-  <div class="row">
-    <div class="col-md-12">
+			<?php if($success_message): ?>
+				<div class="callout callout-success">
+					<p><?php echo $success_message; ?></p>
+				</div>
+			<?php endif; ?>
 
-		<?php if($error_message): ?>
-		<div class="callout callout-danger">
-		
-		<p>
-		<?php echo $error_message; ?>
-		</p>
+			<form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+				<div class="box box-info">
+					<div class="box-body">
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Top Category Name <span>*</span></label>
+							<div class="col-sm-4">
+								<input type="text" class="form-control" name="tcat_name" value="<?php echo $tcat_name; ?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Existing Photo</label>
+							<div class="col-sm-9" style="padding-top:5px">
+								<img src="../assets/uploads/top-categories-images/<?php echo $photo; ?>" alt="Top Category Photo" style="width:400px;">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Photo</label>
+							<div class="col-sm-6" style="padding-top:5px">
+								<input type="file" name="photo">(Only jpg, jpeg, gif, and png are allowed)
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label">Show on Menu? <span>*</span></label>
+							<div class="col-sm-4">
+								<select name="show_on_menu" class="form-control" style="width:auto;">
+									<option value="0" <?php if($show_on_menu == 0) {echo 'selected';} ?>>No</option>
+									<option value="1" <?php if($show_on_menu == 1) {echo 'selected';} ?>>Yes</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-2 control-label"></label>
+							<div class="col-sm-6">
+								<button type="submit" class="btn btn-success pull-left" name="form1">Update</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
 		</div>
-		<?php endif; ?>
-
-		<?php if($success_message): ?>
-		<div class="callout callout-success">
-		
-		<p><?php echo $success_message; ?></p>
-		</div>
-		<?php endif; ?>
-
-        <form class="form-horizontal" action="" method="post">
-
-        <div class="box box-info">
-
-            <div class="box-body">
-                <div class="form-group">
-                    <label for="" class="col-sm-2 control-label">Top Category Name <span>*</span></label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" name="tcat_name" value="<?php echo $tcat_name; ?>">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="" class="col-sm-2 control-label">Show on Menu? <span>*</span></label>
-                    <div class="col-sm-4">
-                        <select name="show_on_menu" class="form-control" style="width:auto;">
-                            <option value="0" <?php if($show_on_menu == 0) {echo 'selected';} ?>>No</option>
-                            <option value="1" <?php if($show_on_menu == 1) {echo 'selected';} ?>>Yes</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                	<label for="" class="col-sm-2 control-label"></label>
-                    <div class="col-sm-6">
-                      <button type="submit" class="btn btn-success pull-left" name="form1">Update</button>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        </form>
-
-
-
-    </div>
-  </div>
-
+	</div>
 </section>
-
-<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Delete Confirmation</h4>
-            </div>
-            <div class="modal-body">
-                Are you sure want to delete this item?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-danger btn-ok">Delete</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <?php require_once('footer.php'); ?>

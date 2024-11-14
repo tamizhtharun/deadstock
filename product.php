@@ -6,7 +6,7 @@ if(!isset($_REQUEST['id'])) {
     exit;
 } else {
     // Check the id is valid or not
-    $statement = $pdo->prepare("SELECT * FROM tbl_product WHERE p_id=?");
+    $statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
     $statement->execute(array($_REQUEST['id']));
     $total = $statement->rowCount();
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -66,23 +66,10 @@ foreach ($result as $row) {
 
 $p_total_view = $p_total_view + 1;
 
-$statement = $pdo->prepare("UPDATE tbl_product SET p_total_view=? WHERE p_id=?");
+$statement = $pdo->prepare("UPDATE tbl_product SET p_total_view=? WHERE id=?");
 $statement->execute(array($p_total_view,$_REQUEST['id']));
 
 
-$statement = $pdo->prepare("SELECT * FROM tbl_product_size WHERE p_id=?");
-$statement->execute(array($_REQUEST['id']));
-$result = $statement->fetchAll(PDO::FETCH_ASSOC);                            
-foreach ($result as $row) {
-    $size[] = $row['size_id'];
-}
-
-$statement = $pdo->prepare("SELECT * FROM tbl_product_color WHERE p_id=?");
-$statement->execute(array($_REQUEST['id']));
-$result = $statement->fetchAll(PDO::FETCH_ASSOC);                            
-foreach ($result as $row) {
-    $color[] = $row['color_id'];
-}
 
 
 if(isset($_POST['form_review'])) {
@@ -119,7 +106,7 @@ if($tot_rating == 0) {
 if(isset($_POST['form_add_to_cart'])) {
 
 	// getting the currect stock of this product
-	$statement = $pdo->prepare("SELECT * FROM tbl_product WHERE p_id=?");
+	$statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
 	$statement->execute(array($_REQUEST['id']));
 	$result = $statement->fetchAll(PDO::FETCH_ASSOC);							
 	foreach ($result as $row) {
@@ -281,6 +268,8 @@ if(isset($_POST['form_add_to_cart'])) {
 ?>
 
 <?php
+$error_message1 = ''; // Initialize to an empty string or null
+$success_message1 = '';
 if($error_message1 != '') {
     echo "<script>alert('".$error_message1."')</script>";
 }
@@ -668,7 +657,7 @@ if($success_message1 != '') {
                 <div class="product-carousel">
 
                     <?php
-                    $statement = $pdo->prepare("SELECT * FROM tbl_product WHERE ecat_id=? AND p_id!=?");
+                    $statement = $pdo->prepare("SELECT * FROM tbl_product WHERE ecat_id=? AND id!=?");
                     $statement->execute(array($ecat_id,$_REQUEST['id']));
                     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                     foreach ($result as $row) {
@@ -679,7 +668,7 @@ if($success_message1 != '') {
                                 <div class="overlay"></div>
                             </div>
                             <div class="text">
-                                <h3><a href="product.php?id=<?php echo $row['p_id']; ?>"><?php echo $row['p_name']; ?></a></h3>
+                                <h3><a href="product.php?id=<?php echo $row['id']; ?>"><?php echo $row['p_name']; ?></a></h3>
                                 <h4>
                                     <?php echo LANG_VALUE_1; ?><?php echo $row['p_current_price']; ?> 
                                     <?php if($row['p_old_price'] != ''): ?>
@@ -757,7 +746,7 @@ if($success_message1 != '') {
                                     }
                                     ?>
                                 </div>
-                                <p><a href="product.php?id=<?php echo $row['p_id']; ?>"><?php echo LANG_VALUE_154; ?></a></p>
+                                <p><a href="product.php?id=<?php echo $row['id']; ?>"><?php echo LANG_VALUE_154; ?></a></p>
                             </div>
                         </div>
                         <?php

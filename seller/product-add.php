@@ -127,43 +127,44 @@ if(isset($_POST['form1'])) {
 
         $final_name = 'product-featured-'.$ai_id.'.'.$ext;
         move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
+		
 
-        // Saving data into the waiting products table tbl_waiting_products
-        $statement = $pdo->prepare("INSERT INTO tbl_product(
-            seller_id,
-            p_name,
-            p_old_price,
-            p_current_price,
-            p_qty,
-            p_featured_photo,
-            p_description,
-            p_short_description,
-            p_feature,
-            p_condition,
-            p_return_policy,
-            p_total_view,
-            ecat_id,
-            product_catalogue,
+		//Saving data into the waiting products table tbl_waiting_products
+		$statement = $pdo->prepare("INSERT INTO tbl_product(
+			seller_id,
+			p_name,
+			p_old_price,
+			p_current_price,
+			p_qty,
+			p_featured_photo,
+			p_description,
+			p_feature,
+			p_condition,
+			p_return_policy,
+			p_total_view,
+			ecat_id,
+			product_catalogue,
 			product_brand
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-
-        $statement->execute(array(
-            $seller_id, 
-            $_POST['p_name'],
-            $_POST['p_old_price'],
-            $_POST['p_current_price'],
-            $_POST['p_qty'],
-            $final_name,
-            $_POST['p_description'],
-            $_POST['p_short_description'],
-            $_POST['p_feature'],
-            $_POST['p_condition'],
-            $_POST['p_return_policy'],
-            0, // Assuming total view is 0 initially
-            $_POST['ecat_id'],
-            $pdf_final_name, // Store the PDF file name
+		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		       
+		
+$statement->execute(array(
+	    	$seller_id, 
+			$_POST['p_name'],
+			$_POST['p_old_price'],
+			$_POST['p_current_price'],
+			$_POST['p_qty'],
+			$final_name,
+			$_POST['p_description'],
+			$_POST['p_feature'],
+			$_POST['p_condition'],
+			$_POST['p_return_policy'],
+			0, // Assuming total view is 0 initially
+		
+			$_POST['ecat_id'],
+			$pdf_final_name,
 			$_POST['product_brand']
-        ));
+		));
 
         $success_message = 'Product is added successfully, wait for your administrator approval.';
     }
@@ -319,12 +320,6 @@ if(isset($_POST['form1'])) {
 							<label for="" class="col-sm-3 control-label">Description</label>
 							<div class="col-sm-8">
 								<textarea name="p_description" class="form-control" cols="30" rows="10" id="editor1"></textarea>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Short Description</label>
-							<div class="col-sm-8">
-								<textarea name="p_short_description" class="form-control" cols="30" rows="10" id="editor2"></textarea>
 							</div>
 						</div>
 						<div class="form-group">

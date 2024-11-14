@@ -26,6 +26,8 @@ if(!isset($_SESSION['admin_session'])) {
 
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<link rel="icon" href="../icons\dead stock.png" type="image/x-icon">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/font-awesome.min.css">
 	<link rel="stylesheet" href="css/ionicons.min.css">
@@ -52,39 +54,32 @@ if(!isset($_SESSION['admin_session'])) {
 				<span class="logo-lg">DeadStock</span>
 			</a>
 			
-			<nav class="navbar navbar-static-top">
-				
-				<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-					<span class="sr-only">Toggle navigation</span>
-				</a>
-				
-				<!-- Alert Message -->
-				<div id="message" style="display:none; position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1000; padding: 10px; border-radius: 5px; color: #fff; font-size: 14px;"></div>
-        <!-- Alert Message end -->
-				<span style="float:left;line-height:50px;color:#fff;padding-left:15px;font-size:18px;">Admin Panel</span>
-    <!-- Top Bar ... User Inforamtion .. Login/Log out Area -->
-				<div class="navbar-custom-menu">
-					<ul class="nav navbar-nav">
-						<li class="dropdown user user-menu">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<!-- <img src="../assets/uploads/<?php echo $_SESSION['user']['photo']; ?>" class="user-image" alt="User Image"> -->
-								<span class="hidden-xs"><?php echo $_SESSION['admin_session']['name']; ?></span>
-							</a>
-							<ul class="dropdown-menu">
-								<li class="user-footer">
-									<div>
-										<a href="profile-edit.php" class="btn btn-default btn-flat">Edit Profile</a>
-									</div>
-									<div>
-										<a href="logout.php" class="btn btn-default btn-flat">Log out</a>
-									</div>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
+			<nav class="navbar navbar-static-top d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+        </a>
+        <span style="line-height:50px;color:#fff;padding-left:15px;font-size:18px; font-weight:800;">Admin Panel</span>
+    </div>
+    
+    <!-- Alert Message -->
+    <div id="message" style="display:none; position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1000; padding: 10px; border-radius: 5px; color: #fff; font-size: 14px;"></div>
+    <!-- Alert Message end -->
 
-			</nav>
+    <!-- Top Bar ... User Information .. Login/Log out Area -->
+    <div class="navbar-custom-menu">
+	<div class="dropdown">
+    <button id="profile-btn" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        Hi, <span style="font-weight:800"><?php echo $_SESSION['admin_session']['name']; ?></span>
+        <!-- <i class="fas fa-chevron-down"></i> -->
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="profile-edit.php">Edit Profile</a>
+        <a class="dropdown-item text-danger" href="logout.php">Log out</a>
+    </div>
+</div>
+    </div>
+</nav>
 		</header>
 
   		<?php $cur_page = substr($_SERVER["SCRIPT_NAME"],strrpos($_SERVER["SCRIPT_NAME"],"/")+1); ?>
