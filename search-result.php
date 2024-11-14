@@ -248,7 +248,7 @@ document.querySelectorAll('.top-category').forEach(function(checkbox) {
 
                 <?php
                     // Function to truncate the description to a specific word limit
-                    function truncateDescription($description, $wordLimit = 7) {
+                    function truncateDescription($description, $wordLimit = 4) {
                         $words = explode(' ', $description); // Split the description into words
                         if (count($words) > $wordLimit) {
                             return implode(' ', array_slice($words, 0, $wordLimit)) . '...'; // Truncate and append "..."
