@@ -430,7 +430,7 @@ if ($success_message1 != '') {
           <!-- Pills content -->
           <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-spec" role="tabpanel">
-              <p>
+              <!-- <p>
                 <?php
                 $product_id = intval($_GET['id']);
                 $sql = "SELECT p_description
@@ -442,7 +442,7 @@ if ($success_message1 != '') {
                   echo '<td class="py-2">' . htmlspecialchars($row['p_description']) . '</td>';
                 }
                 ?>
-              </p>
+              </p> -->
               <div class="row mb-2">
                 <!-- <div class="col-12 col-md-6">
                   <ul class="list-unstyled mb-0">

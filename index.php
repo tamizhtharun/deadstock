@@ -315,18 +315,19 @@
   </div>
 </div> -->
 
+
+<!-- Display the featured product -->
+
 <?php
 $topCategories = []; // Initialize as an empty array
 $statement = $pdo->prepare("SELECT * FROM tbl_top_category");
 $statement->execute();
 $topCategories = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-// Loop through each top category
 if (!empty($topCategories)) {
     foreach ($topCategories as $topCategory) {
-        $tcat_id = $topCategory['tcat_id']; // Get the current category ID
+        $tcat_id = $topCategory['tcat_id'];
 
-        // Fetch all products related to the specified tcat_id, including p_is_featured
         $statement = $pdo->prepare("
             SELECT p.*, m.mcat_name, e.ecat_name 
             FROM tbl_product p
@@ -338,35 +339,36 @@ if (!empty($topCategories)) {
         if ($statement->execute([$tcat_id])) {
             $products = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-            // Check if there are featured products
             $hasFeaturedProducts = false;
             foreach ($products as $product) {
                 if ($product['p_is_featured'] == 1) {
                     $hasFeaturedProducts = true;
-                    break; // No need to check further, we found a featured product
+                    break;
                 }
             }
 
-            // Only display the wrapper if there are featured products
             if ($hasFeaturedProducts) {
+                // Create unique identifier for this category's swiper
+                $swiperId = 'featured-swiper-' . $tcat_id;
                 ?>
-                <section id="featured-products" class="products-carousel">
+                <section id="featured-products-<?php echo $tcat_id; ?>" class="products-carousel my-10">
                     <div class="container-lg overflow-hidden py-5">
                         <div class="section-header d-flex flex-wrap justify-content-between my-4">
                             <h2 class="section-title"><?php echo htmlspecialchars($topCategory['tcat_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
                             <div class="d-flex align-items-center">
-                            <a href="#" class="btn-link text-decoration-none" style="margin-right:20px">View All <?php echo htmlspecialchars($topCategory['tcat_name'])?> →</a>
+                            <a href="#" class="btn-link text-decoration-none" style="margin-right:20px">View All <?php echo htmlspecialchars($topCategory['tcat_name']) ?> →</a>
                                 <div class="swiper-buttons">
-                                    <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
-                                    <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
+                                    <button class="swiper-prev btn btn-primary" id="<?php echo $swiperId; ?>-prev">❮</button>
+                                    <button class="swiper-next btn btn-primary" id="<?php echo $swiperId; ?>-next">❯</button>
                                 </div>  
                             </div>
                         </div>
                         
-                        <div class="swiper">
+                        <div class="swiper" id="<?php echo $swiperId; ?>">
                             <div class="swiper-wrapper">
+
                                 <?php foreach ($products as $product): ?>
-                                    <?php if ($product['p_is_featured'] == 1): // Check if the product is featured ?>
+                                    <?php if ($product['p_is_featured'] == 1): ?>
                                     <div class="product-item swiper-slide">
                                         <figure>
                                             <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" title="Product Title">
@@ -374,7 +376,9 @@ if (!empty($topCategories)) {
                                             </a>
                                         </figure>
                                         <div class="d-flex flex-column text-center">
-                                            <h3 class="fs-6 fw-normal"><?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?></h3>
+                                        <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration:none !important" title="Product Title">
+                                          <h3 class="fs-6 fw-normal"><?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?></h3>
+                                        </a>
                                             <div>
                                                 <span class="rating">
                                                     <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
@@ -391,7 +395,6 @@ if (!empty($topCategories)) {
                                                     <span class="text-dark fw-semibold">₹<?php echo number_format($product['p_current_price'], 2); ?></span>
                                                     <div class="cat-product-discount">
                                                         <?php
-                                                        // Calculate the discount percentage
                                                         $discount = (($product['p_old_price'] - $product['p_current_price']) / $product['p_old_price']) * 100;
                                                         echo round($discount) . '% OFF';
                                                         ?>
@@ -401,7 +404,7 @@ if (!empty($topCategories)) {
                                             <div class="button-area p-3 pt-0">
                                                 <div class="row g-1 mt-2">
                                                     <div class="col-3"></div>
-                                                    <div class="col-7" style="margin-left:-12px"><a href="cart.php" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"><svg width="18" height="18"><use xlink:href="#cart"></use></svg> Add to Cart</a></div>
+                                                    <div class="col-7" style="margin-left:-12px"><a href="cart.php" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart" style="text-decoration:none !important"><svg width="18" height="18"><use xlink:href="#cart"></use></svg> Add to Cart</a></div>
                                                     <div class="col-2"></div>
                                                 </div>
                                             </div>
@@ -413,16 +416,40 @@ if (!empty($topCategories)) {
                         </div>
                     </div>
                 </section>
+                <script>
+              // Initialize Swiper for this category
+              new Swiper('#<?php echo $swiperId; ?>', {
+                  slidesPerView: 1,
+                  spaceBetween: 10,
+                  navigation: {
+                      nextEl: '#<?php echo $swiperId; ?>-next',
+                      prevEl: '#<?php echo $swiperId; ?>-prev',
+                  },
+                  watchOverflow: true, // Automatically disable navigation if not enough slides
+                  breakpoints: {
+                      640: {
+                          slidesPerView: 2,
+                      },
+                      768: {
+                          slidesPerView: 3,
+                      },
+                      1024: {
+                          slidesPerView: 4,
+                      },
+                  },
+              });
+            </script>
+
                 <?php
             }
         } else {
-            // Handle the error if the statement failed
             error_log("Database query failed: " . implode(", ", $statement->errorInfo()));
         }
     }
-} // End of top categories loop
+}
 ?>
 
+ <!-- End Display the featured product -->
   <script src="js/jquery-1.11.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>

@@ -349,6 +349,45 @@ h1,h2,h3,h4,h5,h6 {
   border-bottom: 3px solid var(--bs-primary);
 }
 
+/* Add these styles to your stylesheet */
+.products-carousel .product-item {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Ensure consistent height for all cards */
+  align-items: center;
+  justify-content: space-between;
+}
+
+.products-carousel .product-item figure {
+  flex-shrink: 0; /* Prevent image from resizing */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 130px; /* Fixed height for image area */
+  overflow: hidden;
+}
+
+.products-carousel .product-item img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Ensure the image fits nicely */
+}
+
+.products-carousel .product-item .d-flex.text-center {
+  flex-grow: 1; /* Make the title and rating section flexible */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+.products-carousel .button-area {
+  margin-top: auto; /* Push button area to the bottom */
+  width: 100%;
+}
+
+
 /* products-carousel */
 .products-carousel .swiper, .products-carousel .swiper-container {
   overflow: visible;
