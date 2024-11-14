@@ -64,15 +64,26 @@ $total_product = $statement->rowCount();
                 <div class="col-8">
                     <h2 class="d-flex align-items-center mb-0">
                         <?php
-                        $statement =$pdo->prepare("SELECT COUNT(*) FROM tbl_product where p_is_active=1");
+                        $statement =$pdo->prepare("SELECT COUNT(*) FROM tbl_product where p_is_approve=1");
                         $statement->execute();
                         $total_approved_product = $statement->fetchColumn();
                         echo $total_approved_product
-                        ?> Products
+                        ?> 
+                        Products
                     </h2>
                 </div>
+                <?php
+            $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_product");
+            $statement->execute();
+            $total_product = $statement->fetchColumn();
+            if($total_product!=0){
+            $percentage_of_approved_products = ($total_approved_product / $total_product) * 100;
+            }else{
+                $percentage_of_approved_products = 0;
+            }
+            ?>
                 <div class="col-4 text-right">
-                    <!-- <span>12.5% <i class="fa fa-arrow-up"></i></span> -->
+                    <span><?php echo number_format($percentage_of_approved_products,2)?> % <i class="fa fa-check"></i></span>
                 </div>
             </div>
             <div class="progress mt-1 " data-height="8" style="height: 8px;">
@@ -102,14 +113,14 @@ $total_product = $statement->rowCount();
                 <h5 class="card-title mb-0">Active Sellers</h5>
             </div>
             <div class="row align-items-center mb-2 d-flex">
-                <div class="col-8">
+                <div class="col-10">
                     <h2 class="d-flex align-items-center mb-0">
                         <?php 
                         $statement = $pdo->prepare("SELECT  COUNT(*) FROM sellers WHERE seller_status=1");
                         $statement->execute();
                         $total_seller_active = $statement->fetchColumn();
                         echo $total_seller_active
-                        ?> Sellers
+                        ?>/<?php ?> Sellers
                     </h2>
                 </div>
                 <div class="col-4 text-right">

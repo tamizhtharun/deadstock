@@ -23,13 +23,13 @@ echo "</pre>";
 					<table id="example1" class="table table-bordered table-hover table-striped">
 					<thead class="thead-dark">
 							<tr>
-								<th width="10">#</th>
+								<th>#</th>
 								<th>Photo</th>
 								<th>Product Brand</th>
 								<th width="160">Product Name</th>
-								<th width="60">Old Price</th>
-								<th width="60">(C) Price</th>
-								<th width="60">Quantity</th>
+								<th width="40">Old Price</th>
+								<th width="40">(C) Price</th>
+								<th width="40">Quantity</th>
 								<th>Featured?</th>
 								<th>Approval Status</th>
 								<th>Category</th>
@@ -52,7 +52,7 @@ echo "</pre>";
 																						t1.p_is_featured,
 																						t1.p_is_approve,
 																						t1.product_catalogue,
-																						
+																						t1.product_brand,
 																						t1.ecat_id,
 																						t2.ecat_id,
 																						t2.ecat_name,
@@ -67,7 +67,7 @@ echo "</pre>";
 																				JOIN tbl_end_category t2 ON t1.ecat_id = t2.ecat_id
 																				JOIN tbl_mid_category t3 ON t2.mcat_id = t3.mcat_id
 																				JOIN tbl_top_category t4 ON t3.tcat_id = t4.tcat_id
-																				JOIN tbl_brands t5 ON t4.tcat_id = t5.tcat_id
+																				JOIN tbl_brands t5 ON t1.product_brand = t5.brand_id
 																				WHERE t1.seller_id = :seller_id  -- Filter by seller_id
 																				ORDER BY t1.id DESC");
 						$statement->bindParam(':seller_id', $seller_id, PDO::PARAM_INT); // Bind the seller_id parameter
