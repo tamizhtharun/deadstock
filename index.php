@@ -1,6 +1,7 @@
 <?php require_once( 'header.php');?>
 <link rel="stylesheet" href="./css/index.css">
 
+
 <div class="category-pad">
     <div class="category-box">
         <ul class="categories">
@@ -142,18 +143,18 @@
           }
           ?>
 
-                  
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Next</span>
-                </button>
-              </div>
+              
             </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
             
 <!-- end banner  -->
 
@@ -313,8 +314,6 @@
   </div>
 </div> -->
 
-<!-- Display the product depends od category -->
-
 <?php
 $topCategories = []; // Initialize as an empty array
 $statement = $pdo->prepare("SELECT * FROM tbl_top_category");
@@ -350,45 +349,69 @@ if (!empty($topCategories)) {
             // Only display the wrapper if there are featured products
             if ($hasFeaturedProducts) {
                 ?>
-                <div class="wrapper">
-                    <span class="cat-title"><?php echo htmlspecialchars($topCategory['tcat_name'], ENT_QUOTES, 'UTF-8'); ?></span>
-                    <ul class="carousel">
-                    <?php foreach ($products as $product): ?>
-    <?php if ($product['p_is_featured'] == 1): // Check if the product is featured ?>
-      <li class="cat-product-list-card swiper-slide">
-    <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration: none; color: black;">
-        <div class="cat-product-img">
-            <img src="assets/uploads/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>">
-        </div>
-        <div class="product-card-lower">
-            <div class="cat-product-title">
-                <span><?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?></span>
-            </div>
-            <div class="cat-product-price">
-                ₹<?php echo number_format($product['p_current_price'], 2); ?>
-            </div>
-            <div class="cat-product-original-price">
-                <?php if (!empty($product['p_old_price'])): ?>
-                    <div class="price-strike">₹<?php echo number_format($product['p_old_price'], 2); ?></div>
-                    <div class="cat-product-discount">
-                        <?php
-                        $discount = (($product['p_old_price'] - $product['p_current_price']) / $product['p_old_price']) * 100;
-                        echo round($discount) . '% OFF';
-                        ?>
+                <section id="featured-products" class="products-carousel">
+                    <div class="container-lg overflow-hidden py-5">
+                        <div class="section-header d-flex flex-wrap justify-content-between my-4">
+                            <h2 class="section-title"><?php echo htmlspecialchars($topCategory['tcat_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
+                            <div class="d-flex align-items-center">
+                            <a href="#" class="btn-link text-decoration-none" style="margin-right:20px">View All <?php echo htmlspecialchars($topCategory['tcat_name'])?> →</a>
+                                <div class="swiper-buttons">
+                                    <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
+                                    <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
+                                </div>  
+                            </div>
+                        </div>
+                        
+                        <div class="swiper">
+                            <div class="swiper-wrapper">
+                                <?php foreach ($products as $product): ?>
+                                    <?php if ($product['p_is_featured'] == 1): // Check if the product is featured ?>
+                                    <div class="product-item swiper-slide">
+                                        <figure>
+                                            <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" title="Product Title">
+                                                <img src="assets/uploads/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>" class="tab-image">
+                                            </a>
+                                        </figure>
+                                        <div class="d-flex flex-column text-center">
+                                            <h3 class="fs-6 fw-normal"><?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?></h3>
+                                            <div>
+                                                <span class="rating">
+                                                    <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
+                                                    <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
+                                                    <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
+                                                    <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
+                                                    <svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>
+                                                </span>
+                                                <span>(222)</span>
+                                            </div>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <?php if (!empty($product['p_old_price'])): ?>
+                                                    <del>₹<?php echo number_format($product['p_old_price'], 2); ?></del>
+                                                    <span class="text-dark fw-semibold">₹<?php echo number_format($product['p_current_price'], 2); ?></span>
+                                                    <div class="cat-product-discount">
+                                                        <?php
+                                                        // Calculate the discount percentage
+                                                        $discount = (($product['p_old_price'] - $product['p_current_price']) / $product['p_old_price']) * 100;
+                                                        echo round($discount) . '% OFF';
+                                                        ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="button-area p-3 pt-0">
+                                                <div class="row g-1 mt-2">
+                                                    <div class="col-3"></div>
+                                                    <div class="col-7" style="margin-left:-12px"><a href="cart.php" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"><svg width="18" height="18"><use xlink:href="#cart"></use></svg> Add to Cart</a></div>
+                                                    <div class="col-2"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
                     </div>
-                <?php endif; ?>
-            </div>
-        </div>
-    </a>
-    <!-- <div class="button-container">
-        <button class="action-button" onclick="startBid(<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>)">Start Bid</button>
-        <button class="action-button" onclick="addToCart(<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>)">Add to Cart</button>
-    </div> -->
-</li>
-    <?php endif; // End of featured product check ?>
-<?php endforeach; ?>
-                    </ul>
-                </div>
+                </section>
                 <?php
             }
         } else {
@@ -398,68 +421,12 @@ if (!empty($topCategories)) {
     }
 } // End of top categories loop
 ?>
-<!-- End Display the product depends od category -->
- <style>
-  .action-button {
-  appearance: none;
-  background-color: #FAFBFC;
-  border: 1px solid rgba(27, 31, 35, 0.15);
-  border-radius: 6px;
-  box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
-  box-sizing: border-box;
-  color: #24292E;
-  cursor: pointer;
-  display: inline-block;
-  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
-  list-style: none;
-  padding: 6px 16px;
-  position: relative;
-  transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  vertical-align: middle;
-  white-space: nowrap;
-  word-wrap: break-word;
-}
 
-.action-button:hover {
-  background-color: #F3F4F6;
-  text-decoration: none;
-  transition-duration: 0.1s;
-}
-
-.action-button:disabled {
-  background-color: #FAFBFC;
-  border-color: rgba(27, 31, 35, 0.15);
-  color: #959DA5;
-  cursor: default;
-}
-
-.action-button:active {
-  background-color: #EDEFF2;
-  box-shadow: rgba(225, 228, 232, 0.2) 0 1px 0 inset;
-  transition: none 0s;
-}
-
-.action-button:focus {
-  outline: 1px transparent;
-}
-
-.action-button:before {
-  display: none;
-}
-
-.action-button:-webkit-details-marker {
-  display: none;
-}
-
-
-
- </style>
+  <script src="js/jquery-1.11.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+  <script src="js/plugins.js"></script>
+  <script src="js/script.js"></script>
 
 
 <?php include 'footer.php'; ?>

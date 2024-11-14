@@ -246,16 +246,16 @@ document.querySelectorAll('.top-category').forEach(function(checkbox) {
 </script>
 
 
-                <?php
-                    // Function to truncate the description to a specific word limit
-                    function truncateDescription($description, $wordLimit = 7) {
-                        $words = explode(' ', $description); // Split the description into words
-                        if (count($words) > $wordLimit) {
-                            return implode(' ', array_slice($words, 0, $wordLimit)) . '...'; // Truncate and append "..."
-                        }
-                        return $description; // Return the original description if within limit
-                    }
-                    ?>
+        <?php
+            // Function to truncate the description to a specific word limit
+            function truncateDescription($description, $wordLimit = 7) {
+                $words = explode(' ', $description); // Split the description into words
+                if (count($words) > $wordLimit) {
+                    return implode(' ', array_slice($words, 0, $wordLimit)) . '...'; // Truncate and append "..."
+                }
+                return $description; // Return the original description if within limit
+            }
+            ?>
 
 <div class="main-content">
     <!-- Product Listings -->
@@ -290,26 +290,20 @@ document.querySelectorAll('.top-category').forEach(function(checkbox) {
                                     </span>
                                 <?php endif; ?>
                             </div>
-                            <div class="button-container" style="display: flex; margin-top: 10px; margin-right: 15px; margin-left: 15px;">
-                <button class="action-button" style="margin-right: 10px;" onclick="startBid(<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8'); ?>)">Start Bid</button>
-                <button class="action-button" onclick="startBid(<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8'); ?>)">Add to Cart</button>
-            </div>
-                            
-                            
-                            
-
-                        </div>
-                    </a>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</div>
-                                    
-
-                                    <div class="pagination">
-                                        <?php echo $pagination; ?>
+                                        <div class="button-container" style="display: flex; margin-top: 10px; margin-right: 15px; margin-left: 15px;">
+                            <button class="action-button" style="margin-right: 10px;" onclick="startBid(<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8'); ?>)">Start Bid</button>
+                            <button class="action-button" onclick="startBid(<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8'); ?>)">Add to Cart</button>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            </div>
+                    <div class="pagination">
+                    <?php echo $pagination; ?>
+                </div>
+            </div>
+        </div>
+    </div>
