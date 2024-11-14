@@ -3,7 +3,7 @@
 <?php
 if(isset($_POST['form1'])) {
 
-	if($_SESSION['user']['role'] == 'Super Admin') {
+	if($_SESSION['admin_session']['role'] == 'admin') {
 
 		$valid = 1;
 
@@ -40,8 +40,8 @@ if(isset($_POST['form1'])) {
 
 	    if($valid == 1) {
 			
-			$_SESSION['user']['full_name'] = $_POST['full_name'];
-	    	$_SESSION['user']['email'] = $_POST['email'];
+			$_SESSION['admin_session']['name'] = $_POST['full_name'];
+	    	$_SESSION['admin_session']['email'] = $_POST['email'];
 
 			// updating the database
 			$statement = $pdo->prepare("UPDATE tbl_user SET full_name=?, email=?, phone=? WHERE id=?");

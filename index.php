@@ -2,6 +2,7 @@
 <link rel="stylesheet" href="./css/index.css">
 
 
+
 <div class="category-pad">
     <div class="category-box">
         <ul class="categories">

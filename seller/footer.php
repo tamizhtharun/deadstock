@@ -24,6 +24,7 @@
     <script src="js/clipboard.min.js"></script>
 	<script src="js/demo.js"></script>
 	<script src="js/summernote.js"></script>
+	
 
 	<script>
 		$(document).ready(function() {
@@ -70,6 +71,21 @@
 				success: function(html)
 				{
 					$(".end-cat").html(html);
+				}
+			});			
+		});
+		$(".top-cat").on('change',function(){
+			var id=$(this).val();
+			var dataString = 'id='+ id;
+			$.ajax
+			({
+				type: "POST",
+				url: "get-brand.php",
+				data: dataString,
+				cache: false,
+				success: function(html)
+				{
+					$(".brand-cat").html(html);
 				}
 			});			
 		});

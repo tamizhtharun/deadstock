@@ -1,4 +1,5 @@
-<?php require_once('header.php'); ?>
+<?php require_once('header.php');
+?>
 <?php
 $seller_id = $_SESSION['seller_session'];
 if (!isset($_SESSION['seller_session'])) {
@@ -142,9 +143,10 @@ if(isset($_POST['form1'])) {
 			p_condition,
 			p_return_policy,
 			p_total_view,
-			
-			ecat_id
-		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+			ecat_id,
+			product_catalogue,
+			product_brand
+		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		       
 		
 $statement->execute(array(
@@ -160,7 +162,9 @@ $statement->execute(array(
 			$_POST['p_return_policy'],
 			0, // Assuming total view is 0 initially
 		
-			$_POST['ecat_id']
+			$_POST['ecat_id'],
+			$pdf_final_name,
+			$_POST['product_brand']
 		));
 
         $success_message = 'Product is added successfully, wait for your administrator approval.';
@@ -204,24 +208,7 @@ $statement->execute(array(
 
 				<div class="box box-info">
 					<div class="box-body">
-					<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Select Brand<span>*</span></label>
-							<div class="col-sm-4">
-								<select name="product_brand" class="form-control select2 top-cat">
-									<option value="">Select Brand</option>
-									<?php
-									$statement = $pdo->prepare("SELECT brand_name FROM tbl_brands");
-									$statement->execute();
-									$result = $statement->fetchAll(PDO::FETCH_ASSOC);	
-									foreach ($result as $row) {
-										?>
-										<option value="<?php echo $row['brand_name']; ?>"><?php echo $row['brand_name']; ?></option>
-										<?php
-									}
-									?>
-								</select>
-							</div>
-						</div>
+					
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Top Level Category Name <span>*</span></label>
 							<div class="col-sm-4">
@@ -253,6 +240,14 @@ $statement->execute(array(
 							<div class="col-sm-4">
 								<select name="ecat_id" class="form-control select2 end-cat">
 									<option value="">Select End Level Category</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Brand <span>*</span></label>
+							<div class="col-sm-4">
+								<select name="product_brand" class="form-control select2 brand-cat">
+									<option value="">Select Brand</option>
 								</select>
 							</div>
 						</div>
