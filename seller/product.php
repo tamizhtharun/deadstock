@@ -85,7 +85,7 @@ echo "</pre>";
 												<?php if($row['p_is_featured'] == 1) {echo '<span class="badge badge-success" style="background-color:green;">Yes</span>';} else {echo '<span class="badge badge-success" style="background-color:red;">No</span>';} ?>
 										</td>
 										<td>
-												<?php if($row['p_is_approve'] == 1) {echo '<span class="badge badge-success" style="background-color:green;">Approved</span>';} else {echo '<span class="badge badge-danger" style="background-color:red;">No</span>';} ?>
+												<?php if($row['p_is_approve'] == 1) {echo '<span class="badge badge-success" style="background-color:green;">Approved</span>';} else {echo '<span class="badge badge-danger" style="background-color:red;">Not Approved</span>';} ?>
 										</td>
 										<td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?></td>
 										<td><a href="../assets/uploads/<?php echo $row['product_catalogue']?>">View Uploaded catalogue</a> </td>
@@ -115,7 +115,7 @@ echo "</pre>";
             </div>
             <div class="modal-body">
                 <p>Are you sure want to delete this item?</p>
-                <p style="color:red;">Be careful! This product will be deleted from the order table, payment table, size table, color table and rating table also.</p>
+                <p style="color:red;">Be careful! This product will be deleted from the list it cannot be retrieved</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

@@ -142,9 +142,10 @@ if(isset($_POST['form1'])) {
 			p_condition,
 			p_return_policy,
 			p_total_view,
-			
-			ecat_id
-		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+			ecat_id,
+			product_catalogue,
+			product_brand
+		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		       
 		
 $statement->execute(array(
@@ -160,7 +161,9 @@ $statement->execute(array(
 			$_POST['p_return_policy'],
 			0, // Assuming total view is 0 initially
 		
-			$_POST['ecat_id']
+			$_POST['ecat_id'],
+			$pdf_final_name,
+			$_POST['product_brand']
 		));
 
         $success_message = 'Product is added successfully, wait for your administrator approval.';
