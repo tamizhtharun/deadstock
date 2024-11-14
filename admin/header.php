@@ -128,7 +128,7 @@ if(!isset($_SESSION['admin_session'])) {
 
 
                     <li class="treeview <?php if( ($cur_page == '#') || ($cur_page == 'seller-uploaded-products.php') || ($cur_page == 'seller-approved-products.php')  || ($cur_page == 'seller-rejected-products.php')  || ($cur_page == 'seller-products.php') || ($cur_page == 'seller-approved-product-view.php') || ($cur_page == 'seller-rejected-product-view.php')) {echo 'active';} ?>">
-                        <a href="product.php">
+                        <a href="#">
                             <i class="fa fa-shopping-bag"></i> <span>Product Management</span>
 														<span class="pull-right-container">
 								<i class="fa fa-angle-left pull-right"></i>
