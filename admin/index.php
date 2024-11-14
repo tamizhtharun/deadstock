@@ -81,7 +81,11 @@ $total_product = $statement->rowCount();
             $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_product");
             $statement->execute();
             $total_product = $statement->fetchColumn();
+            if($total_product!=0){
             $percentage_of_approved_products = ($total_approved_product / $total_product) * 100;
+            }else{
+                $percentage_of_approved_products = 0;
+            }
             ?>
 
 

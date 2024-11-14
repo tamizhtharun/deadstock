@@ -3,6 +3,10 @@
 <?php
 if(isset($_POST['form1'])) {
 	$valid = 1;
+	if(empty($_POST['tcat_id'])) {
+        $valid = 0;
+        $error_message .= "You must have to select a top level category<br>";
+    }
 
 	$path = $_FILES['photo']['name'];
     $path_tmp = $_FILES['photo']['tmp_name'];
@@ -38,8 +42,8 @@ if(isset($_POST['form1'])) {
         move_uploaded_file( $path_tmp, '../assets/uploads/brand-logos/'.$final_name );
 
 	
-		$statement = $pdo->prepare("INSERT INTO tbl_brands (brand_name, brand_description, brand_logo) VALUES (?,?,?)");
-		$statement->execute(array($_POST['brand_name'], $_POST['brand_description'],$final_name));
+		$statement = $pdo->prepare("INSERT INTO tbl_brands (tcat_id, brand_name, brand_description, brand_logo) VALUES (?,?,?,?)");
+		$statement->execute(array($_POST['tcat_id'],$_POST['brand_name'], $_POST['brand_description'],$final_name));
 			
 		$success_message = 'The Brand is added successfully!';
 
@@ -81,12 +85,31 @@ if(isset($_POST['form1'])) {
 			<form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
 				<div class="box box-info">
 					<div class="box-body">
+					<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Top Level Category Name <span>*</span></label>
+							<div class="col-sm-4">
+								<select name="tcat_id" class="form-control select2 top-cat">
+									<option value="">Select Top Level Category</option>
+									<?php
+									$statement = $pdo->prepare("SELECT * FROM tbl_top_category ORDER BY tcat_name ASC");
+									$statement->execute();
+									$result = $statement->fetchAll(PDO::FETCH_ASSOC);	
+									foreach ($result as $row) {
+										?>
+										<option value="<?php echo $row['tcat_id']; ?>"><?php echo $row['tcat_name']; ?></option>
+										<?php
+									}
+									?>
+								</select>
+							</div>
+						</div>
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label">Brand Logo <span>*</span></label>
 							<div class="col-sm-9" style="padding-top:5px">
 								<input type="file" name="photo">(Only jpg, jpeg, gif and png are allowed)
 							</div>
 						</div>
+						
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label">Brand Name <span>*</span> </label>
 							<div class="col-sm-6">

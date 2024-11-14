@@ -407,7 +407,7 @@ select {
   width: 100% !important;
 }
 .box-body{
-  overflow: visible  !important;
+  /* overflow: visible  !important; */
 }
 .dropdown-menu {
   min-width: auto;

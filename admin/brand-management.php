@@ -20,6 +20,7 @@
               <th style="width: 5%;">S.no</th>
               <th style="width: 20%;">Brand Logo</th>
               <th>Brand Name</th>
+			  <th>Category</th>
               <th>Brand Description</th>
               <th style="width: 15%;">Action</th>
             </tr>
@@ -27,7 +28,10 @@
 						<tbody>
 							<?php
 							$i=0;
-							$statement = $pdo->prepare("SELECT brand_id,brand_name, brand_description, brand_logo FROM tbl_brands");
+							$statement = $pdo->prepare("SELECT t1.brand_id, t1.brand_name, t1.tcat_id, 
+    																	t1.brand_description, t1.brand_logo, t2.tcat_name 
+    																	FROM tbl_brands t1
+    																		JOIN tbl_top_category t2 ON t1.tcat_id = t2.tcat_id");
 							$statement->execute();
 							$result = $statement->fetchAll(PDO::FETCH_ASSOC);							
 							foreach ($result as $row) {
@@ -37,6 +41,7 @@
 									<td><?php echo $i; ?></td>
 									<td ><img src="../assets/uploads/brand-logos/<?php echo $row['brand_logo']; ?>" alt="<?php echo $row['brand_name'];?>" style="width:60px"></td>
                                     <td><?php echo $row['brand_name']; ?></td>
+                                    <td><?php echo $row['tcat_name']; ?></td>
                                     <td><?php echo $row['brand_description']; ?></td>
 									<td>										
 										<a href="brand-edit.php?id=<?php echo $row['brand_id']; ?>" class="btn btn-primary btn-xs">Edit</a>
