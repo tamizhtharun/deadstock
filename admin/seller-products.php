@@ -79,16 +79,16 @@ if (isset($_POST['reject_all'])) {
                                 <th width="10">#</th>
                                 <th>Photo</th>
                                 <th>Product Brand</th>
-                                <th width="160">Product Name</th>
-                                <th width="60">Old Price</th>
-                                <th width="60">(C) Price</th>
-                                <th width="60">Quantity</th>
+                                <th >Product Name</th>
+                                <th >Old Price</th>
+                                <th >(C) Price</th>
+                                <th >Quantity</th>
                                 <th>Featured?</th>
                                 <th>Active?</th>
                                 <th>Category</th>
                                 <th>Product Catalogue</th>
-                                <th width="80">Approval Status</th>
-                                <th width="80">Action</th>
+                                <th >Approval Status</th>
+                                <th >Action</th>
                             </tr>
                         </thead>
                         <tbody>
