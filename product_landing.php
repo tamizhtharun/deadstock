@@ -394,7 +394,22 @@ if ($success_message1 != '') {
             </div>
           </div>
           <button class="btn btn-warning shadow-0"> Buy now </button>
-          <button class="btn btn-primary shadow-0"> <i class="bi bi-basket me-1"></i> Add to cart </button>
+          <button class="btn btn-primary shadow-0" onclick="addToCart()"> <i class="bi bi-basket me-1"></i> Add to cart </button>
+          <?php if(!isset($_SESSION['user_session'])): ?>
+              <script>
+                function addToCart() {
+                  // console.log('User  is not logged in');
+                  alert("You must be logged in to continue");              
+                }
+              </script> 
+            <?php else: ?>
+              <script>
+                function addToCart() {
+                  // console.log('User  is logged in');
+                  alert("Item added to cart successfully!");
+                }
+              </script>
+            <?php endif; ?>
           <button class="btn btn-light border"> <i class="bi bi-heart me-1"></i> Save </button>
         </div>
       </main>
