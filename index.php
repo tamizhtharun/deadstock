@@ -115,14 +115,6 @@
   </div>
   </div>
 </div>
-
-
-
-
-
-
-
-
 <!-- banner -->
 <div class="banner"> 
       <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
@@ -160,164 +152,11 @@
 <!-- end banner  -->
 
 <!-- Live Bidding -->
-<!-- <div class="container swiper">
-  <p class="swiper-title">Live Bidding</p>
-  <div class="slider-wrapper">
-    <div class="card-list swiper-wrapper">
-      <div class="card-item swiper-slide">
-        <div class="card-img">
-        <img alt="Card-img" src="./icons/index milling.png" >
-        </div>
-        <div class="live-bidding-details">
-        <div class="live-bidding-product-title">
-          <h2>Product title</h2>
-        </div>
-          <div class="price-section">
-            <p class="actual-price">₹1,000.00</p>
-            <p class="price-strikethrough"> ₹2,500.00</p>
-          </div>
-          <div class="live-bidding-price">
-            <p>Live Bidding Price: <span class="live-bidding-price-text">₹ 100.00</span></p>
-          </div>
-          <div class="available-stock">
-            <p>Available Stock: <span class="available-stock-text">10</span> units</p>
-          </div>
-          <div class="bid-ends-in">
-            <p>Bid Ends In: <span class="bid-ends-in-text" id="bid-ends-in-time"></span></p>
-          </div>
-        </div>
-      </div>
+<?php require_once( 'live-bidding-card.php');?>
 
-      <div class="card-item swiper-slide">
-        <div class="card-img">
-          <img alt="Card-img" src="./icons/index milling.png" >
-          </div>
-          <div class="live-bidding-details">
-          <div class="live-bidding-product-title">
-            <h2>Product title</h2>
-          </div>
-            <div class="price-section">
-              <p class="actual-price">₹1,000.00</p>
-              <p class="price-strikethrough"> ₹2,500.00</p>
-            </div>
-            <div class="live-bidding-price">
-              <p>Live Bidding Price: <span class="live-bidding-price-text">₹ 100.00</span></p>
-            </div>
-            <div class="available-stock">
-              <p>Available Stock: <span class="available-stock-text">20</span> units</p>
-            </div>
-            <div class="bid-ends-in">
-              <p>Bid Ends In: <span class="bid-ends-in-text" id="bid-ends-in-time"></span></p>
-            </div>
-          </div>
-      </div>
-
-      <div class="card-item swiper-slide">
-        <div class="card-img">
-          <img alt="Card-img" src="./icons/index milling.png" >
-          </div>
-          <div class="live-bidding-details">
-          <div class="live-bidding-product-title">
-            <h2>Product title</h2>
-          </div>
-            <div class="price-section">
-              <p class="actual-price">₹1,000.00</p>
-              <p class="price-strikethrough"> ₹2,500.00</p>
-            </div>
-            <div class="live-bidding-price">
-              <p>Live Bidding Price: <span class="live-bidding-price-text">₹ 100.00</span></p>
-            </div>
-            <div class="available-stock">
-              <p>Available Stock: <span class="available-stock-text">30</span> units</p>
-            </div>
-            <div class="bid-ends-in">
-              <p>Bid Ends In: <span class="bid-ends-in-text" id="bid-ends-in-time"></span></p>
-            </div>
-          </div>
-      </div>
-
-      <div class="card-item swiper-slide">
-        <div class="card-img">
-          <img alt="Card-img" src="./icons/index milling.png" >
-          </div>
-          <div class="live-bidding-details">
-          <div class="live-bidding-product-title">
-            <h2>Product title</h2>
-          </div>
-            <div class="price-section">
-              <p class="actual-price">₹1,000.00</p>
-              <p class="price-strikethrough"> ₹2,500.00</p>
-            </div>
-            <div class="live-bidding-price">
-              <p>Live Bidding Price: <span class="live-bidding-price-text">₹ 100.00</span></p>
-            </div>
-            <div class="available-stock">
-              <p>Available Stock: <span class="available-stock-text">40</span> units</p>
-            </div>
-            <div class="bid-ends-in">
-              <p>Bid Ends In: <span class="bid-ends-in-text" id="bid-ends-in-time"></span></p>
-            </div>
-          </div>
-      </div>
-
-      <div class="card-item swiper-slide">
-        <div class="card-img">
-          <img alt="Card-img" src="./icons/index milling.png" >
-          </div>
-          <div class="live-bidding-details">
-          <div class="live-bidding-product-title">
-            <h2>Product title</h2>
-          </div>
-            <div class="price-section">
-              <p class="actual-price">₹1,000.00</p>
-              <p class="price-strikethrough"> ₹2,500.00</p>
-            </div>
-            <div class="live-bidding-price">
-              <p>Live Bidding Price: <span class="live-bidding-price-text">₹ 100.00</span></p>
-            </div>
-            <div class="available-stock">
-              <p>Available Stock: <span class="available-stock-text">50</span> units</p>
-            </div>
-            <div class="bid-ends-in">
-              <p>Bid Ends In: <span class="bid-ends-in-text" id="bid-ends-in-time"></span></p>
-            </div>
-          </div>
-      </div>
-
-      <div class="card-item swiper-slide">
-        <div class="card-img">
-          <img alt="Card-img" src="./icons/index milling.png" >
-          </div>
-          <div class="live-bidding-details">
-          <div class="live-bidding-product-title">
-            <h2>Product title</h2>
-          </div>
-            <div class="price-section">
-              <p class="actual-price">₹1,000.00</p>
-              <p class="price-strikethrough"> ₹2,500.00</p>
-            </div>
-            <div class="live-bidding-price">
-              <p>Live Bidding Price: <span class="live-bidding-price-text">₹ 100.00</span></p>
-            </div>
-            <div class="available-stock">
-              <p>Available Stock: <span class="available-stock-text">60</span> units</p>
-            </div>
-            <div class="bid-ends-in">
-              <p>Bid Ends In: <span class="bid-ends-in-text" id="bid-ends-in-time"></span></p>
-            </div>
-          </div>
-      </div>
-    </div>
-
-    <div class="swiper-pagination"></div>
-    <div class="swiper-slide-button swiper-button-prev"></div>
-    <div class="swiper-slide-button swiper-button-next"></div>
-  </div>
-</div> -->
-
+<!-- Live Bidding -->
 
 <!-- Display the featured product -->
-
 <?php
 $topCategories = []; // Initialize as an empty array
 $statement = $pdo->prepare("SELECT * FROM tbl_top_category");
@@ -457,7 +296,8 @@ if (!empty($topCategories)) {
   <script src="js/script.js"></script>
 
 
-<?php include 'footer.php'; ?>
+  <?php require_once( 'footer.php');?>
+
 
 
 
