@@ -14,8 +14,8 @@
                     <table id="example1" class="table table-bordered table-hover table-striped">
                         <thead>
                             <tr>
-                                <th>S.NO</th>
-                                <th>Seller Name</th>
+                            <th width="5px">#</th>
+                            <th width="18%">Seller Name</th>
                                 <th>Seller Email</th>
                                 <th>Seller Address</th>
                                 <th>Approved Product Count</th>

@@ -112,7 +112,7 @@ if(!isset($_SESSION['admin_session'])) {
 			          </a>
 			        </li>
 
-					<li class="treeview <?php if( ($cur_page == 'brand-edit.php') || ($cur_page == 'brand-add.php') || ($cur_page == 'brand-delete.php') ) {echo 'active';} ?>">
+					<li class="treeview <?php if( ($cur_page == 'brand-management.php')||($cur_page == 'brand-edit.php') || ($cur_page == 'brand-add.php') || ($cur_page == 'brand-delete.php') ) {echo 'active';} ?>">
 									<a href="brand-management.php">
 										<i class="fa fa-user-plus"></i> <span>Brand Management</span>
 									</a>
