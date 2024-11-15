@@ -124,7 +124,6 @@ move_uploaded_file($pdf_path_tmp, '../assets/uploads/'.$pdf_final_name);
         							p_current_price=?, 
         							p_qty=?,
         							p_description=?,
-        							p_short_description=?,
         							p_feature=?,
         							p_condition=?,
         							p_return_policy=?,
@@ -137,7 +136,6 @@ move_uploaded_file($pdf_path_tmp, '../assets/uploads/'.$pdf_final_name);
         							$_POST['p_current_price'],
         							$_POST['p_qty'],
         							$_POST['p_description'],
-        							$_POST['p_short_description'],
         							$_POST['p_feature'],
         							$_POST['p_condition'],
         							$_POST['p_return_policy'],
@@ -162,7 +160,6 @@ move_uploaded_file($pdf_path_tmp, '../assets/uploads/'.$pdf_final_name);
         							p_qty=?,
         							p_featured_photo=?,
         							p_description=?,
-        							p_short_description=?,
         							p_feature=?,
         							p_condition=?,
         							p_return_policy=?,
@@ -178,7 +175,6 @@ move_uploaded_file($pdf_path_tmp, '../assets/uploads/'.$pdf_final_name);
         							$_POST['p_qty'],
         							$final_name,
         							$_POST['p_description'],
-        							$_POST['p_short_description'],
         							$_POST['p_feature'],
         							$_POST['p_condition'],
         							$_POST['p_return_policy'],
@@ -261,7 +257,6 @@ foreach ($result as $row) {
 	$p_qty = $row['p_qty'];
 	$p_featured_photo = $row['p_featured_photo'];
 	$p_description = $row['p_description'];
-	$p_short_description = $row['p_short_description'];
 	$p_feature = $row['p_feature'];
 	$p_condition = $row['p_condition'];
 	$p_return_policy = $row['p_return_policy'];
@@ -464,12 +459,12 @@ foreach ($result as $row) {
 								<textarea name="p_description" class="form-control" cols="30" rows="10" id="editor1"><?php echo $p_description; ?></textarea>
 							</div>
 						</div>
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label for="" class="col-sm-3 control-label">Short Description</label>
 							<div class="col-sm-8">
 								<textarea name="p_short_description" class="form-control" cols="30" rows="10" id="editor1"><?php echo $p_short_description; ?></textarea>
 							</div>
-						</div>
+						</div> -->
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Features</label>
 							<div class="col-sm-8">

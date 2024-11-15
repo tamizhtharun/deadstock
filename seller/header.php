@@ -82,36 +82,42 @@ $stmt->close();
 				<span class="logo-lg">DeadStock</span>
 			</a>
 
-			<nav class="navbar navbar-static-top">
-				
-				<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-					<span class="sr-only">Toggle navigation</span>
-				</a>
+			<nav class="navbar navbar-static-top d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+        </a>
+        <span style="line-height:50px;color:#fff;padding-left:15px;font-size:18px; font-weight:800;">Seller Panel</span>
+    </div>
+    
+    <!-- Alert Message -->
+    <div id="message" style="display:none; position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1000; padding: 10px; border-radius: 5px; color: #fff; font-size: 14px;"></div>
+    <!-- Alert Message end -->
 
-				<span style="float:left;line-height:50px;color:#fff;padding-left:15px;font-size:18px;">Seller Panel</span>
-    <!-- Top Bar ... User Inforamtion .. Login/Log out Area -->
-				<div class="navbar-custom-menu">
-					<ul class="nav navbar-nav">
-						<li class="dropdown user user-menu">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<!-- <img src="../assets/uploads/<?php echo $_SESSION['user']['photo']; ?>" class="user-image" alt="User Image"> -->
-								<span class="hidden-xs"><?php echo $_SESSION['seller_session']['seller_name']; ?></span>
-							</a>
-							<ul class="dropdown-menu">
-								<li class="user-footer">
-									<div>
-										<a href="profile-edit.php" class="btn btn-default btn-flat">Edit Profile</a>
-									</div>
-									<div>
-										<a href="logout.php" class="btn btn-default btn-flat">Log out</a>
-									</div>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-
-			</nav>
+    <!-- Top Bar ... User Information .. Login/Log out Area -->
+    <div class="navbar-custom-menu">
+	<div class="dropdown">
+    <button id="profile-btn" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+    <?php 
+    // Check if the profile photo exists; if not, use the Font Awesome user icon
+    if (!empty($_SESSION['selelr_session']['profile_photo'])) {
+        $profile_photo = $_SESSION['seller_session']['seller_name'];
+        echo '<img src="' . $profile_photo . '" style="width: 30px; height: 30px; border-radius: 50%;">';
+    } else {
+        // Display the Font Awesome user icon
+        echo '<i class="fa fa-user" style="font-size: 20px;"></i>';
+    }
+    ?>
+     Hi, <span style="font-weight:800"><?php echo $_SESSION['seller_session']['seller_name']; ?></span>
+    <!-- <i class="fas fa-chevron-down"></i> -->
+</button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="profile-edit.php">Edit Profile</a>
+        <a class="dropdown-item text-danger" href="logout.php">Log out</a>
+    </div>
+</div>
+    </div>
+</nav>
 		</header>
 
   		<?php $cur_page = substr($_SERVER["SCRIPT_NAME"],strrpos($_SERVER["SCRIPT_NAME"],"/")+1); ?>

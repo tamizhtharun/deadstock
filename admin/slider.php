@@ -19,7 +19,7 @@
             <tr>
               <th style="width: 5%;">#</th>
               <th style="width: 20%;">Photo</th>
-              <th style="width: 55%;">Heading</th>
+              <th style="width: 50%;">Heading</th>
               <th style="width: 10%;">Action</th>
             </tr>
           </thead>

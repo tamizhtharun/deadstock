@@ -19,12 +19,6 @@ foreach ($result as $row) {
     $banner_search = $row['banner_search'];
 }
 ?>
-
-
-
-
-
-
 <?php
     $search_text = '%'.$search_text.'%';
 ?>
@@ -248,7 +242,7 @@ document.querySelectorAll('.top-category').forEach(function(checkbox) {
 
         <?php
             // Function to truncate the description to a specific word limit
-            function truncateDescription($description, $wordLimit = 7) {
+            function truncateDescription($description, $wordLimit = 4) {
                 $words = explode(' ', $description); // Split the description into words
                 if (count($words) > $wordLimit) {
                     return implode(' ', array_slice($words, 0, $wordLimit)) . '...'; // Truncate and append "..."
@@ -261,8 +255,13 @@ document.querySelectorAll('.top-category').forEach(function(checkbox) {
     <!-- Product Listings -->
     <div class="product-list">
         <div class="search-results">
-            <!-- Product Cards -->
-            <?php foreach ($result as $row): ?>
+        <?php
+            // Check if results are found
+            if (empty($result)) {
+                echo "<div class='no-results'>No Results Found</div>";
+            } else {
+                foreach ($result as $row): ?>
+            
                 <div class="product-card">
                     <a href="product_landing.php?id=<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration: none; color: inherit;">
                         <div class="product-card-left">
@@ -297,7 +296,9 @@ document.querySelectorAll('.top-category').forEach(function(checkbox) {
                                 </div>
                             </a>
                         </div>
-                    <?php endforeach; ?>
+                    <?php endforeach;
+                    }
+                     ?>
                 </div>
             </div>
             </div>
