@@ -70,9 +70,19 @@ if(!isset($_SESSION['admin_session'])) {
     <div class="navbar-custom-menu">
 	<div class="dropdown">
     <button id="profile-btn" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-        Hi, <span style="font-weight:800"><?php echo $_SESSION['admin_session']['name']; ?></span>
-        <!-- <i class="fas fa-chevron-down"></i> -->
-    </button>
+    <?php 
+    // Check if the profile photo exists; if not, use the Font Awesome user icon
+    if (!empty($_SESSION['admin_session']['profile_photo'])) {
+        $profile_photo = $_SESSION['admin_session']['profile_photo'];
+        echo '<img src="' . $profile_photo . '" style="width: 30px; height: 30px; border-radius: 50%;">';
+    } else {
+        // Display the Font Awesome user icon
+        echo '<i class="fa fa-user" style="font-size: 20px;"></i>';
+    }
+    ?>
+     Hi, <span style="font-weight:800"><?php echo $_SESSION['admin_session']['name']; ?></span>
+    <!-- <i class="fas fa-chevron-down"></i> -->
+</button>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item" href="profile-edit.php">Edit Profile</a>
         <a class="dropdown-item text-danger" href="logout.php">Log out</a>
