@@ -226,7 +226,7 @@ if (!empty($topCategories)) {
                                                     <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
                                                     <svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>
                                                 </span>
-                                                <span>(222)</span>
+                                                <span><?php echo $product['p_current_price']?></span>
                                             </div>
                                             <div class="d-flex justify-content-center align-items-center gap-2">
                                                 <?php if (!empty($product['p_old_price'])): ?>
@@ -287,6 +287,14 @@ if (!empty($topCategories)) {
     }
 }
 ?>
+
+<!-- Display the Best selling Product -->
+<?php require_once('best-selling-homepage.php')?>
+<!-- End Display the Best selling Product -->
+
+<!-- Display All Brands  -->
+<?php require_once('brands-homepage.php') ?>
+<!-- End Display All Brands -->
 
  <!-- End Display the featured product -->
   <script src="js/jquery-1.11.0.min.js"></script>
