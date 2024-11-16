@@ -562,6 +562,7 @@ select {
 .main-header .navbar {
     margin-left: 280px;
     transition: margin-left 0.3s ease-in-out;
+    height: 70px !important;
 }
 
 /* Improve sidebar menu items spacing and positioning */

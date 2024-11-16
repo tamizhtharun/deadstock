@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 case 'admin': 
                     // Start session
                     session_start();
-                    $_SESSION['admin_session'] = $user_data;
+                    $_SESSION['admin_session'] = $user;
                     $_SESSION['admin_role'] = 'admin';
                     header("Location: admin/index.php");
                     exit();
