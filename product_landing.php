@@ -28,7 +28,6 @@ foreach ($result as $row) {
   $p_qty = $row['p_qty'];
   $p_featured_photo = $row['p_featured_photo'];
   $p_description = $row['p_description'];
-  $p_short_description = $row['p_short_description'];
   $p_feature = $row['p_feature'];
   $p_condition = $row['p_condition'];
   $p_return_policy = $row['p_return_policy'];
@@ -359,9 +358,6 @@ if ($success_message1 != '') {
             </div>
           </div>
 
-          <p>
-            <?php echo $p_short_description; ?>
-          </p>
 
           <div class="row">
             <dt class="col-3">Insert width</dt>

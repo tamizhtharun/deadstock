@@ -98,9 +98,19 @@ session_start();
       </nav>
 
   <!-- runningtxt -->
-  <div class="runningtxt">
-      
-  </div>
+  <!-- runningtxt -->
+<div class="scrolling-text">
+    <?php
+    // Add this query to your existing database connection
+    $stmt = $pdo->prepare("SELECT running_text FROM tbl_settings");
+    $stmt->execute();
+    $running_text = $stmt->fetchColumn();
+     $display_text = str_repeat(htmlspecialchars($running_text) . " &nbsp;&nbsp;&nbsp;&nbsp; ", 3);
+    ?>
+    <div class="scrolling-text-content">
+        <?php echo htmlspecialchars($running_text); ?>
+    </div>
+</div>
 </div>
 
 <!-- login modal -->

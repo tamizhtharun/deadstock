@@ -3,33 +3,33 @@
 <?php
 if(isset($_POST['form1'])) {
 
-	if($_SESSION['admin_session']['role'] == 'admin') {
+	if($_SESSION['admin_session']['user_role'] == 'admin') {
 
 		$valid = 1;
 
-	    if(empty($_POST['full_name'])) {
+	    if(empty($_POST['user_name'])) {
 	        $valid = 0;
 	        $error_message .= "Name can not be empty<br>";
 	    }
 
-	    if(empty($_POST['email'])) {
+	    if(empty($_POST['user_email'])) {
 	        $valid = 0;
 	        $error_message .= 'Email address can not be empty<br>';
 	    } else {
-	    	if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) === false) {
+	    	if (filter_var($_POST['user_email'], FILTER_VALIDATE_EMAIL) === false) {
 		        $valid = 0;
 		        $error_message .= 'Email address must be valid<br>';
 		    } else {
 		    	// current email address that is in the database
-		    	$statement = $pdo->prepare("SELECT * FROM tbl_user WHERE id=?");
-				$statement->execute(array($_SESSION['user']['id']));
+		    	$statement = $pdo->prepare("SELECT * FROM user_login WHERE id=?");
+				$statement->execute(array($_SESSION['admin_session']['id']));
 				$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 				foreach($result as $row) {
-					$current_email = $row['email'];
+					$current_email = $row['user_email'];
 				}
 
-		    	$statement = $pdo->prepare("SELECT * FROM tbl_user WHERE email=? and email!=?");
-		    	$statement->execute(array($_POST['email'],$current_email));
+		    	$statement = $pdo->prepare("SELECT * FROM user_login WHERE user_email=? and user_email!=?");
+		    	$statement->execute(array($_POST['user_email'],$current_email));
 		    	$total = $statement->rowCount();							
 		    	if($total) {
 		    		$valid = 0;
@@ -40,22 +40,22 @@ if(isset($_POST['form1'])) {
 
 	    if($valid == 1) {
 			
-			$_SESSION['admin_session']['name'] = $_POST['full_name'];
-	    	$_SESSION['admin_session']['email'] = $_POST['email'];
+			$_SESSION['admin_session']['user_name'] = $_POST['user_name'];
+	    	$_SESSION['admin_session']['user_email'] = $_POST['user_email'];
 
 			// updating the database
-			$statement = $pdo->prepare("UPDATE tbl_user SET full_name=?, email=?, phone=? WHERE id=?");
-			$statement->execute(array($_POST['full_name'],$_POST['email'],$_POST['phone'],$_SESSION['user']['id']));
+			$statement = $pdo->prepare("UPDATE user_login SET user_name=?, user_email=?, user_phone=? WHERE id=?");
+			$statement->execute(array($_POST['user_name'],$_POST['user_email'],$_POST['user_phone'],$_SESSION['admin_session']['id']));
 
 	    	$success_message = 'User Information is updated successfully.';
 	    }
 	}
 	else {
-		$_SESSION['user']['phone'] = $_POST['phone'];
+		$_SESSION['admin_session']['user_phone'] = $_POST['user_phone'];
 
 		// updating the database
-		$statement = $pdo->prepare("UPDATE tbl_user SET phone=? WHERE id=?");
-		$statement->execute(array($_POST['phone'],$_SESSION['user']['id']));
+		$statement = $pdo->prepare("UPDATE user_login SET user_phone=? WHERE id=?");
+		$statement->execute(array($_POST['user_phone'],$_SESSION['admin_session']['id']));
 
 		$success_message = 'User Information is updated successfully.';	
 	}
@@ -65,8 +65,8 @@ if(isset($_POST['form2'])) {
 
 	$valid = 1;
 
-	$path = $_FILES['photo']['name'];
-    $path_tmp = $_FILES['photo']['tmp_name'];
+	$path = $_FILES['user_photo']['name'];
+    $path_tmp = $_FILES['user_photo']['tmp_name'];
 
     if($path!='') {
         $ext = pathinfo( $path, PATHINFO_EXTENSION );
@@ -80,18 +80,18 @@ if(isset($_POST['form2'])) {
     if($valid == 1) {
 
     	// removing the existing photo
-    	if($_SESSION['user']['photo']!='') {
-    		unlink('../assets/uploads/'.$_SESSION['user']['photo']);	
+    	if($_SESSION['admin_session']['user_photo']!='') {
+    		unlink('../assets/uploads/profile-pictures/'.$_SESSION['admin_session']['user_photo']);	
     	}
-
+		$ext = pathinfo( $path, PATHINFO_EXTENSION );
     	// updating the data
-    	$final_name = 'user-'.$_SESSION['user']['id'].'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
-        $_SESSION['user']['photo'] = $final_name;
+    	$final_name = 'user-'.$_SESSION['admin_session']['id'].'.'.$ext;
+        move_uploaded_file( $path_tmp, '../assets/uploads/profile-pictures/'.$final_name );
+        $_SESSION['admin_session']['user_photo'] = $final_name;
 
         // updating the database
-		$statement = $pdo->prepare("UPDATE tbl_user SET photo=? WHERE id=?");
-		$statement->execute(array($final_name,$_SESSION['user']['id']));
+		$statement = $pdo->prepare("UPDATE user_login SET user_photo=? WHERE id=?");
+		$statement->execute(array($final_name,$_SESSION['admin_session']['id']));
 
         $success_message = 'User Photo is updated successfully.';
     	
@@ -101,13 +101,13 @@ if(isset($_POST['form2'])) {
 if(isset($_POST['form3'])) {
 	$valid = 1;
 
-	if( empty($_POST['password']) || empty($_POST['re_password']) ) {
+	if( empty($_POST['user_password']) || empty($_POST['re_password']) ) {
         $valid = 0;
         $error_message .= "Password can not be empty<br>";
     }
 
-    if( !empty($_POST['password']) && !empty($_POST['re_password']) ) {
-    	if($_POST['password'] != $_POST['re_password']) {
+    if( !empty($_POST['user_password']) && !empty($_POST['re_password']) ) {
+    	if($_POST['user_password'] != $_POST['re_password']) {
 	    	$valid = 0;
 	        $error_message .= "Passwords do not match<br>";	
     	}        
@@ -115,11 +115,11 @@ if(isset($_POST['form3'])) {
 
     if($valid == 1) {
 
-    	$_SESSION['user']['password'] = md5($_POST['password']);
+    	$_SESSION['admin_session']['user_password'] = password_hash($_POST['user_password'],PASSWORD_DEFAULT);
 
     	// updating the database
-		$statement = $pdo->prepare("UPDATE tbl_user SET password=? WHERE id=?");
-		$statement->execute(array(md5($_POST['password']),$_SESSION['user']['id']));
+		$statement = $pdo->prepare("UPDATE user_login SET user_password=? WHERE id=?");
+		$statement->execute(array(password_hash($_POST['user_password'],PASSWORD_DEFAULT) ,$_SESSION['admin_session']['id']));
 
     	$success_message = 'User Password is updated successfully.';
     }
@@ -133,17 +133,16 @@ if(isset($_POST['form3'])) {
 </section>
 
 <?php
-$statement = $pdo->prepare("SELECT * FROM tbl_user WHERE id=?");
-$statement->execute(array($_SESSION['user']['id']));
+$statement = $pdo->prepare("SELECT * FROM user_login WHERE id=?");
+$statement->execute(array($_SESSION['admin_session']['id']));
 $statement->rowCount();
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);							
 foreach ($result as $row) {
-	$full_name = $row['full_name'];
-	$email     = $row['email'];
-	$phone     = $row['phone'];
-	$photo     = $row['photo'];
-	$status    = $row['status'];
-	$role      = $row['role'];
+	$full_name = $row['user_name'];
+	$email     = $row['user_email'];
+	$phone     = $row['user_phone'];
+	$photo     = $row['user_photo'];
+	$role      = $row['user_role'];
 }
 ?>
 
@@ -168,10 +167,10 @@ foreach ($result as $row) {
 									<div class="form-group">
 										<label for="" class="col-sm-2 control-label">Name <span>*</span></label>
 										<?php
-										if($_SESSION['user']['role'] == 'Super Admin') {
+										if($_SESSION['admin_session']['user_role'] == 'admin') {
 											?>
 												<div class="col-sm-4">
-													<input type="text" class="form-control" name="full_name" value="<?php echo $full_name; ?>">
+													<input type="text" class="form-control" name="user_name" value="<?php echo $full_name; ?>">
 												</div>
 											<?php
 										} else {
@@ -187,17 +186,17 @@ foreach ($result as $row) {
 									<div class="form-group">
 							            <label for="" class="col-sm-2 control-label">Existing Photo</label>
 							            <div class="col-sm-6" style="padding-top:6px;">
-							                <img src="../assets/uploads/<?php echo $photo; ?>" class="existing-photo" width="140">
+							                <img src="../assets/uploads/profile-pictures/<?php echo $photo; ?>" class="existing-photo" width="140">
 							            </div>
 							        </div>
 									
 									<div class="form-group">
 										<label for="" class="col-sm-2 control-label">Email Address <span>*</span></label>
 										<?php
-										if($_SESSION['user']['role'] == 'Super Admin') {
+										if($_SESSION['admin_session']['user_role'] == 'admin') {
 											?>
 												<div class="col-sm-4">
-													<input type="email" class="form-control" name="email" value="<?php echo $email; ?>">
+													<input type="email" class="form-control" name="user_email" value="<?php echo $email; ?>">
 												</div>
 											<?php
 										} else {
@@ -213,7 +212,7 @@ foreach ($result as $row) {
 									<div class="form-group">
 										<label for="" class="col-sm-2 control-label">Phone </label>
 										<div class="col-sm-4">
-											<input type="text" class="form-control" name="phone" value="<?php echo $phone; ?>">
+											<input type="text" class="form-control" name="user_phone" value="<?php echo $phone; ?>">
 										</div>
 									</div>
 									<div class="form-group">
@@ -239,7 +238,7 @@ foreach ($result as $row) {
 									<div class="form-group">
 							            <label for="" class="col-sm-2 control-label">New Photo</label>
 							            <div class="col-sm-6" style="padding-top:6px;">
-							                <input type="file" name="photo">
+							                <input type="file" name="user_photo">
 							            </div>
 							        </div>
 							        <div class="form-group">
@@ -259,7 +258,7 @@ foreach ($result as $row) {
 									<div class="form-group">
 										<label for="" class="col-sm-2 control-label">Password </label>
 										<div class="col-sm-4">
-											<input type="password" class="form-control" name="password">
+											<input type="password" class="form-control" name="user_password">
 										</div>
 									</div>
 									<div class="form-group">
