@@ -254,13 +254,27 @@ document.querySelectorAll('.top-category').forEach(function(checkbox) {
 <div class="main-content">
     <!-- Product Listings -->
     <div class="product-list">
-        <div class="search-results">
-        <?php
-            // Check if results are found
-            if (empty($result)) {
-                echo "<div class='no-results'>No Results Found</div>";
-            } else {
-                foreach ($result as $row): ?>
+         <?php
+                // Fetch total results count for the given search term
+                $total_statement = $pdo->prepare("SELECT COUNT(*) as total FROM tbl_product WHERE p_name LIKE ?");
+                $total_statement->execute(array('%' . $_REQUEST['search_text'] . '%'));
+                $total_result = $total_statement->fetch(PDO::FETCH_ASSOC);
+                $total_products = $total_result['total'];
+                ?>
+
+                <div class="search-results-summary" style="font-size: 18px; margin-bottom: 20px; font-weight: bold;">
+                    <?php if ($total_products > 0): ?>
+                        Showing  <?php echo htmlspecialchars($total_products, ENT_QUOTES, 'UTF-8'); ?> results for "<?php echo htmlspecialchars($_REQUEST['search_text'], ENT_QUOTES, 'UTF-8'); ?>"
+                    <?php else: ?>
+                        No results found for "<?php echo htmlspecialchars($_REQUEST['search_text'], ENT_QUOTES, 'UTF-8'); ?>"
+                    <?php endif; ?>
+                </div>
+
+                <div class="search-results">
+            
+
+          <?php       
+            foreach ($result as $row): ?>
             
                 <div class="product-card">
                     <a href="product_landing.php?id=<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration: none; color: inherit;">
@@ -296,15 +310,16 @@ document.querySelectorAll('.top-category').forEach(function(checkbox) {
                                 </div>
                             </a>
                         </div>
+                        
                     <?php endforeach;
-                    }
+                    
                      ?>
+                   </div>
                 </div>
-            </div>
-            </div>
-                    <div class="pagination">
-                    <?php echo $pagination; ?>
-                </div>
-            </div>
-        </div>
+              </div>
+            <div class="pagination">
+        <?php echo $pagination; ?>
     </div>
+  </div>
+ </div>
+</div>
