@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Responsive Card Slider</title>
+  
   <!-- Swiper CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <!-- CSS -->
@@ -27,8 +27,18 @@
           </div>
           <div class="card-content">
             <h2 class="name">Cutting Tools</h2>
-            <p class="description">The lorem text the section that contains header with having open functionality. Lorem
-              dolor sit amet consectetur adipisicing elit.</p>
+             <div class="ratings">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="pricing">
+              <span class="old-price">₹3,000.00</span>
+              <span class="current-price">₹1,000.00</span>
+            </div>
+            <div class="quantity">Stock: 5 units</div>
             <button class="button">Start Bid</button>
           </div>
         </div>
@@ -42,8 +52,18 @@
           </div>
           <div class="card-content">
             <h2 class="name">Cutting Tools</h2>
-            <p class="description">The lorem text the section that contains header with having open functionality. Lorem
-              dolor sit amet consectetur adipisicing elit.</p>
+             <div class="ratings">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="pricing">
+              <span class="old-price">₹3,000.00</span>
+              <span class="current-price">₹1,000.00</span>
+            </div>
+            <div class="quantity">Stock: 5 units</div>
             <button class="button">Start Bid</button>
           </div>
         </div>
@@ -57,8 +77,18 @@
           </div>
           <div class="card-content">
             <h2 class="name">Cutting Tools</h2>
-            <p class="description">The lorem text the section that contains header with having open functionality. Lorem
-              dolor sit amet consectetur adipisicing elit.</p>
+            <div class="ratings">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="pricing">
+              <span class="old-price">₹3,000.00</span>
+              <span class="current-price">₹1,000.00</span>
+            </div>
+            <div class="quantity">Stock: 5 units</div>
             <button class="button">Start Bid</button>
           </div>
         </div>
@@ -72,8 +102,18 @@
           </div>
           <div class="card-content">
             <h2 class="name">Cutting Tools</h2>
-            <p class="description">The lorem text the section that contains header with having open functionality. Lorem
-              dolor sit amet consectetur adipisicing elit.</p>
+            <div class="ratings">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="pricing">
+              <span class="old-price">₹3,000.00</span>
+              <span class="current-price">₹1,000.00</span>
+            </div>
+            <div class="quantity">Stock: 5 units</div>
             <button class="button">Start Bid</button>
           </div>
         </div>
@@ -87,8 +127,18 @@
           </div>
           <div class="card-content">
             <h2 class="name">Cutting Tools</h2>
-            <p class="description">The lorem text the section that contains header with having open functionality. Lorem
-              dolor sit amet consectetur adipisicing elit.</p>
+           <div class="ratings">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="pricing">
+              <span class="old-price">₹3,000.00</span>
+              <span class="current-price">₹1,000.00</span>
+            </div>
+            <div class="quantity">Stock: 5 units</div>
             <button class="button">Start Bid</button>
           </div>
         </div>
@@ -102,8 +152,18 @@
           </div>
           <div class="card-content">
             <h2 class="name">Cutting Tools</h2>
-            <p class="description">The lorem text the section that contains header with having open functionality. Lorem
-              dolor sit amet consectetur adipisicing elit.</p>
+           <div class="ratings">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="pricing">
+              <span class="old-price">₹3,000.00</span>
+              <span class="current-price">₹1,000.00</span>
+            </div>
+            <div class="quantity">Stock: 5 units</div>
             <button class="button">Start Bid</button>
           </div>
         </div>
@@ -117,8 +177,18 @@
           </div>
           <div class="card-content">
             <h2 class="name">Cutting Tools</h2>
-            <p class="description">The lorem text the section that contains header with having open functionality. Lorem
-              dolor sit amet consectetur adipisicing elit.</p>
+          <div class="ratings">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="pricing">
+              <span class="old-price">₹3,000.00</span>
+              <span class="current-price">₹1,000.00</span>
+            </div>
+            <div class="quantity">Stock: 5 units</div>
             <button class="button">Start Bid</button>
           </div>
         </div>
@@ -132,8 +202,18 @@
           </div>
           <div class="card-content">
             <h2 class="name">Cutting Tools</h2>
-            <p class="description">The lorem text the section that contains header with having open functionality. Lorem
-              dolor sit amet consectetur adipisicing elit.</p>
+           <div class="ratings">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="pricing">
+              <span class="old-price">₹3,000.00</span>
+              <span class="current-price">₹1,000.00</span>
+            </div>
+            <div class="quantity">Stock: 5 units</div>
             <button class="button">Start Bid</button>
           </div>
         </div>
@@ -147,8 +227,18 @@
           </div>
           <div class="card-content">
             <h2 class="name">Cutting Tools</h2>
-            <p class="description">The lorem text the section that contains header with having open functionality. Lorem
-              dolor sit amet consectetur adipisicing elit.</p>
+           <div class="ratings">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="pricing">
+              <span class="old-price">₹3,000.00</span>
+              <span class="current-price">₹1,000.00</span>
+            </div>
+            <div class="quantity">Stock: 5 units</div>
             <button class="button">Start Bid</button>
           </div>
         </div>
@@ -203,16 +293,54 @@ updateTimers();
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
+/* Ratings style */
+.ratings {
+  margin: 3px 0;
+}
+
+.ratings .fas.fa-star {
+  color: #FFD700;
+  font-size: 14px;
+}
+
+/* Updated pricing styles for inline display */
+.pricing {
+  margin: 5px 0;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Space between old and current price */
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 18px;
+}
+
+.current-price {
+  color: #000;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.quantity {
+  color: #666;
+  font-size: 13px;
+  margin: 3px 0;
+}
+
 .center{
    text-align:center;
    margin-top: 50px;
 }
 
 .timer {
-  font-size: 18px;
+  font-size: 16px;
   color: #ff0000;
   font-weight: bold;
-  margin: 15px 0;
+  margin: 10px 0;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -222,7 +350,7 @@ updateTimers();
 .slide-container{
   max-width: 1120px;
   width: 100%;
-  padding: 40px 0;
+  padding: 20px 0;
 }
 .slide-content{
   margin: 0 40px;
@@ -240,7 +368,7 @@ updateTimers();
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px 14px;
+  padding: 8px 14px;
 
 }
 .card-content {
@@ -254,8 +382,8 @@ updateTimers();
 
 .image-content{
   position: relative;
-  row-gap: 5px;
-  padding: 25px 0;
+  row-gap: 3px;
+  padding: 15px 0;
 }
 .overlay{
   position: absolute;
@@ -282,8 +410,8 @@ updateTimers();
 }
 .card-image{
   position: relative;
-  height: 150px;
-  width: 150px;
+  height: 120px;
+  width: 120px;
   border-radius: 50%;
   background: #FFF;
   padding: 3px;
@@ -296,7 +424,8 @@ updateTimers();
   border: #FFF
 }
 .name{
-  font-size: 18px;
+  font-size: 16px;
+  margin-bottom: 3px; /* Added to reduce space */
   font-weight: bold;
   color: #333;
 
@@ -308,12 +437,12 @@ updateTimers();
 }
 .button{
   border: none;
-  font-size: 16px;
+  font-size: 14px;
   color:#FFF;
-  padding: 8px 16px;
+  padding: 6px 14px;
   background-color: grey;
   border-radius: 6px;
-  margin: 14px;
+  margin: 10px;
   transition: all 0.3s ease;
 }
 .swiper-navBtn{
@@ -336,9 +465,11 @@ updateTimers();
 .swiper-pagination-bullet{
   background-color: grey;
   opacity: 1;
+
 }
 .swiper-pagination-bullet-active{
   background-color: grey;
+
 }
 @media screen and (max-width: 768px) {
   .slide-content{

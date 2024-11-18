@@ -45,9 +45,9 @@
 									<td><?php if($row['seller_status']==1) {echo 'Active';} else {echo 'Inactive';} ?></td>
 									<td>
 										<?php if ($row['seller_status'] == 0) { ?>
-													<a href="seller-change-status.php?id=<?php echo $row['seller_id']; ?>" class="btn btn-warning btn-xs">Reject</a>
+													<a href="seller-change-status.php?id=<?php echo $row['seller_id']; ?>" class="btn btn-warning btn-xs">Rejected</a>
 											<?php } else { ?>
-													<a href="seller-change-status.php?id=<?php echo $row['seller_id']; ?>" class="btn btn-success btn-xs">Approve</a>
+													<a href="seller-change-status.php?id=<?php echo $row['seller_id']; ?>" class="btn btn-success btn-xs">Approved</a>
 											<?php } ?>
 									</td>
 			
