@@ -1,4 +1,5 @@
 <?php include 'header.php'; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +19,11 @@
 <div id="modal-body" class="modal-body">
 <form class="registration-form" action="register_seller.php" method="POST">
     <h1 class="modal-title fs-5" id="box-header">Register</h1>
-    
+    <?php
+    if (isset($_GET['success']) && $_GET['success'] == 1) {
+        echo "<div style='text-align: center; color: green; font-weight: bold;'>Thanks for registering, please check your email.</div>";
+    }
+    ?>
     <div class="input-box">
         <input type="text" id="seller_name" name="seller_name" class="input-field" placeholder="Name" required autocomplete="off" />
     </div>
@@ -37,7 +42,24 @@
     
     <div class="input-box">
         <input type="text" id="seller_gst" name="seller_gst" class="input-field" placeholder="GST Number" required autocomplete="off" />
+        <small id="gst-error" style="color: red; display: none;">Invalid GST Number format</small>
     </div>
+    <script>
+    function validateGST() {
+        const gstInput = document.getElementById("seller_gst");
+        const gstError = document.getElementById("gst-error");
+        const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[Z]{1}[A-Z0-9]{1}$/;
+
+        if (!gstRegex.test(gstInput.value)) {
+            gstError.style.display = "block";
+            gstInput.focus();
+            return false;
+        }
+
+        gstError.style.display = "none";
+        return true;
+    }
+</script>
     
     <div class="input-box">
         <textarea id="seller_address" name="seller_address" class="input-field" placeholder="Address" required></textarea>
@@ -52,8 +74,21 @@
     </div>
     
     <div class="input-box">
-        <input type="text" id="seller_zipcode" name="seller_zipcode" class="input-field" placeholder="Zip Code" required autocomplete="off" />
+    <input type="text" id="seller_zipcode" name="seller_zipcode" class="input-field" placeholder="Zip Code" required autocomplete="off" maxlength="6" />
     </div>
+    <script>
+document.getElementById('sellerRegistrationForm').addEventListener('submit', function(event) {
+    const zipcode = document.getElementById('seller_zipcode').value;
+
+    // Regex for validating a 6-digit PIN code
+    const pinRegex = /^\d{6}$/;
+
+    if (!pinRegex.test(zipcode)) {
+        alert('Please enter a valid 6-digit ZIP code.');
+        event.preventDefault(); // Stop form submission
+    }
+});
+</script>
     
     <div class="input-box">
         <input type="password" id="seller_password" name="seller_password" class="input-field" placeholder="Password" required autocomplete="off" />
@@ -72,7 +107,5 @@
 </div>
 </body>
 </html>
-
-
 
 <?php include 'footer.php'; ?>

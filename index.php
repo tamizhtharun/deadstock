@@ -152,6 +152,7 @@
 <!-- end banner  -->
 
 <!-- Live Bidding -->
+ 
 <?php require_once( 'live-bidding-card.php');?>
 
 <!-- Live Bidding -->
