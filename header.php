@@ -85,7 +85,7 @@ session_start();
                     Cart
                   </button>
                   <div class="dropdown">
-                    <button class="dropbtn btn btn-outline-secondary"><?php echo $_SESSION['user_session']['name']?> ▾</button>
+                    <button class="dropbtn btn btn-outline-secondary"><?php echo $_SESSION['user_session']['username']?> ▾</button>
                     <div class="dropdown-content">
                       <a href="" >Account</a>
                       <a href="" >Settings</a>
