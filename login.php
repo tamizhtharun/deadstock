@@ -21,9 +21,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user_data = [
             'id' => $user['id'],
             'name' => $user['user_name'],
-            'email' => $user['user_email'],
-            'role' => 'admin'
+            'email' => $user['user_email']
+            
         ];
+
+        
         // Verify password
         if (password_verify($password, $user['user_password'])) {
             // Handle user roles
@@ -41,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['user_session'] = $user_data;
                     $_SESSION['user_email'] = $user['user_email'];
                     $_SESSION['user_role'] = 'user';
-                    $_SESSION['loggedin'] = true; // Store user role
+                    $_SESSION['loggedin'] = true; 
                     header("Location: index.php");
                     exit();
                 case 'seller':

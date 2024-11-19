@@ -1,8 +1,5 @@
 <?php include 'header.php';
 include 'db_connection.php';
-
-$error_message1 = '';
-$success_message1 = '';
 ?>
 
 <?php
@@ -76,193 +73,43 @@ $statement->execute(array($p_total_view, $_REQUEST['id']));
 
 
 
+?>
 
+<?php
+$error_message1 = '';
+$success_message1 = '';
+$product_id = isset($_GET['id']) ? $_GET['id'] : '';
 
-if (isset($_POST['form_review'])) {
+if (!isset($_SESSION['user_session']['id'])) {
+  die("User session not set. Please log in.");
 
-  $statement = $pdo->prepare("SELECT * FROM tbl_rating WHERE id=? AND cust_id=?");
-  $statement->execute(array($_REQUEST['id'], $_SESSION['customer']['cust_id']));
-  $total = $statement->rowCount();
+}
+$user_id = $_SESSION['user_session']['id'];
+if (isset($_POST['add_to_cart'])) {
 
-  if ($total) {
-    $error_message = LANG_VALUE_68;
+  $product_quantity = $_POST['product_quantity'];
+  
+
+  // Assuming $product_id and $user_id are correctly set earlier in the code
+  $select_cart = mysqli_query($conn, "SELECT * FROM `tbl_cart` WHERE id = '$product_id' AND user_id = '$user_id'") or die('Query failed');
+
+  if (mysqli_num_rows($select_cart) > 0) {
+      echo 'Product already added to cart!';
   } else {
-    $statement = $pdo->prepare("INSERT INTO tbl_rating (p_id,cust_id,comment,rating) VALUES (?,?,?,?)");
-    $statement->execute(array($_REQUEST['id'], $_SESSION['customer']['cust_id'], $_POST['comment'], $_POST['rating']));
-    $success_message = LANG_VALUE_163;
+      mysqli_query($conn, "INSERT INTO `tbl_cart` (id, user_id,  quantity) 
+          VALUES ('$product_id', '$user_id', '$product_quantity')") or die('Query failed');
+      echo 'Product added to cart!';
   }
-
 }
 
-// Getting the average rating for this product
-$t_rating = 0;
-$statement = $pdo->prepare("SELECT * FROM tbl_rating WHERE p_id=?");
-$statement->execute(array($_REQUEST['id']));
-$tot_rating = $statement->rowCount();
-if ($tot_rating == 0) {
-  $avg_rating = 0;
-} else {
-  $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-  foreach ($result as $row) {
-    $t_rating = $t_rating + $row['rating'];
+?>
+
+<?php
+$select_product = mysqli_query($conn, "SELECT * FROM `tbl_product`") or die('query failed');
+if (mysqli_num_rows($select_product) > 0) {
+  while ($fetch_product = mysqli_fetch_assoc($select_product)) {
+
   }
-  $avg_rating = $t_rating / $tot_rating;
-}
-
-if (isset($_POST['form_add_to_cart'])) {
-
-  // getting the currect stock of this product
-  $statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
-  $statement->execute(array($_REQUEST['id']));
-  $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-  foreach ($result as $row) {
-    $current_p_qty = $row['p_qty'];
-  }
-  if ($_POST['p_qty'] > $current_p_qty):
-    $temp_msg = 'Sorry! There are only ' . $current_p_qty . ' item(s) in stock';
-    ?>
-    <script type="text/javascript">alert('<?php echo $temp_msg; ?>');</script>
-    <?php
-  else:
-    if (isset($_SESSION['cart_p_id'])) {
-      $arr_cart_p_id = array();
-      $arr_cart_size_id = array();
-      $arr_cart_color_id = array();
-      $arr_cart_p_qty = array();
-      $arr_cart_p_current_price = array();
-
-      $i = 0;
-      foreach ($_SESSION['cart_p_id'] as $key => $value) {
-        $i++;
-        $arr_cart_p_id[$i] = $value;
-      }
-
-      $i = 0;
-      foreach ($_SESSION['cart_size_id'] as $key => $value) {
-        $i++;
-        $arr_cart_size_id[$i] = $value;
-      }
-
-      $i = 0;
-      foreach ($_SESSION['cart_color_id'] as $key => $value) {
-        $i++;
-        $arr_cart_color_id[$i] = $value;
-      }
-
-
-      $added = 0;
-      if (!isset($_POST['size_id'])) {
-        $size_id = 0;
-      } else {
-        $size_id = $_POST['size_id'];
-      }
-      if (!isset($_POST['color_id'])) {
-        $color_id = 0;
-      } else {
-        $color_id = $_POST['color_id'];
-      }
-      for ($i = 1; $i <= count($arr_cart_p_id); $i++) {
-        if (($arr_cart_p_id[$i] == $_REQUEST['id']) && ($arr_cart_size_id[$i] == $size_id) && ($arr_cart_color_id[$i] == $color_id)) {
-          $added = 1;
-          break;
-        }
-      }
-      if ($added == 1) {
-        $error_message1 = 'This product is already added to the shopping cart.';
-      } else {
-
-        $i = 0;
-        foreach ($_SESSION['cart_p_id'] as $key => $res) {
-          $i++;
-        }
-        $new_key = $i + 1;
-
-        if (isset($_POST['size_id'])) {
-
-          $size_id = $_POST['size_id'];
-
-          $statement = $pdo->prepare("SELECT * FROM tbl_size WHERE size_id=?");
-          $statement->execute(array($size_id));
-          $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-          foreach ($result as $row) {
-            $size_name = $row['size_name'];
-          }
-        } else {
-          $size_id = 0;
-          $size_name = '';
-        }
-
-        if (isset($_POST['color_id'])) {
-          $color_id = $_POST['color_id'];
-          $statement = $pdo->prepare("SELECT * FROM tbl_color WHERE color_id=?");
-          $statement->execute(array($color_id));
-          $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-          foreach ($result as $row) {
-            $color_name = $row['color_name'];
-          }
-        } else {
-          $color_id = 0;
-          $color_name = '';
-        }
-
-
-        $_SESSION['cart_p_id'][$new_key] = $_REQUEST['id'];
-        $_SESSION['cart_size_id'][$new_key] = $size_id;
-        $_SESSION['cart_size_name'][$new_key] = $size_name;
-        $_SESSION['cart_color_id'][$new_key] = $color_id;
-        $_SESSION['cart_color_name'][$new_key] = $color_name;
-        $_SESSION['cart_p_qty'][$new_key] = $_POST['p_qty'];
-        $_SESSION['cart_p_current_price'][$new_key] = $_POST['p_current_price'];
-        $_SESSION['cart_p_name'][$new_key] = $_POST['p_name'];
-        $_SESSION['cart_p_featured_photo'][$new_key] = $_POST['p_featured_photo'];
-
-        $success_message1 = 'Product is added to the cart successfully!';
-      }
-
-    } else {
-
-      if (isset($_POST['size_id'])) {
-
-        $size_id = $_POST['size_id'];
-
-        $statement = $pdo->prepare("SELECT * FROM tbl_size WHERE size_id=?");
-        $statement->execute(array($size_id));
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($result as $row) {
-          $size_name = $row['size_name'];
-        }
-      } else {
-        $size_id = 0;
-        $size_name = '';
-      }
-
-      if (isset($_POST['color_id'])) {
-        $color_id = $_POST['color_id'];
-        $statement = $pdo->prepare("SELECT * FROM tbl_color WHERE color_id=?");
-        $statement->execute(array($color_id));
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($result as $row) {
-          $color_name = $row['color_name'];
-        }
-      } else {
-        $color_id = 0;
-        $color_name = '';
-      }
-
-
-      $_SESSION['cart_p_id'][1] = $_REQUEST['id'];
-      $_SESSION['cart_size_id'][1] = $size_id;
-      $_SESSION['cart_size_name'][1] = $size_name;
-      $_SESSION['cart_color_id'][1] = $color_id;
-      $_SESSION['cart_color_name'][1] = $color_name;
-      $_SESSION['cart_p_qty'][1] = $_POST['p_qty'];
-      $_SESSION['cart_p_current_price'][1] = $_POST['p_current_price'];
-      $_SESSION['cart_p_name'][1] = $_POST['p_name'];
-      $_SESSION['cart_p_featured_photo'][1] = $_POST['p_featured_photo'];
-
-      $success_message1 = 'Product is added to the cart successfully!';
-    }
-  endif;
 }
 ?>
 
@@ -275,8 +122,6 @@ if ($success_message1 != '') {
   header('location: product.php?id=' . $_REQUEST['id']);
 }
 ?>
-
-
 
 <!-- content -->
 <section class="py-5">
@@ -324,7 +169,7 @@ if ($success_message1 != '') {
         </div>
       </aside>
       <main class="col-lg-6">
-        <div class="ps-lg-3">
+        <class="ps-lg-3">
           <h4 class="title text-dark">
             <?php echo $p_name; ?>
           </h4>
@@ -339,7 +184,7 @@ if ($success_message1 != '') {
                 4.5
               </span>
             </div>
-            <span class="text-muted"><i class="bi bi-basket mx-1"></i>154 orders</span>
+            <span class="text-muted"><i class="bi bi-basket mx-1"></i><?php echo $p_qty; ?></span>
             <span class="text-success ms-2">In stock</span>
           </div>
 
@@ -378,27 +223,46 @@ if ($success_message1 != '') {
           </div>
 
           <hr />
-
-          <div class="row mb-4">
-            <div class="col-md-4 col-6 mb-3">
-              <label class="mb-2 d-block">Quantity</label>
-              <div class="input-group mb-3" style="width: 170px;">
-                <!-- <button class="btn btn-outline-secondary" type="button" id="decrease-btn"> -->
-                <!-- <i class="bi bi-dash"></i> -->
-                <!-- </button> -->
-                <input type="number" class="form-control text-center" id="quantity-input" value="1" min="1" />
-                <!-- <button class="btn btn-outline-secondary" type="button" id="increase-btn">
-                  <i class="bi bi-plus"></i>
-                </button> -->
-              </div>
-            </div>
-          </div>
           <button class="btn btn-warning shadow-0"> Buy now </button>
-          <button class="btn btn-primary shadow-0"> <i class="bi bi-basket me-1"></i> Add to cart </button>
+          <div class="product-container">
+            <?php
+            $select_product = mysqli_query($conn, "SELECT * FROM `tbl_product`") or die('query failed');
+            if (mysqli_num_rows($select_product) > 0) {
+              while ($fetch_product = mysqli_fetch_assoc($select_product)) {
+
+                ?>
+                <div class="product-box">
+
+                  <form method="post" action="">
+                    <input type="hidden" name="product_image" value="<?php echo $fetch_product['p_featured_photo']; ?>">
+                    <input type="hidden" name="product_name" value="<?php echo $fetch_product['p_name']; ?>">
+                    <input type="hidden" name="product_price" value="<?php echo $fetch_product['p_current_price']; ?>">
+
+                    <?php
+              }
+            }
+            ?>
+                <div class="row mb-4">
+                  <div class="col-md-4 col-6 mb-3">
+                    <label class="mb-2 d-block">Quantity</label>
+                    <div class="input-group mb-3" style="width: 170px;">
+                      <input type="number" class="form-control text-center" name="product_quantity" id="quantity-input"
+                        value="1" min="1" />
+                    </div>
+                  </div>
+                </div>
+                <input type="submit" value="Add to Cart" name="add_to_cart" class="btn btn-primary shadow-0">
+              </form>
+            </div>
+
+          </div>
+
+
+
           <button class="btn btn-light border"> <i class="bi bi-heart me-1"></i> Save </button>
-        </div>
-      </main>
     </div>
+    </main>
+  </div>
   </div>
 </section>
 
@@ -453,7 +317,7 @@ if ($success_message1 != '') {
                   </ul>
                 </div> -->
 
-               
+
                 <div class="col-12 col-md-6 mb-0">
                   <!-- <ul class="list-unstyled">
                     <li><i class="bi bi-check-lg text-success me-2"></i>Easy fast and ver good</li>
@@ -484,27 +348,27 @@ if ($success_message1 != '') {
                   <td class="py-2">Intel Iris Plus Graphics 640</td>
                 </tr>
               </table> -->
-              </div>
-              <?php
-$product_id = intval($_GET['id']);
-$sql = "SELECT product_catalogue
+            </div>
+            <?php
+            $product_id = intval($_GET['id']);
+            $sql = "SELECT product_catalogue
         FROM tbl_product
         WHERE tbl_product.id = $product_id";
-$result = $conn->query($sql);
+            $result = $conn->query($sql);
 
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $pdf_name = $row['product_catalogue']; 
+            if ($result->num_rows > 0) {
+              $row = $result->fetch_assoc();
+              $pdf_name = $row['product_catalogue'];
 
-    // files are stored in the 'assets/uploads/' directory
-    $file_path = 'assets/uploads/'. $pdf_name;
-    $view_url = "pdf_download.php?action=view&id=$product_id";
-    $download_url = "pdf_download.php?action=download&id=$product_id";
-    echo '<a href="'. $view_url . '" class="btn btn-warning" target="_blank"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
-    echo '&nbsp;&nbsp;';
-    echo '<a href="'. $download_url . '" class="btn btn-success"><i class="fa fa-download"></i> Download Catalogue</a>';
-}
-?>
+              // files are stored in the 'assets/uploads/' directory
+              $file_path = 'assets/uploads/' . $pdf_name;
+              $view_url = "pdf_download.php?action=view&id=$product_id";
+              $download_url = "pdf_download.php?action=download&id=$product_id";
+              echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
+              echo '&nbsp;&nbsp;';
+              echo '<a href="' . $download_url . '" class="btn btn-success"><i class="fa fa-download"></i> Download Catalogue</a>';
+            }
+            ?>
             <div class="tab-pane fade" id="pills-warranty" role="tabpanel">
               Tab content or sample information now <br />
               Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
