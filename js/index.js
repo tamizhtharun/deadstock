@@ -138,14 +138,64 @@ Inputemail.style.marginBottom = '1px'
 //running txt
 
 const marquee = document.getElementById('marquee');
+let isPaused = false;
+let scrollSpeed = 2; // Adjust speed (lower = faster)
+let position = window.innerWidth; // Start from right edge
 
-    // Load the text from the file
-    fetch('text.txt')
-      .then(response => response.text())
-      .then(text => {
-        marquee.innerHTML = text;
-      })
-      .catch(error => console.error('Error loading text:', error));
+// Clone the text when it's too short
+function initializeMarquee() {
+    const span = marquee.getElementsByTagName('span')[0];
+    const textWidth = span.offsetWidth;
+    
+    // If text is shorter than window, clone it multiple times
+    if (textWidth < window.innerWidth) {
+        const repeats = Math.ceil(window.innerWidth / textWidth) + 1;
+        const text = span.innerHTML;
+        span.innerHTML = text + '&nbsp;'.repeat(10);
+        for (let i = 0; i < repeats; i++) {
+            const clone = span.cloneNode(true);
+            marquee.appendChild(clone);
+        }
+    }
+}
+
+// Animation function
+function animate() {
+    if (!isPaused) {
+        position -= scrollSpeed;
+        
+        // Reset position when text has scrolled past its length
+        const firstSpan = marquee.getElementsByTagName('span')[0];
+        if (position < -firstSpan.offsetWidth) {
+            position = window.innerWidth;
+        }
+        
+        marquee.style.transform = `translateX(${position}px)`;
+    }
+    requestAnimationFrame(animate);
+}
+
+// Event listeners for hover
+marquee.addEventListener('mouseenter', () => {
+    isPaused = true;
+});
+
+marquee.addEventListener('mouseleave', () => {
+    isPaused = false;
+});
+
+// Start the marquee
+window.addEventListener('load', () => {
+    initializeMarquee();
+    animate();
+});
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    position = window.innerWidth;
+    initializeMarquee();
+});
+
 
 //strong password
 //signup form

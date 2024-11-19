@@ -15,6 +15,8 @@ session_start();
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#your-brand-color">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dead Stock Processing</title>
@@ -24,6 +26,7 @@ session_start();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/responsive.css">
 
         <!-- Link Disply the featured categories in home page slider  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
@@ -82,7 +85,7 @@ session_start();
                     Cart
                   </button>
                   <div class="dropdown">
-                    <button class="dropbtn btn btn-outline-secondary"><?php echo $_SESSION['user_session']['name']?> ▾</button>
+                    <button class="dropbtn btn btn-outline-secondary"><?php echo $_SESSION['user_session']['username']?> ▾</button>
                     <div class="dropdown-content">
                       <a href="" >Account</a>
                       <a href="" >Settings</a>
@@ -98,9 +101,19 @@ session_start();
       </nav>
 
   <!-- runningtxt -->
-  <div class="runningtxt">
-      
-  </div>
+  <!-- runningtxt -->
+<div class="scrolling-text">
+    <?php
+    // Add this query to your existing database connection
+    $stmt = $pdo->prepare("SELECT running_text FROM tbl_settings");
+    $stmt->execute();
+    $running_text = $stmt->fetchColumn();
+     $display_text = str_repeat(htmlspecialchars($running_text) . " &nbsp;&nbsp;&nbsp;&nbsp; ", 3);
+    ?>
+    <div class="scrolling-text-content">
+        <?php echo htmlspecialchars($running_text); ?>
+    </div>
+</div>
 </div>
 
 <!-- login modal -->

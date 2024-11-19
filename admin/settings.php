@@ -104,10 +104,10 @@ if(isset($_POST['form2'])) {
 if(isset($_POST['form3'])) {
     
     // updating the database
-    $statement = $pdo->prepare("UPDATE tbl_settings SET newsletter_on_off=?, footer_copyright=?, contact_address=?, contact_email=?, contact_phone=?, contact_map_iframe=? WHERE id=1");
-    $statement->execute(array($_POST['newsletter_on_off'],$_POST['footer_copyright'],$_POST['contact_address'],$_POST['contact_email'],$_POST['contact_phone'],$_POST['contact_map_iframe']));
+    $statement = $pdo->prepare("UPDATE tbl_settings SET running_text = ? WHERE id = 1");
+    $statement->execute([$_POST['running_text']]);
 
-    $success_message = 'General content settings is updated successfully.';
+    $success_message = 'Running text is updated successfully.';
     
 }
 //Email Settings
@@ -806,6 +806,7 @@ $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 foreach ($result as $row) {
     $logo                            = $row['logo'];
     $favicon                         = $row['favicon'];
+    $running_text                    = $row['running_text'];
     $footer_about                    = $row['footer_about'];
     $footer_copyright                = $row['footer_copyright'];
     $contact_address                 = $row['contact_address'];
@@ -909,8 +910,8 @@ foreach ($result as $row) {
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab_1" data-toggle="tab">Logo</a></li>
                         <li><a href="#tab_2" data-toggle="tab">Favicon</a></li>
-                        <!-- <li><a href="#tab_3" data-toggle="tab">Footer & Contact</a></li>
-                        <li><a href="#" data-toggle="tab">Message Settings</a></li>
+                        <li><a href="#tab_3" data-toggle="tab">Running Text</a></li>
+                        <!-- <li><a href="#" data-toggle="tab">Message Settings</a></li>
                         <li><a href="#" data-toggle="tab">Products</a></li>
                         <li><a href="#" data-toggle="tab">Home Settings</a></li>
                         <li><a href="#" data-toggle="tab">Banner Settings</a></li>
@@ -984,39 +985,11 @@ foreach ($result as $row) {
 
                             <form class="form-horizontal" action="" method="post">
                             <div class="box box-info">
-                                <div class="box-body">
+                                <div class="box-body">                              
                                     <div class="form-group">
-                                        <label for="" class="col-sm-2 control-label">Newsletter Section </label>
-                                        <div class="col-sm-3">
-                                            <select name="newsletter_on_off" class="form-control" style="width:auto;">
-                                                <option value="1" <?php if($newsletter_on_off == 1) {echo 'selected';} ?>>On</option>
-                                                <option value="0" <?php if($newsletter_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-2 control-label">Footer - Copyright </label>
-                                        <div class="col-sm-9">
-                                            <input class="form-control" type="text" name="footer_copyright" value="<?php echo $footer_copyright; ?>">
-                                        </div>
-                                    </div>                              
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-2 control-label">Contact Address </label>
+                                        <label for="" class="col-sm-2 control-label">Running Test </label>
                                         <div class="col-sm-6">
-                                            <textarea class="form-control" name="contact_address" style="height:140px;"><?php echo $contact_address; ?></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-2 control-label">Contact Email </label>
-                                        <div class="col-sm-6">
-                                            <input type="text" class="form-control" name="contact_email" value="<?php echo $contact_email; ?>">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-2 control-label">Contact Phone Number </label>
-                                        <div class="col-sm-6">
-                                            <input type="text" class="form-control" name="contact_phone" value="<?php echo $contact_phone; ?>">
+                                            <textarea class="form-control" name="running_text" style="height:140px;"><?php echo $running_text; ?></textarea>
                                         </div>
                                     </div>
                                  <!-- <div class="form-group">
@@ -1025,12 +998,6 @@ foreach ($result as $row) {
                                             <input type="text" class="form-control" name="contact_fax" value="<?php echo $contact_fax; ?>">
                                         </div>
                                     </div>-->
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-2 control-label">Contact Map iFrame </label>
-                                        <div class="col-sm-9">
-                                            <textarea class="form-control" name="contact_map_iframe" style="height:200px;"><?php echo $contact_map_iframe; ?></textarea>
-                                        </div>
-                                    </div>
                                     <div class="form-group">
                                         <label for="" class="col-sm-2 control-label"></label>
                                         <div class="col-sm-6">

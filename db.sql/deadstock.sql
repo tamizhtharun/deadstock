@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 12, 2024 at 05:43 PM
+-- Generation Time: Nov 16, 2024 at 03:25 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -49,7 +49,7 @@ CREATE TABLE `sellers` (
 
 INSERT INTO `sellers` (`seller_id`, `seller_name`, `seller_cname`, `seller_email`, `seller_phone`, `seller_gst`, `seller_address`, `seller_state`, `seller_city`, `seller_zipcode`, `seller_password`, `created_at`, `seller_status`) VALUES
 (4, 'TAMIL SELVAN V', 'MKCE', 'mailtotharun23@gmail.com', '09597049879', '123', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$Ja4zOaYUhFjhacu4S2hy3OuN1vfmmHRMMELE9SWyTg0J1ohO5RBre', '2024-11-12 09:44:32', 1),
-(5, 'Jana', 'IMET TOOLING INDIA PVT LTD', 'imettrichy@gmail.com', '9500612277', '33AACCI1032M1ZW', 'No.8, Patel Complex, Mannarpuram', 'Tamilnadu', 'Trichy', '620020', '$2y$10$aPmp4cjZc2/jXX5z7rbIVOP6k5IFtgcQiactxHycUUNkTRxv5OMjW', '2024-11-12 11:11:35', 1);
+(5, 'Jana', 'IMET TOOLING INDIA PVT LTD', 'imettrichy@gmail.com', '9500612277', '33AACCI1032M1ZW', 'No.8, Patel Complex, Mannarpuram', 'Tamilnadu', 'Trichy', '620020', '$2y$10$Ja4zOaYUhFjhacu4S2hy3OuN1vfmmHRMMELE9SWyTg0J1ohO5RBre', '2024-11-12 11:11:35', 1);
 
 -- --------------------------------------------------------
 
@@ -59,19 +59,42 @@ INSERT INTO `sellers` (`seller_id`, `seller_name`, `seller_cname`, `seller_email
 
 CREATE TABLE `tbl_brands` (
   `brand_id` int(11) NOT NULL,
+  `tcat_id` int(11) NOT NULL,
   `brand_name` varchar(255) NOT NULL,
-  `brand_description` varchar(5000) NOT NULL
+  `brand_description` varchar(5000) NOT NULL,
+  `brand_logo` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_brands`
 --
 
-INSERT INTO `tbl_brands` (`brand_id`, `brand_name`, `brand_description`) VALUES
-(1, 'BRAND 1', ''),
-(2, 'BRAND 2', ''),
-(3, 'BRAND 3', ''),
-(4, 'BRAND 4', '');
+INSERT INTO `tbl_brands` (`brand_id`, `tcat_id`, `brand_name`, `brand_description`, `brand_logo`) VALUES
+(41, 10, 'Allied Machines and Engineering', '', 'brand-logo-41.png'),
+(42, 10, 'Big Diashowa', '', 'brand-logo-42.png'),
+(43, 10, 'Birla Precision Tooling ', '', 'brand-logo-43.jpg'),
+(44, 10, 'Carmax', '', 'brand-logo-44.gif'),
+(45, 10, 'Certizit', '', 'brand-logo-45.png'),
+(46, 10, 'Dormar', '', 'brand-logo-46.png'),
+(47, 10, 'Emuge', '', 'brand-logo-47.png'),
+(48, 10, 'Haimer', '', 'brand-logo-48.jpg'),
+(49, 10, 'Ingersoll', '', 'brand-logo-49.png'),
+(50, 10, 'Iscar', '', 'brand-logo-50.jpg'),
+(51, 10, 'Kennametal', '', 'brand-logo-51.jpg'),
+(52, 10, 'Korloy', '', 'brand-logo-52.png'),
+(53, 10, 'LMT', '', 'brand-logo-53.png'),
+(54, 10, 'OSG', '', 'brand-logo-54.png'),
+(55, 10, 'Ph Horn', '', 'brand-logo-55.png'),
+(56, 10, 'Sandvik Coromant', '', 'brand-logo-56.png'),
+(57, 10, 'Schunk', '', 'brand-logo-57.png'),
+(58, 10, 'Sumitomo', '', 'brand-logo-58.png'),
+(59, 10, 'Taegutec', '', 'brand-logo-59.png'),
+(61, 10, 'ToolFlo', '', 'brand-logo-61.jpg'),
+(62, 10, 'Tungaloy', '', 'brand-logo-62.png'),
+(63, 10, 'Walter Tools', '', 'brand-logo-63.png'),
+(64, 10, 'Widia', '', 'brand-logo-64.png'),
+(65, 10, 'YG1', '', 'brand-logo-65.png'),
+(66, 10, 'Dormar', '', 'brand-logo-66.png');
 
 -- --------------------------------------------------------
 
@@ -259,7 +282,6 @@ CREATE TABLE `tbl_product` (
   `p_qty` int(10) NOT NULL,
   `p_featured_photo` varchar(255) NOT NULL,
   `p_description` text NOT NULL,
-  `p_short_description` text NOT NULL,
   `p_feature` text NOT NULL,
   `p_condition` text NOT NULL,
   `p_return_policy` text NOT NULL,
@@ -268,17 +290,19 @@ CREATE TABLE `tbl_product` (
   `p_is_active` int(1) NOT NULL,
   `p_is_approve` int(1) NOT NULL,
   `ecat_id` int(11) NOT NULL,
-  `product_catalogue` varchar(500) NOT NULL
+  `product_catalogue` varchar(500) NOT NULL,
+  `product_brand` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `tbl_product`
 --
 
-INSERT INTO `tbl_product` (`id`, `seller_id`, `p_name`, `p_old_price`, `p_current_price`, `p_qty`, `p_featured_photo`, `p_description`, `p_short_description`, `p_feature`, `p_condition`, `p_return_policy`, `p_total_view`, `p_is_featured`, `p_is_active`, `p_is_approve`, `ecat_id`, `product_catalogue`) VALUES
-(138, 4, 'Shank tool – Rigid clamping', '500', '439', 122, 'product-featured-138.jpg', '', '', '', '', '', 17, 1, 0, 1, 97, ''),
-(139, 5, 'CNMG120408-NM4 WSM30', '896', '545', 100, 'product-featured-139.png', '', '', '', '', '', 2, 1, 1, 1, 99, ''),
-(140, 4, 'Turning Insert – Positive rhombic 80°', '580', '199', 122, 'product-featured-140.png', '', '', '', '', '', 0, 0, 0, 0, 97, 'product-catalogue-140.pdf');
+INSERT INTO `tbl_product` (`id`, `seller_id`, `p_name`, `p_old_price`, `p_current_price`, `p_qty`, `p_featured_photo`, `p_description`, `p_feature`, `p_condition`, `p_return_policy`, `p_total_view`, `p_is_featured`, `p_is_active`, `p_is_approve`, `ecat_id`, `product_catalogue`, `product_brand`) VALUES
+(155, 4, 'Shank tool – Rigid clamping', '999', '400', 122, 'product-featured-155.png', '', '', '', '', 3, 1, 0, 1, 97, 'product-catalogue-155.pdf', '39'),
+(158, 5, 'CNMG120408-NM4 WSM30', '896', '495', 100, 'product-featured-158.png', '', '', '', '', 13, 1, 1, 1, 97, 'product-catalogue-158.pdf', '63'),
+(159, 5, 'VBMT160408-FM6 WSM20S', '1329', '697', 100, 'product-featured-159.png', '', '', '', '', 31, 1, 1, 1, 97, 'product-catalogue-159.pdf', '63'),
+(160, 4, 'Shank tool – Rigid clamping', '986', '801', 122, 'product-featured-160.png', 'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', '', '', '', 21, 0, 0, 1, 97, 'product-catalogue-160.pdf', '50');
 
 -- --------------------------------------------------------
 
@@ -323,6 +347,7 @@ CREATE TABLE `tbl_settings` (
   `id` int(11) NOT NULL,
   `logo` varchar(255) NOT NULL,
   `favicon` varchar(255) NOT NULL,
+  `running_text` longtext NOT NULL,
   `footer_about` text NOT NULL,
   `footer_copyright` text NOT NULL,
   `contact_address` text NOT NULL,
@@ -397,8 +422,8 @@ CREATE TABLE `tbl_settings` (
 -- Dumping data for table `tbl_settings`
 --
 
-INSERT INTO `tbl_settings` (`id`, `logo`, `favicon`, `footer_about`, `footer_copyright`, `contact_address`, `contact_email`, `contact_phone`, `contact_fax`, `contact_map_iframe`, `receive_email`, `receive_email_subject`, `receive_email_thank_you_message`, `forget_password_message`, `total_recent_post_footer`, `total_popular_post_footer`, `total_recent_post_sidebar`, `total_popular_post_sidebar`, `total_featured_product_home`, `total_latest_product_home`, `total_popular_product_home`, `meta_title_home`, `meta_keyword_home`, `meta_description_home`, `banner_login`, `banner_registration`, `banner_forget_password`, `banner_reset_password`, `banner_search`, `banner_cart`, `banner_checkout`, `banner_product_category`, `banner_blog`, `cta_title`, `cta_content`, `cta_read_more_text`, `cta_read_more_url`, `cta_photo`, `featured_product_title`, `featured_product_subtitle`, `latest_product_title`, `latest_product_subtitle`, `popular_product_title`, `popular_product_subtitle`, `testimonial_title`, `testimonial_subtitle`, `testimonial_photo`, `blog_title`, `blog_subtitle`, `newsletter_text`, `paypal_email`, `stripe_public_key`, `stripe_secret_key`, `bank_detail`, `before_head`, `after_body`, `before_body`, `home_service_on_off`, `home_welcome_on_off`, `home_featured_product_on_off`, `home_latest_product_on_off`, `home_popular_product_on_off`, `home_testimonial_on_off`, `home_blog_on_off`, `newsletter_on_off`, `ads_above_welcome_on_off`, `ads_above_featured_product_on_off`, `ads_above_latest_product_on_off`, `ads_above_popular_product_on_off`, `ads_above_testimonial_on_off`, `ads_category_sidebar_on_off`) VALUES
-(1, 'logo.png', 'favicon.png', '<p>Lorem ipsum dolor sit amet, omnis signiferumque in mei, mei ex enim concludaturque. Senserit salutandi euripidis no per, modus maiestatis scribentur est an.Â Ea suas pertinax has.</p>\r\n', '', '', '', '', '', '', 'support@ecommercephp.com', 'Visitor Email Message from Ecommerce Site PHP', 'Thank you for sending email. We will contact you shortly.', 'A confirmation link is sent to your email address. You will get the password reset information in there.', 4, 4, 5, 5, 5, 6, 8, 'Ecommerce PHP', 'online fashion store, garments shop, online garments', 'ecommerce php project with mysql database', 'banner_login.jpg', 'banner_registration.jpg', 'banner_forget_password.jpg', 'banner_reset_password.jpg', 'banner_search.jpg', 'banner_cart.jpg', 'banner_checkout.jpg', 'banner_product_category.png', 'banner_blog.jpg', 'Welcome To Our Ecommerce Website', 'Lorem ipsum dolor sit amet, an labores explicari qui, eu nostrum copiosae argumentum has. Latine propriae quo no, unum ridens expetenda id sit, \r\nat usu eius eligendi singulis. Sea ocurreret principes ne. At nonumy aperiri pri, nam quodsi copiosae intellegebat et, ex deserunt euripidis usu. ', 'Read More', '#', 'cta.jpg', 'Featured Products', 'Our list on Top Featured Products', 'Latest Products', 'Our list of recently added products', 'Popular Products', 'Popular products based on customer\'s choice', 'Testimonials', 'See what our clients tell about us', 'testimonial.jpg', 'Latest Blog', 'See all our latest articles and news from below', 'Sign-up to our newsletter for latest promotions and discounts.', 'admin@ecom.com', 'pk_test_0SwMWadgu8DwmEcPdUPRsZ7b', 'sk_test_TFcsLJ7xxUtpALbDo1L5c1PN', 'Bank Name: WestView Bank\r\nAccount Number: CA100270589600\r\nBranch Name: CA Branch\r\nCountry: USA', '', '<div id=\"fb-root\"></div>\r\n<script>(function(d, s, id) {\r\n  var js, fjs = d.getElementsByTagName(s)[0];\r\n  if (d.getElementById(id)) return;\r\n  js = d.createElement(s); js.id = id;\r\n  js.src = \"//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=323620764400430\";\r\n  fjs.parentNode.insertBefore(js, fjs);\r\n}(document, \'script\', \'facebook-jssdk\'));</script>', '<!--Start of Tawk.to Script-->\r\n<script type=\"text/javascript\">\r\nvar Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();\r\n(function(){\r\nvar s1=document.createElement(\"script\"),s0=document.getElementsByTagName(\"script\")[0];\r\ns1.async=true;\r\ns1.src=\'https://embed.tawk.to/5ae370d7227d3d7edc24cb96/default\';\r\ns1.charset=\'UTF-8\';\r\ns1.setAttribute(\'crossorigin\',\'*\');\r\ns0.parentNode.insertBefore(s1,s0);\r\n})();\r\n</script>\r\n<!--End of Tawk.to Script-->', 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1);
+INSERT INTO `tbl_settings` (`id`, `logo`, `favicon`, `running_text`, `footer_about`, `footer_copyright`, `contact_address`, `contact_email`, `contact_phone`, `contact_fax`, `contact_map_iframe`, `receive_email`, `receive_email_subject`, `receive_email_thank_you_message`, `forget_password_message`, `total_recent_post_footer`, `total_popular_post_footer`, `total_recent_post_sidebar`, `total_popular_post_sidebar`, `total_featured_product_home`, `total_latest_product_home`, `total_popular_product_home`, `meta_title_home`, `meta_keyword_home`, `meta_description_home`, `banner_login`, `banner_registration`, `banner_forget_password`, `banner_reset_password`, `banner_search`, `banner_cart`, `banner_checkout`, `banner_product_category`, `banner_blog`, `cta_title`, `cta_content`, `cta_read_more_text`, `cta_read_more_url`, `cta_photo`, `featured_product_title`, `featured_product_subtitle`, `latest_product_title`, `latest_product_subtitle`, `popular_product_title`, `popular_product_subtitle`, `testimonial_title`, `testimonial_subtitle`, `testimonial_photo`, `blog_title`, `blog_subtitle`, `newsletter_text`, `paypal_email`, `stripe_public_key`, `stripe_secret_key`, `bank_detail`, `before_head`, `after_body`, `before_body`, `home_service_on_off`, `home_welcome_on_off`, `home_featured_product_on_off`, `home_latest_product_on_off`, `home_popular_product_on_off`, `home_testimonial_on_off`, `home_blog_on_off`, `newsletter_on_off`, `ads_above_welcome_on_off`, `ads_above_featured_product_on_off`, `ads_above_latest_product_on_off`, `ads_above_popular_product_on_off`, `ads_above_testimonial_on_off`, `ads_category_sidebar_on_off`) VALUES
+(1, 'logo.png', 'favicon.png', 'Dead stock is inventory that is unsellable. A business may find itself with dead stock because it ordered or manufactured too many items and then found they didn\'t sell as anticipated. Dead stock can also include damaged items, incorrect deliveries, leftover seasonal products or expired raw materials.', '<p>Lorem ipsum dolor sit amet, omnis signiferumque in mei, mei ex enim concludaturque. Senserit salutandi euripidis no per, modus maiestatis scribentur est an.Â Ea suas pertinax has.</p>\r\n', '', 'Tamil', '', '', '', '', 'support@ecommercephp.com', 'Visitor Email Message from Ecommerce Site PHP', 'Thank you for sending email. We will contact you shortly.', 'A confirmation link is sent to your email address. You will get the password reset information in there.', 4, 4, 5, 5, 5, 6, 8, 'Ecommerce PHP', 'online fashion store, garments shop, online garments', 'ecommerce php project with mysql database', 'banner_login.jpg', 'banner_registration.jpg', 'banner_forget_password.jpg', 'banner_reset_password.jpg', 'banner_search.jpg', 'banner_cart.jpg', 'banner_checkout.jpg', 'banner_product_category.png', 'banner_blog.jpg', 'Welcome To Our Ecommerce Website', 'Lorem ipsum dolor sit amet, an labores explicari qui, eu nostrum copiosae argumentum has. Latine propriae quo no, unum ridens expetenda id sit, \r\nat usu eius eligendi singulis. Sea ocurreret principes ne. At nonumy aperiri pri, nam quodsi copiosae intellegebat et, ex deserunt euripidis usu. ', 'Read More', '#', 'cta.jpg', 'Featured Products', 'Our list on Top Featured Products', 'Latest Products', 'Our list of recently added products', 'Popular Products', 'Popular products based on customer\'s choice', 'Testimonials', 'See what our clients tell about us', 'testimonial.jpg', 'Latest Blog', 'See all our latest articles and news from below', 'Sign-up to our newsletter for latest promotions and discounts.', 'admin@ecom.com', 'pk_test_0SwMWadgu8DwmEcPdUPRsZ7b', 'sk_test_TFcsLJ7xxUtpALbDo1L5c1PN', 'Bank Name: WestView Bank\r\nAccount Number: CA100270589600\r\nBranch Name: CA Branch\r\nCountry: USA', '', '<div id=\"fb-root\"></div>\r\n<script>(function(d, s, id) {\r\n  var js, fjs = d.getElementsByTagName(s)[0];\r\n  if (d.getElementById(id)) return;\r\n  js = d.createElement(s); js.id = id;\r\n  js.src = \"//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=323620764400430\";\r\n  fjs.parentNode.insertBefore(js, fjs);\r\n}(document, \'script\', \'facebook-jssdk\'));</script>', '<!--Start of Tawk.to Script-->\r\n<script type=\"text/javascript\">\r\nvar Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();\r\n(function(){\r\nvar s1=document.createElement(\"script\"),s0=document.getElementsByTagName(\"script\")[0];\r\ns1.async=true;\r\ns1.src=\'https://embed.tawk.to/5ae370d7227d3d7edc24cb96/default\';\r\ns1.charset=\'UTF-8\';\r\ns1.setAttribute(\'crossorigin\',\'*\');\r\ns0.parentNode.insertBefore(s1,s0);\r\n})();\r\n</script>\r\n<!--End of Tawk.to Script-->', 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -430,20 +455,21 @@ INSERT INTO `tbl_slider` (`id`, `photo`, `heading`) VALUES
 CREATE TABLE `tbl_top_category` (
   `tcat_id` int(11) NOT NULL,
   `tcat_name` varchar(255) NOT NULL,
-  `show_on_menu` int(1) NOT NULL
+  `show_on_menu` int(1) NOT NULL,
+  `photo` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `tbl_top_category`
 --
 
-INSERT INTO `tbl_top_category` (`tcat_id`, `tcat_name`, `show_on_menu`) VALUES
-(10, 'Cutting Tools', 1),
-(11, 'Saw Blades', 1),
-(12, 'Hand Tools', 1),
-(13, 'Abrasive Wheels', 1),
-(14, 'Power Tools', 1),
-(15, 'Others ', 1);
+INSERT INTO `tbl_top_category` (`tcat_id`, `tcat_name`, `show_on_menu`, `photo`) VALUES
+(10, 'Cutting Tools', 1, 'top-category-image10.png'),
+(11, 'Saw Blades', 1, 'top-category-image11.png'),
+(12, 'Hand Tools', 1, 'top-category-image12.jpg'),
+(13, 'Abrasive Wheels', 1, 'top-category-image13.jpg'),
+(14, 'Power Tools', 1, 'top-category-image14.jpg'),
+(15, 'Others ', 1, 'top-category-image15.jpg');
 
 -- --------------------------------------------------------
 
@@ -516,6 +542,8 @@ CREATE TABLE `user_login` (
   `id` int(11) NOT NULL,
   `user_name` varchar(100) NOT NULL,
   `user_email` varchar(100) NOT NULL,
+  `user_phone` varchar(13) NOT NULL,
+  `user_photo` varchar(250) NOT NULL,
   `user_password` varchar(100) NOT NULL,
   `user_role` enum('admin','seller','user','') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -524,18 +552,10 @@ CREATE TABLE `user_login` (
 -- Dumping data for table `user_login`
 --
 
-INSERT INTO `user_login` (`id`, `user_name`, `user_email`, `user_password`, `user_role`) VALUES
-(1, 'TAMIL', 'TH@mm.bb', '$2y$10$tj6EZTOvNTR2h6Xed7AoDe7l23pXGUYc/ngxpIRCsb0bRobtTyjTi', 'user'),
-(2, 'TAMIL SELVAN V', 'mailto23@gmail.com', '$2y$10$bBQCEDdd9C783tRiILTv2uV5PwkLFsKmGdnZACcVNAClYiFX9Ex7q', 'seller'),
-(3, 'Admin', 'admin@deadstock.in', '$2y$10$bBQCEDdd9C783tRiILTv2uV5PwkLFsKmGdnZACcVNAClYiFX9Ex7q', 'admin'),
-(4, 'Testseller', 'testseller@mail.com', '$2y$10$hKfSEtKUL0R7Qsd8y.qv5OQnugXD.oUMGBRjcz1.igx5wh67UFRO.', 'seller'),
-(5, 'deadstock seller', 'testseller@deadstock.in', '$2y$10$fDw57IwzRwxgGpEIhiXbru8pUJEuju61GJd.QQkK2S8boFKArWQ26', 'seller'),
-(6, 'Test Seller', 'testseller@deadstock.in', '$2y$10$EaBFzz/iPG/sVzS2mQoTyuwjKWnNKrX7CwHywvPQS7F59vqh3h6Da', 'seller'),
-(7, 'SRIRAM R', 'testseller2@deadstock.in', '$2y$10$7kk8RHlnJb1/aTRtQ/yMzuumzXjQkrkAxoe3djkIfOGf4wOpleCUS', 'seller'),
-(8, 'TAMIL SELVAN V', 'mailtotharun23@gmail.com', '$2y$10$9Rt1x.mB8Ydqhrq0fB9j2eV8OxOzmwDQ/hohE/UslVTtQuhxpRy7W', 'seller'),
-(9, 'Super Admin', 'super@deadstock.in', '$2y$10$9Rt1x.mB8Ydqhrq0fB9j2eV8OxOzmwDQ/hohE/UslVTtQuhxpRy7W', 'admin'),
-(10, 'TAMIL SELVAN V', 'mailtotharun23@gmail.com', '$2y$10$Ja4zOaYUhFjhacu4S2hy3OuN1vfmmHRMMELE9SWyTg0J1ohO5RBre', 'seller'),
-(11, 'Jana', 'imettrichy@gmail.com', '$2y$10$aPmp4cjZc2/jXX5z7rbIVOP6k5IFtgcQiactxHycUUNkTRxv5OMjW', 'seller');
+INSERT INTO `user_login` (`id`, `user_name`, `user_email`, `user_phone`, `user_photo`, `user_password`, `user_role`) VALUES
+(1, 'தமிழ்', 'superadmin@deadstock.in', '9597049879', 'user-1.jpg', '$2y$10$tj6EZTOvNTR2h6Xed7AoDe7l23pXGUYc/ngxpIRCsb0bRobtTyjTi', 'admin'),
+(3, 'Admin', 'admin@deadstock.in', '', '', '$2y$10$iDgyJWxWFVEC78SzKhsv9OkxMkkIA3brNQ.UtwBla0vFB.suhnSVS', 'admin'),
+(11, 'Jana', 'imettrichy@gmail.com', '', '', '$2y$10$Ja4zOaYUhFjhacu4S2hy3OuN1vfmmHRMMELE9SWyTg0J1ohO5RBre', 'seller');
 
 --
 -- Indexes for dumped tables
@@ -641,7 +661,7 @@ ALTER TABLE `sellers`
 -- AUTO_INCREMENT for table `tbl_brands`
 --
 ALTER TABLE `tbl_brands`
-  MODIFY `brand_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `brand_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `tbl_end_category`
@@ -665,7 +685,7 @@ ALTER TABLE `tbl_mid_category`
 -- AUTO_INCREMENT for table `tbl_product`
 --
 ALTER TABLE `tbl_product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
 
 --
 -- AUTO_INCREMENT for table `tbl_slider`
@@ -677,7 +697,7 @@ ALTER TABLE `tbl_slider`
 -- AUTO_INCREMENT for table `tbl_top_category`
 --
 ALTER TABLE `tbl_top_category`
-  MODIFY `tcat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `tcat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `tbl_waiting_products`

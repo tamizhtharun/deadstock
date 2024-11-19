@@ -15,6 +15,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->execute();
     $result = $stmt->get_result();
 
+    $sql = "SELECT * FROM users";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $user_result = $stmt->get_result();
+
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
 
@@ -33,14 +38,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 case 'admin': 
                     // Start session
                     session_start();
-                    $_SESSION['admin_session'] = $user_data;
+                    $_SESSION['admin_session'] = $user;
                     $_SESSION['admin_role'] = 'admin';
                     header("Location: admin/index.php");
                     exit();
                 case 'user':
                     // Start session
                     session_start();
-                    $_SESSION['user_session'] = $user_data;
+                    $sql_user_data = "SELECT * FROM users WHERE email = ?";
+                            $stmt_user_data = $conn->prepare($sql_user_data);
+                            $stmt_user_data->bind_param("s", $email);
+                            $stmt_user_data->execute();
+                            $result_user_data = $stmt_user_data->get_result();
+                
+                            if ($result_user_data->num_rows > 0) {
+                                $user_data_ = $result_user_data->fetch_assoc();}
+
+                                session_start();
+                    // $_SESSION['user_session'] = $user_data;
+                    $_SESSION['user_session'] = $user_data_;
                     $_SESSION['user_email'] = $user['user_email'];
                     $_SESSION['user_role'] = 'user';
                     $_SESSION['loggedin'] = true; 
