@@ -23,9 +23,9 @@ if(!isset($_REQUEST['id'])) {
 	$result = $statement->fetchAll(PDO::FETCH_ASSOC);							
 	foreach ($result as $row) {
 		$p_featured_photo = $row['p_featured_photo'];
-		unlink('../assets/uploads/'.$p_featured_photo);
+		unlink('../assets/uploads/product-photos/'.$p_featured_photo);
 		$pdf_final_name = $row['product_catalogue'];
-		unlink('../assets/uploads/'.$pdf_final_name);
+		unlink('../assets/uploads/product-catalogues/'.$pdf_final_name);
 	}
 
 	// Getting other photo ID to unlink from folder

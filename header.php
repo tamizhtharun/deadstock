@@ -27,6 +27,7 @@ session_start();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/responsive.css">
+    <link rel="stylesheet" href="./css/header.css">
 
         <!-- Link Disply the featured categories in home page slider  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
@@ -44,61 +45,84 @@ session_start();
 </head>
 <body>
 <div class="header">   
-    <nav id="nav-bar-head" class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="index.php">
-            <img src="./assets/uploads/<?php echo $logo?>" alt="Logo" width="30" height="30">
-            Dead Stock
-          </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse page-head" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item search-form" id="navbarSupportedContent">
-              <form class="d-flex" role="search" action="search-result.php" method="get">
-								<div class="search-container">
-								<form action="search-result.php" method="GET" class="d-flex">
-										<ion-icon class="search-outline" name="search-outline" type="submit" size="small" style="padding: 5px;"></ion-icon>
-										<input id="form-control-me-2" class="form-control me-2" type="search" name="search_text" placeholder="Search" aria-label="Search" required>
-										<button type="submit" style="display: none;">Search</button>
-								</form>
-              </li>
-            
-              <li class="nav-item btns">
-              
-              <button id="seller-btn" type="button" class="seller-btn btn btn-outline-secondary" onclick="window.location.href='seller_registration.php';">
-                  Sell here!
-                </button>
+<nav class="ds-nav-container">
+            <div class="ds-logo-section">
+                <a href="#" class="ds-logo">
+                    <i class="fas fa-cube"></i>
+                    <span>Dead Stock</span>
+                </a>
+            </div>
 
-               
-                <?php if(!isset($_SESSION['user_session'])):?>
+            <div class="ds-search-section">
+                <div class="ds-search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search products..." class="ds-search-input">
+                </div>
+            </div>
+            <div class="ds-actions-section">
+    <?php if(isset($_SESSION['user'])): ?>
+        <div class="ds-user-controls">
+            <button class="ds-icon-button cart-button" title="Shopping Cart">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="ds-cart-badge">3</span>
+            </button>
+            <button class="ds-icon-button notification-button" title="Notifications">
+                <i class="fas fa-bell"></i>
+                <span class="ds-notification-badge">5</span>
+            </button>
+            <div class="ds-profile-menu">
+                <button class="ds-profile-trigger">
+                 <div class="ds-avatar">
+                      <?php
+                      // Path to user's avatar
+                      $userAvatar = isset($_SESSION['user']['avatar']) ? $_SESSION['user']['avatar'] : '';
+                      $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"; // Default avatar from the internet
 
-                <button type="button" id="login-btn" class="login-btn btn btn-outline-secondary"
-                  data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                  Login
-                </button>
-
-                <?php else: ?>
-                    <button type="button" id="login-btn" class="login-btn btn btn-outline-secondary" onclick="window.location.href='cart.php';">
-                    Cart
-                  </button>
-                  <div class="dropdown">
-                    <button class="dropbtn btn btn-outline-secondary"><?php echo $_SESSION['user_session']['username']?> ▾</button>
-                    <div class="dropdown-content">
-                      <a href="" >Account</a>
-                      <a href="" >Settings</a>
-                      <a href="" >orders</a>
-                      <a href="logout.php" >logout</a>
-                    </div>
+                      // Check if the file exists
+                      $avatarToDisplay = (file_exists($userAvatar) && !empty($userAvatar)) ? $userAvatar : $defaultAvatar;
+                      ?>
+                      <img src="<?= $avatarToDisplay ?>" alt="Profile">
                   </div>
-                  <?php endif; ?>
-              </li>
-            </ul>
-          </div>
+
+                </button>
+                <div class="ds-menu-dropdown">
+                    <div class="ds-menu-header">
+                        <img src="<?= $avatarToDisplay ?>" alt="Profile" class="ds-menu-avatar">
+                        <div class="ds-user-info">
+                            <span class="ds-user-name">John Doe</span>
+                            <span class="ds-user-email">john@example.com</span>
+                        </div>
+                    </div>
+                    <div class="ds-menu-items">
+                        <a href="/account" class="ds-menu-item">
+                            <i class="fas fa-user"></i>
+                            <span>Account</span>
+                        </a>
+                        <a href="/orders" class="ds-menu-item">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>Orders</span>
+                        </a>
+                        <a href="/bidding" class="ds-menu-item">
+                            <i class="fas fa-gavel"></i>
+                            <span>Bidding</span>
+                        </a>
+                        <div class="ds-menu-divider"></div>
+                        <a href="/logout" class="ds-menu-item ds-logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-      </nav>
+    <?php else: ?>
+        <div class="ds-auth-buttons">
+            <button class="ds-btn-secondary">Sell here</button>
+            <button class="ds-btn-primary">Login</button>
+        </div>
+    <?php endif; ?>
+</div>
+ </nav>
 
   <!-- runningtxt -->
   <!-- runningtxt -->
@@ -186,7 +210,7 @@ session_start();
             </div>
             <div class="input-submit">
               <button class="submit-btn" id="signup-btn" name="register">
-                <label for="submit">Sign Up</label>
+             <label for="submit">Sign Up</label>
               </button>
             </div>
             <div class="sign-in-link">

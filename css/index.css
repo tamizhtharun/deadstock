@@ -25,14 +25,7 @@ body::-webkit-scrollbar-thumb {
   background-color: rgb(185, 184, 184);
   border-radius: 50px;
 }
-.header{
-    position: fixed;    
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 2;
 
-}
 .dropbtn {
   background-color: #f8f9fa; /* Light background */
   color: black;
@@ -199,7 +192,7 @@ body::-webkit-scrollbar-thumb {
   overflow: hidden;
   background-color: #e9e9e9;
   padding: 0px 0;
-  margin-top: 60px; /* To account for your fixed navbar */
+  /* margin-top: 60px; */
   background: rgba(226, 226, 226, 0.5) !important; /* Semi-transparent background */
     backdrop-filter: blur(10px); /* Adjust the blur intensity */
 }
