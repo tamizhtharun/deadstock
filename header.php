@@ -48,7 +48,8 @@ session_start();
 <nav class="ds-nav-container">
             <div class="ds-logo-section">
                 <a href="#" class="ds-logo">
-                    <i class="fas fa-cube"></i>
+                    <!-- <i class="fas fa-cube"></i> -->
+                     <img src="assets\uploads\<?php echo $logo?>" style="width:30px" alt="Logo">
                     <span>Dead Stock</span>
                 </a>
             </div>

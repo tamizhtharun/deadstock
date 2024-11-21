@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     exit();
                 case 'user':
                     // Start session
-                    session_start();
+                    // session_start();
                     $sql_user_data = "SELECT * FROM users WHERE email = ?";
                             $stmt_user_data = $conn->prepare($sql_user_data);
                             $stmt_user_data->bind_param("s", $email);
@@ -55,8 +55,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 session_start();
                     // $_SESSION['user_session'] = $user_data;
                     $_SESSION['user_session'] = $user_data_;
-                    $_SESSION['user_email'] = $user['user_email'];
-                    $_SESSION['user_role'] = 'user';
+                    // $_SESSION['user_email'] = $user['user_email'];
+                    // $_SESSION['user_role'] = 'user';
                     $_SESSION['loggedin'] = true; // Store user role
                     header("Location: index.php");
                     exit();

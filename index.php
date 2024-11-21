@@ -129,7 +129,7 @@
               $activeClass = ($i === 0) ? 'active' : ''; // Only first item is active
           ?>
               <div class="carousel-item <?php echo $activeClass; ?>">
-                  <img class="img" src="assets/uploads/<?php echo $row['photo']; ?>" class="d-block w-100" alt="..." style="width:100%" >
+                  <img class="img" src="assets/uploads/sliders/<?php echo $row['photo']; ?>" class="d-block w-100" alt="..." style="width:100%" >
               </div>
           <?php
               $i++;
@@ -212,7 +212,7 @@ if (!empty($topCategories)) {
                                     <div class="product-item swiper-slide">
                                         <figure>
                                             <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" title="Product Title">
-                                                <img src="assets/uploads/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>" class="tab-image">
+                                                <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>" class="tab-image">
                                             </a>
                                         </figure>
                                         <div class="d-flex flex-column text-center">
