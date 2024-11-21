@@ -45,10 +45,22 @@ session_start();
 </head>
 <body>
 <div class="header">   
+<!-- <?php
+
+echo "<pre>";
+print_r($_SESSION); // Display all session variables
+echo "</pre>";
+
+
+
+
+
+
+?> -->
 <nav class="ds-nav-container">
             <div class="ds-logo-section">
                 <a href="#" class="ds-logo">
-                    <i class="fas fa-cube"></i>
+                <img src="./assets/uploads/<?php echo $logo?>" alt="Logo" width="30" height="30">
                     <span>Dead Stock</span>
                 </a>
             </div>
@@ -60,12 +72,13 @@ session_start();
                 </div>
             </div>
             <div class="ds-actions-section">
-    <?php if(isset($_SESSION['user'])): ?>
+    <?php if(isset($_SESSION['user_session'])): ?>
         <div class="ds-user-controls">
-            <button class="ds-icon-button cart-button" title="Shopping Cart">
+            <button class="ds-icon-button cart-button" title="Shopping Cart"  onclick="window.location.href='cart.php';">
                 <i class="fas fa-shopping-cart"></i>
                 <span class="ds-cart-badge">3</span>
             </button>
+            
             <button class="ds-icon-button notification-button" title="Notifications">
                 <i class="fas fa-bell"></i>
                 <span class="ds-notification-badge">5</span>
@@ -75,7 +88,7 @@ session_start();
                  <div class="ds-avatar">
                       <?php
                       // Path to user's avatar
-                      $userAvatar = isset($_SESSION['user']['avatar']) ? $_SESSION['user']['avatar'] : '';
+                      $userAvatar = isset($_SESSION['user_session']['avatar']) ? $_SESSION['user_session']['avatar'] : '';
                       $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"; // Default avatar from the internet
 
                       // Check if the file exists
@@ -89,25 +102,26 @@ session_start();
                     <div class="ds-menu-header">
                         <img src="<?= $avatarToDisplay ?>" alt="Profile" class="ds-menu-avatar">
                         <div class="ds-user-info">
-                            <span class="ds-user-name">John Doe</span>
-                            <span class="ds-user-email">john@example.com</span>
+                            <span class="ds-user-name"><?php echo $_SESSION['user_session']['username']?></span>
+                            <span class="ds-user-email"><?php echo $_SESSION['user_session']['email']?></span>
                         </div>
                     </div>
                     <div class="ds-menu-items">
-                        <a href="/account" class="ds-menu-item">
+                        <a href="/account" class="ds-menu-item "style="text-decoration: none !important";
+">
                             <i class="fas fa-user"></i>
                             <span>Account</span>
                         </a>
-                        <a href="/orders" class="ds-menu-item">
+                        <a href="/orders" class="ds-menu-item"style="text-decoration: none !important"">
                             <i class="fas fa-shopping-bag"></i>
                             <span>Orders</span>
                         </a>
-                        <a href="/bidding" class="ds-menu-item">
+                        <a href="/bidding" class="ds-menu-item"style="text-decoration: none !important">
                             <i class="fas fa-gavel"></i>
                             <span>Bidding</span>
                         </a>
                         <div class="ds-menu-divider"></div>
-                        <a href="/logout" class="ds-menu-item ds-logout">
+                        <a href="logout.php" class="ds-menu-item ds-logout"style="text-decoration: none !important">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>Logout</span>
                         </a>
@@ -117,8 +131,8 @@ session_start();
         </div>
     <?php else: ?>
         <div class="ds-auth-buttons">
-            <button class="ds-btn-secondary">Sell here</button>
-            <button class="ds-btn-primary">Login</button>
+            <button class="ds-btn-secondary" onclick="window.location.href='seller_registration.php';" >Sell here</button>
+            <button class="ds-btn-primary" type="button" id="login-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Login</button>
         </div>
     <?php endif; ?>
 </div>
