@@ -300,7 +300,7 @@ if ($success_message1 != '') {
           <a data-bs-toggle="modal" class="rounded-4" data-bs-target="#imageModal" href="#">
             <!-- <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4" src="icons\hole.png" /> -->
             <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4"
-              src="assets/uploads/<?php echo $p_featured_photo; ?>">
+              src="assets/uploads/product-photos/<?php echo $p_featured_photo; ?>">
 
           </a>
         </div>
