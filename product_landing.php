@@ -495,7 +495,7 @@ if ($result->num_rows > 0) {
     $pdf_name = $row['product_catalogue']; 
 
     // files are stored in the 'assets/uploads/' directory
-    $file_path = 'assets/uploads/'. $pdf_name;
+    $file_path = 'assets/uploads/product-catalogues/'. $pdf_name;
     $view_url = "pdf_download.php?action=view&id=$product_id";
     $download_url = "pdf_download.php?action=download&id=$product_id";
     echo '<a href="'. $view_url . '" class="btn btn-warning" target="_blank"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
@@ -588,7 +588,7 @@ if ($result->num_rows > 0) {
               <?php foreach ($related_products as $related_product): ?>
                 <div class="d-flex mb-3">
                   <a href="product_landing.php?id=<?php echo $related_product['id']; ?>" class="me-3">
-                    <img src="payment/assets/uploads/<?php echo $related_product['p_featured_photo']; ?>"
+                    <img src="payment/assets/uploads/product-photos/<?php echo $related_product['p_featured_photo']; ?>"
                       style="min-width: 96px; height: 96px;" class="img-thumbnail"
                       alt="<?php echo htmlspecialchars($related_product['p_name']); ?>" />
                   </a>
