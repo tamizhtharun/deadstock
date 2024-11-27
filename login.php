@@ -1,7 +1,11 @@
 <?php
 include 'db_connection.php';
-// include 'index.php';
+
 $error_message = ""; // Variable to store error messages
+
+
+
+// include 'index.php';
 $user_data = []; // Array to store user data
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -118,10 +122,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 $conn->close();
 
-// If there's an error message, display it as an alert
-if ($error_message) {
-    echo "<script>alert('$error_message');
-    window.location.href = 'index.php';
-    </script>";
+// If there's an error, save it to the session and redirect
+if (!empty($error_message)) {
+    session_start();
+    $_SESSION['error_message'] = $error_message; // Save error message to session
+    header("Location: index.php"); // Redirect to index.php
+    exit();
 }
+
+
+// If there's an error message, display it as an alert
+// if ($error_message) {
+//     echo "<script>alert('$error_message');
+//     window.location.href = 'index.php';
+//     </script>";
+// }
 ?>

@@ -11,6 +11,11 @@ foreach ($result as $row)
 ?>
 <?php
 session_start();
+// Retrieve the error message from the session
+$error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : null;
+
+// Clear the error message after retrieving it
+unset($_SESSION['error_message']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,7 +78,7 @@ echo "</pre>";
             </div>
             <div class="ds-actions-section">
     <?php if(isset($_SESSION['user_session'])): ?>
-      <button class="ds-btn-secondary" onclick="window.location.href='../seller_registration.php';" >Sell here</button>
+      <button class="ds-btn-secondary" onclick="window.location.href='seller_registration.php';" >Sell here</button>
 
         <div class="ds-user-controls">
             <button class="ds-icon-button cart-button" title="Shopping Cart"  onclick="window.location.href='cart.php';">
@@ -155,88 +160,91 @@ echo "</pre>";
 </div>
 </div>
 
-<!-- login modal -->
-
-<!-- <div id="error-message" style="color: red; display: none;"></div> -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<!-- Login Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">          
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Dead Stock</h1>
-          <button type="button" id="btn-close" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div id="modal-body" class="modal-body">
-          <!-- Sign In Form -->
-          <form id="signin-form" method="POST" action="login.php">
-            <h1 class="modal-title fs-5" id="box-header">Login</h1>
-            <div class="input-box">
-              <input type="email" id="mail" class="input-field" placeholder="Email" name="email" autocomplete="off"
-                required>
-              <!-- <p id="email-error"></p> -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Dead Stock</h1>
+                <button type="button" id="btn-close" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="input-box">
-              <input type="password" class="input-field" placeholder="Password" name="password" autocomplete="off"
-                required>
+            <div id="modal-body" class="modal-body">
+                <!-- Error Message HTML -->
+                <?php if (!empty($error_message)): ?>
+                <div class="premium-alert" id="premium-alert">
+                    <div class="alert-content">
+                        <div class="alert-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                        </div>
+                        <span class="alert-message"><?php echo htmlspecialchars($error_message); ?></span>
+                        <button class="alert-close" onclick="closeAlert()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <?php endif; ?>
+                <!-- Login Form -->
+                <form id="signin-form" method="POST" action="login.php">
+                    <h1 class="modal-title fs-5" id="box-header">Login</h1>
+                    <div class="input-box">
+                        <input type="email" id="mail" class="input-field" placeholder="Email" name="email" autocomplete="off" required>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" class="input-field" placeholder="Password" name="password" autocomplete="off" required>
+                    </div>
+                    <div class="forgot" id="forgot-password-link">
+                        <section>
+                            <a href="#">Forgot password?</a>
+                        </section>
+                    </div>
+                    <div class="input-submit">
+                        <button class="submit-btn" id="signin-btn" name="login">
+                            <label for="submit">Sign In</label>
+                        </button>
+                    </div>
+                    <div class="sign-up-link">
+                        <p>Don't have an account? <a href="#" id="signup-link">Sign Up</a></p>
+                    </div>
+                </form>
 
+                <!-- Sign Up Form -->
+                <form id="signup-form" method="POST" action="register.php" style="display: none;">
+                    <h1 class="modal-title fs-5" id="box-header">SignUp</h1>
+                    <div class="input-box">
+                        <input type="text" class="input-field" placeholder="Username" name="username" autocomplete="off" required>
+                    </div>
+                    <div class="input-box">
+                        <input type="tel" id="phone-number" class="input-field" placeholder="Phone" name="phone_number" autocomplete="off" required pattern="[0-9]{10}">
+                    </div>
+                    <div class="input-box">
+                        <input type="email" id="email" class="input-field" placeholder="Email" name="email" autocomplete="off" required>
+                    </div>
+                    <div class="input-box">
+                        <input id="password" type="password" class="input-field" placeholder="Password" name="password" autocomplete="off" required>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="input-field" placeholder="GST (Optional)" name="user_gst" autocomplete="off">
+                    </div>
+                    <div class="input-submit">
+                        <button class="submit-btn" id="signup-btn" name="register">
+                            <label for="submit">Sign Up</label>
+                        </button>
+                    </div>
+                    <div class="sign-in-link">
+                        <p>Already have an account? <a href="#" id="signin-link">Sign In</a></p>
+                    </div>
+                </form>
             </div>
-            <div class="forgot" id="forgot-password-link">
-              <!-- <section>
-                <input type="checkbox" id="check">
-                <label for="check">Remember me</label>
-              </section> -->
-              <section>
-                <a href="#">Forgot password ?</a>
-              </section>
-            </div>
-            <div class="input-submit">
-              <button class="submit-btn" id="signin-btn" name="login">
-                <label for="submit">Sign In</label>
-              </button>
-            </div>
-            <div class="sign-up-link">
-              <p>Don't have an account? <a href="#" id="signup-link">Sign Up</a></p>
-            </div>
-          </form>
-
-          <!-- Sign Up Form -->
-          <form id="signup-form" method="POST" action="register.php" style="display: none;">
-            <h1 class="modal-title fs-5" id="box-header">SignUp</h1>
-            <div class="input-box">
-              <input type="text" class="input-field" placeholder="Username" name="username" autocomplete="off" required>
-            </div>
-            <div class="input-box">
-              <input type="tel" id="phone-number" class="input-field" placeholder="Phone" name="phone_number"
-                autocomplete="off" required pattern="[0-9]{10}">
-              <!-- <p id="error-message"></p> -->
-            </div>
-            <div class="input-box">
-              <input type="email" id="email" class="input-field" placeholder="Email" name="email" autocomplete="off"
-                required>
-              <!-- <p id="email-error-message"></p> -->
-            </div>
-            <div class="input-box">
-              <input id="password" type="password" class="input-field" placeholder="Password" name="password" autocomplete="off"
-                required >
-                <!-- <p id="password-error"></p> -->
-            </div>
-            <div class="input-box">
-              <input type="text" class="input-field" placeholder="GST (Optional)" name="user_gst" autocomplete="off">
-            </div>
-            <div class="input-submit">
-              <button class="submit-btn" id="signup-btn" name="register">
-             <label for="submit">Sign Up</label>
-              </button>
-            </div>
-            <div class="sign-in-link">
-              <p>Already have an account? <a href="#" id="signin-link">Sign In</a></p>
-            </div>
-          </form>          
         </div>
-      </div>
     </div>
-  </div>
-
+</div>
 
   <script src="js/index.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -244,5 +252,91 @@ echo "</pre>";
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script> 
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
+
+  <!-- Login Modal script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const modalElement = document.getElementById('staticBackdrop');
+    let modal = new bootstrap.Modal(modalElement, {
+        backdrop: 'true',  // Enable closing when clicking outside (set to 'true')
+        keyboard: false    // Prevent closing when pressing ESC
+    });
+
+    // Show the modal if there's an error message
+    const errorMessage = "<?php echo addslashes($error_message ?? ''); ?>";
+    if (errorMessage) {
+        modal.show(); // Show the modal with error message
+    }
+
+    // Handle cleanup when the modal is hidden
+    modalElement.addEventListener('hidden.bs.modal', () => {
+        // Remove the modal backdrop manually
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) {
+            backdrop.remove();  // Remove the backdrop when modal is closed
+        }
+
+        // Reset the modal-open class and body styles
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = "";
+        document.body.style.paddingRight = "";
+    });
+
+    // Handle opening the modal from the login button
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            modal.show(); // Show the modal
+        });
+    }
+
+    // Handle closing the modal using the close button
+    const closeButton = document.querySelector('#staticBackdrop .btn-close');
+    if (closeButton) {
+        closeButton.addEventListener('click', () => {
+            modal.hide(); // Hide the modal when the close button is clicked
+        });
+    }
+});
+
+// JavaScript for alert functionality
+function closeAlert() {
+    const alert = document.getElementById('premium-alert');
+    alert.style.animation = 'fadeOut 0.3s ease forwards';
+    setTimeout(() => {
+        alert.style.display = 'none';
+    }, 300);
+}
+
+// Add fade out animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+    }
+`;
+document.head.appendChild(style);
+
+//     document.addEventListener('DOMContentLoaded', () => {
+//     const errorMessage = "<?php echo addslashes($error_message); ?>"; // Get error message from PHP
+
+//     // If there's an error message, open the modal
+//     if (errorMessage) {
+//         const loginModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+//             backdrop: 'static',
+//             keyboard: false
+//         });
+//         loginModal.show(); // Show the modal
+//     }
+// });
+
+  </script>
 </body>
 </html>

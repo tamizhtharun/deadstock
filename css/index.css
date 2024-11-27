@@ -683,10 +683,6 @@ section a{
     font-weight: 600;
 }
 
-#modal-body{
-    padding: 5%;
-    
-}
 
 #box-header{
     display: flex;
@@ -700,23 +696,7 @@ section a{
     margin-top: -10px;
 }
 
-.modal {
-    border-radius: 50px; 
-    overflow: hidden;
-  }
 
-.modal-body {
-    background-color: #e4e4e4;
-  }
-  .modal-header {
-    background-color: #e4e4e4; 
-    color: #0e0e0e; 
-
-  }
-  .modal-content {
-    border-radius: 30px !important;
-    overflow: hidden !important;
-  }
   #btn-close{
     box-shadow: none;
     outline: none;
@@ -1075,3 +1055,135 @@ section a{
   }
 
  
+
+  
+
+  #message-container .alert {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+}
+
+.modal {
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.modal-body {
+  background-color: #e4e4e4;
+  padding-top: 0; /* Remove extra spacing at the top of the modal body */
+}
+
+.modal-header {
+  background-color: #e4e4e4;
+  color: #0e0e0e;
+  padding: 0.5rem 1rem; /* Fine-tune the padding */
+  margin-bottom: 0; /* Prevent spacing between header and body */
+  border-bottom: none; /* Remove any unintended borders */
+}
+
+h1#staticBackdropLabel {
+  margin: 0; /* Remove margin around "Dead Stock" */
+  font-size: 1.5rem; /* Ensure consistency in appearance */
+}
+
+h1#box-header {
+  margin: 0;
+  padding: 0.5rem 0; /* Adjust padding */
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.modal-content {
+  border-radius: 30px !important;
+  overflow: hidden !important;
+}
+
+body.modal-open {
+  overflow: hidden; /* Prevent background scrolling */
+  padding-right: 15px; /* Account for the width of the scrollbar */
+}
+
+.modal-backdrop {
+  z-index: 1040; /* Ensure backdrop appears above other content */
+  display: block;
+}
+
+
+
+
+/* Premium Alert Styles */
+.premium-alert {
+  position: relative;
+  padding: 16px;
+  margin: 0 auto 20px;
+  max-width: 90%;
+  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+  border-left: 4px solid #ff3366;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08),
+              0 2px 4px rgba(0, 0, 0, 0.04);
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+.alert-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.alert-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  color: #ff3366;
+}
+
+.alert-message {
+  flex: 1;
+  color: #2c3e50;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.2px;
+}
+
+.alert-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 4px;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.alert-close:hover {
+  color: #64748b;
+}
+
+@keyframes slideIn {
+  from {
+      transform: translateY(-20px);
+      opacity: 0;
+  }
+  to {
+      transform: translateY(0);
+      opacity: 1;
+  }
+}
+
+/* Hover effect */
+.premium-alert:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12),
+              0 3px 6px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+  transition: all 0.3s ease;
+}
