@@ -13,7 +13,7 @@ if ($product_id) {
     if ($result->num_rows > 0) {
         $product_data = $result->fetch_assoc();
         $pdf_name = $product_data['product_catalogue'];
-        $file_path = 'assets/uploads/'. $pdf_name;  
+        $file_path = 'assets/uploads/product-catalogues/'. $pdf_name;  
      if (file_exists($file_path)) {
             if ($action === 'view') {
                 // View PDF in a new tab (inline)
