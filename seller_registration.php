@@ -19,11 +19,7 @@
 <div id="modal-body" class="modal-body">
 <form class="registration-form" action="register_seller.php" method="POST">
     <h1 class="modal-title fs-5" id="box-header">Register</h1>
-    <?php
-    if (isset($_GET['success']) && $_GET['success'] == 1) {
-        echo "<div style='text-align: center; color: green; font-weight: bold;'>Thanks for registering, please check your email.</div>";
-    }
-    ?>
+
     <div class="input-box">
         <input type="text" id="seller_name" name="seller_name" class="input-field" placeholder="Name" required autocomplete="off" />
     </div>

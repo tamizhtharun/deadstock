@@ -7,6 +7,9 @@ foreach ($result as $row)
 {
   $logo = $row['logo'];
   $favicon = $row['favicon'];
+  $quote_text = $row['quote_text'];
+  $quote_span_text = $row['quote_span_text'];
+
 }
 ?>
 <?php
@@ -100,7 +103,7 @@ session_start();
   <!-- runningtxt -->
   <!-- runningtxt -->
 <div class="scrolling-text">
-    <?php
+   <?php 
     // Add this query to your existing database connection
     $stmt = $pdo->prepare("SELECT running_text FROM tbl_settings");
     $stmt->execute();
