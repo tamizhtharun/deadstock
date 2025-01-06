@@ -100,6 +100,34 @@ if(isset($_POST['form2'])) {
         
     }
 }
+//quote container
+if (isset($_POST['form_quote'])) {
+    $quote_text = trim($_POST['quote_text']);
+    $quote_span_text = trim($_POST['quote_span_text']);
+
+    // Combine the span text and quote text to count total words
+    $combined_quote = $quote_span_text . ' ' . $quote_text;
+    
+    // Count the words in the combined quote
+    $word_count = str_word_count($combined_quote);  // Count words
+    $error_message = '';
+    $success_message = '';
+
+    // Check if the word count is more than 8
+    if ($word_count > 8) {
+        $error_message = 'The quote must contain 8 words or fewer (including both the Bold content and the quote text).';
+    }
+
+    if (empty($error_message)) {
+        // Update the database if the word count is valid
+        $statement = $pdo->prepare("UPDATE tbl_settings SET quote_text=?, quote_span_text=? WHERE id=1");
+        $statement->execute([$quote_text, $quote_span_text]);
+        $success_message = 'Quote and Bold content updated successfully.';
+    }
+}
+
+
+
 //Footer & Contact us page
 if(isset($_POST['form3'])) {
     
@@ -875,6 +903,8 @@ foreach ($result as $row) {
  //   $ads_above_popular_product_on_off   = $row['ads_above_popular_product_on_off'];
  //   $ads_above_testimonial_on_off       = $row['ads_above_testimonial_on_off'];
   //  $ads_category_sidebar_on_off        = $row['ads_category_sidebar_on_off'];
+  $quote_text                          = $row['quote_text'];
+  $quote_span_text                     = $row['quote_span_text'];
 }
 ?>
 
@@ -911,6 +941,7 @@ foreach ($result as $row) {
                         <li class="active"><a href="#tab_1" data-toggle="tab">Logo</a></li>
                         <li><a href="#tab_2" data-toggle="tab">Favicon</a></li>
                         <li><a href="#tab_3" data-toggle="tab">Running Text</a></li>
+                        <li><a href="#tab_4" data-toggle="tab">Quote Container</a></li>
                         <!-- <li><a href="#" data-toggle="tab">Message Settings</a></li>
                         <li><a href="#" data-toggle="tab">Products</a></li>
                         <li><a href="#" data-toggle="tab">Home Settings</a></li>
@@ -1007,11 +1038,40 @@ foreach ($result as $row) {
                                 </div>
                             </div>
                             </form>
+                        </div>
+                        <div class="tab-pane" id="tab_4">
+                            <form class="form-horizontal" action="" method="post">
+                                <div class="box box-info">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label for="quote_span_text" class="col-sm-2 control-label">Bold Content</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" name="quote_span_text" value="<?php echo htmlspecialchars($quote_span_text); ?>">
+                                            </div>
+                                        </div>
 
+                                        <div class="form-group">
+                                            <label for="quote_text" class="col-sm-2 control-label">Quote Text</label>
+                                            <div class="col-sm-6">
+                                                <textarea class="form-control" name="quote_text" rows="3"><?php echo htmlspecialchars($quote_text); ?></textarea>
+                                            </div>
+                                        </div>
 
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-2 control-label"></label>
+                                            <div class="col-sm-6">
+                                                <button type="submit" class="btn btn-success pull-left" name="form_quote">Update Quote</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
 
-                        <div class="tab-pane" id="tab_4">
+
+
+
+                        <div class="tab-pane" id="tab_5">
 
                             <form class="form-horizontal" action="" method="post">
                             <div class="box box-info">
@@ -1053,7 +1113,7 @@ foreach ($result as $row) {
 
                         </div>
 
-                        <div class="tab-pane" id="tab_5">
+                        <div class="tab-pane" id="tab_6">
 
                             <form class="form-horizontal" action="" method="post">
                             <div class="box box-info">
@@ -1116,7 +1176,7 @@ foreach ($result as $row) {
 
 
 
-                        <div class="tab-pane" id="tab_6">
+                        <div class="tab-pane" id="tab_7">
 
 
                         	<h3>Sections On and Off</h3>
@@ -1461,7 +1521,7 @@ foreach ($result as $row) {
 
 
 
-                        <div class="tab-pane" id="tab_7">
+                        <div class="tab-pane" id="tab_8">
 
                             <table class="table table-bordered">
                                 <tr>

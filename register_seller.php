@@ -129,10 +129,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                <br><p>Best regards,<br>Deadstock</p>";
 
                 // Send email
-                $mail->send();
-
+                $mail->send();               
                 echo "<script>
-                        alert('New seller registered successfully!');
+                        alert('New seller registered successfully,Please check your email!');
                         window.location.href = 'index.php';
                       </script>";
             } catch (Exception $e) {
