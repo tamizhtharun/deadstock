@@ -203,8 +203,17 @@ if (!empty($topCategories)) {
                     <?php foreach ($allProducts as $product): ?>
                         <div class="item <?php echo htmlspecialchars($product['tcat_id'], ENT_QUOTES, 'UTF-8'); ?>" data-filter="<?php echo htmlspecialchars($product['tcat_id'], ENT_QUOTES, 'UTF-8'); ?>">
                             <a href="#" class="fp-image">
-                                <img src="assets/uploads/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>">
-                            </a>
+                            <img 
+                                src="<?php 
+                                    $imagePath = 'assets/uploads/' . htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8');
+                                    echo (file_exists($imagePath) && !empty($product['p_featured_photo'])) 
+                                        ? $imagePath 
+                                        : './assets/uploads/logo.png'; 
+                                ?>" 
+                                width="130px" 
+                                height="100px" 
+                                alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>" 
+                                class="tab-image">                            </a>
                             <div class="product-desc">
                                 <h6><?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?></h6>
                                 <p class="product-price">₹<?php echo number_format($product['p_current_price']); ?></p>

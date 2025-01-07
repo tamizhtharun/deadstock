@@ -10,7 +10,8 @@
 body{
     /* height: 3000px; */
     padding-top:100px ;
-    background-color: rgb(255, 255, 255);
+    /* background-color: #f5f5f7; */
+    background-color: #ffffff;
 }
 body::-webkit-scrollbar {
   width: 9px;
@@ -1100,6 +1101,8 @@ h1#box-header {
 .modal-content {
   border-radius: 30px !important;
   overflow: hidden !important;
+  padding: 10px;
+  background-color: #e4e4e4;
 }
 
 body.modal-open {
@@ -1187,3 +1190,5 @@ body.modal-open {
   transform: translateY(-1px);
   transition: all 0.3s ease;
 }
+
+

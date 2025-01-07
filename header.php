@@ -51,6 +51,262 @@ unset($_SESSION['error_message']);
         </svg>
         
 </head>
+<style>
+    
+
+:root {
+  --apple-bg: #ffffff;
+  --apple-text: #1d1d1f;
+  --apple-secondary: #86868b;
+  --apple-blue: #0071e3;
+  --apple-gray: #f5f5f7;
+  --apple-border: #d2d2d7;
+  --apple-shadow: rgba(0, 0, 0, 0.1);
+  --apple-radius: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+}
+
+body {
+  background-color: var(--apple-gray);
+  color: var(--apple-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.navbar {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  border-bottom: 1px solid var(--apple-border);
+}
+
+.nav-brand {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.notification-trigger {
+  position: relative;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 20;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--apple-blue);
+  color: white;
+  border-radius: 12px;
+  padding: 0.15rem 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.notification-panel {
+  position: absolute;
+  top: calc(100% + 0.8rem);
+  right: -1rem;
+  width: 380px;
+  background: var(--apple-bg);
+  border-radius: var(--apple-radius);
+  box-shadow: 0 4px 24px var(--apple-shadow);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+}
+
+.notification-trigger:hover .notification-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.notification-header {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--apple-border);
+}
+
+.notification-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.mark-all-read {
+  color: var(--apple-blue);
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.notification-tabs {
+  display: flex;
+  padding: 0.5rem;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--apple-border);
+}
+
+.tab {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--apple-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab:hover {
+  background: var(--apple-gray);
+}
+
+.tab.active {
+  background: var(--apple-gray);
+  color: var(--apple-text);
+  font-weight: 500;
+}
+
+.notification-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  padding: 1rem 1.5rem;
+  display: flex;
+  gap: 1rem;
+  border-bottom: 1px solid var(--apple-border);
+  transition: background 0.2s ease;
+}
+
+.notification-item:hover {
+  background: var(--apple-gray);
+}
+
+.notification-item.unread {
+  background: rgba(0, 113, 227, 0.05);
+}
+
+.notification-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--apple-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-title {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.notification-message {
+  color: var(--apple-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.notification-time {
+  font-size: 0.8rem;
+  color: var(--apple-secondary);
+  margin-top: 0.25rem;
+}
+
+.notification-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: #ff3b30;
+  color: white;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 2px solid var(--apple-bg); /* Matches background color */
+  min-width: 20px;
+  height: 20px; /* Explicit height for the circle */
+  display: flex;
+  align-items: center; /* Centers text vertically */
+  justify-content: center; /* Centers text horizontally */
+  line-height: 1; /* Prevents text from shifting */
+  transform: translate(50%, -50%); /* Centers above the bell icon */
+  animation: badge-pulse 2s infinite;
+}
+
+.notification-list {
+  max-height: 350px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--apple-border) transparent;
+}
+
+.mark-all-read {
+  color: var(--apple-blue);
+  background: none;
+  border: none;
+  font-size: 1.2rem; /* Icon size */
+  cursor: pointer;
+  padding: 0.3rem 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem; /* Space between icon and text */
+  border-radius: 20px; /* Rounded style */
+  transition: background 0.3s ease, transform 0.2s ease;
+  height: auto; /* Allow dynamic height */
+}
+
+.read-all-text {
+  font-size: 0.9rem; /* Slightly smaller than the icon */
+  font-weight: 500; /* Medium weight for a premium feel */
+  color: var(--apple-blue);
+  transition: color 0.2s ease;
+}
+
+.mark-all-read:hover {
+  background: rgba(0, 113, 227, 0.1); /* Subtle hover background */
+  transform: scale(1.05); /* Slight zoom-in effect */
+}
+
+.mark-all-read:hover .read-all-text {
+  color: var(--apple-text); /* Change text color on hover */
+}
+
+
+</style>
 <body>
 <div class="header">   
 <!-- <?php
@@ -89,10 +345,31 @@ echo "</pre>";
                 <span class="ds-cart-badge">3</span>
             </button>
             
-            <button class="ds-icon-button notification-button" title="Notifications">
-                <i class="fas fa-bell"></i>
-                <span class="ds-notification-badge">5</span>
-            </button>
+            <!-- Notification -->
+
+            <div class="notification-trigger ds-icon-button" id="notificationTrigger">
+             <i class="fas fa-bell"></i>
+                <span class="notification-badge" id="notificationBadge">3</span>
+                <div class="notification-panel" id="notificationPanel">
+                    <div class="notification-header">
+                        <h3>Notifications</h3>
+                        <!-- <button class="mark-all-read">Mark all as read</button> -->
+                        <button class="mark-all-read">
+                            <i class="fas fa-check-double" title="Mark all as read"></i>
+                            <span class="read-all-text">Read All</span>
+                        </button>
+
+
+                    </div>
+                    <div class="notification-tabs">
+                        <button class="tab active" data-tab="all">All</button>
+                        <button class="tab" data-tab="orders">Orders</button>
+                        <button class="tab" data-tab="bids">Bids</button>
+                    </div>
+                    <div class="notification-list" id="notificationList"></div>
+                </div>
+            </div>
+
             <div class="ds-profile-menu">
                 <button class="ds-profile-trigger">
                  <div class="ds-avatar">
@@ -339,6 +616,163 @@ document.head.appendChild(style);
 //         loginModal.show(); // Show the modal
 //     }
 // });
+
+        // Script Notification Dropdown
+
+        const notifications = [
+                    // All Notifications
+                    {
+                        type: 'all',
+                        subtype: 'bid',
+                        title: 'New Bid Received',
+                        message: 'Someone placed a bid of $250 on Vintage Watch',
+                        time: '2 min ago',
+                        isRead: false,
+                        // image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=200&q=80'
+                        image: 'assets/uploads/logo.png'
+                    },
+                    {
+                        type: 'all',
+                        subtype: 'order',
+                        title: 'Order Confirmed',
+                        message: 'Your order #12345 has been confirmed',
+                        time: '15 min ago',
+                        isRead: false
+                    },
+                    // Orders Notifications
+                    {
+                        type: 'orders',
+                        title: 'Shipping Update',
+                        message: 'Your package is out for delivery',
+                        time: '30 min ago',
+                        isRead: false
+                    },
+                    {
+                        type: 'orders',
+                        title: 'Order Delivered',
+                        message: 'Your recent order has been delivered',
+                        time: '2 hours ago',
+                        isRead: true
+                    },
+                    // Bids Notifications
+                    {
+                        type: 'bids',
+                        title: 'Outbid Alert',
+                        message: 'Welcome To Deadstock',
+                        time: '1 hour ago',
+                        isRead: true,
+                        // image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=200&q=80'
+                        image: 'assets/uploads/logo.png'
+
+                    },
+                    {
+                        type: 'bids',
+                        title: 'Bid Accepted',
+                        message: 'Your bid on Luxury Watch was accepted',
+                        time: '3 hours ago',
+                        isRead: false
+                    }
+                ];
+
+        function createNotificationElement(notification) {
+            const div = document.createElement('div');
+            div.className = `notification-item ${notification.isRead ? '' : 'unread'}`;
+            
+            const icon = getNotificationIcon(notification.type);
+            
+            div.innerHTML = `
+                <div class="notification-icon">
+                    <i class="${icon}"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">${notification.title}</div>
+                    <div class="notification-message">${notification.message}</div>
+                    <div class="notification-time">${notification.time}</div>
+                </div>
+                ${notification.image ? `<img src="${notification.image}" alt="" class="notification-image">` : ''}
+            `;
+            
+            return div;
+        }
+
+        function getNotificationIcon(type) {
+            switch(type) {
+                case 'bid': return 'fas fa-gavel';
+                case 'order': return 'fas fa-shopping-bag';
+                default: return 'fas fa-bell';
+            }
+        }
+
+        function updateNotifications(filter = 'all') {
+            const notificationList = document.getElementById('notificationList');
+            notificationList.innerHTML = '';
+            
+            let filteredNotifications = notifications;
+            if (filter !== 'all') {
+                filteredNotifications = notifications.filter(n => n.type === filter.toLowerCase());
+            }
+            
+            filteredNotifications.forEach(notification => {
+                notificationList.appendChild(createNotificationElement(notification));
+            });
+            
+            updateBadgeCount();
+        }
+
+        function updateBadgeCount() {
+            const unreadCount = notifications.filter(n => !n.isRead).length;
+            const badge = document.getElementById('notificationBadge');
+            badge.textContent = unreadCount;
+            badge.style.display = unreadCount > 0 ? 'block' : 'none';
+        }
+
+        // Event Listeners
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+                updateNotifications(e.target.dataset.tab);
+            });
+        });
+
+        document.querySelector('.mark-all-read').addEventListener('click', () => {
+            notifications.forEach(n => n.isRead = true);
+            updateNotifications();
+        });
+
+        // Initial load
+        updateNotifications();
+
+        const notificationTrigger = document.getElementById('notificationTrigger');
+        const notificationPanel = document.getElementById('notificationPanel');
+
+        // Toggle panel display
+        notificationTrigger.addEventListener('click', () => {
+            notificationPanel.classList.toggle('show');
+        });
+
+        // Close the panel when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!notificationPanel.contains(event.target) && !notificationTrigger.contains(event.target)) {
+                notificationPanel.classList.remove('show');
+            }
+        });
+
+        const notificationList = document.getElementById('notificationList');
+
+notificationList.addEventListener('wheel', (event) => {
+  const isScrollingUp = event.deltaY < 0; // Negative value means scrolling up
+  const isScrollingDown = event.deltaY > 0; // Positive value means scrolling down
+
+  const atTop = notificationList.scrollTop === 0;
+  const atBottom =
+    notificationList.scrollHeight - notificationList.scrollTop === notificationList.clientHeight;
+
+  // Prevent page scroll when at top or bottom of the notification list
+  if ((isScrollingUp && atTop) || (isScrollingDown && atBottom)) {
+    event.preventDefault();
+  }
+});
 
   </script>
 </body>
