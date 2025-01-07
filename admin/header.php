@@ -190,9 +190,7 @@ if(!isset($_SESSION['admin_session'])) {
 							</span>
                         </a>
                         <ul class="treeview-menu">
-
                             <li><a href="#"><i class="fa fa-circle-o"></i> Scrolling Text</a></li>
-                            <li><a href="#"><i class="fa fa-circle-o"></i> Quote</a></li>
                             <li><a href="#"><i class="fa fa-circle-o"></i> Category</a></li>
                         </ul>
                     </li>

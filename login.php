@@ -1,7 +1,11 @@
 <?php
 include 'db_connection.php';
-// include 'index.php';
+
 $error_message = ""; // Variable to store error messages
+
+
+
+// include 'index.php';
 $user_data = []; // Array to store user data
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -44,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     exit();
                 case 'user':
                     // Start session
-                    session_start();
+                    // session_start();
                     $sql_user_data = "SELECT * FROM users WHERE email = ?";
                             $stmt_user_data = $conn->prepare($sql_user_data);
                             $stmt_user_data->bind_param("s", $email);
@@ -59,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['user_session'] = $user_data_;
                     $_SESSION['user_email'] = $user['user_email'];
                     $_SESSION['user_role'] = 'user';
-                    $_SESSION['loggedin'] = true; 
+                    $_SESSION['loggedin'] = true; // Store user role
                     header("Location: index.php");
                     exit();
                 case 'seller':
@@ -120,10 +124,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 $conn->close();
 
-// If there's an error message, display it as an alert
-if ($error_message) {
-    echo "<script>alert('$error_message');
-    window.location.href = 'index.php';
-    </script>";
+// If there's an error, save it to the session and redirect
+if (!empty($error_message)) {
+    session_start();
+    $_SESSION['error_message'] = $error_message; // Save error message to session
+    header("Location: index.php"); // Redirect to index.php
+    exit();
 }
+
+
+// If there's an error message, display it as an alert
+// if ($error_message) {
+//     echo "<script>alert('$error_message');
+//     window.location.href = 'index.php';
+//     </script>";
+// }
 ?>

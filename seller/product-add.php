@@ -21,10 +21,10 @@ if(isset($_POST['form1'])) {
         $error_message .= "You must have to select a mid level category<br>";
     }
 
-    if(empty($_POST['ecat_id'])) {
-        $valid = 0;
-        $error_message .= "You must have to select an end level category<br>";
-    }
+    // if(empty($_POST['ecat_id'])) {
+    //     $valid = 0;
+    //     $error_message .= "You must have to select an end level category<br>";
+    // }
 
     if(empty($_POST['p_name'])) {
         $valid = 0;
@@ -43,6 +43,21 @@ if(isset($_POST['form1'])) {
 	if(empty($_POST['product_brand'])) {
         $valid = 0;
         $error_message .= "Product Brand should be selected<br>";
+    }
+	if ($_POST['tcat_id'] === 'others') {
+        if (empty($_POST['other_brand'])) {
+            $valid = 0;
+            $error_message .= "You must specify the brand name<br>";
+        } else {
+            $product_brand = $_POST['other_brand'];
+        }
+    } else {
+        if (empty($_POST['product_brand'])) {
+            $valid = 0;
+            $error_message .= "Product Brand should be selected<br>";
+        } else {
+            $product_brand = $_POST['product_brand'];
+        }
     }
 
 
@@ -85,7 +100,7 @@ if(isset($_POST['form1'])) {
 
         // Move the uploaded PDF file to the server
         $pdf_final_name = 'product-catalogue-'.$ai_id.'.pdf';
-        move_uploaded_file($pdf_path_tmp, '../assets/uploads/'.$pdf_final_name);
+        move_uploaded_file($pdf_path_tmp, '../assets/uploads/product-catalogues/'.$pdf_final_name);
 
         if( isset($_FILES['photo']["name"]) && isset($_FILES['photo']["tmp_name"]) )
         {
@@ -111,7 +126,7 @@ if(isset($_POST['form1'])) {
                 $my_ext1 = pathinfo( $photo[$i], PATHINFO_EXTENSION );
                 if( $my_ext1=='jpg' || $my_ext1=='png' || $my_ext1=='jpeg' || $my_ext1=='gif' ) {
                     $final_name1[$m] = $z.'.'.$my_ext1;
-                    move_uploaded_file($photo_temp[$i],"../assets/uploads/".$final_name1[$m]);
+                    move_uploaded_file($photo_temp[$i],"../assets/uploads/product-photos/".$final_name1[$m]);
                     $m++;
                     $z++;
                 }
@@ -127,7 +142,7 @@ if(isset($_POST['form1'])) {
         }
 
         $final_name = 'product-featured-'.$ai_id.'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
+        move_uploaded_file( $path_tmp, '../assets/uploads/product-photos/'.$final_name );
 		
 
 		//Saving data into the waiting products table tbl_waiting_products
@@ -164,7 +179,7 @@ $statement->execute(array(
 		
 			$_POST['ecat_id'],
 			$pdf_final_name,
-			$_POST['product_brand']
+			$product_brand
 		));
 
         $success_message = 'Product is added successfully, wait for your administrator approval.';
@@ -244,13 +259,15 @@ $statement->execute(array(
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Brand <span>*</span></label>
-							<div class="col-sm-4">
-								<select name="product_brand" class="form-control select2 brand-cat">
-									<option value="">Select Brand</option>
-								</select>
+    					<label for="" class="col-sm-3 control-label">Brand <span>*</span></label>
+   						 <div class="col-sm-4">
+    					    <select name="product_brand" class="form-control select2 brand-cat" id="brand-select">
+        				    <option value="">Select Brand</option>
+           						 <!-- Add options for brands here -->
+      						  </select>
+       						 <input type="text" name="other_brand" class="form-control" id="other-brand" placeholder="Please specify brand" >
+   							 </div>
 							</div>
-						</div>
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Product Name <span>*</span></label>
 							<div class="col-sm-4">

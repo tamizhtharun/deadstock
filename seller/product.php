@@ -78,7 +78,7 @@ echo "</pre>";
 								?>
 								<tr>
 										<td><?php echo $i; ?></td>
-										<td style="width:82px;"><img src="../assets/uploads/<?php echo $row['p_featured_photo']; ?>" alt="<?php echo $row['p_name']; ?>" style="width:80px;"></td>
+										<td style="width:82px;"><img src="../assets/uploads/product-photos/<?php echo $row['p_featured_photo']; ?>" alt="<?php echo $row['p_name']; ?>" style="width:80px;"></td>
 										<td><?php echo $row['brand_name']; ?></td>
 										<td><?php echo $row['p_name']; ?></td>
 										<td>₹<?php echo $row['p_old_price']; ?></td>
@@ -91,7 +91,7 @@ echo "</pre>";
 												<?php if($row['p_is_approve'] == 1) {echo '<span class="badge badge-success" style="background-color:green;">Approved</span>';} else {echo '<span class="badge badge-danger" style="background-color:red;">Not Approved</span>';} ?>
 										</td>
 										<td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?></td>
-										<td><a href="../assets/uploads/<?php echo $row['product_catalogue']?>">View Uploaded catalogue</a> </td>
+										<td><a href="../assets/uploads/product-catalogues/<?php echo $row['product_catalogue']?>">View Uploaded catalogue</a> </td>
 										<td>										
 												<a href="product-edit.php?id=<?php echo $row['id']; ?>" class="btn btn-primary btn-xs">Edit</a>
 												<a href="#" class="btn btn-danger btn-xs" data-href="product-delete.php?id=<?php echo $row['id']; ?>" data-toggle="modal" data-target="#confirm-delete">Delete</a>  

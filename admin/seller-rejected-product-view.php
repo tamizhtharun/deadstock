@@ -50,11 +50,13 @@
                       t3.mcat_id,
                       t3.mcat_name,
                       t4.tcat_id,
-                      t4.tcat_name
+                      t4.tcat_name,
+					  t5.brand_name
                   FROM tbl_product t1
                   JOIN tbl_end_category t2 ON t1.ecat_id = t2.ecat_id
                   JOIN tbl_mid_category t3 ON t2.mcat_id = t3.mcat_id
                   JOIN tbl_top_category t4 ON t3.tcat_id = t4.tcat_id
+				  JOIN tbl_brands t5 ON t1.product_brand = t5.brand_id
                   WHERE t1.seller_id = :seller_id AND t1.p_is_approve = 0  -- Filter by seller_id and approved products
                   ORDER BY t1.id DESC");
 							$statement->bindParam(':seller_id', $seller_id, PDO::PARAM_INT); // Bind seller_id parameter
@@ -65,8 +67,8 @@
 								?>
 								<tr>
 									<td><?php echo $i; ?></td>
-									<td style="width:82px;"><img src="../assets/uploads/<?php echo $row['p_featured_photo']; ?>" alt="<?php echo $row['p_name']; ?>" style="width:80px;"></td>
-									<td><?php echo $row['product_brand']; ?></td>
+									<td style="width:82px;"><img src="../assets/uploads/product-photos/<?php echo $row['p_featured_photo']; ?>" alt="<?php echo $row['p_name']; ?>" style="width:80px;"></td>
+									<td><?php echo $row['brand_name']; ?></td>
 									<td><?php echo $row['p_name']; ?></td>
 									<td>$<?php echo $row['p_old_price']; ?></td>
 									<td>$<?php echo $row['p_current_price']; ?></td>

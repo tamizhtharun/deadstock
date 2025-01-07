@@ -145,7 +145,7 @@ if ($success_message1 != '') {
           <a data-bs-toggle="modal" class="rounded-4" data-bs-target="#imageModal" href="#">
             <!-- <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4" src="icons\hole.png" /> -->
             <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4"
-              src="assets/uploads/<?php echo $p_featured_photo; ?>">
+              src="assets/uploads/product-photos/<?php echo $p_featured_photo; ?>">
 
           </a>
         </div>
@@ -356,15 +356,15 @@ if ($success_message1 != '') {
               $row = $result->fetch_assoc();
               $pdf_name = $row['product_catalogue'];
 
-              // files are stored in the 'assets/uploads/' directory
-              $file_path = 'assets/uploads/' . $pdf_name;
-              $view_url = "pdf_download.php?action=view&id=$product_id";
-              $download_url = "pdf_download.php?action=download&id=$product_id";
-              echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
-              echo '&nbsp;&nbsp;';
-              echo '<a href="' . $download_url . '" class="btn btn-success"><i class="fa fa-download"></i> Download Catalogue</a>';
-            }
-            ?>
+    // files are stored in the 'assets/uploads/' directory
+    $file_path = 'assets/uploads/'. $pdf_name;
+    $view_url = "pdf_download.php?action=view&id=$product_id";
+    $download_url = "pdf_download.php?action=download&id=$product_id";
+    echo '<a href="'. $view_url . '" class="btn btn-warning" target="_blank"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
+    echo '&nbsp;&nbsp;';
+    echo '<a href="'. $download_url . '" class="btn btn-success"><i class="fa fa-download"></i> Download Catalogue</a>';
+}
+?>
             <div class="tab-pane fade" id="pills-warranty" role="tabpanel">
               Tab content or sample information now <br />
               Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
@@ -450,7 +450,7 @@ if ($success_message1 != '') {
               <?php foreach ($related_products as $related_product): ?>
                 <div class="d-flex mb-3">
                   <a href="product_landing.php?id=<?php echo $related_product['id']; ?>" class="me-3">
-                    <img src="payment/assets/uploads/<?php echo $related_product['p_featured_photo']; ?>"
+                    <img src="payment/assets/uploads/product-photos/<?php echo $related_product['p_featured_photo']; ?>"
                       style="min-width: 96px; height: 96px;" class="img-thumbnail"
                       alt="<?php echo htmlspecialchars($related_product['p_name']); ?>" />
                   </a>

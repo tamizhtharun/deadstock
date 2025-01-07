@@ -131,7 +131,7 @@ if (isset($_POST['reject_all'])) {
                             ?>
                             <tr>
                                 <td><?php echo $i; ?></td>
-                                <td style="width:82px;"><img src="../assets/uploads/<?php echo $row['p_featured_photo']; ?>" alt="<?php echo $row['p_name']; ?>" style="width:80px;"></td>
+                                <td style="width:82px;"><img src="../assets/uploads/product-photos/<?php echo $row['p_featured_photo']; ?>" alt="<?php echo $row['p_name']; ?>" style="width:80px;"></td>
                                 <td><?php echo $row['brand_name']; ?></td>
                                 <td><?php echo $row['p_name']; ?></td>
                                 <td>₹<?php echo $row['p_old_price']; ?></td>
@@ -154,7 +154,7 @@ if (isset($_POST['reject_all'])) {
                                 </td>
 
                                 <td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?></td>
-                                <td><a href="../assets/uploads/<?php echo $row['product_catalogue']?>">View catalogue</a> </td>
+                                <td><a href="../assets/uploads/product-catalogues/<?php echo $row['product_catalogue']?>">View catalogue</a> </td>
                                 <td><?php echo $row['p_is_approve'] == 1 ? '<span class="badge badge-success" style="background-color:green;">Approved</span>' : '<span class="badge badge-danger" style="background-color:red;">Rejected</span>'; ?></td>
                                 <td>
                                     <?php if ($row['p_is_approve'] == 1) { ?>

@@ -91,6 +91,24 @@
 			});			
 		});
 	</script>
+	
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+    const topCatSelect = document.querySelector('.top-cat');
+    const brandSelect = document.getElementById('brand-select');
+    const otherBrandInput = document.getElementById('other-brand');
+
+    topCatSelect.addEventListener('change', function() {
+        if (this.value === 'Others') { // Assuming 'others' is the value for the other category
+            brandSelect.style.display = 'none';
+            otherBrandInput.style.display = 'block';
+        } else {
+            brandSelect.style.display = 'block';
+            otherBrandInput.style.display = 'none';
+        }
+    });
+});
+	</script>
 
 	<script>
 	  $(function () {
