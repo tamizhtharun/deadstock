@@ -211,8 +211,18 @@ if (!empty($topCategories)) {
                                     <?php if ($product['p_is_featured'] == 1): ?>
                                     <div class="product-item swiper-slide">
                                         <figure>
-                                            <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" title="Product Title">
-                                                <img src="assets/uploads/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>" class="tab-image">
+                                        <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" title="Product Title">
+                                            <img 
+                                                src="<?php 
+                                                    $imagePath = 'assets/uploads/' . htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8');
+                                                    echo file_exists($imagePath) && !empty($product['p_featured_photo']) 
+                                                        ? $imagePath 
+                                                        : './assets/uploads/logo.png'; 
+                                                ?>" 
+                                                width="130px" 
+                                                height="100px" 
+                                                alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>" 
+                                                class="tab-image">
                                             </a>
                                         </figure>
                                         <div class="d-flex flex-column text-center">
