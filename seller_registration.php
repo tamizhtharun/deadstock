@@ -337,7 +337,39 @@ body {
         <div class="form-header">
             <h1>Seller Registration</h1>
         </div>
+<<<<<<< Updated upstream
         
+=======
+<div id="modal-body" class="modal-body">
+<form class="registration-form" action="register_seller.php" method="POST">
+    <h1 class="modal-title fs-5" id="box-header">Register</h1>
+
+    <div class="input-box">
+        <input type="text" id="seller_name" name="seller_name" class="input-field" placeholder="Name" required autocomplete="off" />
+    </div>
+    
+    <div class="input-box">
+        <input type="text" id="seller_cname" name="seller_cname" class="input-field" placeholder="Company Name" required autocomplete="off" />
+    </div>
+    
+    <div class="input-box">
+        <input type="email" id="seller_email" name="seller_email" class="input-field" placeholder="Email" required autocomplete="off" />
+    </div>
+    
+    <div class="input-box">
+        <input type="text" id="seller_phone" name="seller_phone" class="input-field" placeholder="Phone" required autocomplete="off" />
+    </div>
+    
+    <div class="input-box">
+        <input type="text" id="seller_gst" name="seller_gst" class="input-field" placeholder="GST Number" required autocomplete="off" />
+        <small id="gst-error" style="color: red; display: none;">Invalid GST Number format</small>
+    </div>
+    <script>
+    function validateGST() {
+        const gstInput = document.getElementById("seller_gst");
+        const gstError = document.getElementById("gst-error");
+        const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[Z]{1}[A-Z0-9]{1}$/;
+>>>>>>> Stashed changes
 
         <!-- Display messages -->
         <?php if (!empty($successMessage)): ?>
