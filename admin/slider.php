@@ -34,7 +34,7 @@
 								?>
 								<tr>
 									<td><?php echo $i; ?></td>
-									<td style="width:150px;"><img src="../assets/uploads/<?php echo $row['photo']; ?>" alt="<?php echo $row['heading']; ?>" style="width:140px;"></td>
+									<td style="width:150px;"><img src="../assets/uploads/sliders/<?php echo $row['photo']; ?>" alt="<?php echo $row['heading']; ?>" style="width:140px;"></td>
 									<td><?php echo $row['heading']; ?></td>
 									<td>										
 										<a href="slider-edit.php?id=<?php echo $row['id']; ?>" class="btn btn-primary btn-xs">Edit</a>
