@@ -92,7 +92,7 @@ if (!isset($_SESSION['recently_viewed'])) {
 if (!in_array($product_id, $_SESSION['recently_viewed'])) {
   // Keep only the last 12 viewed products
   if (count($_SESSION['recently_viewed']) >= 12) {
-      array_shift($_SESSION['recently_viewed']);
+    array_shift($_SESSION['recently_viewed']);
   }
   array_push($_SESSION['recently_viewed'], $product_id);
 }
