@@ -1,4 +1,14 @@
-<!DOCTYPE html>
+
+<?php
+// Include the database connection file
+include 'db_connection.php';
+
+
+// Fetch addresses from the database
+$sql = "SELECT * FROM users_addresses";
+$result = $conn->query($sql);
+
+?><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -389,43 +399,94 @@ h2 {
     font-size: 1.25rem;
     margin-right: 0.5rem;
 }
+.edit-form {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+.edit-form input {
+    display: block;
+    margin-bottom: 10px;
+    width: 100%;
+    padding: 5px;
+}
+.edit-form button {
+    margin-right: 10px;
+}
+
 </style>
 <body>
   
 
-    <main>
-        <div class="container">
-            <div class="checkout-container">
-                <div class="forms-container">
-                    <section class="shipping-section">
-                        <h2>Shipping Address</h2>
-                        <div class="saved-addresses">
-                            <label class="address-option">
-                                <input type="radio" name="address">
-                                <div class="address-details">
-                                    <span class="name">Courtney Henry</span>
-                                    <span class="address">3891 Ranchview, California 62639</span>
-                                </div>
-                                <div class="address-actions">
-                                    <button class="link-btn">Edit</button>
-                                    <span class="separator">|</span>
-                                    <button class="link-btn">Add Instructions</button>
-                                </div>
-                            </label>
-                            <label class="address-option">
-                                <input type="radio" name="address">
-                                <div class="address-details">
-                                    <span class="name">Jenny Wilson</span>
-                                    <span class="address">4140 Parker Rd. Allentown, New Mexico 31134</span>
-                                </div>
-                                <div class="address-actions">
-                                    <button class="link-btn">Edit</button>
-                                    <span class="separator">|</span>
-                                    <button class="link-btn">Add Instructions</button>
-                                </div>
-                            </label>
-                        </div>
+   <main>
+   <div class="container">
+    <div class="checkout-container">
+        <div class="forms-container">
+            <section class="shipping-section">
+                <h2>Shipping Address</h2>
+                <div class="saved-addresses">
+    <?php
+    if ($result->num_rows > 0) {
+        // Output data for each row
+        while ($row = $result->fetch_assoc()) {
+            // Fetch the address ID
+            $addressId = htmlspecialchars($row["id"]); // Correctly assign $addressId here
+            
+            echo '<label class="address-option">';
+            echo '<input type="radio" name="address">';
+            echo '<div class="address-details">';
+            echo '<span class="name">' . htmlspecialchars($row["full_name"]) . '</span>';
+            echo '<span class="address">' . htmlspecialchars($row["address"]) . ', ' . htmlspecialchars($row["city"]) . ', ' . htmlspecialchars($row["state"]) . ' - ' . htmlspecialchars($row["pincode"]) . ' (' . htmlspecialchars($row["address_type"]) . ')</span>';
+            echo '</div>';
+            echo '<div class="address-actions">';
+            echo '<button type="button" class="link-btn" onclick="showEditForm(' . $addressId . ')">Edit</button>'; // Use $addressId here
+            echo '</div>';
+            echo '</label>';
+
+            // Edit Form (Initially Hidden)
+            echo '<div class="edit-form" id="edit-form-' . $addressId . '" style="display: none;">';
+            echo '<form method="POST" action="update_address.php">';
+            echo '<input type="hidden" name="id" value="' . $addressId . '">'; // Use $addressId here
+            echo '<label>Full Name:</label>';
+            echo '<input type="text" name="full_name" value="' . htmlspecialchars($row["full_name"]) . '">';
+            echo '<label>Address:</label>';
+            echo '<input type="text" name="address" value="' . htmlspecialchars($row["address"]) . '">';
+            echo '<label>City:</label>';
+            echo '<input type="text" name="city" value="' . htmlspecialchars($row["city"]) . '">';
+            echo '<label>State:</label>';
+            echo '<input type="text" name="state" value="' . htmlspecialchars($row["state"]) . '">';
+            echo '<label>Pincode:</label>';
+            echo '<input type="text" name="pincode" value="' . htmlspecialchars($row["pincode"]) . '">';
+            echo '<label>Address Type:</label>';
+            echo '<input type="text" name="address_type" value="' . htmlspecialchars($row["address_type"]) . '">';
+            echo '<button type="submit">Save</button>';
+            echo '<button type="button" onclick="hideEditForm(' . $addressId . ')">Cancel</button>'; // Use $addressId here
+            echo '</form>';
+            echo '</div>';
+        }
+    } else {
+        echo '<p>No addresses found.</p>';
+    }
+    $conn->close();
+    ?>
+</div>
+
+                <script>
+                    function showEditForm(id) {
+                        const editForm = document.getElementById(`edit-form-${id}`);
+                        editForm.style.display = 'block'; // Show the edit form
+                    }
+
+                    function hideEditForm(id) {
+                        const editForm = document.getElementById(`edit-form-${id}`);
+                        editForm.style.display = 'none'; // Hide the edit form
+                    }
+
+                </script>
+                        
                         <button id="addAddressBtn" class="add-new-btn">+ Add New Address</button>
+                        <!-- Add Address Form -->
                         <form id="addressForm" class="address-form hidden">
                             <h3>Add New Address</h3>
                             <div class="form-row">
@@ -489,14 +550,12 @@ h2 {
                                     <input type="text" name="cvc" placeholder="123">
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label class="checkbox">
                                     <input type="checkbox" name="saveCard">
                                     <span>Save this card</span>
                                 </label>
-                            </div>
-                            
-                            
+                            </div> -->
                             <div class="form-actions">
                                 <button type="button" class="btn-secondary">Cancel</button>
                                 <button type="submit" class="btn-primary">Use This Card</button>
@@ -542,6 +601,7 @@ h2 {
             </div>
         </div>
     </main>
+
     <script src="https://pay.google.com/gp/p/js/pay.js" async></script>
 
     <script>
@@ -549,43 +609,43 @@ h2 {
 const products = [
     {
         id: 1,
-        name: 'Gaming Headphone',
+        name: 'Cutting Tool',
         color: 'Glacial Grey',
         price: 75.00,
         quantity: 1,
-        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80'
+        image: ''
     },
     {
         id: 2,
-        name: 'Super Laptop',
+        name: 'Cutting Tool',
         color: 'Space Grey',
         price: 98.86,
         quantity: 1,
-        image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=200&q=80'
+        image: ''
     },
     {
         id: 3,
-        name: 'Apple Watch 8',
+        name: 'Cutting Tool',
         color: 'Off White',
         price: 267.50,
         quantity: 1,
-        image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=200&q=80'
+        image: ''
     },
     {
         id: 4,
-        name: 'iPhone 12 Pro Max',
+        name: 'Cutting Tool',
         color: 'Red Velvet',
         price: 291.07,
         quantity: 1,
-        image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=200&q=80'
+        image: ''
     },
     {
         id: 5,
-        name: 'Headphone Master',
+        name: 'Cutting Tool',
         color: 'Glacial Green',
         price: 226.20,
         quantity: 1,
-        image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=200&q=80'
+        image: ''
     }
 ];
 

@@ -328,14 +328,18 @@ echo "</pre>";
                     <span>Dead Stock</span>
                 </a>
             </div>
-
             <div class="ds-search-section">
-                <div class="ds-search-wrapper">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search products..." class="ds-search-input">
-                </div>
-            </div>
-            <div class="ds-actions-section">
+    <div class="ds-search-wrapper">
+        <form action="search-result.php" method="GET" id="search-form">
+            <i class="fas fa-search"></i>
+            <input 
+                type="text" id="search-bar" name="search_text" placeholder="Search products..." class="ds-search-input" autocomplete="off" required aria-label="Search products">
+            <button type="submit" style="display: none;">Search</button> <!-- Hidden submit button -->
+        </form>
+    </div>
+</div>
+
+ <div class="ds-actions-section">
     <?php if(isset($_SESSION['user_session'])): ?>
       <button class="ds-btn-secondary" onclick="window.location.href='seller_registration.php';" >Sell here</button>
 
