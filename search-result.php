@@ -261,9 +261,13 @@ $total_products = $total_result['total'];
 <div class="main-content">
     <div class="search-results-summary">
         <?php if ($total_products > 0): ?>
-            Showing <?php echo htmlspecialchars($total_products, ENT_QUOTES, 'UTF-8'); ?> results for "<?php echo htmlspecialchars($_REQUEST['search_text'], ENT_QUOTES, 'UTF-8'); ?>"
+            <span style="font-weight: bold; font-family: Arial, sans-serif;">
+                Showing <?php echo htmlspecialchars($total_products, ENT_QUOTES, 'UTF-8'); ?> results for "<?php echo htmlspecialchars($_REQUEST['search_text'], ENT_QUOTES, 'UTF-8'); ?>"
+            </span>
         <?php else: ?>
-            No results found for "<?php echo htmlspecialchars($_REQUEST['search_text'], ENT_QUOTES, 'UTF-8'); ?>"
+            <span style="font-weight: bold; font-family: Arial, sans-serif;">
+                No results found for "<?php echo htmlspecialchars($_REQUEST['search_text'], ENT_QUOTES, 'UTF-8'); ?>"
+            </span>
         <?php endif; ?>
     </div>
 

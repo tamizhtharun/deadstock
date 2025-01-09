@@ -1,8 +1,5 @@
 <?php require_once( 'header.php');?>
 <link rel="stylesheet" href="./css/index.css">
-
-
-
 <div class="category-pad">
     <div class="category-box">
         <ul class="categories">
@@ -15,7 +12,7 @@
                 <li class="category">
                     <a class="category-link" href="product-category.php?id=<?php echo $row['tcat_id']; ?>&type=top-category">
                         <img src="./assets/uploads/top-categories-images/<?php echo $row['photo']; ?>" width="30px" height="30px" alt="<?php echo $row['tcat_name']; ?>">
-                        <span><?php echo $row['tcat_name']; ?></span>
+                        <span><?php echo $row['tcat_name'];?></span>
                     </a>
                     <ul class="subcategories">
                         <?php
