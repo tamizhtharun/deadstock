@@ -2,7 +2,11 @@
 include 'db_connection.php';
 ?>
 
+
 <?php
+if (isset($_SESSION['user_session']['id'])) {
+  $user_id = $_SESSION['user_session']['id'];
+}
 if (!isset($_REQUEST['id'])) {
   header('location: index.php');
   exit;
@@ -74,33 +78,59 @@ $statement->execute(array($p_total_view, $_REQUEST['id']));
 
 ?>
 
+
 <?php
 $error_message1 = '';
 $success_message1 = '';
 $product_id = isset($_GET['id']) ? $_GET['id'] : '';
 
-if (!isset($_SESSION['user_session']['id'])) {
-  die("User session not set. Please log in.");
-
+if (!isset($_SESSION['recently_viewed'])) {
+  $_SESSION['recently_viewed'] = array();
 }
-$user_id = $_SESSION['user_session']['id'];
+
+// Add the current product to recently viewed if it's not already there
+if (!in_array($product_id, $_SESSION['recently_viewed'])) {
+  // Keep only the last 12 viewed products
+  if (count($_SESSION['recently_viewed']) >= 12) {
+      array_shift($_SESSION['recently_viewed']);
+  }
+  array_push($_SESSION['recently_viewed'], $product_id);
+}
+
+
+
 if (isset($_POST['add_to_cart'])) {
+  // Check if the user is logged in
+  if (isset($_SESSION['user_session']['id'])) {
+    $user_id = $_SESSION['user_session']['id']; // Get the user ID from the session
+    $product_quantity = intval($_POST['product_quantity']); // Ensure quantity is a valid number
 
-  $product_quantity = $_POST['product_quantity'];
-  
-
-  // Assuming $product_id and $user_id are correctly set earlier in the code
-  $select_cart = mysqli_query($conn, "SELECT * FROM `tbl_cart` WHERE id = '$product_id' AND user_id = '$user_id'") or die('Query failed');
-
-  if (mysqli_num_rows($select_cart) > 0) {
-      echo 'Product already added to cart!';
+    // Check if the product already exists in the cart
+    $select_cart = mysqli_query($conn, "SELECT * FROM `tbl_cart` WHERE id = '$product_id' AND user_id = '$user_id'") or die('Query failed');
+    if (mysqli_num_rows($select_cart) > 0) {
+      echo "<script>alert('Product already added to cart!');</script>";
+    } else {
+      // Insert the product into the cart
+      $insert_query = "INSERT INTO `tbl_cart` (id, user_id, quantity) 
+                           VALUES ('$product_id', '$user_id', '$product_quantity')";
+      if (mysqli_query($conn, $insert_query)) {
+        echo "<script>alert('Product added to cart!');</script>";
+      } else {
+        echo "<script>alert('Failed to add product to cart. Please try again!');</script>";
+      }
+    }
   } else {
-      mysqli_query($conn, "INSERT INTO `tbl_cart` (id, user_id,  quantity) 
-          VALUES ('$product_id', '$user_id', '$product_quantity')") or die('Query failed');
-      echo 'Product added to cart!';
+    // User is not logged in, show alert
+    echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var loginModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+                backdrop: 'static'
+            });
+            loginModal.show();
+        });
+    </script>";
   }
 }
-
 ?>
 
 <?php
@@ -290,7 +320,7 @@ if ($success_message1 != '') {
           <!-- Pills content -->
           <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-spec" role="tabpanel">
-               <p>
+              <p>
                 <?php
                 $product_id = intval($_GET['id']);
                 $sql = "SELECT p_description
@@ -302,48 +332,16 @@ if ($success_message1 != '') {
                   echo '<td class="py-2">' . htmlspecialchars($row['p_description']) . '</td>';
                 }
                 ?>
-              </p> 
+              </p>
               <div class="row mb-2">
-                <!-- <div class="col-12 col-md-6">
-                  <ul class="list-unstyled mb-0">
-                    <li><i class="bi bi-check-lg text-success me-2"></i>Some great feature name here</li>
-                    <li><i class="bi bi-check-lg text-success me-2"></i>Lorem ipsum dolor sit amet, consectetur</li>
-                    <li><i class="bi bi-check-lg text-success me-2"></i>Duis aute irure dolor in reprehenderit</li>
-                    <li><i class="bi bi-check-lg text-success me-2"></i>Optical heart sensor</li>
-                  </ul>
-                </div> -->
+
 
 
                 <div class="col-12 col-md-6 mb-0">
-                  <!-- <ul class="list-unstyled">
-                    <li><i class="bi bi-check-lg text-success me-2"></i>Easy fast and ver good</li>
-                    <li><i class="bi bi-check-lg text-success me-2"></i>Some great feature name here</li>
-                    <li><i class="bi bi-check-lg text-success me-2"></i>Modern style and design</li>
-                  </ul> -->
+
                 </div>
               </div>
-              <!-- <table class="table border mt-3 mb-2">
-                <tr>
-                  <th class="py-2">Display:</th>
-                  <td class="py-2">13.3-inch LED-backlit display with IPS</td>
-                </tr>
-                <tr>
-                  <th class="py-2">Processor capacity:</th>
-                  <td class="py-2">2.3GHz dual-core Intel Core i5</td>
-                </tr>
-                <tr>
-                  <th class="py-2">Camera quality:</th>
-                  <td class="py-2">720p FaceTime HD camera</td>
-                </tr>
-                <tr>
-                  <th class="py-2">Memory</th>
-                  <td class="py-2">8 GB RAM or 16 GB RAM</td>
-                </tr>
-                <tr>
-                  <th class="py-2">Graphics</th>
-                  <td class="py-2">Intel Iris Plus Graphics 640</td>
-                </tr>
-              </table> -->
+
             </div>
             <?php
             $product_id = intval($_GET['id']);
@@ -356,15 +354,15 @@ if ($success_message1 != '') {
               $row = $result->fetch_assoc();
               $pdf_name = $row['product_catalogue'];
 
-    // files are stored in the 'assets/uploads/' directory
-    $file_path = 'assets/uploads/'. $pdf_name;
-    $view_url = "pdf_download.php?action=view&id=$product_id";
-    $download_url = "pdf_download.php?action=download&id=$product_id";
-    echo '<a href="'. $view_url . '" class="btn btn-warning" target="_blank"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
-    echo '&nbsp;&nbsp;';
-    echo '<a href="'. $download_url . '" class="btn btn-success"><i class="fa fa-download"></i> Download Catalogue</a>';
-}
-?>
+              // files are stored in the 'assets/uploads/' directory
+              $file_path = 'assets/uploads/' . $pdf_name;
+              $view_url = "pdf_download.php?action=view&id=$product_id";
+              $download_url = "pdf_download.php?action=download&id=$product_id";
+              echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
+              echo '&nbsp;&nbsp;';
+              echo '<a href="' . $download_url . '" class="btn btn-success"><i class="fa fa-download"></i> Download Catalogue</a>';
+            }
+            ?>
             <div class="tab-pane fade" id="pills-warranty" role="tabpanel">
               Tab content or sample information now <br />
               Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
@@ -489,9 +487,13 @@ if ($success_message1 != '') {
   </div>
 </section>
 
+
 <!-- Link Bootstrap CSS and Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 
 <!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
