@@ -265,7 +265,7 @@ $statement->execute(array(
         				    <option value="">Select Brand</option>
            						 <!-- Add options for brands here -->
       						  </select>
-       						 <input type="text" name="other_brand" class="form-control" id="other-brand" placeholder="Please specify brand" >
+       						 <input type="text" name="other_brand" class="form-control" id="other-brand" style="margin-top:10px;" placeholder="Please specify brand">
    							 </div>
 							</div>
 						<div class="form-group">
@@ -383,5 +383,41 @@ $statement->execute(array(
 	</div>
 
 </section>
+<script>
+	// Add this JavaScript code after your existing scripts
+$(document).ready(function() {
+    // Hide the "other brand" input field initially
+    $('#other-brand').hide();
+    
+    // Handle brand selection change
+    $('#brand-select').change(function() {
+        if ($(this).val() === 'others') {
+            $('#other-brand').show();
+            $('#other-brand').prop('required', true);
+        } else {
+            $('#other-brand').hide();
+            $('#other-brand').prop('required', false);
+            $('#other-brand').val(''); // Clear the input when hidden
+        }
+    });
+});
+
+// Modify your existing AJAX call for getting brands
+// Update the get-brand.php response to include "Others" option
+$('.top-cat').on('change', function() {
+    var id = $(this).val();
+    $.ajax({
+        url: "get-brand.php",
+        method: "POST",
+        data: {id: id},
+        success: function(data) {
+            $('.brand-cat').html(data);
+            // Reset the other brand input when category changes
+            $('#other-brand').hide();
+            $('#other-brand').val('');
+        }
+    });
+});
+</script>
 
 <?php require_once('footer.php'); ?>

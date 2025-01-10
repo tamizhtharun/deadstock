@@ -11,7 +11,11 @@ if($_POST['id'])
 	foreach ($result as $row) {
 		?>
         <option value="<?php echo $row['brand_id']; ?>"><?php echo $row['brand_name']; ?></option>
+		
         <?php
 	}
+	?>
+	<option value="others">Others</option>
+	<?php
 }
 ?>

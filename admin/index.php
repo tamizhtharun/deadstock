@@ -187,8 +187,49 @@ $total_product = $statement->rowCount();
     </div>
 </div> -->
     </div>
-              
+
+
+    <!-- Graph -->
+    <div class="container-fluid py-4 px-1">
+    <div class="row mx-0 d-flex">
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Sales Analytics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height:40vh; width:100%">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                </div>
             </div>
+        </div>
+
+            <!-- Pie  -->
+        <div class="col-lg-4 mb-4">
+                <div class="card shadow">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Revenue Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative; height:40vh; width:100%">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+
+<style>
+    /* .chart-container {
+        width: 100% !important;
+    } */
+    .card {
+        max-width: none !important;
+    }
+</style>
+              
             
 		  
 </section>

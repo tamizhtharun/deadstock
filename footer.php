@@ -86,8 +86,9 @@
     
       <!-- Copyright -->
       <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
-        © 2024 Copyright:
+      2025 ©
         <a class="text-reset fw-bold" href="#">Dead Stock</a>
+        All Rights Reserved
       </div>
       <!-- Copyright -->
     </footer>
