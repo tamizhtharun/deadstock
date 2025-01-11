@@ -14,8 +14,6 @@ if($_POST['id'])
 		
         <?php
 	}
-	?>
-	<option value="others">Others</option>
-	<?php
+	
 }
 ?>

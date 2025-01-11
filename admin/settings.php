@@ -126,6 +126,19 @@ if (isset($_POST['form_quote'])) {
     }
 }
 
+//bid_time_settings
+if (isset($_POST['form_bid_settings'])) {
+    // Capture the time inputs
+    $bid_send_time = trim($_POST['send_time']);
+    $bid_close_time = trim($_POST['close_time']);
+
+    // Update the database with send time and close time
+    $statement = $pdo->prepare("UPDATE bid_settings SET send_time=?, close_time=? WHERE id=1");
+    $statement->execute([$bid_send_time, $bid_close_time]);
+
+    $success_message = 'Bid times updated successfully.';
+}
+
 
 
 //Footer & Contact us page
@@ -828,7 +841,15 @@ if(isset($_POST['form11'])) {
 </section>
 
 <?php
-$statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
+$statement = $pdo->prepare("SELECT 
+    ts.*,
+    bs.*
+FROM 
+    tbl_settings ts
+INNER JOIN 
+    bid_settings bs
+ON 
+    ts.id = bs.id");
 $statement->execute();
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);                           
 foreach ($result as $row) {
@@ -905,6 +926,9 @@ foreach ($result as $row) {
   //  $ads_category_sidebar_on_off        = $row['ads_category_sidebar_on_off'];
   $quote_text                          = $row['quote_text'];
   $quote_span_text                     = $row['quote_span_text'];
+  $bid_send_time                        = $row['send_time'];
+  $bid_close_time                       = $row['close_time'];
+
 }
 ?>
 
@@ -942,6 +966,7 @@ foreach ($result as $row) {
                         <li><a href="#tab_2" data-toggle="tab">Favicon</a></li>
                         <li><a href="#tab_3" data-toggle="tab">Running Text</a></li>
                         <li><a href="#tab_4" data-toggle="tab">Quote Container</a></li>
+                        <li><a href="#tab_5" data-toggle="tab">Bidding Settings</a></li>
                         <!-- <li><a href="#" data-toggle="tab">Message Settings</a></li>
                         <li><a href="#" data-toggle="tab">Products</a></li>
                         <li><a href="#" data-toggle="tab">Home Settings</a></li>
@@ -1076,41 +1101,25 @@ foreach ($result as $row) {
                             <form class="form-horizontal" action="" method="post">
                             <div class="box box-info">
                                 <div class="box-body">
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Contact Email Address</label>
-                                        <div class="col-sm-4">
-                                            <input type="text" class="form-control" name="receive_email" value="<?php echo $receive_email; ?>">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="send_time">Bid Send Time (12-hour format):</label>
+                                    <input class="" type="time"  name="send_time" step="60" value="<?php echo $bid_send_time ?>" required>
+                                    <small class="form-text text-muted">HH:MM AM/PM</small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="close_time">Bid Close Time (12-hour format):</label>
+                                    <input class="" type="time" name="close_time" step="60" value="<?php echo $bid_close_time ?>" required>
+                                    <small class="form-text text-muted">HH:MM AM/PM</small>
+                                </div> 
+                                <div class="form-group">
+                                        <label for="" class="col-sm-4 control-label"></label>
+                                        <div class="col-sm-6">
+                                            <button type="submit" class="btn btn-success pull-left" name="form_bid_settings">Update</button>
                                         </div>
-                                    </div>                                  
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Contact Email Subject</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" name="receive_email_subject" value="<?php echo $receive_email_subject; ?>">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Contact Email Thank you message</label>
-                                        <div class="col-sm-8">
-                                            <textarea class="form-control" name="receive_email_thank_you_message"><?php echo $receive_email_thank_you_message; ?></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Forget password Message</label>
-                                        <div class="col-sm-8">
-                                            <textarea class="form-control" name="forget_password_message"><?php echo $forget_password_message; ?></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label"></label>
-                                        <div class="col-sm-5">
-                                            <button type="submit" class="btn btn-success pull-left" name="form4">Update</button>
-                                        </div>
-                                    </div>
+                                    </div>                               
                                 </div>
                             </div>
                             </form>
-
-
                         </div>
 
                         <div class="tab-pane" id="tab_6">

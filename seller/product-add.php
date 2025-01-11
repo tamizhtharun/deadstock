@@ -261,11 +261,11 @@ $statement->execute(array(
 						<div class="form-group">
     					<label for="" class="col-sm-3 control-label">Brand <span>*</span></label>
    						 <div class="col-sm-4">
-    					    <select name="product_brand" class="form-control select2 brand-cat" id="brand-select">
+    					    <select name="product_brand" class="form-control select2 brand-cat">
         				    <option value="">Select Brand</option>
            						 <!-- Add options for brands here -->
       						  </select>
-       						 <input type="text" name="other_brand" class="form-control" id="other-brand" style="margin-top:10px;" placeholder="Please specify brand">
+       						 <!-- <input type="text" name="other_brand" class="form-control" id="other-brand" style="margin-top:10px;" placeholder="Please specify brand"> -->
    							 </div>
 							</div>
 						<div class="form-group">
@@ -383,7 +383,7 @@ $statement->execute(array(
 	</div>
 
 </section>
-<script>
+<!-- <script>
 	// Add this JavaScript code after your existing scripts
 $(document).ready(function() {
     // Hide the "other brand" input field initially
@@ -418,6 +418,6 @@ $('.top-cat').on('change', function() {
         }
     });
 });
-</script>
+</script> -->
 
 <?php require_once('footer.php'); ?>
