@@ -168,7 +168,7 @@ if(!isset($_SESSION['admin_session'])) {
 
                     <li class="treeview <?php if( ($cur_page == 'order.php') ) {echo 'active';} ?>">
                         <a href="bidding.php">
-                            <i class="fa fa-sticky-note"></i> <span>Bid Management</span>
+                           <i class="fa fa-bell" ></i> <span>Bid Management</span>
                         </a>
                     </li>
 
