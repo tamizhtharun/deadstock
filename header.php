@@ -10,6 +10,12 @@ foreach ($result as $row)
 }
 ?>
 <?php
+// Check if the 'showLoginModal' query parameter exists
+if (isset($_GET['showLoginModal']) && $_GET['showLoginModal'] == 'true') {
+    echo "<script>window.addEventListener('DOMContentLoaded', function() { $('#staticBackdrop').modal('show'); });</script>";
+}
+?>
+<?php
 session_start();
 // Retrieve the error message from the session
 $error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : null;

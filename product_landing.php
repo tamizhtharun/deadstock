@@ -5,6 +5,9 @@ $error_message1 = '';
 $success_message1 = '';
 ?>
 
+<!-- Style  -->
+<link rel="stylesheet" href="css/product_landing.css">
+
 <?php
 if (!isset($_REQUEST['id'])) {
   header('location: index.php');
@@ -391,12 +394,64 @@ if ($success_message1 != '') {
           </div>
           <button class="btn btn-warning shadow-0"> Buy now </button>
           <button class="btn btn-primary shadow-0"> <i class="bi bi-basket me-1"></i> Add to cart </button>
+          <button id="requestPriceBtn" class="request-price-btn btn btn-light border" data-product-id="<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>">
+              Request Price
+          </button>
           <button class="btn btn-light border"> <i class="bi bi-heart me-1"></i> Save </button>
         </div>
       </main>
     </div>
   </div>
 </section>
+
+<!-- Modal Overlay For Request Price -->
+
+<div class="modal-overlay" id="modalOverlay" style="display: none;">
+    <!-- Modal -->
+    <div id="priceRequestModal">
+        <button class="close-button-rp" id="closeModal">&times;</button>
+        <div class="modal-header-rp">
+            <h3>Request a Price</h3>
+        </div>
+        <form id="priceRequestForm" method="POST" action="submit_bid.php">
+            <!-- Pass product_id correctly -->
+            <input type="hidden" name="product_id" value="<?php echo htmlspecialchars($_REQUEST['id'], ENT_QUOTES, 'UTF-8'); ?>">
+
+            <!-- Quantity and Proposed Price Inputs -->
+            <div class="form-group">
+                <label for="quantity">Quantity</label>
+                <input
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    required
+                    min="1"
+                    placeholder="Enter quantity"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="proposedPrice">Proposed Price (₹)</label>
+                <input
+                    type="number"
+                    id="proposedPrice"
+                    name="proposed_price"
+                    required
+                    min="0"
+                    step="0.01"
+                    placeholder="Enter proposed price"
+                />
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-rp btn-cancel-rp" id="cancelBtn">Cancel</button>
+                <button type="submit" class="btn-rp btn-submit-rp">Submit Request</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 
 <section class="bg-light border-top py-4">
   <div class="container">
@@ -633,4 +688,124 @@ if ($result->num_rows > 0) {
 
 <!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Script For Request Price Process -->
+<script>
+    const modalOverlay = document.getElementById("modalOverlay");
+    const requestBtn = document.getElementById("requestPriceBtn");
+    const closeBtn = document.getElementById("closeModal");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const form = document.getElementById("priceRequestForm");
+
+    // Open the modal
+    function openModal() {
+        modalOverlay.style.display = "flex";
+        document.body.style.overflow = "hidden";
+    }
+
+    // Close the modal
+    function closeModal() {
+        modalOverlay.style.display = "none";
+        document.body.style.overflow = "auto";
+        form.reset();
+    }
+
+    // Attach event listeners for opening and closing modal
+    requestBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+    cancelBtn.addEventListener("click", closeModal);
+    modalOverlay.addEventListener("click", (e) => {
+        if (e.target === modalOverlay) {
+            closeModal();
+        }
+    });
+
+    // Handle form submission
+    form.addEventListener("submit", function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        // Collect input values
+        const quantity = document.getElementById("quantity").value.trim();
+        const proposedPrice = document.getElementById("proposedPrice").value.trim();
+
+        // Validate form inputs
+        if (!quantity || !proposedPrice || isNaN(quantity) || isNaN(proposedPrice)) {
+            alert("Please provide valid numeric values for quantity and price.");
+            return;
+        }
+
+        if (quantity <= 0 || proposedPrice <= 0) {
+            alert("Quantity and price must be greater than 0.");
+            return;
+        }
+
+        // Prepare data for submission
+        const formData = new FormData(form);
+
+        // Send data to the server using AJAX (fetch)
+        fetch("submit_bid.php", {
+            method: "POST",
+            body: formData,
+        })
+        .then((response) => response.json()) // Parse JSON response
+        .then((data) => {
+            if (data.status === "success") {
+                alert(data.message); // Show success message
+                closeModal(); // Close the modal
+                window.location.reload(); // Reload the page to reflect changes
+            } else {
+                alert(data.message); // Show error message
+            }
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert("Failed to submit your bid. Please try again.");
+        });
+    });
+    
+    document.addEventListener("DOMContentLoaded", function() {
+    const bidButtons = document.querySelectorAll(".request-price-btn");  // Select all the "Request Price" buttons
+    bidButtons.forEach(function(bidButton) {
+        const productId = bidButton.getAttribute("data-product-id");  // Each button has a unique product_id
+
+        // Make an AJAX request to check the bid status for this product
+        fetch(`check_bid_status.php?product_id=${productId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "error") {
+                    // Disable the button and show the tooltip message for the product
+                    bidButton.disabled = true;
+                    bidButton.title = data.message; // Show the bid status message (e.g., "You have already placed a bid.")
+                } else {
+                    // Enable the button and set a default tooltip message
+                    bidButton.disabled = false;
+                    bidButton.title = "Click to place your bid.";
+                }
+            })
+            .catch(error => console.error("Error checking bid status:", error));
+    });
+});
+
+    document.addEventListener("DOMContentLoaded", function() {
+    const bidButton = document.getElementById("requestPriceBtn");
+    const productId = <?php echo $_REQUEST['id']; ?>; // Use the current product ID
+
+    // Make an AJAX request to check the bid status
+    fetch(`check_bid_status.php?product_id=${productId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "error") {
+                // If the user has already placed a bid, disable the button and add a tooltip
+                bidButton.disabled = true;
+                bidButton.title = data.message;  // Set the message from the server (e.g., "You have already placed a bid for this product.")
+            } else {
+                // Otherwise, keep the button enabled with a default tooltip
+                bidButton.disabled = false;
+                bidButton.title = "Click to place your bid.";
+            }
+        })
+        .catch(error => console.error("Error checking bid status:", error));
+});
+
+</script>
 <?php include 'footer.php'; ?>
