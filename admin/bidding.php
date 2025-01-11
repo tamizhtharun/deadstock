@@ -77,7 +77,7 @@ function getBidStatusLabel($status) {
             <td><?php echo $row['seller_name'];?> ,<br><?php echo$row['seller_cname']; ?></td>
             <td><?php echo $row['no_of_bids']; ?></td>
             <!-- <td><?php echo getBidStatusLabel ($row['bid_status']); ?></td> -->
-            <td><a href="view_bid.php?id=<?php echo $row['bid_id']; ?>">View all Bids</a></td>
+            <td><a href="view_bid.php?id=<?php echo $row['product_id']; ?>">View all Bids</a></td>
         </tr>
     <?php endforeach; ?>
             </tbody>
