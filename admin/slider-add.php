@@ -31,7 +31,7 @@ if(isset($_POST['form1'])) {
 
 
 		$final_name = 'slider-'.$ai_id.'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
+        move_uploaded_file( $path_tmp, '../assets/uploads/sliders/'.$final_name );
 
 	
 		$statement = $pdo->prepare("INSERT INTO tbl_slider (photo,heading) VALUES (?,?)");

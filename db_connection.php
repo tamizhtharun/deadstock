@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
-$username = "root";    
-$password = "";    
-$dbname = "deadstock";  
+$username = "root";
+$password = "";
+$dbname = "deadstock";
 
 // MySQLi Connection
 $conn = new mysqli($servername, $username, $password, $dbname);

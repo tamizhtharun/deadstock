@@ -1,4 +1,5 @@
 <?php
+session_start();
 include 'db_connection.php';
 $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
 $statement->execute();
@@ -13,13 +14,23 @@ foreach ($result as $row)
 }
 ?>
 <?php
-session_start();
-// Retrieve the error message from the session
+// Check if the 'showLoginModal' query parameter exists
+if (isset($_GET['showLoginModal']) && $_GET['showLoginModal'] == 'true') {
+    echo "<script>window.addEventListener('DOMContentLoaded', function() { $('#staticBackdrop').modal('show'); });</script>";
+}
+?>
+<?php
+// Check if the 'showLoginModal' query parameter exists
+if (isset($_GET['showLoginModal']) && $_GET['showLoginModal'] == 'true') {
+    echo "<script>window.addEventListener('DOMContentLoaded', function() { $('#staticBackdrop').modal('show'); });</script>";
+}
+?>
+<?php
 $error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : null;
 
-// Clear the error message after retrieving it
 unset($_SESSION['error_message']);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,7 +39,7 @@ unset($_SESSION['error_message']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dead Stock Processing</title>
-    <link rel="icon" href="assets\uploads\<?php echo $favicon?>">
+    <link rel="icon" href="assets\uploads\<?php echo $favicon;?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
@@ -321,9 +332,10 @@ echo "</pre>";
 
 
 ?> -->
+
 <nav class="ds-nav-container">
             <div class="ds-logo-section">
-                <a href="index.php" class="ds-logo">
+                <a href="index" class="ds-logo">
                 <img src="./assets/uploads/<?php echo $logo?>" alt="Logo" width="30" height="30">
                     <span>Dead Stock</span>
                 </a>
@@ -341,12 +353,45 @@ echo "</pre>";
 
  <div class="ds-actions-section">
     <?php if(isset($_SESSION['user_session'])): ?>
-      <button class="ds-btn-secondary" onclick="window.location.href='seller_registration.php';" >Sell here</button>
+      <button class="ds-btn-secondary" onclick="window.location.href='seller_registration';" >Sell here</button>
 
         <div class="ds-user-controls">
             <button class="ds-icon-button cart-button" title="Shopping Cart"  onclick="window.location.href='cart.php';">
                 <i class="fas fa-shopping-cart"></i>
-                <span class="ds-cart-badge">3</span>
+                <span class="ds-cart-badge"><?php              
+                $user_id = $_SESSION['user_session']['id'] ?? null;
+                $cart_count = 0;
+                
+                if ($user_id) {
+                    // Counting the number of items in the cart for the logged-in user
+                    $cart_query = mysqli_query($conn, "SELECT * FROM tbl_cart WHERE user_id = '$user_id'");
+                    $cart_count = mysqli_num_rows($cart_query);  // Get number of items
+                }               
+                echo $cart_count; ?></span>
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Function to fetch and update the cart count in real-time
+    function updateCartBadge() {
+        // Use AJAX to send a GET request to itself and get the updated cart count
+        $.ajax({
+            url: 'header.php',  // This points back to the same header.php file
+            method: 'GET',
+            dataType: 'html',
+            success: function (data) {
+                // Parse the updated cart count from the response (only the .ds-cart-badge span part)
+                var updatedCartCount = $(data).find('.ds-cart-badge').text();
+                // Update the cart badge on the page
+                $('.ds-cart-badge').text(updatedCartCount);
+            },
+            error: function () {
+                console.error('Failed to fetch cart count.');
+            }
+        });
+    }
+    updateCartBadge();
+    setInterval(updateCartBadge, 5000);
+</script>
             </button>
             
             <!-- Notification -->
@@ -421,7 +466,7 @@ echo "</pre>";
         </div>
     <?php else: ?>
         <div class="ds-auth-buttons">
-            <button class="ds-btn-secondary" onclick="window.location.href='seller_registration.php';" >Sell here</button>
+            <button class="ds-btn-secondary" onclick="window.location.href='seller_registration';" >Sell here</button>
             <button class="ds-btn-primary" type="button" id="login-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Login</button>
         </div>
     <?php endif; ?>
@@ -529,7 +574,7 @@ echo "</pre>";
         </div>
     </div>
 </div>
-
+    
   <script src="js/index.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>

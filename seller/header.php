@@ -166,9 +166,9 @@ $stmt->close();
                     </li>
 
 
-                    <li class="treeview <?php if( ($cur_page == 'order.php') ) {echo 'active';} ?>">
-                        <a href="order.php">
-                            <i class="fa fa-sticky-note"></i> <span>Order Management</span>
+                    <li class="treeview <?php if( ($cur_page == 'bidding.php') ) {echo 'active';} ?>">
+                        <a href="bidding.php">
+                            <i class="fa fa-sticky-note"></i> <span>Bidding Management</span>
                         </a>
                     </li>
 					<li class="treeview <?php if( ($cur_page == 'active-bid.php') || ($cur_page == 'closed-bid.php') || ($cur_page == 'request.php') ) {echo 'active';} ?>">
@@ -187,12 +187,12 @@ $stmt->close();
 					</li>
 
 
-
+<!-- 
                      <li class="treeview <?php if( ($cur_page == 'slider.php') ) {echo 'active';} ?>">
 			          <a href="slider.php">
 			            <i class="fa fa-picture-o"></i> <span>Manage Sliders</span>
 			          </a>
-			        </li>
+			        </li> -->
                     <!-- Icons to be displayed on Shop -->
 
 
