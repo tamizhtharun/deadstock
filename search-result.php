@@ -242,7 +242,7 @@ document.querySelectorAll('.top-category').forEach(function(checkbox) {
 
         <?php
             // Function to truncate the description to a specific word limit
-            function truncateDescription($description, $wordLimit = 4) {
+            function truncateDescription($description, $wordLimit = 5) {
                 $words = explode(' ', $description); // Split the description into words
                 if (count($words) > $wordLimit) {
                     return implode(' ', array_slice($words, 0, $wordLimit)) . '...'; // Truncate and append "..."
@@ -251,75 +251,251 @@ document.querySelectorAll('.top-category').forEach(function(checkbox) {
             }
             ?>
 
+<?php
+$total_statement = $pdo->prepare("SELECT COUNT(*) as total FROM tbl_product WHERE p_name LIKE ?");
+$total_statement->execute(array('%' . $_REQUEST['search_text'] . '%'));
+$total_result = $total_statement->fetch(PDO::FETCH_ASSOC);
+$total_products = $total_result['total'];
+?>
+
 <div class="main-content">
-    <!-- Product Listings -->
-    <div class="product-list">
-         <?php
-                // Fetch total results count for the given search term
-                $total_statement = $pdo->prepare("SELECT COUNT(*) as total FROM tbl_product WHERE p_name LIKE ?");
-                $total_statement->execute(array('%' . $_REQUEST['search_text'] . '%'));
-                $total_result = $total_statement->fetch(PDO::FETCH_ASSOC);
-                $total_products = $total_result['total'];
-                ?>
+    <div class="search-results-summary">
+        <?php if ($total_products > 0): ?>
+            <span style="font-weight: bold; font-family: Arial, sans-serif;">
+                Showing <?php echo htmlspecialchars($total_products, ENT_QUOTES, 'UTF-8'); ?> results for "<?php echo htmlspecialchars($_REQUEST['search_text'], ENT_QUOTES, 'UTF-8'); ?>"
+            </span>
+        <?php else: ?>
+            <span style="font-weight: bold; font-family: Arial, sans-serif;">
+                No results found for "<?php echo htmlspecialchars($_REQUEST['search_text'], ENT_QUOTES, 'UTF-8'); ?>"
+            </span>
+        <?php endif; ?>
+    </div>
 
-                <div class="search-results-summary" style="font-size: 18px; margin-bottom: 20px; font-weight: bold;">
-                    <?php if ($total_products > 0): ?>
-                        Showing  <?php echo htmlspecialchars($total_products, ENT_QUOTES, 'UTF-8'); ?> results for "<?php echo htmlspecialchars($_REQUEST['search_text'], ENT_QUOTES, 'UTF-8'); ?>"
-                    <?php else: ?>
-                        No results found for "<?php echo htmlspecialchars($_REQUEST['search_text'], ENT_QUOTES, 'UTF-8'); ?>"
-                    <?php endif; ?>
-                </div>
-
-                <div class="search-results">
-            
-
-          <?php       
-            foreach ($result as $row): ?>
-            
-                <div class="product-card">
-                    <a href="product_landing.php?id=<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration: none; color: inherit;">
-                        <div class="product-card-left">
-                            <img src="assets/uploads/<?php echo htmlspecialchars($row['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" 
-                                 alt="<?php echo htmlspecialchars($row['p_name'], ENT_QUOTES, 'UTF-8'); ?>" 
-                                 width="150px" height="150px" style="margin-bottom: 10px;">
-                            
-                            <h3 class="product-name" style="margin-bottom: 10px;">
-                                <?php echo htmlspecialchars($row['p_name'], ENT_QUOTES, 'UTF-8'); ?>
-                            </h3>
-                            
-                            <div class="product-specs" style="margin-bottom: 20px;">
-                                <p><?php echo htmlspecialchars(truncateDescription(strip_tags($row['p_description'])), ENT_QUOTES, 'UTF-8'); ?></p>
-                            </div>
-                            
-                            <div class="product-pricing" style="margin-top: -20px;">
-                                <span class="current-price">₹<?php echo number_format($row['p_current_price'], 2); ?></span>
-                                <?php if (!empty($row['p_old_price'])): ?>
-                                    <span class="original-price"><del>₹<?php echo number_format($row['p_old_price'], 2); ?></del></span>
-                                    <span class="discount">
-                                        <?php
-                                        $discount = (($row['p_old_price'] - $row['p_current_price']) / $row['p_old_price']) * 100;
-                                        echo round($discount) . '% OFF';
-                                        ?>
-                                    </span>
-                                <?php endif; ?>
-                            </div>
-                                        <div class="button-container" style="display: flex; margin-top: 10px; margin-right: 15px; margin-left: 15px;">
-                            <button class="action-button" style="margin-right: 10px;" onclick="startBid(<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8'); ?>)">Start Bid</button>
-                            <button class="action-button" onclick="startBid(<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8'); ?>)">Add to Cart</button>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        
-                    <?php endforeach;
+    <div class="search-results <?php echo 'items-' . count($result); ?>">
+        <?php foreach ($result as $row): ?>
+            <div class="product-card">
+                <div class="product-card-inner">
+                    <div class="product-image">
+                        <img src="assets/uploads/<?php echo htmlspecialchars($row['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" 
+                             alt="<?php echo htmlspecialchars($row['p_name'], ENT_QUOTES, 'UTF-8'); ?>">
+                    </div>
                     
-                     ?>
-                   </div>
+                    <h3 class="product-name">
+                        <?php echo htmlspecialchars($row['p_name'], ENT_QUOTES, 'UTF-8'); ?>
+                    </h3>
+                    
+                    <div class="product-specs">
+                        <p><?php echo htmlspecialchars(truncateDescription(strip_tags($row['p_description'])), ENT_QUOTES, 'UTF-8'); ?></p>
+                    </div>
+                    
+                    <div class="product-pricing">
+                        <span class="current-price">₹<?php echo number_format($row['p_current_price'], 2); ?></span>
+                        <?php if (!empty($row['p_old_price'])): ?>
+                            <span class="original-price"><del>₹<?php echo number_format($row['p_old_price'], 2); ?></del></span>
+                            <span class="discount">
+                                <?php
+                                $discount = (($row['p_old_price'] - $row['p_current_price']) / $row['p_old_price']) * 100;
+                                echo round($discount) . '% OFF';
+                                ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="button-container">
+                        <button class="action-button" onclick="startBid(<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8'); ?>)">Start Bid</button>
+                        <button class="action-button" onclick="addToCart(<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8'); ?>)">Add to Cart</button>
+                    </div>
                 </div>
-              </div>
-            <div class="pagination">
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <div class="pagination">
         <?php echo $pagination; ?>
     </div>
-  </div>
- </div>
 </div>
+<style>
+ 
+.search-results-summary {
+    font-size: 18px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.search-results {
+    display: grid;
+    gap: 15px; /* Reduced from 20px */
+    padding: 20px 0;
+    width: 100%;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Specific layouts for 1-3 items */
+.search-results.items-1 {
+    grid-template-columns: minmax(auto, 650px); /* Increased from 600px */
+    justify-content: center;
+}
+
+.search-results.items-2 {
+    grid-template-columns: repeat(2, minmax(auto, 450px)); /* Increased from 400px */
+    justify-content: center;
+}
+
+.search-results.items-3 {
+    grid-template-columns: repeat(3, minmax(auto, 400px)); /* Increased from 350px */
+    justify-content: center;
+}
+
+.product-card {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.product-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-card-inner {
+    padding: 12px; /* Reduced from 15px */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.product-image {
+    aspect-ratio: 4/3; /* Changed from 1/1 to make image shorter */
+    margin-bottom: 12px; /* Reduced from 15px */
+    overflow: hidden;
+    border-radius: 4px;
+    max-height: 180px; /* Added max-height constraint */
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Changed from cover to contain */
+}
+
+.product-name {
+    font-size: 15px; /* Reduced from 16px */
+    line-height: 1.4;
+    margin: 0 0 12px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 42px; /* Reduced from 48px */
+}
+
+.product-specs {
+    margin-bottom: 12px;
+    flex-grow: 1;
+}
+
+.product-specs p {
+    font-size: 13px; /* Reduced from 14px */
+    line-height: 1.4;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: #666;
+}
+
+.product-pricing {
+    display: flex;
+    align-items: center;
+    gap: 6px; /* Reduced from 8px */
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.current-price {
+    font-size: 12px; /* Reduced from 18px */
+    font-weight: bold;
+    color: #e41e31;
+}
+
+.original-price {
+    color: #666;
+    font-size: 10px; /* Reduced from 14px */
+    text-decoration: line-through;
+}
+
+.discount {
+    background: #e41e31;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 9px; /* Reduced from 12px */
+}
+
+.button-container {
+    display: flex;
+    gap: 8px; /* Reduced from 10px */
+    margin-top: auto;
+}
+pp  
+.action-button {
+    flex: 1;
+    padding: 8px 14px; /* Reduced horizontal padding */
+    background: white;
+    border: 1px solid #000;
+    border-radius: 4px;
+    color: #000;
+    cursor: pointer;
+    font-size: 13px; /* Reduced from 14px */
+    transition: all 0.3s ease;
+}
+
+.action-button:hover {
+    background: #000;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .search-results {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px; /* Further reduced gap for smaller screens */
+    }
+    
+    .search-results.items-3 {
+        grid-template-columns: repeat(3, minmax(auto, 320px));
+    }
+}
+
+@media (max-width: 900px) {
+    .search-results {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px; /* Further reduced gap for smaller screens */
+    }
+    
+    .search-results.items-2,
+    .search-results.items-3 {
+        grid-template-columns: repeat(2, minmax(auto, 380px));
+    }
+}
+
+@media (max-width: 600px) {
+    .search-results,
+    .search-results.items-1,
+    .search-results.items-2,
+    .search-results.items-3 {
+        grid-template-columns: 1fr;
+        gap: 15px; /* Increased gap for single column */
+    }
+    
+    .product-card {
+        max-width: 100%;
+    }
+    
+    .product-image {
+        max-height: 200px; /* Slightly larger images on mobile */
+    }
+}
+</style>

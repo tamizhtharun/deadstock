@@ -1,8 +1,5 @@
 <?php require_once( 'header.php');?>
 <link rel="stylesheet" href="./css/index.css">
-
-
-
 <div class="category-pad">
     <div class="category-box">
         <ul class="categories">
@@ -15,7 +12,7 @@
                 <li class="category">
                     <a class="category-link" href="product-category.php?id=<?php echo $row['tcat_id']; ?>&type=top-category">
                         <img src="./assets/uploads/top-categories-images/<?php echo $row['photo']; ?>" width="30px" height="30px" alt="<?php echo $row['tcat_name']; ?>">
-                        <span><?php echo $row['tcat_name']; ?></span>
+                        <span><?php echo $row['tcat_name'];?></span>
                     </a>
                     <ul class="subcategories">
                         <?php
@@ -56,14 +53,17 @@
         </ul>
     </div>
 
-
-
+<!-- quote container -->
   <div class="right-category-pad">
-    <div class="quote-container">
-      <p class="quote"><span class="quote-bold">Buy</span> at your Desired bidding price</p>
-      <img src="assets/uploads/<?php echo $logo?>" alt="Logo" class="logo">
-    </div>
-    <div class="brands">
+  <div class="quote-container">
+    <p class="quote">
+        <span class="quote-bold"><?php echo htmlspecialchars($quote_span_text); ?></span> 
+        <?php echo nl2br(htmlspecialchars($quote_text)); ?>
+    </p>
+    <img src="assets/uploads/<?php echo $logo ?>" alt="Logo" class="logo">
+</div>
+
+<div class="brands">
       <div class="ind-brand">
         <a href="#" class="link-body-emphasis link-underline-opacity-0">
           <div class="img-category">
@@ -130,7 +130,7 @@
               $activeClass = ($i === 0) ? 'active' : ''; // Only first item is active
           ?>
               <div class="carousel-item <?php echo $activeClass; ?>">
-                  <img class="img" src="assets/uploads/<?php echo $row['photo']; ?>" class="d-block w-100" alt="..." style="width:100%" >
+                  <img class="img" src="assets/uploads/sliders/<?php echo $row['photo']; ?>" class="d-block w-100" alt="..." style="width:100%" >
               </div>
           <?php
               $i++;
@@ -212,18 +212,8 @@ if (!empty($topCategories)) {
                                     <?php if ($product['p_is_featured'] == 1): ?>
                                     <div class="product-item swiper-slide">
                                         <figure>
-                                        <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" title="Product Title">
-                                            <img 
-                                                src="<?php 
-                                                    $imagePath = 'assets/uploads/' . htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8');
-                                                    echo file_exists($imagePath) && !empty($product['p_featured_photo']) 
-                                                        ? $imagePath 
-                                                        : './assets/uploads/logo.png'; 
-                                                ?>" 
-                                                width="130px" 
-                                                height="100px" 
-                                                alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>" 
-                                                class="tab-image">
+                                            <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" title="Product Title">
+                                                <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>" class="tab-image">
                                             </a>
                                         </figure>
                                         <div class="d-flex flex-column text-center">
@@ -319,6 +309,17 @@ if (!empty($topCategories)) {
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
 
+  <style>
+    .quote-container .quote {
+    font-size: 42px; /* Slightly smaller quote size */
+    line-height: 1.4; /* Adjust line height for better spacing */
+}
+
+.quote-container .quote .quote-bold {
+    font-size: 45px; /* Bold "Buy" text slightly larger */
+}
+
+  </style>
 
   <?php require_once( 'footer.php');?>
 

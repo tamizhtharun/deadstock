@@ -1,14 +1,14 @@
 <?php include 'header.php';
 include 'db_connection.php';
-
-$error_message1 = '';
-$success_message1 = '';
 ?>
 
 <!-- Style  -->
 <link rel="stylesheet" href="css/product_landing.css">
 
 <?php
+if (isset($_SESSION['user_session']['id'])) {
+  $user_id = $_SESSION['user_session']['id'];
+}
 if (!isset($_REQUEST['id'])) {
   header('location: index.php');
   exit;
@@ -78,193 +78,69 @@ $statement->execute(array($p_total_view, $_REQUEST['id']));
 
 
 
+?>
 
 
-if (isset($_POST['form_review'])) {
+<?php
+$error_message1 = '';
+$success_message1 = '';
+$product_id = isset($_GET['id']) ? $_GET['id'] : '';
 
-  $statement = $pdo->prepare("SELECT * FROM tbl_rating WHERE id=? AND cust_id=?");
-  $statement->execute(array($_REQUEST['id'], $_SESSION['customer']['cust_id']));
-  $total = $statement->rowCount();
-
-  if ($total) {
-    $error_message = LANG_VALUE_68;
-  } else {
-    $statement = $pdo->prepare("INSERT INTO tbl_rating (p_id,cust_id,comment,rating) VALUES (?,?,?,?)");
-    $statement->execute(array($_REQUEST['id'], $_SESSION['customer']['cust_id'], $_POST['comment'], $_POST['rating']));
-    $success_message = LANG_VALUE_163;
-  }
-
+if (!isset($_SESSION['recently_viewed'])) {
+  $_SESSION['recently_viewed'] = array();
 }
 
-// Getting the average rating for this product
-$t_rating = 0;
-$statement = $pdo->prepare("SELECT * FROM tbl_rating WHERE p_id=?");
-$statement->execute(array($_REQUEST['id']));
-$tot_rating = $statement->rowCount();
-if ($tot_rating == 0) {
-  $avg_rating = 0;
-} else {
-  $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-  foreach ($result as $row) {
-    $t_rating = $t_rating + $row['rating'];
+// Add the current product to recently viewed if it's not already there
+if (!in_array($product_id, $_SESSION['recently_viewed'])) {
+  // Keep only the last 12 viewed products
+  if (count($_SESSION['recently_viewed']) >= 12) {
+    array_shift($_SESSION['recently_viewed']);
   }
-  $avg_rating = $t_rating / $tot_rating;
+  array_push($_SESSION['recently_viewed'], $product_id);
 }
 
-if (isset($_POST['form_add_to_cart'])) {
-
-  // getting the currect stock of this product
-  $statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
-  $statement->execute(array($_REQUEST['id']));
-  $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-  foreach ($result as $row) {
-    $current_p_qty = $row['p_qty'];
-  }
-  if ($_POST['p_qty'] > $current_p_qty):
-    $temp_msg = 'Sorry! There are only ' . $current_p_qty . ' item(s) in stock';
-    ?>
-    <script type="text/javascript">alert('<?php echo $temp_msg; ?>');</script>
-    <?php
-  else:
-    if (isset($_SESSION['cart_p_id'])) {
-      $arr_cart_p_id = array();
-      $arr_cart_size_id = array();
-      $arr_cart_color_id = array();
-      $arr_cart_p_qty = array();
-      $arr_cart_p_current_price = array();
-
-      $i = 0;
-      foreach ($_SESSION['cart_p_id'] as $key => $value) {
-        $i++;
-        $arr_cart_p_id[$i] = $value;
-      }
-
-      $i = 0;
-      foreach ($_SESSION['cart_size_id'] as $key => $value) {
-        $i++;
-        $arr_cart_size_id[$i] = $value;
-      }
-
-      $i = 0;
-      foreach ($_SESSION['cart_color_id'] as $key => $value) {
-        $i++;
-        $arr_cart_color_id[$i] = $value;
-      }
 
 
-      $added = 0;
-      if (!isset($_POST['size_id'])) {
-        $size_id = 0;
-      } else {
-        $size_id = $_POST['size_id'];
-      }
-      if (!isset($_POST['color_id'])) {
-        $color_id = 0;
-      } else {
-        $color_id = $_POST['color_id'];
-      }
-      for ($i = 1; $i <= count($arr_cart_p_id); $i++) {
-        if (($arr_cart_p_id[$i] == $_REQUEST['id']) && ($arr_cart_size_id[$i] == $size_id) && ($arr_cart_color_id[$i] == $color_id)) {
-          $added = 1;
-          break;
-        }
-      }
-      if ($added == 1) {
-        $error_message1 = 'This product is already added to the shopping cart.';
-      } else {
+if (isset($_POST['add_to_cart'])) {
+  // Check if the user is logged in
+  if (isset($_SESSION['user_session']['id'])) {
+    $user_id = $_SESSION['user_session']['id']; // Get the user ID from the session
+    $product_quantity = intval($_POST['product_quantity']); // Ensure quantity is a valid number
 
-        $i = 0;
-        foreach ($_SESSION['cart_p_id'] as $key => $res) {
-          $i++;
-        }
-        $new_key = $i + 1;
-
-        if (isset($_POST['size_id'])) {
-
-          $size_id = $_POST['size_id'];
-
-          $statement = $pdo->prepare("SELECT * FROM tbl_size WHERE size_id=?");
-          $statement->execute(array($size_id));
-          $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-          foreach ($result as $row) {
-            $size_name = $row['size_name'];
-          }
-        } else {
-          $size_id = 0;
-          $size_name = '';
-        }
-
-        if (isset($_POST['color_id'])) {
-          $color_id = $_POST['color_id'];
-          $statement = $pdo->prepare("SELECT * FROM tbl_color WHERE color_id=?");
-          $statement->execute(array($color_id));
-          $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-          foreach ($result as $row) {
-            $color_name = $row['color_name'];
-          }
-        } else {
-          $color_id = 0;
-          $color_name = '';
-        }
-
-
-        $_SESSION['cart_p_id'][$new_key] = $_REQUEST['id'];
-        $_SESSION['cart_size_id'][$new_key] = $size_id;
-        $_SESSION['cart_size_name'][$new_key] = $size_name;
-        $_SESSION['cart_color_id'][$new_key] = $color_id;
-        $_SESSION['cart_color_name'][$new_key] = $color_name;
-        $_SESSION['cart_p_qty'][$new_key] = $_POST['p_qty'];
-        $_SESSION['cart_p_current_price'][$new_key] = $_POST['p_current_price'];
-        $_SESSION['cart_p_name'][$new_key] = $_POST['p_name'];
-        $_SESSION['cart_p_featured_photo'][$new_key] = $_POST['p_featured_photo'];
-
-        $success_message1 = 'Product is added to the cart successfully!';
-      }
-
+    // Check if the product already exists in the cart
+    $select_cart = mysqli_query($conn, "SELECT * FROM `tbl_cart` WHERE id = '$product_id' AND user_id = '$user_id'") or die('Query failed');
+    if (mysqli_num_rows($select_cart) > 0) {
+      echo "<script>alert('Product already added to cart!');</script>";
     } else {
-
-      if (isset($_POST['size_id'])) {
-
-        $size_id = $_POST['size_id'];
-
-        $statement = $pdo->prepare("SELECT * FROM tbl_size WHERE size_id=?");
-        $statement->execute(array($size_id));
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($result as $row) {
-          $size_name = $row['size_name'];
-        }
+      // Insert the product into the cart
+      $insert_query = "INSERT INTO `tbl_cart` (id, user_id, quantity) 
+                           VALUES ('$product_id', '$user_id', '$product_quantity')";
+      if (mysqli_query($conn, $insert_query)) {
+        echo "<script>alert('Product added to cart!');</script>";
       } else {
-        $size_id = 0;
-        $size_name = '';
+        echo "<script>alert('Failed to add product to cart. Please try again!');</script>";
       }
-
-      if (isset($_POST['color_id'])) {
-        $color_id = $_POST['color_id'];
-        $statement = $pdo->prepare("SELECT * FROM tbl_color WHERE color_id=?");
-        $statement->execute(array($color_id));
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($result as $row) {
-          $color_name = $row['color_name'];
-        }
-      } else {
-        $color_id = 0;
-        $color_name = '';
-      }
-
-
-      $_SESSION['cart_p_id'][1] = $_REQUEST['id'];
-      $_SESSION['cart_size_id'][1] = $size_id;
-      $_SESSION['cart_size_name'][1] = $size_name;
-      $_SESSION['cart_color_id'][1] = $color_id;
-      $_SESSION['cart_color_name'][1] = $color_name;
-      $_SESSION['cart_p_qty'][1] = $_POST['p_qty'];
-      $_SESSION['cart_p_current_price'][1] = $_POST['p_current_price'];
-      $_SESSION['cart_p_name'][1] = $_POST['p_name'];
-      $_SESSION['cart_p_featured_photo'][1] = $_POST['p_featured_photo'];
-
-      $success_message1 = 'Product is added to the cart successfully!';
     }
-  endif;
+  } else {
+    // User is not logged in, show alert
+    echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var loginModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+                backdrop: 'static'
+            });
+            loginModal.show();
+        });
+    </script>";
+  }
+}
+?>
+
+<?php
+$select_product = mysqli_query($conn, "SELECT * FROM `tbl_product`") or die('query failed');
+if (mysqli_num_rows($select_product) > 0) {
+  while ($fetch_product = mysqli_fetch_assoc($select_product)) {
+
+  }
 }
 ?>
 
@@ -277,8 +153,6 @@ if ($success_message1 != '') {
   header('location: product.php?id=' . $_REQUEST['id']);
 }
 ?>
-
-
 
 <!-- content -->
 <section class="py-5">
@@ -303,7 +177,7 @@ if ($success_message1 != '') {
           <a data-bs-toggle="modal" class="rounded-4" data-bs-target="#imageModal" href="#">
             <!-- <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4" src="icons\hole.png" /> -->
             <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4"
-              src="assets/uploads/<?php echo $p_featured_photo; ?>">
+              src="assets/uploads/product-photos/<?php echo $p_featured_photo; ?>">
 
           </a>
         </div>
@@ -326,7 +200,7 @@ if ($success_message1 != '') {
         </div>
       </aside>
       <main class="col-lg-6">
-        <div class="ps-lg-3">
+        <class="ps-lg-3">
           <h4 class="title text-dark">
             <?php echo $p_name; ?>
           </h4>
@@ -341,7 +215,7 @@ if ($success_message1 != '') {
                 4.5
               </span>
             </div>
-            <span class="text-muted"><i class="bi bi-basket mx-1"></i>154 orders</span>
+            <span class="text-muted"><i class="bi bi-basket mx-1"></i><?php echo $p_qty; ?></span>
             <span class="text-success ms-2">In stock</span>
           </div>
 
@@ -377,20 +251,38 @@ if ($success_message1 != '') {
           </div>
 
           <hr />
+          <button class="btn btn-warning shadow-0"> Buy now </button>
+          <div class="product-container">
+            <?php
+            $select_product = mysqli_query($conn, "SELECT * FROM `tbl_product`") or die('query failed');
+            if (mysqli_num_rows($select_product) > 0) {
+              while ($fetch_product = mysqli_fetch_assoc($select_product)) {
 
-          <div class="row mb-4">
-            <div class="col-md-4 col-6 mb-3">
-              <label class="mb-2 d-block">Quantity</label>
-              <div class="input-group mb-3" style="width: 170px;">
-                <!-- <button class="btn btn-outline-secondary" type="button" id="decrease-btn"> -->
-                <!-- <i class="bi bi-dash"></i> -->
-                <!-- </button> -->
-                <input type="number" class="form-control text-center" id="quantity-input" value="1" min="1" />
-                <!-- <button class="btn btn-outline-secondary" type="button" id="increase-btn">
-                  <i class="bi bi-plus"></i>
-                </button> -->
-              </div>
+                ?>
+                <div class="product-box">
+
+                  <form method="post" action="">
+                    <input type="hidden" name="product_image" value="<?php echo $fetch_product['p_featured_photo']; ?>">
+                    <input type="hidden" name="product_name" value="<?php echo $fetch_product['p_name']; ?>">
+                    <input type="hidden" name="product_price" value="<?php echo $fetch_product['p_current_price']; ?>">
+
+                    <?php
+              }
+            }
+            ?>
+                <div class="row mb-4">
+                  <div class="col-md-4 col-6 mb-3">
+                    <label class="mb-2 d-block">Quantity</label>
+                    <div class="input-group mb-3" style="width: 170px;">
+                      <input type="number" class="form-control text-center" name="product_quantity" id="quantity-input"
+                        value="1" min="1" />
+                    </div>
+                  </div>
+                </div>
+                <input type="submit" value="Add to Cart" name="add_to_cart" class="btn btn-primary shadow-0">
+              </form>
             </div>
+
           </div>
           <button class="btn btn-warning shadow-0"> Buy now </button>
           <button class="btn btn-primary shadow-0"> <i class="bi bi-basket me-1"></i> Add to cart </button>
@@ -398,9 +290,9 @@ if ($success_message1 != '') {
               Request Price
           </button>
           <button class="btn btn-light border"> <i class="bi bi-heart me-1"></i> Save </button>
-        </div>
-      </main>
     </div>
+    </main>
+  </div>
   </div>
 </section>
 
@@ -481,7 +373,7 @@ if ($success_message1 != '') {
           <!-- Pills content -->
           <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-spec" role="tabpanel">
-               <p>
+              <p>
                 <?php
                 $product_id = intval($_GET['id']);
                 $sql = "SELECT p_description
@@ -493,71 +385,37 @@ if ($success_message1 != '') {
                   echo '<td class="py-2">' . htmlspecialchars($row['p_description']) . '</td>';
                 }
                 ?>
-              </p> 
+              </p>
               <div class="row mb-2">
-                <!-- <div class="col-12 col-md-6">
-                  <ul class="list-unstyled mb-0">
-                    <li><i class="bi bi-check-lg text-success me-2"></i>Some great feature name here</li>
-                    <li><i class="bi bi-check-lg text-success me-2"></i>Lorem ipsum dolor sit amet, consectetur</li>
-                    <li><i class="bi bi-check-lg text-success me-2"></i>Duis aute irure dolor in reprehenderit</li>
-                    <li><i class="bi bi-check-lg text-success me-2"></i>Optical heart sensor</li>
-                  </ul>
-                </div> -->
 
-               
+
+
                 <div class="col-12 col-md-6 mb-0">
-                  <!-- <ul class="list-unstyled">
-                    <li><i class="bi bi-check-lg text-success me-2"></i>Easy fast and ver good</li>
-                    <li><i class="bi bi-check-lg text-success me-2"></i>Some great feature name here</li>
-                    <li><i class="bi bi-check-lg text-success me-2"></i>Modern style and design</li>
-                  </ul> -->
+
                 </div>
               </div>
-              <!-- <table class="table border mt-3 mb-2">
-                <tr>
-                  <th class="py-2">Display:</th>
-                  <td class="py-2">13.3-inch LED-backlit display with IPS</td>
-                </tr>
-                <tr>
-                  <th class="py-2">Processor capacity:</th>
-                  <td class="py-2">2.3GHz dual-core Intel Core i5</td>
-                </tr>
-                <tr>
-                  <th class="py-2">Camera quality:</th>
-                  <td class="py-2">720p FaceTime HD camera</td>
-                </tr>
-                <tr>
-                  <th class="py-2">Memory</th>
-                  <td class="py-2">8 GB RAM or 16 GB RAM</td>
-                </tr>
-                <tr>
-                  <th class="py-2">Graphics</th>
-                  <td class="py-2">Intel Iris Plus Graphics 640</td>
-                </tr>
-              </table> -->
-              </div>
 
-
-              <?php
-$product_id = intval($_GET['id']);
-$sql = "SELECT product_catalogue
+            </div>
+            <?php
+            $product_id = intval($_GET['id']);
+            $sql = "SELECT product_catalogue
         FROM tbl_product
         WHERE tbl_product.id = $product_id";
-$result = $conn->query($sql);
+            $result = $conn->query($sql);
 
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $pdf_name = $row['product_catalogue']; 
+            if ($result->num_rows > 0) {
+              $row = $result->fetch_assoc();
+              $pdf_name = $row['product_catalogue'];
 
-    // files are stored in the 'assets/uploads/' directory
-    $file_path = 'assets/uploads/'. $pdf_name;
-    $view_url = "pdf_download.php?action=view&id=$product_id";
-    $download_url = "pdf_download.php?action=download&id=$product_id";
-    echo '<a href="'. $view_url . '" class="btn btn-warning" target="_blank"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
-    echo '&nbsp;&nbsp;';
-    echo '<a href="'. $download_url . '" class="btn btn-success"><i class="fa fa-download"></i> Download Catalogue</a>';
-}
-?>
+              // files are stored in the 'assets/uploads/' directory
+              $file_path = 'assets/uploads/' . $pdf_name;
+              $view_url = "pdf_download.php?action=view&id=$product_id";
+              $download_url = "pdf_download.php?action=download&id=$product_id";
+              echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
+              echo '&nbsp;&nbsp;';
+              echo '<a href="' . $download_url . '" class="btn btn-success"><i class="fa fa-download"></i> Download Catalogue</a>';
+            }
+            ?>
             <div class="tab-pane fade" id="pills-warranty" role="tabpanel">
               Tab content or sample information now <br />
               Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
@@ -643,7 +501,7 @@ if ($result->num_rows > 0) {
               <?php foreach ($related_products as $related_product): ?>
                 <div class="d-flex mb-3">
                   <a href="product_landing.php?id=<?php echo $related_product['id']; ?>" class="me-3">
-                    <img src="payment/assets/uploads/<?php echo $related_product['p_featured_photo']; ?>"
+                    <img src="payment/assets/uploads/product-photos/<?php echo $related_product['p_featured_photo']; ?>"
                       style="min-width: 96px; height: 96px;" class="img-thumbnail"
                       alt="<?php echo htmlspecialchars($related_product['p_name']); ?>" />
                   </a>
@@ -682,9 +540,13 @@ if ($result->num_rows > 0) {
   </div>
 </section>
 
+
 <!-- Link Bootstrap CSS and Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 
 <!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

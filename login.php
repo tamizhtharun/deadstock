@@ -30,9 +30,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user_data = [
             'id' => $user['id'],
             'name' => $user['user_name'],
-            'email' => $user['user_email'],
-            'role' => 'admin'
+            'email' => $user['user_email']
+            
         ];
+
+        
         // Verify password
         if (password_verify($password, $user['user_password'])) {
             // Handle user roles
@@ -46,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     exit();
                 case 'user':
                     // Start session
-                    session_start();
+                    // session_start();
                     $sql_user_data = "SELECT * FROM users WHERE email = ?";
                             $stmt_user_data = $conn->prepare($sql_user_data);
                             $stmt_user_data->bind_param("s", $email);
