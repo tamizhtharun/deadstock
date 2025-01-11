@@ -53,6 +53,8 @@ $statement = $pdo->prepare("
         bidding b ON p.id = b.product_id
     GROUP BY 
         p.id
+    HAVING
+        no_of_bids > 0  
 ");
 $statement->execute();
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
