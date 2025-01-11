@@ -128,15 +128,20 @@ if (isset($_POST['form_quote'])) {
 
 //bid_time_settings
 if (isset($_POST['form_bid_settings'])) {
+    
     // Capture the time inputs
     $bid_send_time = trim($_POST['send_time']);
     $bid_close_time = trim($_POST['close_time']);
 
+    if ($bid_close_time <= $bid_send_time) {
+        $error_message = 'The close time must be greater than the send time.';
+    } else{
     // Update the database with send time and close time
     $statement = $pdo->prepare("UPDATE bid_settings SET send_time=?, close_time=? WHERE id=1");
     $statement->execute([$bid_send_time, $bid_close_time]);
 
     $success_message = 'Bid times updated successfully.';
+}
 }
 
 
