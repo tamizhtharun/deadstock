@@ -14,6 +14,7 @@
 					<table id="example1" class="table table-bordered table-hover table-striped">
 						<thead>
 							<tr>
+								<th width="10">#</th>
 								<th width="180">Name</th>
 								<th width="150">Email Address</th>
 								<th width="180">Address</th>
