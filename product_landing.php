@@ -251,7 +251,7 @@ if ($success_message1 != '') {
           </div>
 
           <hr />
-          <button class="btn btn-warning shadow-0"> Buy now </button>
+          <!-- <button class="btn btn-warning shadow-0"> Buy now </button> -->
           <div class="product-container">
             <?php
             $select_product = mysqli_query($conn, "SELECT * FROM `tbl_product`") or die('query failed');
@@ -279,13 +279,14 @@ if ($success_message1 != '') {
                     </div>
                   </div>
                 </div>
-                <input type="submit" value="Add to Cart" name="add_to_cart" class="btn btn-primary shadow-0">
-              </form>
+                <!-- <input type="submit" value="Add to Cart" name="add_to_cart" class="btn btn-primary shadow-0"> -->
             </div>
 
           </div>
           <button class="btn btn-warning shadow-0"> Buy now </button>
-          <button class="btn btn-primary shadow-0"> <i class="bi bi-basket me-1"></i> Add to cart </button>
+          <button type="submit" name="add_to_cart" class="btn btn-primary shadow-0"> <i class="bi bi-basket me-1"></i> Add to cart </button>
+          </form>
+
           <button id="requestPriceBtn" class="request-price-btn btn btn-light border" data-product-id="<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>">
               Request Price
           </button>
