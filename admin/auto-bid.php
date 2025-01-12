@@ -19,6 +19,7 @@ if ($timeRow) {
     // Flag to track if any updates were made
     $updatedToday = false;
     
+    if($currentDate > $lastUpdated ){
     // Update status from 0 to 1 at send_time
     if ($currentTime >= $sendTime) {
         $updateQuery1 = "UPDATE bidding SET bid_status = '1' WHERE bid_status = '0'";
@@ -29,6 +30,12 @@ if ($timeRow) {
         }
     }
     
+    
+}else{
+    echo "Already updates today" ."<br>";
+
+}
+
     // Update status from 1 to 3 at close_time
     if ($currentTime >= $closeTime) {
         $updateQuery2 = "UPDATE bidding SET bid_status = '3' WHERE bid_status = '1'";
@@ -50,8 +57,14 @@ if ($timeRow) {
     echo "Send Time: " . $sendTime . "<br>";
     echo "Close Time: " . $closeTime . "<br>";
     echo "Last Updated: " . ($lastUpdated ? $lastUpdated : "Not yet updated") . "<br>";
+    echo "current date: ". ($currentDate);
     
 } else {
     echo "No settings found in bid_settings table";
 }
 ?>
+<script>
+        setTimeout(function() {
+            location.reload();
+        }, 1000);
+</script>
