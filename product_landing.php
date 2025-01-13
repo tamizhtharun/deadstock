@@ -253,23 +253,9 @@ if ($success_message1 != '') {
           <hr />
           <!-- <button class="btn btn-warning shadow-0"> Buy now </button> -->
           <div class="product-container">
-            <?php
-            $select_product = mysqli_query($conn, "SELECT * FROM `tbl_product`") or die('query failed');
-            if (mysqli_num_rows($select_product) > 0) {
-              while ($fetch_product = mysqli_fetch_assoc($select_product)) {
 
-                ?>
                 <div class="product-box">
 
-                  <form method="post" action="">
-                    <input type="hidden" name="product_image" value="<?php echo $fetch_product['p_featured_photo']; ?>">
-                    <input type="hidden" name="product_name" value="<?php echo $fetch_product['p_name']; ?>">
-                    <input type="hidden" name="product_price" value="<?php echo $fetch_product['p_current_price']; ?>">
-
-                    <?php
-              }
-            }
-            ?>
                 <div class="row mb-4">
                   <div class="col-md-4 col-6 mb-3">
                     <label class="mb-2 d-block">Quantity</label>
