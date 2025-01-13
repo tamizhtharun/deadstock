@@ -382,7 +382,7 @@ if ($success_message1 != '') {
                 key: "<?php echo RAZORPAY_KEY_ID; ?>",
                 amount: data.amount,
                 currency: "INR",
-                name: "Deadstock Marketplace",
+                name: "Deadstock",
                 description: "Bid Payment",
                 order_id: data.order_id,
                 handler: function (response) {
