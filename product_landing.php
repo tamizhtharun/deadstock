@@ -276,8 +276,8 @@ if ($success_message1 != '') {
           </form>
 
           <!-- Request Price Button -->
-          <button id="requestPriceBtn" class="request-price-btn btn btn-light border" data-product-id="<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>">
-            Request Price
+          <button id="requestPriceBtn" class="request-price-btn btn btn-danger border" data-product-id="<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>">
+          <i class="fa fa-gavel"></i>  Place a Bid
           </button>
           <button class="btn btn-light border"> <i class="bi bi-heart me-1"></i> Save </button>
     </div>
