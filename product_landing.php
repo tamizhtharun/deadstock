@@ -1,5 +1,7 @@
 <?php include 'header.php';
 include 'db_connection.php';
+require_once('vendor/autoload.php');
+require_once('config.php');
 ?>
 
 <!-- Style  -->
@@ -287,8 +289,9 @@ if ($success_message1 != '') {
           <button type="submit" name="add_to_cart" class="btn btn-primary shadow-0"> <i class="bi bi-basket me-1"></i> Add to cart </button>
           </form>
 
+          <!-- Request Price Button -->
           <button id="requestPriceBtn" class="request-price-btn btn btn-light border" data-product-id="<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>">
-              Request Price
+            Request Price
           </button>
           <button class="btn btn-light border"> <i class="bi bi-heart me-1"></i> Save </button>
     </div>
@@ -298,7 +301,6 @@ if ($success_message1 != '') {
 </section>
 
 <!-- Modal Overlay For Request Price -->
-
 <div class="modal-overlay" id="modalOverlay" style="display: none;">
     <!-- Modal -->
     <div id="priceRequestModal">
@@ -307,10 +309,8 @@ if ($success_message1 != '') {
             <h3>Request a Price</h3>
         </div>
         <form id="priceRequestForm" method="POST" action="submit_bid.php">
-            <!-- Pass product_id correctly -->
             <input type="hidden" name="product_id" value="<?php echo htmlspecialchars($_REQUEST['id'], ENT_QUOTES, 'UTF-8'); ?>">
-
-            <!-- Quantity and Proposed Price Inputs -->
+            
             <div class="form-group">
                 <label for="quantity">Quantity</label>
                 <input
@@ -324,7 +324,7 @@ if ($success_message1 != '') {
             </div>
 
             <div class="form-group">
-                <label for="proposedPrice">Proposed Price (₹)</label>
+                <label for="proposedPrice">Your Bid Price (₹)</label>
                 <input
                     type="number"
                     id="proposedPrice"
@@ -332,18 +332,116 @@ if ($success_message1 != '') {
                     required
                     min="0"
                     step="0.01"
-                    placeholder="Enter proposed price"
+                    placeholder="Enter Price Per Unit"
                 />
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn-rp btn-cancel-rp" id="cancelBtn">Cancel</button>
-                <button type="submit" class="btn-rp btn-submit-rp">Submit Request</button>
+                <!-- Submit Request Button -->
+                <button type="button" onclick="openRazorpayModal()" class="btn-rp btn-submit-rp">Pay and Place your Bid</button>
             </div>
         </form>
     </div>
 </div>
+<script>
+  function checkExistingBid(productId) {
+    return fetch('check_bid_status.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            product_id: productId
+        })
+    })
+    .then(response => response.json());
+}
+</script>
 
+<!-- Razorpay Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    // Function to open Razorpay modal
+    function openRazorpayModal() {
+    const productId = <?php echo $_REQUEST['id']; ?>;
+    
+    // First check if user has already bid
+    checkExistingBid(productId)
+        .then(response => {
+            if (response.has_bid) {
+                alert('You have already submitted a bid for this product');
+                closeModal();
+                return;
+            }})
+    const quantity = document.getElementById('quantity').value;
+    const proposedPrice = document.getElementById('proposedPrice').value;
+    
+    // First, create the order
+    fetch('submit_bid.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            product_id: <?php echo $_REQUEST['id']; ?>,
+            quantity: quantity,
+            proposed_price: proposedPrice
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            var options = {
+                key: "<?php echo RAZORPAY_KEY_ID; ?>",
+                amount: data.amount,
+                currency: "INR",
+                name: "Deadstock Marketplace",
+                description: "Bid Payment",
+                order_id: data.order_id,
+                handler: function (response) {
+                    // Handle successful payment
+                    fetch('submit_bid.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(response)
+                    })
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.status === 'success') {
+                            alert('Bid submitted successfully!');
+                            closeModal();
+                        } else {
+                            alert('Error: ' + result.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while processing your payment');
+                    });
+                },
+                prefill: {
+                    name: "<?php echo $_SESSION['user_session']['name'] ?? ''; ?>",
+                    email: "<?php echo $_SESSION['user_session']['email'] ?? ''; ?>"
+                },
+                theme: {
+                    color: "#3399cc"
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
+        } else {
+            alert('Error: ' + data.message);
+        }
+      })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while checking existing bids');
+        });
+}
+</script>
 
 
 <section class="bg-light border-top py-4">
@@ -547,6 +645,7 @@ if ($success_message1 != '') {
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
 <!-- Bootstrap JS Bundle -->
@@ -582,93 +681,6 @@ if ($success_message1 != '') {
             closeModal();
         }
     });
-
-    // Handle form submission
-    form.addEventListener("submit", function (e) {
-        e.preventDefault(); // Prevent default form submission
-
-        // Collect input values
-        const quantity = document.getElementById("quantity").value.trim();
-        const proposedPrice = document.getElementById("proposedPrice").value.trim();
-
-        // Validate form inputs
-        if (!quantity || !proposedPrice || isNaN(quantity) || isNaN(proposedPrice)) {
-            alert("Please provide valid numeric values for quantity and price.");
-            return;
-        }
-
-        if (quantity <= 0 || proposedPrice <= 0) {
-            alert("Quantity and price must be greater than 0.");
-            return;
-        }
-
-        // Prepare data for submission
-        const formData = new FormData(form);
-
-        // Send data to the server using AJAX (fetch)
-        fetch("submit_bid.php", {
-            method: "POST",
-            body: formData,
-        })
-        .then((response) => response.json()) // Parse JSON response
-        .then((data) => {
-            if (data.status === "success") {
-                alert(data.message); // Show success message
-                closeModal(); // Close the modal
-                window.location.reload(); // Reload the page to reflect changes
-            } else {
-                alert(data.message); // Show error message
-            }
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-            alert("Failed to submit your bid. Please try again.");
-        });
-    });
-    
-    document.addEventListener("DOMContentLoaded", function() {
-    const bidButtons = document.querySelectorAll(".request-price-btn");  // Select all the "Request Price" buttons
-    bidButtons.forEach(function(bidButton) {
-        const productId = bidButton.getAttribute("data-product-id");  // Each button has a unique product_id
-
-        // Make an AJAX request to check the bid status for this product
-        fetch(`check_bid_status.php?product_id=${productId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "error") {
-                    // Disable the button and show the tooltip message for the product
-                    bidButton.disabled = true;
-                    bidButton.title = data.message; // Show the bid status message (e.g., "You have already placed a bid.")
-                } else {
-                    // Enable the button and set a default tooltip message
-                    bidButton.disabled = false;
-                    bidButton.title = "Click to place your bid.";
-                }
-            })
-            .catch(error => console.error("Error checking bid status:", error));
-    });
-});
-
-    document.addEventListener("DOMContentLoaded", function() {
-    const bidButton = document.getElementById("requestPriceBtn");
-    const productId = <?php echo $_REQUEST['id']; ?>; // Use the current product ID
-
-    // Make an AJAX request to check the bid status
-    fetch(`check_bid_status.php?product_id=${productId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === "error") {
-                // If the user has already placed a bid, disable the button and add a tooltip
-                bidButton.disabled = true;
-                bidButton.title = data.message;  // Set the message from the server (e.g., "You have already placed a bid for this product.")
-            } else {
-                // Otherwise, keep the button enabled with a default tooltip
-                bidButton.disabled = false;
-                bidButton.title = "Click to place your bid.";
-            }
-        })
-        .catch(error => console.error("Error checking bid status:", error));
-});
-
 </script>
+
 <?php include 'footer.php'; ?>

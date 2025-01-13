@@ -47,6 +47,7 @@ unset($_SESSION['error_message']);
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/responsive.css">
     <link rel="stylesheet" href="./css/header.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
         <!-- Link Disply the featured categories in home page slider  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">

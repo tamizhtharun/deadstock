@@ -18,6 +18,8 @@ $statement = $pdo->prepare("
         b.bid_price,
         b.bid_quantity,
         b.bid_status,
+        b.payment_id,
+        b.order_id,
         p.p_name,
         p.p_featured_photo,
         p.seller_id,
@@ -100,6 +102,9 @@ function getBidStatusLabel($status) {
                                     <th>Buyer Contact</th>
                                     <th>Bid Price</th>
                                     <th>Quantity</th>
+                                    <th>Payment ID</th>
+                                    <th>Order ID</th>
+
                                     <th>Bid Status</th>
                                 </tr>
                             </thead>
@@ -112,6 +117,8 @@ function getBidStatusLabel($status) {
                                             <?php echo $row['email']; ?></td>
                                         <td>₹<?php echo $row['bid_price']; ?></td>
                                         <td><?php echo $row['bid_quantity']; ?></td>
+                                        <td><?php echo $row['payment_id']; ?></td>
+                                        <td><?php echo $row['order_id']; ?></td>
                                         <td><?php echo getBidStatusLabel($row['bid_status']); ?></td>
                                     </tr>
                                 <?php endforeach; ?>

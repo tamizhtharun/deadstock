@@ -64,8 +64,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['user_email'] = $user['user_email'];
                     $_SESSION['user_role'] = 'user';
                     $_SESSION['loggedin'] = true; // Store user role
-                    header("Location: index.php");
-                    exit();
+                   // Redirect to the referrer URL
+                   $referrer = $_SERVER['HTTP_REFERER'];
+                   header("Location: $referrer");
+                   exit();
                 case 'seller':
                     // Check seller status
                     $sql_seller = "SELECT seller_status FROM sellers WHERE seller_email = ?";
