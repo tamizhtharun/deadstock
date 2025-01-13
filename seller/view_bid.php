@@ -9,12 +9,16 @@ if (!$product_id) {
     die('Product ID is required');
 }
 
+$stmt = $pdo->prepare("SELECT send_time, close_time FROM bid_settings");
+$stmt->execute();
+$bid_settings = $stmt->fetch(PDO::FETCH_ASSOC);
+
 // Get product details including send_time and close_time
 $stmt = $pdo->prepare("
     SELECT 
         p.*,
+        b.*,
         COUNT(b.bid_id) as total_bids,
-        COALESCE(p.close_time, NOW()) as close_time,
         (SELECT bid_id 
          FROM bidding 
          WHERE product_id = p.id AND bid_status = 2 
@@ -32,8 +36,8 @@ $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Time validation
 $current_time = new DateTime();
-$send_time = new DateTime($product['send_time']);
-$close_time = new DateTime($product['close_time']);
+$send_time = new DateTime($bid_settings['send_time']);
+$close_time = new DateTime($bid_settings['close_time']);
 
 // Check various time conditions
 $auction_active = $current_time >= $send_time && $current_time <= $close_time;
@@ -42,7 +46,7 @@ $auction_not_started = $current_time < $send_time;
 $auction_ended = $auction_expired; // or any logic you need
 
 // Process expired auction if needed
-if ($auction_expired && $product['status'] != 'Sold' && $product['status'] != 'Expired') {
+if ($auction_expired && $product['bid_status'] != '1') {
     try {
         $pdo->beginTransaction();
 
@@ -153,16 +157,13 @@ $statement = $pdo->prepare("
     WHERE
         p.id = :product_id 
         AND p.seller_id = :seller_id
-        AND b.bid_time BETWEEN :send_time AND :close_time
+        AND b.bid_status = '1'
     ORDER BY 
         b.bid_time DESC
 ");
-
 $statement->execute([
     ':product_id' => $product_id,
-    ':seller_id' => $seller_id,
-    ':send_time' => $send_time->format('Y-m-d H:i:s'),
-    ':close_time' => $close_time->format('Y-m-d H:i:s')
+    ':seller_id' => $seller_id
 ]);
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 ?>
