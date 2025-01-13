@@ -18,6 +18,11 @@ $statement = $pdo->prepare("
         b.bid_price,
         b.bid_quantity,
         b.bid_status,
+        b.refund_id,
+        b.refund_status,
+        b.refund_amount,
+        b.refund_date,
+        b.refund_error,
         b.payment_id,
         b.order_id,
         p.p_name,
@@ -104,8 +109,13 @@ function getBidStatusLabel($status) {
                                     <th>Quantity</th>
                                     <th>Payment ID</th>
                                     <th>Order ID</th>
-
                                     <th>Bid Status</th>
+                                    <th>Refund Status</th>
+                                    <th>Refund ID</th>
+                                    <th>Refund Amount</th>
+                                    <th>Refund Date</th>
+                                    <th>Refund Error</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -120,6 +130,11 @@ function getBidStatusLabel($status) {
                                         <td><?php echo $row['payment_id']; ?></td>
                                         <td><?php echo $row['order_id']; ?></td>
                                         <td><?php echo getBidStatusLabel($row['bid_status']); ?></td>
+                                        <td><?php echo $row['refund_status']; ?></td>
+                                        <td><?php echo $row['refund_id']; ?></td>
+                                        <td><?php echo $row['refund_amount']; ?></td>
+                                        <td><?php echo $row['refund_date']; ?></td>
+                                        <td><?php echo $row['refund_error']; ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
