@@ -171,18 +171,17 @@ $stmt->close();
                             <i class="fa fa-sticky-note"></i> <span>Bidding Management</span>
                         </a>
                     </li>
-					<li class="treeview <?php if( ($cur_page == 'active-bid.php') || ($cur_page == 'closed-bid.php') || ($cur_page == 'request.php') ) {echo 'active';} ?>">
+					<li class="treeview <?php if( ($cur_page == 'bidded_orders.php') || ($cur_page == 'orders.php') ) {echo 'active';} ?>">
 						<a href="#">
 							<i class="fa fa-gavel"></i> <!-- Use an appropriate icon for Bid Hub -->
-							<span>Bid Hub</span>
+							<span>Orders Management</span>
 							<span class="pull-right-container">
 								<i class="fa fa-angle-left pull-right"></i>
 							</span>
 						</a>
 						<ul class="treeview-menu">
-							<li><a href="active-bid.php"><i class="fa fa-circle-o"></i> Active Bid</a></li>
-							<li><a href="closed-bid.php"><i class="fa fa-circle-o"></i> Closed Bid</a></li>
-							<li><a href="request-price.php"><i class="fa fa-circle-o"></i> Request Price</a></li>
+							<li><a href="bidded_orders.php"><i class="fa fa-circle-o"></i> Bidded Orders</a></li>
+							<li><a href="orders.php"><i class="fa fa-circle-o"></i> Ordinary Orders</a></li>
 						</ul>
 					</li>
 
