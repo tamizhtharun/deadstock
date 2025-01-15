@@ -10,9 +10,9 @@ $product_id = $data['product_id'];
 try {
     $pdo->beginTransaction();
     
-    // Get the approved bid with seller information
+    // Get the approved bid with seller information and payment_id
     $stmt = $pdo->prepare("
-        SELECT b.*, p.seller_id 
+        SELECT b.*, p.seller_id, b.payment_id 
         FROM bidding b
         JOIN tbl_product p ON b.product_id = p.id
         WHERE b.product_id = :product_id 
@@ -25,10 +25,14 @@ try {
         throw new Exception('No approved bid found');
     }
 
+    if (!$approved_bid['payment_id']) {
+        throw new Exception('No payment information found for the approved bid');
+    }
+
     // Generate order ID
     $order_id = 'ORD' . date('Ymd') . rand(1000, 9999);
     
-    // Insert into tbl_orders
+    // Insert into tbl_orders with payment_id
     $stmt = $pdo->prepare("
         INSERT INTO tbl_orders (
             order_id,
@@ -37,6 +41,7 @@ try {
             price,
             seller_id,
             user_id,
+            payment_id,
             order_status,
             created_at
         ) VALUES (
@@ -46,6 +51,7 @@ try {
             :price,
             :seller_id,
             :user_id,
+            :payment_id,
             'Pending',
             NOW()
         )
@@ -57,7 +63,8 @@ try {
         ':quantity' => $approved_bid['bid_quantity'],
         ':price' => $approved_bid['bid_price'],
         ':seller_id' => $approved_bid['seller_id'],
-        ':user_id' => $approved_bid['user_id']
+        ':user_id' => $approved_bid['user_id'],
+        ':payment_id' => $approved_bid['payment_id']
     ]);
 
     // Update all other bids to refunded status (status 3)
