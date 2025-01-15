@@ -30,12 +30,14 @@ try {
     }
 
     // Generate order ID
-    $order_id = 'ORD' . date('Ymd') . rand(1000, 9999);
+    $order_id = $approved_bid['order_id'];
+    $payment_id = $approved_bid['payment_id'];
     
     // Insert into tbl_orders with payment_id
     $stmt = $pdo->prepare("
         INSERT INTO tbl_orders (
             order_id,
+            payment_id,
             product_id,
             quantity,
             price,
@@ -46,6 +48,7 @@ try {
             created_at
         ) VALUES (
             :order_id,
+            :payment_id,
             :product_id,
             :quantity,
             :price,
@@ -59,6 +62,7 @@ try {
     
     $stmt->execute([
         ':order_id' => $order_id,
+        ':payment_id' => $payment_id,
         ':product_id' => $product_id,
         ':quantity' => $approved_bid['bid_quantity'],
         ':price' => $approved_bid['bid_price'],
