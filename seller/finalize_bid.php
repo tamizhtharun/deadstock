@@ -43,7 +43,6 @@ try {
             price,
             seller_id,
             user_id,
-            payment_id,
             order_status,
             created_at
         ) VALUES (
@@ -54,7 +53,6 @@ try {
             :price,
             :seller_id,
             :user_id,
-            :payment_id,
             'Pending',
             NOW()
         )
@@ -67,8 +65,7 @@ try {
         ':quantity' => $approved_bid['bid_quantity'],
         ':price' => $approved_bid['bid_price'],
         ':seller_id' => $approved_bid['seller_id'],
-        ':user_id' => $approved_bid['user_id'],
-        ':payment_id' => $approved_bid['payment_id']
+        ':user_id' => $approved_bid['user_id']
     ]);
 
     // Update all other bids to refunded status (status 3)
