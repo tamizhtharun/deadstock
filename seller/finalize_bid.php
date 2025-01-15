@@ -1,21 +1,22 @@
 <?php
+// finalize_bid.php
 require_once('../db_connection.php');
 
 header('Content-Type: application/json');
 
-$input = json_decode(file_get_contents('php://input'), true);
-$product_id = isset($input['product_id']) ? (int)$input['product_id'] : 0;
+$data = json_decode(file_get_contents('php://input'), true);
+$product_id = $data['product_id'];
 
 try {
     $pdo->beginTransaction();
-
-    // Get the approved bid
+    
+    // Get the approved bid with seller information
     $stmt = $pdo->prepare("
         SELECT b.*, p.seller_id 
         FROM bidding b
         JOIN tbl_product p ON b.product_id = p.id
-        WHERE b.product_id = :product_id AND b.bid_status = 2
-        LIMIT 1
+        WHERE b.product_id = :product_id 
+        AND b.bid_status = 2
     ");
     $stmt->execute([':product_id' => $product_id]);
     $approved_bid = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -24,17 +25,34 @@ try {
         throw new Exception('No approved bid found');
     }
 
-    // Create order
+    // Generate order ID
+    $order_id = 'ORD' . date('Ymd') . rand(1000, 9999);
+    
+    // Insert into tbl_orders
     $stmt = $pdo->prepare("
         INSERT INTO tbl_orders (
-            product_id, quantity, price, seller_id, user_id, 
-            order_status, created_at
+            order_id,
+            product_id,
+            quantity,
+            price,
+            seller_id,
+            user_id,
+            order_status,
+            created_at
         ) VALUES (
-            :product_id, :quantity, :price, :seller_id, :user_id,
-            'pending', NOW()
+            :order_id,
+            :product_id,
+            :quantity,
+            :price,
+            :seller_id,
+            :user_id,
+            'Pending',
+            NOW()
         )
     ");
+    
     $stmt->execute([
+        ':order_id' => $order_id,
         ':product_id' => $product_id,
         ':quantity' => $approved_bid['bid_quantity'],
         ':price' => $approved_bid['bid_price'],
@@ -42,11 +60,13 @@ try {
         ':user_id' => $approved_bid['user_id']
     ]);
 
-    // Mark other bids as rejected (status = 3) and trigger refunds
+    // Update all other bids to refunded status (status 3)
     $stmt = $pdo->prepare("
         UPDATE bidding 
-        SET bid_status = 3 
-        WHERE product_id = :product_id AND bid_id != :approved_bid_id
+        SET bid_status = 3,
+            refund_status = 'Pending'
+        WHERE product_id = :product_id 
+        AND bid_id != :approved_bid_id
     ");
     $stmt->execute([
         ':product_id' => $product_id,
@@ -54,8 +74,18 @@ try {
     ]);
 
     $pdo->commit();
-    echo json_encode(['success' => true]);
+    echo json_encode([
+        'success' => true,
+        'message' => 'Bid finalized successfully',
+        'order_id' => $order_id
+    ]);
 } catch (Exception $e) {
-    $pdo->rollBack();
-    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    echo json_encode([
+        'success' => false,
+        'error' => $e->getMessage()
+    ]);
 }
+?>
