@@ -1,5 +1,9 @@
 <?php
-require_once('header.php');
+require_once('header.php');?>
+
+<link rel="stylesheet" href="css/timer.css">
+
+<?php
 
 $seller_id = $_SESSION['seller_session']['seller_id']; // Retrieve seller's ID from session
 
@@ -28,11 +32,32 @@ $query = "
 $statement = $pdo->prepare($query);
 $statement->execute(['seller_id' => $seller_id]);
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+date_default_timezone_set('Asia/Kolkata');
+$target_time = strtotime($closeTime);
+$current_time = time();
+$remaining_seconds = $target_time - $current_time;
 ?>
 
 <section class="content-header">
     <div class="content-header-left">
         <h1>Bidding</h1>
+    </div>
+    <div class="content-header-right">
+    <div class="timer-display">
+            <div class="time-segment">
+                <div class="time-value" id="hours">00</div>
+                <div class="time-label">Hours</div>
+            </div>
+            <div class="time-segment">
+                <div class="time-value" id="minutes">00</div>
+                <div class="time-label">Minutes</div>
+            </div>
+            <div class="time-segment">
+                <div class="time-value" id="seconds">00</div>
+                <div class="time-label">Seconds</div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -86,5 +111,43 @@ $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </section>
+
+
+
+<script>
+        // Initialize the countdown with PHP variables
+let sendTime = <?php echo strtotime($sendTime); ?>;
+let closeTime = <?php echo strtotime($closeTime); ?>;
+let currentTime = <?php echo $current_time; ?>;
+
+function updateTimer() {
+    currentTime = Math.floor(Date.now() / 1000);
+    if (currentTime >= sendTime && currentTime <= closeTime) {
+        let remainingTime = closeTime - currentTime;
+        if (remainingTime <= 0) {
+            document.getElementById('hours').textContent = String('00');
+            document.getElementById('minutes').textContent = String('00');
+            document.getElementById('seconds').textContent = String('00');
+            return;
+        }
+
+        const hours = Math.floor((remainingTime % (24 * 60 * 60)) / (60 * 60));
+        const minutes = Math.floor((remainingTime % (60 * 60)) / 60);
+        const seconds = Math.floor(remainingTime % 60);
+
+        document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+    } else {
+        document.getElementById('hours').textContent = String('00');
+        document.getElementById('minutes').textContent = String('00');
+        document.getElementById('seconds').textContent = String('00');
+    }
+}
+
+// Update timer every second
+updateTimer();
+setInterval(updateTimer, 1000);
+    </script>
 
 <?php require_once('footer.php'); ?>

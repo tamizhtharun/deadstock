@@ -78,6 +78,8 @@
                             users_addresses ua ON u.id = ua.user_id AND ua.is_default = 1
                         WHERE 
                             o.seller_id = :seller_id
+                        AND
+                            o.order_type = 'bid'
                         ORDER BY 
                             o.created_at DESC");
                         
