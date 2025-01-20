@@ -194,7 +194,7 @@ $stmt->close();
 							              </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-circle-o"></i> Direct Orders</a></li>
+                            <li><a href="direct-order.php"><i class="fa fa-circle-o"></i> Direct Orders</a></li>
                             <li><a href="bidding-order.php"><i class="fa fa-circle-o"></i> Bid-Based Orders </a></li>
                         </ul>
                     </li>
