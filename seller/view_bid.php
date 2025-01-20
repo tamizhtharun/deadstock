@@ -160,10 +160,15 @@ function handleFinalApprove(productId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('Bid has been finalized successfully! Order ID: ' + data.order_id);
-            location.reload();
+            alert('Final approve action completed successfully!');
+            // Disable all buttons after finalization
+            document.querySelectorAll('.btn').forEach(button => {
+                button.disabled = true;
+                button.style.cursor = 'not-allowed';
+            });
+            document.getElementById('finalApproveBtn').disabled = true;
         } else {
-            alert('Error: ' + (data.error || 'Failed to finalize bid'));
+            alert('Error: ' + data.error);
         }
     })
     .catch(error => {
