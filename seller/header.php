@@ -172,6 +172,7 @@ $stmt->close();
                         </a>
                     </li>
 					<li class="treeview <?php if( ($cur_page == 'bidded_orders.php') || ($cur_page == 'orders.php') ) {echo 'active';} ?>">
+					<!-- <li class="treeview <?php if( ($cur_page == 'active-bid.php') || ($cur_page == 'closed-bid.php') || ($cur_page == 'request.php') ) {echo 'active';} ?>">
 						<a href="#">
 							<i class="fa fa-gavel"></i> <!-- Use an appropriate icon for Bid Hub -->
 							<span>Orders Management</span>
@@ -180,11 +181,24 @@ $stmt->close();
 							</span>
 						</a>
 						<ul class="treeview-menu">
-							<li><a href="bidded_orders.php"><i class="fa fa-circle-o"></i> Bidded Orders</a></li>
-							<li><a href="orders.php"><i class="fa fa-circle-o"></i> Ordinary Orders</a></li>
+							<li><a href="active-bid.php"><i class="fa fa-circle-o"></i> Active Bid</a></li>
+							<li><a href="closed-bid.php"><i class="fa fa-circle-o"></i> Closed Bid</a></li>
+							<li><a href="request-price.php"><i class="fa fa-circle-o"></i> Request Price</a></li>
 						</ul>
-					</li>
-
+					</li> -->
+					<li class="treeview <?php if( ($cur_page == 'bidding-order.php') ) {echo 'active';} ?>">
+                        <a href="#">
+												<i class="nav-icon fas fa-shopping-cart"></i>
+                            <span>Order Management</span>
+                            <span class="pull-right-container">
+								               <i class="fa fa-angle-left pull-right"></i>
+							              </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="direct-order.php"><i class="fa fa-circle-o"></i> Direct Orders</a></li>
+                            <li><a href="bidding-order.php"><i class="fa fa-circle-o"></i> Bid-Based Orders </a></li>
+                        </ul>
+                    </li>
 
 <!-- 
                      <li class="treeview <?php if( ($cur_page == 'slider.php') ) {echo 'active';} ?>">
