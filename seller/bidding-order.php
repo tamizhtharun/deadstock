@@ -2,7 +2,7 @@
 
 <section class="content-header">
     <div class="content-header-left">
-        <h1>My Orders</h1>
+        <h1>Bid Based Orders</h1>
     </div>
 </section>
 
@@ -78,6 +78,8 @@
                             users_addresses ua ON u.id = ua.user_id AND ua.is_default = 1
                         WHERE 
                             o.seller_id = :seller_id
+                        AND
+                            o.order_type = 'bid'
                         ORDER BY 
                             o.created_at DESC");
                         
