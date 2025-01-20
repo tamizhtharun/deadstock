@@ -2,7 +2,7 @@
 
 <section class="content-header">
     <div class="content-header-left">
-        <h1>My Orders</h1>
+        <h1>Bid Based Orders</h1>
     </div>
 </section>
 
