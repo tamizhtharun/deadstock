@@ -14,6 +14,18 @@ foreach ($result as $row)
 }
 ?>
 <?php
+// Check if the 'showLoginModal' query parameter exists
+if (isset($_GET['showLoginModal']) && $_GET['showLoginModal'] == 'true') {
+    echo "<script>window.addEventListener('DOMContentLoaded', function() { $('#staticBackdrop').modal('show'); });</script>";
+}
+?>
+<?php
+// Check if the 'showLoginModal' query parameter exists
+if (isset($_GET['showLoginModal']) && $_GET['showLoginModal'] == 'true') {
+    echo "<script>window.addEventListener('DOMContentLoaded', function() { $('#staticBackdrop').modal('show'); });</script>";
+}
+?>
+<?php
 $error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : null;
 
 unset($_SESSION['error_message']);
@@ -35,6 +47,7 @@ unset($_SESSION['error_message']);
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/responsive.css">
     <link rel="stylesheet" href="./css/header.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
         <!-- Link Disply the featured categories in home page slider  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
@@ -323,7 +336,7 @@ echo "</pre>";
 
 <nav class="ds-nav-container">
             <div class="ds-logo-section">
-                <a href="index.php" class="ds-logo">
+                <a href="index" class="ds-logo">
                 <img src="./assets/uploads/<?php echo $logo?>" alt="Logo" width="30" height="30">
                     <span>Dead Stock</span>
                 </a>
@@ -341,7 +354,7 @@ echo "</pre>";
 
  <div class="ds-actions-section">
     <?php if(isset($_SESSION['user_session'])): ?>
-      <button class="ds-btn-secondary" onclick="window.location.href='seller_registration.php';" >Sell here</button>
+      <button class="ds-btn-secondary" onclick="window.location.href='seller_registration';" >Sell here</button>
 
         <div class="ds-user-controls">
             <button class="ds-icon-button cart-button" title="Shopping Cart"  onclick="window.location.href='cart.php';">
@@ -454,7 +467,7 @@ echo "</pre>";
         </div>
     <?php else: ?>
         <div class="ds-auth-buttons">
-            <button class="ds-btn-secondary" onclick="window.location.href='seller_registration.php';" >Sell here</button>
+            <button class="ds-btn-secondary" onclick="window.location.href='seller_registration';" >Sell here</button>
             <button class="ds-btn-primary" type="button" id="login-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Login</button>
         </div>
     <?php endif; ?>

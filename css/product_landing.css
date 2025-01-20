@@ -8,41 +8,138 @@
   color: #3b71ca !important;
 }
 
-.product-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
+/* Price Request Modal Style  */
+
+body {
+  font-family: Arial, sans-serif;
 }
 
-.product-box {
-  border: 1px solid #ddd;
-  padding: 15px;
-  text-align: center;
-  border-radius: 8px;
-  width: 200px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.product-image {
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: auto;
-  object-fit: cover;
-  margin-bottom: 10px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
 }
 
-.btn {
-  padding: 10px 20px;
+#priceRequestModal {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.close-button-rp {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   border: none;
-  border-radius: 5px;
+  background: none;
+  font-size: 24px;
   cursor: pointer;
 }
 
-.btn-primary {
-  background-color: #007bff;
-  color: white;
+.modal-header-rp {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  }
+
+.modal-header-rp h3 {
+    /* color: #1e3a8a; */
+    font-size: 1.25rem;
+    font-weight: 600;
 }
 
-.btn-primary:hover {
-  background-color: #0056b3;
+.form-group {
+    margin-bottom: 1.25rem;
 }
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #4b5563;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+.form-group input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+   .btn-rp {
+          padding: 0.75rem 1.5rem;
+          border-radius: 6px;
+          font-size: 0.95rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+      }
+
+      .btn-submit-rp {
+          background-color: #2563eb;
+          color: white;
+          border: none;
+      }
+
+      .btn-submit-rp:hover {
+          background-color: #1d4ed8;
+      }
+
+      .btn-cancel-rp {
+          background-color: #f3f4f6;
+          color: #4b5563;
+          border: 1px solid #e5e7eb;
+      }
+
+      .btn-cancel-rp:hover {
+          background-color: #e5e7eb;
+      }
+
+      .close-button-rp {
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+          background: none;
+          border: none;
+          color: #6b7280;
+          cursor: pointer;
+          font-size: 1.25rem;
+          padding: 0.25rem;
+      }
+
+      .close-button-rp:hover {
+          color: #4b5563;
+      }
+      
+      @media (max-width: 640px) {
+          #priceRequestModal {
+              margin: 1rem;
+              padding: 1.5rem;
+          }
+      }
