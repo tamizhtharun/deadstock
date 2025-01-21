@@ -167,7 +167,7 @@ if (isset($_POST['form4'])) {
     $success_message = 'Terms and conditions updated successfully.';
 }
 if (isset($_POST['form5'])) { // Check if form5 is submitted
-    $seller_tc = $_POST['seller_tc']; // Get the textarea input for seller terms and conditions
+    $seller_tc = $_POST['seller_tc']; 
 
     // Updating the database
     $statement = $pdo->prepare("UPDATE tbl_settings SET seller_tc = ? WHERE id = 1");
@@ -924,7 +924,7 @@ foreach ($result as $row) {
     <div class="row">
         <div class="col-md-12">
             <?php if ($error_message): ?>
-                <div class="callout callout-danger">
+                <div class="callout callout-danger alert-box">
 
                     <p>
                         <?php echo $error_message; ?>
@@ -933,7 +933,7 @@ foreach ($result as $row) {
             <?php endif; ?>
 
             <?php if ($success_message): ?>
-                <div class="callout callout-success">
+                <div class="callout callout-success alert-box">
 
                     <p><?php echo $success_message; ?></p>
                 </div>
@@ -941,6 +941,16 @@ foreach ($result as $row) {
         </div>
     </div>
 </section>
+
+<script>
+    // JavaScript to hide the messages after 3 seconds
+    setTimeout(function() {
+        document.querySelectorAll('.alert-box').forEach(function(alert) {
+            alert.style.display = 'none'; // Hide the alert
+        });
+    }, 2000); // 3 seconds = 3000ms
+</script>
+
 
 <section class="content">
 
@@ -1108,11 +1118,11 @@ foreach ($result as $row) {
                                 </div>
                             </div>
                         </form>
-                        <?php
-                        if (isset($success_message)) {
-                            echo '<div id="success-message" class="alert alert-success">' . htmlspecialchars($success_message) . '</div>';
-                        }
-                        ?>
+                        <!-- <?php
+                        // if (isset($success_message)) {
+                        //     echo '<div id="success-message" class="alert alert-success">' . htmlspecialchars($success_message) . '</div>';
+                        // }
+                        ?> -->
                     </div>
 
 
@@ -1138,24 +1148,14 @@ foreach ($result as $row) {
                             </div>
                         </form>
                         <?php
-                        if (isset($success_message)) {
-                            echo '<div id="success-message" class="alert alert-success">' . htmlspecialchars($success_message) . '</div>';
-                        }
-                        ?>
+                        // if (isset($success_message)) {
+                        //     echo '<div id="success-message" class="alert alert-success">' . htmlspecialchars($success_message) . '</div>';
+                        // }
+                        // ?>
                     </div>
 
 
-                    <script>
-                        // Hide success message after 3 seconds
-                        document.addEventListener('DOMContentLoaded', function () {
-                            const successMessage = document.getElementById('success-message');
-                            if (successMessage) {
-                                setTimeout(function () {
-                                    successMessage.style.display = 'none';
-                                }, 3000); // 3000 milliseconds = 3 seconds
-                            }
-                        });
-                    </script>
+                   
 
                     <div class="tab-pane" id="tab_7">
 
