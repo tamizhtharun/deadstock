@@ -1071,3 +1071,342 @@ select {
 .action-column .btn {
   min-width: 60px;
 }
+:root {
+  --primary-color: #1a56db;
+  --secondary-color: #1e429f;
+  --background-color: #f3f4f6;
+  --text-color: #111827;
+  --border-color: #e5e7eb;
+  --card-background: #ffffff;
+  --hover-color: #1e40af;
+  --success-color: #059669;
+  --warning-color: #d97706;
+  --danger-color: #dc2626;
+  --muted-text: #6b7280;
+}
+
+
+
+.seller-open-button {
+  margin: 20px;
+  padding: 12px 24px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.seller-open-button:hover {
+  background-color: var(--hover-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.seller-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 10000;
+  padding: 0;
+}
+
+.seller-modal-content {
+  position: relative;
+  background-color: var(--card-background);
+  margin: 2vh auto;
+  width: 90%;
+  height: 90vh;
+  max-width: 1200px;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.seller-modal-header {
+  padding: 16px 24px;
+  background-color: var(--card-background);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.seller-modal-header h2 {
+  color: var(--text-color);
+  font-size: 2.10rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.seller-close {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--muted-text);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.seller-close:hover {
+  color: var(--text-color);
+  background-color: var(--background-color);
+}
+
+.seller-tabs {
+  display: flex;
+  background-color: var(--card-background);
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border-color);
+  gap: 8px;
+}
+
+.seller-tab-button {
+  padding: 12px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1.500rem;
+  font-weight: 500;
+  color: var(--muted-text);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.seller-tab-button:hover {
+  color: var(--text-color);
+}
+
+.seller-tab-button.active {
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.seller-tab-content {
+  padding: 20px 24px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.seller-tab-pane {
+  display: none;
+  height: 100%;
+}
+
+.seller-tab-pane.active {
+  display: block;
+  animation: sellerFadeIn 0.3s ease;
+}
+
+.seller-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  height: 100%;
+}
+
+.seller-info-item {
+  background-color: var(--background-color);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.seller-info-item.seller-address {
+  grid-column: span 2;
+}
+
+.seller-info-item.seller-address span {
+  line-height: 1.5;
+}
+
+.seller-info-item label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--muted-text);
+  font-size: 1.30rem;
+}
+
+.seller-info-item span {
+  font-size: 1.50rem;
+  color: var(--text-color);
+  font-weight: 440;
+}
+
+.seller-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.seller-stat-card {
+  background-color: var(--background-color);
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.seller-stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.seller-stat-card h3 {
+  font-size: 1.50rem;
+  color: var(--muted-text);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.seller-stat-card p {
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  line-height: 1;
+}
+
+.seller-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  height: calc(100% - 140px);
+}
+
+.seller-chart-container {
+  background-color: var(--card-background);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  height: 75%;
+}
+
+.seller-chart-container-orders{
+  background-color: var(--card-background);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  height: 100%;
+  
+}
+.seller-modal-footer {
+  padding: 12px 24px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.seller-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1.3rem;
+}
+
+.seller-btn.seller-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+}
+
+.seller-btn.seller-primary:hover {
+  background-color: var(--hover-color);
+}
+
+.seller-btn.seller-secondary {
+  background-color: white;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.seller-btn.seller-secondary:hover {
+  background-color: var(--background-color);
+}
+
+@keyframes sellerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .seller-modal {
+    padding: 0;
+  }
+
+  .seller-modal-content {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .seller-modal-header {
+    padding: 12px 16px;
+  }
+
+  .seller-tabs {
+    padding: 0 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .seller-tab-content {
+    padding: 16px;
+  }
+
+  .seller-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .seller-info-item.seller-address {
+    grid-column: span 1;
+  }
+
+  .seller-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .seller-charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .seller-modal-footer {
+    padding: 12px 16px;
+  }
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.error-message {
+  text-align: center;
+  padding: 40px;
+  color: #dc2626;
+}
+
