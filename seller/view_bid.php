@@ -9,7 +9,8 @@ if (!$product_id) {
     die('Product ID is required');
 }
 
-// Get all bids for the product and check if any bid is finalized
+// Get all bids for the product and check if any are in status 3 (rejected/refunded)
+// If we find any rejected bids, it means the product was finalized
 $statement = $pdo->prepare("
     SELECT 
         b.bid_id,
@@ -18,9 +19,11 @@ $statement = $pdo->prepare("
         b.bid_status,
         b.user_id,
         u.username,
-        EXISTS (
-            SELECT 1 FROM tbl_orders o 
-            WHERE o.product_id = b.product_id
+        EXISTS(
+            SELECT 1 
+            FROM bidding 
+            WHERE product_id = b.product_id 
+            AND bid_status = 3
         ) as is_finalized
     FROM 
         bidding b
@@ -33,7 +36,9 @@ $statement = $pdo->prepare("
 ");
 $statement->execute([':product_id' => $product_id]);
 $bids = $statement->fetchAll(PDO::FETCH_ASSOC);
-$is_finalized = !empty($bids) ? $bids[0]['is_finalized'] : false;
+
+// Get finalization status from the first row
+$isFinalized = !empty($bids) && $bids[0]['is_finalized'] == 1;
 ?>
 <section class="content-header">
     <div class="content-header-left">
@@ -63,11 +68,7 @@ $is_finalized = !empty($bids) ? $bids[0]['is_finalized'] : false;
                             foreach ($bids as $bid): 
                                 $buttonClass = $bid['bid_status'] == 2 ? 'btn-success' : 'btn-primary';
                                 $buttonText = $bid['bid_status'] == 2 ? 'Approved' : 'Approve';
-                                
-                                if ($is_finalized) {
-                                    $buttonClass = 'btn-secondary';
-                                    $buttonText = $bid['bid_status'] == 2 ? 'Bid Won' : 'Bid Lost';
-                                }
+                                $disabled = ($bid['bid_status'] == 3 || $bid['bid_status'] == 2 || $isFinalized) ? 'disabled' : '';
                             ?>
                                 <tr>
                                     <td><?php echo ++$i; ?></td>
@@ -93,8 +94,7 @@ $is_finalized = !empty($bids) ? $bids[0]['is_finalized'] : false;
                                             onclick="handleIndividualApprove(<?php echo $bid['bid_id']; ?>)" 
                                             class="btn <?php echo $buttonClass; ?>"
                                             id="btn-<?php echo $bid['bid_id']; ?>"
-                                            <?php echo ($bid['bid_status'] == 3 || $is_finalized) ? 'disabled' : ''; ?>
-                                            <?php echo $is_finalized ? 'style="cursor: not-allowed;"' : ''; ?>
+                                            <?php echo $disabled; ?>
                                         >
                                             <?php echo $buttonText; ?>
                                         </button>
@@ -109,8 +109,9 @@ $is_finalized = !empty($bids) ? $bids[0]['is_finalized'] : false;
                             onclick="handleFinalApprove(<?php echo $product_id; ?>)"
                             class="btn btn-success btn-lg" 
                             id="finalApproveBtn"
-                            <?php echo $is_finalized ? 'disabled style="cursor: not-allowed;"' : ''; ?>>
-                            <?php echo $is_finalized ? 'Finalized' : 'Final Approve'; ?>
+                            <?php echo $isFinalized ? 'disabled' : ''; ?>
+                        >
+                            Final Approve
                         </button>
                     </div>
                 </div>
@@ -166,7 +167,11 @@ function handleFinalApprove(productId) {
                 button.disabled = true;
                 button.style.cursor = 'not-allowed';
             });
-            document.getElementById('finalApproveBtn').disabled = true;
+            // Update status labels for pending bids
+            document.querySelectorAll('.label-warning').forEach(label => {
+                label.className = 'label label-danger';
+                label.textContent = 'Rejected/Refunded';
+            });
         } else {
             alert('Error: ' + data.error);
         }
@@ -176,6 +181,31 @@ function handleFinalApprove(productId) {
         alert('An error occurred while finalizing the bid.');
     });
 }
+
+// Initialize button states on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const isFinalized = <?php echo $isFinalized ? 'true' : 'false' ?>;
+    
+    if (isFinalized) {
+        // If finalized, disable all buttons
+        document.querySelectorAll('.btn').forEach(button => {
+            button.disabled = true;
+            button.style.cursor = 'not-allowed';
+        });
+    } else {
+        // If not finalized, only disable buttons for approved/rejected bids
+        document.querySelectorAll('.btn').forEach(button => {
+            const bidId = button.id.split('-')[1];
+            if (bidId) {
+                const bidStatus = <?php echo json_encode(array_column($bids, 'bid_status')); ?>;
+                if (bidStatus[bidId] == 2 || bidStatus[bidId] == 3) {
+                    button.disabled = true;
+                    button.style.cursor = 'not-allowed';
+                }
+            }
+        });
+    }
+});
 </script>
 
 <?php require_once('footer.php'); ?>

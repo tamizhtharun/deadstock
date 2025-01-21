@@ -1,5 +1,6 @@
 <?php
 // finalize_bid.php
+session_start();
 require_once('../db_connection.php');
 
 header('Content-Type: application/json');
@@ -9,7 +10,7 @@ $product_id = $data['product_id'];
 
 try {
     $pdo->beginTransaction();
-    
+
     // Check if at least one bid is approved
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as approved_count
@@ -21,29 +22,20 @@ try {
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($result['approved_count'] == 0) {
-        throw new Exception('Approve the bid');
+        throw new Exception('Approve at least one bid first');
     }
 
     // Update all pending bids (status 1) to rejected (status 3)
     $stmt = $pdo->prepare("
         UPDATE bidding 
-        SET bid_status = 3,
-            refund_status = 'Pending'
+        SET bid_status = 3
         WHERE product_id = :product_id 
         AND bid_status = 1
     ");
     $stmt->execute([':product_id' => $product_id]);
 
-    // Ensure all approved bids remain approved
-    $stmt = $pdo->prepare("
-        UPDATE bidding 
-        SET bid_status = 2
-        WHERE product_id = :product_id 
-        AND bid_status = 2
-    ");
-    $stmt->execute([':product_id' => $product_id]);
-
     $pdo->commit();
+
     echo json_encode([
         'success' => true,
         'message' => 'Final approve action completed successfully.'
