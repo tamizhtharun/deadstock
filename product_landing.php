@@ -337,7 +337,7 @@ if ($success_message1 != '') {
         style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Cancel </button>
                 <!-- Submit Request Button -->
                 <!-- <button type="button" onclick="openRazorpayModal()" class="btn-rp btn-submit-rp">Pay and Place your Bid</button> -->
-                <button type="button" class="btn btn-primary" onclick="validateCheckboxAndPay()"
+                <button type="button" class="btn btn-primary" onclick="openRazorpayModal()"
                 style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Pay and Place your Bid </button>
               </div>
         </form>
@@ -371,36 +371,31 @@ if ($success_message1 != '') {
     }
     // Function to open Razorpay modal
     function openRazorpayModal() {
-
-      // for testing purpose
-      alert('Bid added successfully');
-
-
-    const productId = <?php echo $_REQUEST['id']; ?>;
+      const productId = <?php echo $_REQUEST['id']; ?>;
     
-    // First check if user has already bid
-    checkExistingBid(productId)
-        .then(response => {
-            if (response.has_bid) {
-                alert('You have already submitted a bid for this product');
-                closeModal();
-                return;
-            }})
-    const quantity = document.getElementById('quantity').value;
-    const proposedPrice = document.getElementById('proposedPrice').value;
-    
-    // First, create the order
-    fetch('submit_bid.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            product_id: <?php echo $_REQUEST['id']; ?>,
-            quantity: quantity,
-            proposed_price: proposedPrice
+      // First check if user has already bid
+      checkExistingBid(productId)
+          .then(response => {
+              if (response.has_bid) {
+                  alert('You have already submitted a bid for this product');
+                  closeModal();
+                  return;
+              }})
+      const quantity = document.getElementById('quantity').value;
+      const proposedPrice = document.getElementById('proposedPrice').value;
+      
+      // First, create the order
+        fetch('submit_bid.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                product_id: <?php echo $_REQUEST['id']; ?>,
+                quantity: quantity,
+                proposed_price: proposedPrice
+            })
         })
-    })
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {

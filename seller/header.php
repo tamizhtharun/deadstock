@@ -186,7 +186,7 @@ $stmt->close();
 							<li><a href="request-price.php"><i class="fa fa-circle-o"></i> Request Price</a></li>
 						</ul>
 					</li> -->
-					<li class="treeview <?php if( ($cur_page == 'bidding-order.php') ||($cur_page ='direct-order.php') ) {echo 'active';} ?>">
+					<li class="treeview <?php if( ($cur_page == 'bidding-order.php') || ($cur_page =='direct-order.php') ) {echo 'active';} ?>">
                         <a href="#">
 												<i class="nav-icon fas fa-shopping-cart"></i>
                             <span>Order Management</span>
