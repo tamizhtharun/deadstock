@@ -321,35 +321,61 @@ if ($success_message1 != '') {
                     placeholder="Enter Price Per Unit"
                 />
             </div>
+            <div className="terms-checkbox">
+                    
+                    <label>
+        <label>
+    <input type="checkbox" id="terms-checkbox" name="terms_accepted" required>
+    <span>I agree to the <span class="terms-link" onclick="showTermsModal()">Terms and Conditions</span></span>
+</label>
+    </label>
+                </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn-rp btn-cancel-rp" id="cancelBtn">Cancel</button>
+                <!-- <button type="button" class="btn-rp btn-cancel-rp" id="cancelBtn">Cancel</button> -->
+                <button type="button" class="btn btn-secondary" id="cancelBtn"
+        style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Cancel </button>
                 <!-- Submit Request Button -->
-                <button type="button" onclick="openRazorpayModal()" class="btn-rp btn-submit-rp">Pay and Place your Bid</button>
-            </div>
+                <!-- <button type="button" onclick="openRazorpayModal()" class="btn-rp btn-submit-rp">Pay and Place your Bid</button> -->
+                <button type="button" class="btn btn-primary" onclick="validateCheckboxAndPay()"
+                style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Pay and Place your Bid </button>
+              </div>
         </form>
     </div>
 </div>
-<script>
-  function checkExistingBid(productId) {
-    return fetch('check_bid_status.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            product_id: productId
-        })
-    })
-    .then(response => response.json());
-}
-</script>
 
 <!-- Razorpay Script -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+  function showTermsModal() {
+        alert('Displaying Terms and Conditions...');
+    }
+
+    // Function to validate checkbox and handle payment
+    function validateCheckboxAndPay() {
+        const termsCheckbox = document.getElementById('terms-checkbox');
+        const quantityField = document.getElementById('quantity');
+        const proposedPrice = document.getElementById('proposedPrice');
+        
+        if (quantityField.value <= 0){
+            alert('Please enter the quantity');
+        } else if (proposedPrice.value <= 0){
+            alert('Please enter the Proposed price')
+        }else if (!termsCheckbox.checked) {
+            // Display notification if the checkbox is not checked
+            alert('Please agree to the Terms and Conditions before proceeding with the payment.');
+        } else {
+            // Proceed with payment logic
+            openRazorpayModal();
+        }
+    }
     // Function to open Razorpay modal
     function openRazorpayModal() {
+
+      // for testing purpose
+      alert('Bid added successfully');
+
+
     const productId = <?php echo $_REQUEST['id']; ?>;
     
     // First check if user has already bid
