@@ -98,6 +98,8 @@ require_once('header.php');
                       AND b.user_id = o.user_id
                   WHERE 
                       b.bid_status = 2
+                    AND
+                        o.order_type ='bid'
                   ORDER BY 
                       b.bid_time DESC");
                       $statement->execute();
