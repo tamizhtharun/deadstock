@@ -186,6 +186,14 @@ $stmt->close();
 							<li><a href="request-price.php"><i class="fa fa-circle-o"></i> Request Price</a></li>
 						</ul>
 					</li> -->
+
+					<li class="<?php if($cur_page == 'bids_history.php') {echo 'active';} ?>">
+						<a href="bids_history.php">
+							<i class="nav-icon fas fa-history"></i>
+							<span>All Bids History</span>
+						</a>
+					</li>
+
 					<li class="treeview <?php if( ($cur_page == 'bidding-order.php') || ($cur_page =='direct-order.php') ) {echo 'active';} ?>">
                         <a href="#">
 												<i class="nav-icon fas fa-shopping-cart"></i>

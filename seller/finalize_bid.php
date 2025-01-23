@@ -1,6 +1,5 @@
 <?php
 // finalize_bid.php
-session_start();
 require_once('../db_connection.php');
 
 header('Content-Type: application/json');
@@ -10,35 +9,46 @@ $product_id = $data['product_id'];
 
 try {
     $pdo->beginTransaction();
-
-    // Check if at least one bid is approved
+    
+    // Check if any bids from today are approved
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as approved_count
         FROM bidding 
         WHERE product_id = :product_id 
-        AND bid_status = 2
+        AND bid_status = 4
+        AND DATE(bid_time) = CURRENT_DATE()
     ");
     $stmt->execute([':product_id' => $product_id]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($result['approved_count'] == 0) {
-        throw new Exception('Approve at least one bid first');
+        throw new Exception('Please approve at least one bid before finalizing');
     }
 
-    // Update all pending bids (status 1) to rejected (status 3)
+    // Update approved bids to final approved status (2)
+    $stmt = $pdo->prepare("
+        UPDATE bidding 
+        SET bid_status = 2
+        WHERE product_id = :product_id 
+        AND bid_status = 4
+        AND DATE(bid_time) = CURRENT_DATE()
+    ");
+    $stmt->execute([':product_id' => $product_id]);
+
+    // Update remaining non-approved bids to refunded status (3)
     $stmt = $pdo->prepare("
         UPDATE bidding 
         SET bid_status = 3
         WHERE product_id = :product_id 
         AND bid_status = 1
+        AND DATE(bid_time) = CURRENT_DATE()
     ");
     $stmt->execute([':product_id' => $product_id]);
 
     $pdo->commit();
-
     echo json_encode([
         'success' => true,
-        'message' => 'Final approve action completed successfully.'
+        'message' => 'Bids finalized successfully'
     ]);
 } catch (Exception $e) {
     if ($pdo->inTransaction()) {
