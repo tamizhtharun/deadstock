@@ -143,6 +143,19 @@ if (isset($_POST['form_bid_settings'])) {
     $success_message = 'Bid times updated successfully.';
 }
 }
+if (isset($_POST['form_min_bid'])) {
+    $min_bid_percentage = trim($_POST['min_bid_pct']);
+    $max_percentage = 100;
+    if($min_bid_percentage >= $max_percentage){
+        $error_message = 'Minimum bid percentage must be less than 100%.';
+    }else{
+        $statement = $pdo->prepare("UPDATE bid_settings SET min_bid_pct=? WHERE id=1");
+        $statement->execute([$min_bid_percentage]);
+        $success_message = 'Minimum bid percentage updated successfully.';
+
+    }
+}
+
 
 
 
@@ -933,6 +946,7 @@ foreach ($result as $row) {
   $quote_span_text                     = $row['quote_span_text'];
   $bid_send_time                        = $row['send_time'];
   $bid_close_time                       = $row['close_time'];
+  $min_bid_percentage                   = $row['min_bid_pct'];
 
 }
 ?>
@@ -1124,6 +1138,25 @@ foreach ($result as $row) {
                                     </div>                               
                                 </div>
                             </div>
+                            </form>
+
+                            <form class="form-horizontal" action="" method="POST">
+                                <div class="box box-info">
+                                    <div class="box-body">
+                                    <div class="form-group">
+                                    <label for="min_bid_pct" class="col-sm-2 control-label">Min. Bid Percentage</label>
+                                            <div class="col-sm-1">
+                                                <input type="number" class="form-control" name="min_bid_pct" value="<?php echo htmlspecialchars($min_bid_percentage); ?>">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="" class="col-sm-4 control-label"></label>
+                                        <div class="col-sm-6">
+                                            <button type="submit" class="btn btn-success pull-left" name="form_min_bid">Update</button>
+                                        </div>
+                                    </div>
+                            </div>
+                                </div>
                             </form>
                         </div>
 
