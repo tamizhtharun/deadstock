@@ -8,6 +8,8 @@ require_once('config.php');
 <link rel="stylesheet" href="css/product_landing.css">
 
 <?php
+
+
 if (isset($_SESSION['user_session']['id'])) {
   $user_id = $_SESSION['user_session']['id'];
 }
@@ -291,7 +293,7 @@ if ($success_message1 != '') {
     <!-- Modal -->
     <div id="priceRequestModal">
         <button class="close-button-rp" id="closeModal">&times;</button>
-        <div class="modal-header-rp">
+        <div class="terms-modal-header-rp">
             <h3>Request a Price</h3>
         </div>
         <form id="priceRequestForm" method="POST" action="submit_bid.php">
@@ -326,7 +328,7 @@ if ($success_message1 != '') {
                     <label>
         <label>
     <input type="checkbox" id="terms-checkbox" name="terms_accepted" required>
-    <span>I agree to the <span class="terms-link" onclick="showTermsModal()">Terms and Conditions</span></span>
+    <span>I agree to the <span class="terms-link" id = "terms-btn" onclick="showTermsModal()">Terms and Conditions</span></span>
 </label>
     </label>
                 </div>
@@ -336,13 +338,32 @@ if ($success_message1 != '') {
                 <button type="button" class="btn btn-secondary" id="cancelBtn"
         style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Cancel </button>
                 <!-- Submit Request Button -->
-                <!-- <button type="button" onclick="openRazorpayModal()" class="btn-rp btn-submit-rp">Pay and Place your Bid</button> -->
-                <button type="button" class="btn btn-primary" onclick="openRazorpayModal()"
+                <button type="button" onclick="openRazorpayModal()" class="btn-rp btn-submit-rp">Pay and Place your Bid</button>
+                <button type="button" class="btn btn-primary" onclick="validateCheckboxAndPay()"
                 style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Pay and Place your Bid </button>
               </div>
         </form>
     </div>
 </div>
+
+<!-- Terms and Conditions Modal -->
+<div class="terms-modal-overlay" id="termsModal" style="display: none;">
+    <div id="termsContent">
+        <button class="close-button-rp" id="tc-close">&times;</button>
+        <div class="modal-header-rp">
+            <h3>Terms and Conditions</h3>
+        </div>
+        <div class="modal-body">
+            <p>
+                <!-- Replace this with your actual terms and conditions content -->
+                Here are the Terms and Conditions for placing a bid.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Donec vehicula cursus risus id volutpat.
+            </p>
+        </div>
+    </div>
+</div>
+
 
 <!-- Razorpay Script -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -371,6 +392,11 @@ if ($success_message1 != '') {
     }
     // Function to open Razorpay modal
     function openRazorpayModal() {
+
+    //testing start
+    alert('biting button working, check the razorpay modal');
+    // for testing end
+
       const productId = <?php echo $_REQUEST['id']; ?>;
     
       // First check if user has already bid
@@ -665,7 +691,9 @@ if ($success_message1 != '') {
     const closeBtn = document.getElementById("closeModal");
     const cancelBtn = document.getElementById("cancelBtn");
     const form = document.getElementById("priceRequestForm");
-
+    const termsModal = document.getElementById("termsModal");
+    const tc_btn = document.getElementById("terms-btn");
+    const tc_close = document.getElementById("tc-close");
     // Open the modal
     function openModal() {
         modalOverlay.style.display = "flex";
@@ -679,10 +707,26 @@ if ($success_message1 != '') {
         form.reset();
     }
 
+    //open TC Modal
+    function openTCModal(){
+      termsModal.style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+
+    // Close TC Modal
+    function closeTCModal() {
+        termsModal.style.display = "none";
+        document.body.style.overflow = "auto";
+        form.reset();
+    }
+
     // Attach event listeners for opening and closing modal
     requestBtn.addEventListener("click", openModal);
     closeBtn.addEventListener("click", closeModal);
     cancelBtn.addEventListener("click", closeModal);
+    tc_btn.addEventListener("click", openTCModal);
+    tc_close.addEventListener("click", closeTCModal);
+
     modalOverlay.addEventListener("click", (e) => {
         if (e.target === modalOverlay) {
             closeModal();
