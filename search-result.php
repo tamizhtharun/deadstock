@@ -1,16 +1,16 @@
-<link rel="stylesheet" href="css/search-result.css">
 <?php
-// session_start();
 include 'header.php';
 include 'db_connection.php';
 
 // Get search query and filters from URL
 $search_query = isset($_GET['search_text']) ? trim($_GET['search_text']) : '';
-$category_filter = isset($_GET['category']) ? trim($_GET['category']) : '';
+$category_type = isset($_GET['type']) ? trim($_GET['type']) : '';
+$category_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$selected_category = isset($_GET['category']) ? trim($_GET['category']) : '';
 $price_filter = isset($_GET['price']) ? floatval($_GET['price']) : 0;
 $sort_by = isset($_GET['sort']) ? trim($_GET['sort']) : 'name_asc';
 
-// Base query for products
+// Base query for products with dynamic category filtering
 $base_sql = "SELECT p.*, c.ecat_name, s.seller_cname,
              COALESCE(
                  (SELECT SUM(p_qty) FROM tbl_product WHERE id = p.id), 
@@ -18,8 +18,25 @@ $base_sql = "SELECT p.*, c.ecat_name, s.seller_cname,
              ) as stock_quantity
              FROM tbl_product p
              LEFT JOIN tbl_end_category c ON p.ecat_id = c.ecat_id
+             LEFT JOIN tbl_mid_category m ON c.mcat_id = m.mcat_id
+             LEFT JOIN tbl_top_category t ON m.tcat_id = t.tcat_id
              LEFT JOIN sellers s ON p.seller_id = s.seller_id
              WHERE p.p_is_approve = '1'";
+
+// Dynamic category filtering
+if ($category_type && $category_id) {
+    switch ($category_type) {
+        case 'top-category':
+            $base_sql .= " AND t.tcat_id = :category_id";
+            break;
+        case 'mid-category':
+            $base_sql .= " AND m.mcat_id = :category_id";
+            break;
+        case 'end-category':
+            $base_sql .= " AND c.ecat_id = :category_id";
+            break;
+    }
+}
 
 // Add search conditions
 if (!empty($search_query)) {
@@ -29,9 +46,9 @@ if (!empty($search_query)) {
                   OR s.seller_cname LIKE :search)";
 }
 
-// Add category filter
-if (!empty($category_filter)) {
-    $base_sql .= " AND c.ecat_id = :category";
+// Add additional category filter
+if (!empty($selected_category)) {
+    $base_sql .= " AND c.ecat_id = :selected_category";
 }
 
 // Add price filter
@@ -57,13 +74,18 @@ switch ($sort_by) {
 // Prepare and execute the query
 $stmt = $pdo->prepare($base_sql);
 
+// Bind category ID if present
+if ($category_type && $category_id) {
+    $stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
+}
+
 if (!empty($search_query)) {
     $search_term = "%{$search_query}%";
     $stmt->bindParam(':search', $search_term, PDO::PARAM_STR);
 }
 
-if (!empty($category_filter)) {
-    $stmt->bindParam(':category', $category_filter, PDO::PARAM_INT);
+if (!empty($selected_category)) {
+    $stmt->bindParam(':selected_category', $selected_category, PDO::PARAM_INT);
 }
 
 if ($price_filter > 0) {
@@ -74,9 +96,36 @@ $stmt->execute();
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $total_results = count($products);
 
-// Fetch categories for filter
-$cat_stmt = $pdo->query("SELECT ecat_id, ecat_name FROM tbl_end_category ORDER BY ecat_name");
-$categories = $cat_stmt->fetchAll(PDO::FETCH_ASSOC);
+// Fetch categories for filter based on current category context
+$cat_stmt = null;
+if ($category_type && $category_id) {
+    switch ($category_type) {
+        case 'top-category':
+            $cat_stmt = $pdo->prepare("
+                SELECT DISTINCT c.ecat_id, c.ecat_name 
+                FROM tbl_end_category c
+                JOIN tbl_mid_category m ON c.mcat_id = m.mcat_id
+                WHERE m.tcat_id = ?
+                ORDER BY c.ecat_name
+            ");
+            $cat_stmt->execute([$category_id]);
+            break;
+        case 'mid-category':
+            $cat_stmt = $pdo->prepare("
+                SELECT DISTINCT c.ecat_id, c.ecat_name 
+                FROM tbl_end_category c
+                WHERE c.mcat_id = ?
+                ORDER BY c.ecat_name
+            ");
+            $cat_stmt->execute([$category_id]);
+            break;
+    }
+} else {
+    // Default: fetch all end categories
+    $cat_stmt = $pdo->query("SELECT ecat_id, ecat_name FROM tbl_end_category ORDER BY ecat_name");
+}
+
+$categories = $cat_stmt ? $cat_stmt->fetchAll(PDO::FETCH_ASSOC) : [];
 
 // Get price range for filter
 $price_stmt = $pdo->query("SELECT MIN(p_current_price) as min_price, MAX(p_current_price) as max_price FROM tbl_product WHERE p_is_approve = '1'");
@@ -86,68 +135,73 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Results - <?php echo htmlspecialchars($search_query); ?></title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Product Results</title>
     <link rel="stylesheet" href="css/search-result.css">
 </head>
 <body>
-    <?php // include 'header.php'; ?>
-
     <div class="search-layout">
         <!-- Filters Sidebar -->
         <aside class="filters-sidebar">
             <div class="filter-section">
                 <h3 class="filter-heading">Filters</h3>
                 
-                <div class="filter-group">
-                    <label class="filter-label" for="sort">Sort by</label>
-                    <select id="sort" class="filter-select">
-                        <option value="name_asc" <?php echo $sort_by == 'name_asc' ? 'selected' : ''; ?>>Name (A-Z)</option>
-                        <option value="name_desc" <?php echo $sort_by == 'name_desc' ? 'selected' : ''; ?>>Name (Z-A)</option>
-                        <option value="price_asc" <?php echo $sort_by == 'price_asc' ? 'selected' : ''; ?>>Price (Low to High)</option>
-                        <option value="price_desc" <?php echo $sort_by == 'price_desc' ? 'selected' : ''; ?>>Price (High to Low)</option>
-                    </select>
-                </div>
+                <form id="filter-form" method="GET">
+                    <!-- Hidden fields to preserve original category context -->
+                    <input type="hidden" name="type" value="<?php echo htmlspecialchars($category_type); ?>">
+                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($category_id); ?>">
+                    <input type="hidden" name="search_text" value="<?php echo htmlspecialchars($search_query); ?>">
 
-                <div class="filter-group">
-                    <label class="filter-label" for="category">Category</label>
-                    <select id="category" class="filter-select">
-                        <option value="">All Categories</option>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?php echo htmlspecialchars($category['ecat_id']); ?>"
-                                    <?php echo $category_filter == $category['ecat_id'] ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($category['ecat_name']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+                    <div class="filter-group">
+                        <label class="filter-label" for="sort">Sort by</label>
+                        <select id="sort" name="sort" class="filter-select">
+                            <option value="name_asc" <?php echo $sort_by == 'name_asc' ? 'selected' : ''; ?>>Name (A-Z)</option>
+                            <option value="name_desc" <?php echo $sort_by == 'name_desc' ? 'selected' : ''; ?>>Name (Z-A)</option>
+                            <option value="price_asc" <?php echo $sort_by == 'price_asc' ? 'selected' : ''; ?>>Price (Low to High)</option>
+                            <option value="price_desc" <?php echo $sort_by == 'price_desc' ? 'selected' : ''; ?>>Price (High to Low)</option>
+                        </select>
+                    </div>
 
-                <div class="filter-group">
-                    <label class="filter-label" for="price-range">Maximum Price</label>
-                    <input type="range" id="price-range" class="filter-select"
-                           min="<?php echo floor($price_range['min_price']); ?>"
-                           max="<?php echo ceil($price_range['max_price']); ?>"
-                           value="<?php echo $price_filter ?: ceil($price_range['max_price']); ?>">
-                    <span id="price-display">₹<?php echo number_format($price_filter ?: $price_range['max_price'], 2); ?></span>
-                </div>
+                    <div class="filter-group">
+                        <label class="filter-label" for="category">Category</label>
+                        <select id="category" name="category" class="filter-select">
+                            <option value="">All Categories</option>
+                            <?php foreach ($categories as $category): ?>
+                                <option value="<?php echo htmlspecialchars($category['ecat_id']); ?>"
+                                        <?php echo $selected_category == $category['ecat_id'] ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($category['ecat_name']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
 
-                <div class="filter-group">
-                    <label class="filter-label" for="availability">Availability</label>
-                    <select id="availability" class="filter-select">
-                        <option value="all">All Items</option>
-                        <option value="in-stock">In Stock</option>
-                        <option value="out-of-stock">Out of Stock</option>
-                    </select>
-                </div>
+                    <div class="filter-group">
+                        <label class="filter-label" for="price-range">Maximum Price</label>
+                        <input type="range" id="price-range" name="price" class="filter-select"
+                               min="<?php echo floor($price_range['min_price']); ?>"
+                               max="<?php echo ceil($price_range['max_price']); ?>"
+                               value="<?php echo $price_filter ?: ceil($price_range['max_price']); ?>">
+                        <span id="price-display">₹<?php echo number_format($price_filter ?: $price_range['max_price'], 2); ?></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">Apply Filters</button>
+                </form>
             </div>
         </aside>
 
         <!-- Search Results Container -->
         <div class="search-results-container">
             <div class="search-header">
-                <h1 class="search-title">Search Results for "<?php echo htmlspecialchars($search_query); ?>"</h1>
+                <h1 class="search-title">
+                    <?php 
+                    if ($category_type && $category_id) {
+                        echo "Products based on category";
+                    } elseif (!empty($search_query)) {
+                        echo "Search Results for \"" . htmlspecialchars($search_query) . "\"";
+                    } else {
+                        echo "All Products";
+                    }
+                    ?>
+                </h1>
                 <p class="search-summary">Found <?php echo $total_results; ?> results</p>
             </div>
 
@@ -213,28 +267,6 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-    <!-- Login Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Login Required</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Please login to add items to your cart.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="login.php" class="btn btn-primary">Login</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <?php include 'footer.php'; ?>
-
-    <script src="js/search-result.js"></script>
     <script>
         // Update price display when range input changes
         const priceRange = document.getElementById('price-range');
@@ -249,5 +281,7 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
             });
         }
     </script>
+    <!-- <script src='js/search-result.js'></script> -->
+     <?php include 'footer.php' ?>
 </body>
 </html>

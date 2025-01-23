@@ -161,5 +161,17 @@
     initChocolat();
 
   }); // End of a document
+   // Update price display when range input changes
+   const priceRange = document.getElementById('price-range');
+   const priceDisplay = document.getElementById('price-display');
+   
+   if (priceRange && priceDisplay) {
+       priceRange.addEventListener('input', function() {
+           priceDisplay.textContent = '₹' + parseFloat(this.value).toLocaleString('en-IN', {
+               maximumFractionDigits: 2,
+               minimumFractionDigits: 2
+           });
+       });
+   }
 
 })(jQuery);
