@@ -21,6 +21,9 @@ $statement = $pdo->prepare("SELECT * FROM tbl_product");
 $statement->execute();
 $total_product = $statement->rowCount();
 
+$today_date = date('Y-m-d');
+$yesterday = date('Y-m-d', strtotime('-1 day'));
+
 // $statement = $pdo->prepare("SELECT * FROM tbl_customer WHERE seller_status='1'");
 // $statement->execute();
 // $total_customers = $statement->rowCount();
@@ -140,21 +143,46 @@ $total_product = $statement->rowCount();
         </div>
     </div>
 </div>
- <!-- <div class="col-xl-3 col-lg-3">
+ <div class="col-xl-3 col-lg-3">
     <div class="card l-bg-green-dark">
-        <div class="card-statistic-3 p-4">
-            <div class="card-icon card-icon-large"><i class="fas fa-ticket-alt"></i></div>
-            <div class="mb-4">
-                <h5 class="card-title mb-0">Ticket Resolved</h5>
+        <div class="card-statistic-3 p-3">
+            <div class="card-icon card-icon-large"><i class="fas fa fa-gavel"></i></div>
+            <div class="mb-2">
+                <h5 class="card-title mb-0">Bids Today</h5>
             </div>
             <div class="row align-items-center mb-2 d-flex">
                 <div class="col-8">
-                    <h2 class="d-flex align-items-center mb-0">
-                        578
-                    </h2>
+                <h2 class="d-flex align-items-center mb-0">
+                    <?php 
+                        $statement = $pdo->prepare("SELECT  COUNT(*) FROM bidding WHERE DATE(bid_time) = '$today_date'");
+                        $statement->execute();
+                        $total_bids_today = $statement->fetchColumn();
+                        echo $total_bids_today
+                        ?> 
+                    </h2>Bids
                 </div>
                 <div class="col-4 text-right">
-                    <span>10% <i class="fa fa-arrow-up"></i></span>
+                    <span>
+                        <?php
+                    $sql_yesterday = "SELECT COUNT(*) AS total_yesterday FROM bidding WHERE DATE(bid_time) = '$yesterday'";
+                    $result_yesterday = $conn->query($sql_yesterday);
+                    $row_yesterday = $result_yesterday->fetch_assoc();
+                    $total_yesterday = $row_yesterday['total_yesterday'];
+
+                    if ($total_yesterday > 0) {
+                        $change = $total_bids_today - $total_yesterday;
+                        $percentage_change = ($change / $total_yesterday) * 100;
+                    } else {
+                        $percentage_change = $total_bids_today > 0 ? 100 : 0;
+                    }
+                    if ($percentage_change > 0) {
+                        echo $percentage_change . '% <i class="fa fa-arrow-up"></i>';
+                    } else if ($percentage_change < 0) {
+                        echo $percentage_change. '%<i class="fa fa-arrow-down"></i>';
+                    }  else {
+                        echo $percentage_change . '% <i class="fa fa-arrow-up"></i>';
+                    }
+                    ?>
                 </div>
             </div>
             <div class="progress mt-1 " data-height="8" style="height: 8px;">
@@ -166,14 +194,36 @@ $total_product = $statement->rowCount();
 <div class="col-xl-3 col-lg-3">
     <div class="card l-bg-orange-dark">
         <div class="card-statistic-3 p-4">
-            <div class="card-icon card-icon-large"><i class="fas fa-dollar-sign"></i></div>
+            <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i></div>
             <div class="mb-4">
                 <h5 class="card-title mb-0">Revenue Today</h5>
             </div>
             <div class="row align-items-center mb-2 d-flex">
                 <div class="col-8">
                     <h2 class="d-flex align-items-center mb-0">
-                        $11.61k
+                    ₹<?php 
+                        $statement = $pdo->prepare("SELECT * FROM tbl_orders WHERE DATE(created_at) = :today_date AND order_status!='canceled'");
+                        $statement->bindParam(':today_date', $today_date, PDO::PARAM_STR);
+                        $statement->execute();
+                        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+                        $total_revenue_today = 0;
+
+                        if ($result) {
+                            foreach ($result as $row) {
+                                 $total_revenue_today += $row['quantity'] * $row['price'];
+                            }
+                        }
+
+                        // Format revenue: if >= 1000, convert to 'K' notation
+                        if ($total_revenue_today >= 1000) {
+                             $formatted_revenue = number_format($total_revenue_today / 1000, 1) . 'K';
+                        } else {
+                            $formatted_revenue = $total_revenue_today;
+                        }
+
+                        echo $formatted_revenue;
+                        ?>
                     </h2>
                 </div>
                 <div class="col-4 text-right">
@@ -185,7 +235,7 @@ $total_product = $statement->rowCount();
             </div>
         </div>
     </div>
-</div> -->
+</div>
     </div>
 
 
@@ -229,6 +279,17 @@ $total_product = $statement->rowCount();
         max-width: none !important;
     }
 </style>
+<?php
+// Get current UTC timestamp
+$utc_timestamp = time(); // UNIX timestamp in UTC
+
+// Convert to formatted UTC datetime
+$utc_datetime = gmdate('Y-m-d H:i:s');
+
+// Store or use UTC timestamp for consistent time tracking
+echo "UTC Timestamp: " . $utc_timestamp;
+echo "UTC Datetime: " . $utc_datetime;
+?>
               
             
 		  

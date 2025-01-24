@@ -1,4 +1,5 @@
 <?php
+ob_start();
 session_start();
 include 'db_connection.php';
 $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
