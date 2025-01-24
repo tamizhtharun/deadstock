@@ -228,13 +228,57 @@ if (!isset($_SESSION['seller_session'])) {
 						</ul>
 					</li> -->
 
-					<li class="treeview <?php if (($cur_page == 'faq.php')) {
-						echo 'active';
-					} ?>">
-						<a href="faq.php">
-							<i class="fa fa-question-circle"></i> <span>FAQ</span>
+					<li class="<?php if($cur_page == 'bids_history.php') {echo 'active';} ?>">
+						<a href="bids_history.php">
+							<i class="nav-icon fas fa-history"></i>
+							<span>All Bids History</span>
 						</a>
 					</li>
+
+					<li class="treeview <?php if( ($cur_page == 'bidding-order.php') || ($cur_page =='direct-order.php') ) {echo 'active';} ?>">
+                        <a href="#">
+												<i class="nav-icon fas fa-shopping-cart"></i>
+                            <span>Order Management</span>
+                            <span class="pull-right-container">
+								               <i class="fa fa-angle-left pull-right"></i>
+							              </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="direct-order.php"><i class="fa fa-circle-o"></i> Direct Orders</a></li>
+                            <li><a href="bidding-order.php"><i class="fa fa-circle-o"></i> Bid-Based Orders </a></li>
+                        </ul>
+                    </li>
+
+<!-- 
+                     <li class="treeview <?php if( ($cur_page == 'slider.php') ) {echo 'active';} ?>">
+			          <a href="slider.php">
+			            <i class="fa fa-picture-o"></i> <span>Manage Sliders</span>
+			          </a>
+			        </li> -->
+                    <!-- Icons to be displayed on Shop -->
+
+
+							<!-- <li class="treeview <?php if( ($cur_page == 'service.php') ) {echo 'active';} ?>">
+                        <a href="#">
+                            <i class="fa fa-list-ol"></i>
+                            <span>Services</span>
+                            <span class="pull-right-container">
+								<i class="fa fa-angle-left pull-right"></i>
+							</span>
+                        </a>
+                        <ul class="treeview-menu">
+
+                            <li><a href="#"><i class="fa fa-circle-o"></i> Scrolling Text</a></li>
+                            <li><a href="#"><i class="fa fa-circle-o"></i> Quote</a></li>
+                            <li><a href="#"><i class="fa fa-circle-o"></i> Category</a></li>
+                        </ul>
+                    </li> -->
+
+			      	 <li class="treeview <?php if( ($cur_page == 'faq.php') ) {echo 'active';} ?>">
+			          <a href="faq.php">
+			            <i class="fa fa-question-circle"></i> <span>FAQ</span>
+			          </a>
+			        </li>
 
 					<!-- <li class="treeview <?php if (($cur_page == 'seller.php') || ($cur_page == 'seller-add.php') || ($cur_page == 'seller-edit.php')) {
 						echo 'active';

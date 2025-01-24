@@ -1,4 +1,5 @@
 <?php
+//auto-bid.php
 include('C:/xampp/htdocs/deadstock/db_connection.php');
 
 // Set timezone and get current date/time
@@ -62,7 +63,28 @@ if ($timeRow) {
 } else {
     echo "No settings found in bid_settings table";
 }
+
+// Add this condition to the existing close_time check
+if ($currentTime >= $closeTime) {
+    // Update partially approved bids to fully approved
+    $updatePartialQuery = "UPDATE bidding SET bid_status = '2' WHERE bid_status = '4'";
+    if ($conn->query($updatePartialQuery)) {
+        if ($conn->affected_rows > 0) {
+            $updatedToday = true;
+        }
+    }
+    
+    // Update pending bids to rejected
+    $updatePendingQuery = "UPDATE bidding SET bid_status = '3' WHERE bid_status = '1'";
+    if ($conn->query($updatePendingQuery)) {
+        if ($conn->affected_rows > 0) {
+            $updatedToday = true;
+        }
+    }
+}
+
 ?>
+
 <script>
         setTimeout(function() {
             location.reload();

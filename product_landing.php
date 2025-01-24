@@ -149,12 +149,31 @@ if ($success_message1 != '') {
 <!DOCTYPE html>
 <html lang="en">
 
+<<<<<<< HEAD
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <link rel="stylesheet" href="css/product_landing.css">
 </head>
+=======
+<!-- content -->
+<section class="py-5">
+  <div class="container" style="margin-top: -30px;">
+    <!-- Breadcrumb Section -->
+    <nav aria-label="breadcrumb" style="margin-left:6px;">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php" style="text-decoration: none;">Home</a></li>
+        <li class="breadcrumb-item"><a href="search-result.php?type=top-category&id=<?php echo $tcat_id; ?>"
+            style="text-decoration: none;"><?php echo htmlspecialchars($tcat_name); ?></a></li>
+        <li class="breadcrumb-item"><a href="search-result.php?type=mid-category&id=<?php echo $mcat_id; ?>"
+            style="text-decoration: none;"><?php echo htmlspecialchars($mcat_name); ?></a></li>
+        <li class="breadcrumb-item active" aria-current="page" style="text-decoration: none;">
+          <?php echo htmlspecialchars($ecat_name); ?>
+        </li>
+      </ol>
+    </nav>
+>>>>>>> 955a312a78bfb0ba6f7e07fcb80d83d4833fdc66
 
 <body>
 
