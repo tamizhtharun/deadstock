@@ -84,6 +84,17 @@ $statement->execute(array($p_total_view, $_REQUEST['id']));
 
 ?>
 
+<!-- for terms and conditions -->
+<?php
+  $statement = $pdo->prepare("SELECT user_tc FROM tbl_settings");
+  $statement->execute();
+  $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+  if($result){
+      $user_tc = $result['user_tc'];
+      }else{
+        $user_tc = "No terms and conditions available.";
+     }?> 
 
 <?php
 $error_message1 = '';
@@ -328,7 +339,7 @@ if ($success_message1 != '') {
                     <label>
         <label>
     <input type="checkbox" id="terms-checkbox" name="terms_accepted" required>
-    <span>I agree to the <span class="terms-link" id = "terms-btn" onclick="showTermsModal()">Terms and Conditions</span></span>
+    <span>I agree to the <span class="terms-link" id = "terms-btn" onclick="showTermsModal(event)">Terms and Conditions</span></span>
 </label>
     </label>
                 </div>
@@ -338,28 +349,34 @@ if ($success_message1 != '') {
                 <button type="button" class="btn btn-secondary" id="cancelBtn"
         style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Cancel </button>
                 <!-- Submit Request Button -->
-                <button type="button" onclick="openRazorpayModal()" class="btn-rp btn-submit-rp">Pay and Place your Bid</button>
+                <!-- <button type="button" onclick="openRazorpayModal()" class="btn-rp btn-submit-rp">Pay and Place your Bid</button> -->
                 <button type="button" class="btn btn-primary" onclick="validateCheckboxAndPay()"
                 style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Pay and Place your Bid </button>
               </div>
         </form>
-    </div>
+    </div>      
 </div>
+<script>
+  function showTermsModal(event) {
+    event.preventDefault();
+  }
+</script>
 
 <!-- Terms and Conditions Modal -->
-<div class="terms-modal-overlay" id="termsModal" style="display: none;">
-    <div id="termsContent">
-        <button class="close-button-rp" id="tc-close">&times;</button>
-        <div class="modal-header-rp">
+<div class="modal-overlay" id="termsModalOverlay" style="display: none;">
+    <div id="termsModal">
+        <button class="close-button-rp" id="closeTermsModal">&times;</button>
+        <div class="terms-modal-header-rp">
             <h3>Terms and Conditions</h3>
         </div>
-        <div class="modal-body">
+        <div class="terms-content">
             <p>
-                <!-- Replace this with your actual terms and conditions content -->
-                Here are the Terms and Conditions for placing a bid.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Donec vehicula cursus risus id volutpat.
+              <?php echo $user_tc; ?>
             </p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="closeTermsBtn" 
+                style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Close </button>
         </div>
     </div>
 </div>
@@ -368,9 +385,7 @@ if ($success_message1 != '') {
 <!-- Razorpay Script -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  function showTermsModal() {
-        alert('Displaying Terms and Conditions...');
-    }
+
 
     // Function to validate checkbox and handle payment
     function validateCheckboxAndPay() {
@@ -691,9 +706,11 @@ if ($success_message1 != '') {
     const closeBtn = document.getElementById("closeModal");
     const cancelBtn = document.getElementById("cancelBtn");
     const form = document.getElementById("priceRequestForm");
-    const termsModal = document.getElementById("termsModal");
-    const tc_btn = document.getElementById("terms-btn");
-    const tc_close = document.getElementById("tc-close");
+    const termsModalOverlay = document.getElementById("termsModalOverlay");
+    const closeTermsModal = document.getElementById("closeTermsModal");
+    const closeTermsBtn = document.getElementById("closeTermsBtn");
+    const termsBtn = document.getElementById("terms-btn");
+
     // Open the modal
     function openModal() {
         modalOverlay.style.display = "flex";
@@ -707,25 +724,27 @@ if ($success_message1 != '') {
         form.reset();
     }
 
-    //open TC Modal
-    function openTCModal(){
-      termsModal.style.display = "flex";
-      document.body.style.overflow = "hidden";
-    }
+    // Show terms modal
+    termsBtn.addEventListener("click", function () {
+        termsModalOverlay.style.display = "flex";
+        document.body.style.overflow = "hidden";
+    });
 
-    // Close TC Modal
-    function closeTCModal() {
-        termsModal.style.display = "none";
+    // Close terms modal
+    closeTermsModal.addEventListener("click", closeTerms);
+    closeTermsBtn.addEventListener("click", closeTerms);
+
+    function closeTerms() {
+        termsModalOverlay.style.display = "none";
         document.body.style.overflow = "auto";
-        form.reset();
     }
+    
 
     // Attach event listeners for opening and closing modal
     requestBtn.addEventListener("click", openModal);
     closeBtn.addEventListener("click", closeModal);
     cancelBtn.addEventListener("click", closeModal);
-    tc_btn.addEventListener("click", openTCModal);
-    tc_close.addEventListener("click", closeTCModal);
+    
 
     modalOverlay.addEventListener("click", (e) => {
         if (e.target === modalOverlay) {

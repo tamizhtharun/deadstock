@@ -40,6 +40,36 @@ body {
   z-index: 1000;
 }
 
+/* terms modal link button */
+#terms-link{
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+
+}
+
+/* Terms Modal Styling */
+#termsModal {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.terms-content {
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.terms-content p {
+  margin-bottom: 1rem;
+}
+
 #priceRequestModal {
   background: white;
   border-radius: 8px;
