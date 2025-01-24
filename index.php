@@ -10,7 +10,7 @@
                 foreach ($result as $row) {
             ?>
                 <li class="category">
-                    <a class="category-link" href="product-category.php?id=<?php echo $row['tcat_id']; ?>&type=top-category">
+                    <a class="category-link" href="search-result.php?type=top-category&id=<?php echo $row['tcat_id']; ?>">
                         <img src="./assets/uploads/top-categories-images/<?php echo $row['photo']; ?>" width="30px" height="30px" alt="<?php echo $row['tcat_name']; ?>">
                         <span><?php echo $row['tcat_name'];?></span>
                     </a>
@@ -22,7 +22,7 @@
                             foreach ($result1 as $row1) {
                         ?>
                             <li class="subcategory">
-                                <a class="subcategory-link" href="product-category.php?id=<?php echo $row1['mcat_id']; ?>&type=mid-category">
+                                <a class="subcategory-link" href="search-result.php?type=mid-category&id=<?php echo $row1['mcat_id']; ?>">
                                     <?php echo $row1['mcat_name']; ?>
                                 </a>
                                 <ul class="sub-subcategories">
@@ -33,7 +33,7 @@
                                         foreach ($result2 as $row2) {
                                     ?>
                                         <li class="sub-subcategory">
-                                            <a href="product-category.php?id=<?php echo $row2['ecat_id']; ?>&type=end-category">
+                                            <a href="search-result.php?type=end-category&id=<?php echo $row2['ecat_id']; ?>">
                                                 <?php echo $row2['ecat_name']; ?>
                                             </a>
                                         </li>

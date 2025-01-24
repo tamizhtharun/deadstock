@@ -91,10 +91,10 @@ body {
 
 .search-header {
   margin-bottom: 2rem;
-  background-color: var(--card-grey);
+  /* background-color: var(--card-grey); */
   padding: 1rem;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.171);
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.171); */
   height: 100px;
 }
 
@@ -121,7 +121,7 @@ body {
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08);
   /* align-items: center;
   justify-content: center;
   text-align: center; */
@@ -144,7 +144,7 @@ body {
   height: 230px;
   vertical-align: middle;
   text-align: center;
-  background-color: #ebebeb;
+  background-color: #e4e4e4;
   padding: 10px;
   vertical-align: middle;
 }
