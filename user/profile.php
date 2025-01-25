@@ -1,7 +1,33 @@
-<?php require_once('header.php') ?> 
 <?php
+ob_start();
+require_once('header.php') ?> 
+<?php
+ob_start();
 include '../db_connection.php';
 
+// Check if user is logged in
+if (!isset($_SESSION['user_session']['id'])) {
+    header('Location: ../index.php');
+    exit;
+}
+
+
+// Add this near the top of the content area, just before the tab content
+if (isset($_GET['success']) || isset($_GET['error'])) {
+    $alertType = isset($_GET['success']) ? 'success' : 'error';
+    $alertMessage = isset($_GET['success']) ? htmlspecialchars($_GET['success']) : htmlspecialchars($_GET['error']);
+    echo "
+    <div class='premium-alert {$alertType}'>
+        {$alertMessage}
+        <button class='close-alert'>&times;</button>
+    </div>
+    <script>
+    document.querySelector('.close-alert').addEventListener('click', function() {
+        this.closest('.premium-alert').style.display = 'none';
+    });
+    </script>
+    ";
+}
 // Assuming user ID is stored in session
 $userId = $_SESSION['user_session']['id'];
 
@@ -70,6 +96,36 @@ try {
             ];
         }
     }
+
+    // Orders Query
+    $orderQuery = "
+        SELECT 
+            o.id, 
+            o.order_id, 
+            o.quantity, 
+            o.price, 
+            o.order_status, 
+            o.created_at,
+            p_name AS product_name,
+            p_featured_photo AS product_image,
+            o.order_type,
+            o.tracking_id,
+            o.payment_id
+        FROM 
+            tbl_orders o
+        JOIN 
+            tbl_product p ON o.product_id = p.id
+        WHERE 
+            o.user_id = :user_id
+        ORDER BY 
+            o.created_at DESC
+    ";
+    
+    $orderStmt = $pdo->prepare($orderQuery);
+    $orderStmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+    $orderStmt->execute();
+    
+    $orders = $orderStmt->fetchAll(PDO::FETCH_ASSOC);
     
 
     
@@ -78,7 +134,7 @@ try {
 }
 
 
-
+// print_r($addresses);
 // Set default avatar if no profile image is available
 $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
 $profileImage = !empty($user['profile_image']) 
@@ -117,22 +173,22 @@ $profileImage = !empty($user['profile_image'])
 //     ]
 // ];
 
-$orders = [
-    [
-        'id' => 'ORD-2024-001',
-        'date' => '2024-03-15',
-        'status' => 'Delivered',
-        'total' => 299.99,
-        'items' => 3
-    ],
-    [
-        'id' => 'ORD-2024-002',
-        'date' => '2024-03-10',
-        'status' => 'In Transit',
-        'total' => 149.50,
-        'items' => 2
-    ]
-];
+// $orders = [
+//     [
+//         'id' => 'ORD-2024-001',
+//         'date' => '2024-03-15',
+//         'status' => 'Delivered',
+//         'total' => 299.99,
+//         'items' => 3
+//     ],
+//     [
+//         'id' => 'ORD-2024-002',
+//         'date' => '2024-03-10',
+//         'status' => 'In Transit',
+//         'total' => 149.50,
+//         'items' => 2
+//     ]
+// ];
 
 
 $active_tab = $_GET['tab'] ?? 'profile';
@@ -248,7 +304,10 @@ $active_tab = $_GET['tab'] ?? 'profile';
                         <button class="button" onclick="showAddressForm()">+ Add New Address</button>
                     </div>
                     <div class="addresses">
-                        <?php foreach ($addresses as $address): ?>
+                       <?php if (empty($addresses)) {?>
+                            <p class="empty">No addresses found. Add a new address to get started.</p>
+                        <?php } else{
+                        foreach ($result as $address): ?>
                             <div class="address-card">
                                 <div class="address-type">
                                     <span class="badge"><?php echo htmlspecialchars($address['address_type']); ?></span>
@@ -269,7 +328,7 @@ $active_tab = $_GET['tab'] ?? 'profile';
                                     <?php endif; ?>
                                 </div>
                             </div>
-                        <?php endforeach; ?>
+                        <?php endforeach;} ?>
                     </div>
 
                 </div>
@@ -295,28 +354,43 @@ $active_tab = $_GET['tab'] ?? 'profile';
                 </div>
             <?php else: ?>
                 <div class="card">
-                    <h2>My Orders</h2>
-                    <div class="orders">
-                        <?php foreach ($orders as $order): ?>
-                            <div class="order-card">
-                                <div class="order-header">
-                                    <div>
-                                        <h3>Order <?php echo htmlspecialchars($order['id']); ?></h3>
-                                        <p class="date">Placed on <?php echo htmlspecialchars($order['date']); ?></p>
-                                    </div>
-                                    <span class="status <?php echo strtolower($order['status']); ?>">
-                                        <?php echo htmlspecialchars($order['status']); ?>
-                                    </span>
-                                </div>
-                                <div class="order-details">
-                                    <p><?php echo $order['items']; ?> items</p>
-                                    <p class="total">Total: $<?php echo number_format($order['total'], 2); ?></p>
-                                </div>
-                                <button class="button secondary">View Details</button>
-                            </div>
-                        <?php endforeach; ?>
+    <h2>My Orders</h2>
+    <div class="orders">
+        <?php if (empty($orders)): ?>
+            <p class="empty-state">No orders found.</p>
+        <?php else: ?>
+            <?php foreach ($orders as $order): ?>
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <h3>Order ID: <?php echo htmlspecialchars($order['order_id']); ?></h3>
+                            <p class="date">Placed on <?php echo date('M d, Y', strtotime($order['created_at'])); ?></p>
+                        </div>
+                        <!-- <span class="status">
+                            <?php echo htmlspecialchars($order['order_status']); ?>
+                        </span> -->
                     </div>
+                    <div class="order-details">
+                        <div class="product-info">
+                            <img src="../assets/uploads/product-photos/<?php echo htmlspecialchars($order['product_image']); ?>" alt="Product Image" class="product-thumbnail">
+                            <div class="product-details">
+                                <h3><?php echo htmlspecialchars($order['product_name']); ?></h3>
+                                <p>Quantity: <?php echo htmlspecialchars($order['quantity']); ?></p>
+                                <p>Order type: <?php if($order['order_type']='bid'){
+                                    echo "Bidded Order";
+                                }else{
+                                    echo "Direct Order";
+                                };?>
+                            </div>
+                        </div>
+                        <h2 class="total">Total: ₹<?php echo number_format($order['price'] * $order['quantity'], 2); ?></h2>
+                    </div>
+                    <button class="button secondary">View Details</button>
                 </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+</div>
             <?php endif; ?>
             
         </div>
@@ -358,15 +432,15 @@ $active_tab = $_GET['tab'] ?? 'profile';
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label>Address Type</label>
                             <div class="radio-group">
-                                <input type="radio" id="home" name="type" value="Home" checked>
-                                <label for="home">Home</label>
-                                <input type="radio" id="work" name="type" value="Work">
-                                <label for="work">Work</label>
+                                <input type="radio" id="home" name="type" value="Primary" checked>
+                                <label for="home">PRIMARY</label>
+                                <input type="radio" id="work" name="type" value="Secondary">
+                                <label for="work">SECONDARY</label>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" name="default">
@@ -381,6 +455,471 @@ $active_tab = $_GET['tab'] ?? 'profile';
                 </form>
             </div>
         </div>
+
+
+        <div class="order-details-modal" id="orderDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalProductName"></h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="order-grid">
+                <!-- <div>
+                    <img id="modalProductImage" src="" alt="Product Image" class="product-image">
+                </div> -->
+                <div>
+                <div class="progress-track">
+                <ul id="progressbar">
+                    <li class="step0 active " id="step1">Ordered</li>
+                    <li class="step0 active text-center" id="step2">Packed</li>
+                    <li class="step0 active text-right" id="step3">Shipped</li>
+                    <li class="step0 text-right" id="step4">Delivered</li>
+                </ul>
+            </div>
+                </div>
+                <div class="order-info">
+                    <div class="order-info-item">
+                        <strong>Order ID</strong>
+                        <span id="modalOrderId"></span>
+                    </div>
+                    <div class="order-info-item">
+                        <strong>Order Date</strong>
+                        <span id="modalOrderDate"></span>
+                    </div>
+                    <!-- <div class="order-info-item">
+                        <strong>Status</strong>
+                        <span id="modalOrderStatus"></span>
+                    </div> -->
+                    <!-- <div class="order-info-item">
+                        <strong>Product</strong>
+                        <span id="modalProductName"></span>
+                    </div> -->
+                    <div class="order-info-item">
+                        <strong>Quantity</strong>
+                        <span id="modalOrderQuantity"></span>
+                    </div>
+                    <div class="order-info-item">
+                        <strong>Unit Price</strong>
+                        <span id="modalUnitPrice"></span>
+                    </div>
+                    <div class="order-info-item">
+                        <strong>Payment Status</strong>
+                        <span id="paymentstatus"></span>
+                    </div>
+                    <div class="order-info-item">
+                        <strong>Tracking ID</strong>
+                        <span id="modalTrackingID"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="total-section">
+                <h3 style="color:#2E8B57">Total: <span id="modalTotal"></span></h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Status label and color mapping
+    const statusMap = {
+        'pending': { label: 'Pending', color: '#FFA500' },     // Orange
+        'processing': { label: 'Processing', color: '#1E90FF' }, // Dodger Blue
+        'shipped': { label: 'Shipped', color: '#4682B4' },     // Steel Blue
+        'delivered': { label: 'Delivered', color: '#2E8B57' }, // Sea Green
+        'canceled': { label: 'Cancelled', color: '#DC143C' }    // Crimson
+    };
+
+    const orderDetailsModal = document.getElementById('orderDetailsModal');
+    const closeModalBtn = document.querySelector('.modal-close');
+    const viewDetailsButtons = document.querySelectorAll('.button.secondary');
+
+    const orderDetails = <?php echo json_encode($orders); ?>;
+
+    viewDetailsButtons.forEach((button, index) => {
+        button.addEventListener('click', function() {
+            const order = orderDetails[index];
+            
+            document.getElementById('modalOrderId').textContent = order.order_id;
+            document.getElementById('modalOrderDate').textContent = new Date(order.created_at).toLocaleDateString();
+            
+            // Apply status label and color
+            // const status = order.order_status.toLowerCase();
+            // const statusInfo = statusMap[status] || { label: status, color: '#888' };
+            // const statusElement = document.getElementById('modalOrderStatus');
+            // statusElement.textContent = statusInfo.label;
+            // statusElement.style.color = statusInfo.color;
+            // statusElement.style.fontWeight = 'bold';
+            
+            // document.getElementById('modalProductImage').src = '../assets/uploads/product-photos/' + order.product_image;
+            document.getElementById('modalProductName').textContent = order.product_name;
+            document.getElementById('modalOrderQuantity').textContent = order.quantity;
+            document.getElementById('modalUnitPrice').textContent = '₹' + parseFloat(order.price).toFixed(2);
+            document.getElementById('paymentstatus').textContent = order.payment_id !== null ? 'Paid: ' + order.payment_id : 'Not Paid';
+            document.getElementById('modalTrackingID').textContent = order.tracking_id || 'Not Generated';
+            const subtotal = order.price * order.quantity;
+            document.getElementById('modalTotal').textContent = '₹' + subtotal.toFixed(2);
+
+            orderDetailsModal.classList.add('show');
+        });
+    });
+
+    closeModalBtn.addEventListener('click', function() {
+        orderDetailsModal.classList.remove('show');
+    });
+
+    window.addEventListener('click', function(event) {
+        if (event.target === orderDetailsModal) {
+            orderDetailsModal.classList.remove('show');
+        }
+    });
+});
+</script>
+
+<!-- tracking css -->
+ <style>
+#progressbar {
+    margin-bottom: 3vh;
+    overflow: hidden;
+    color: rgb(252, 103, 49);
+    padding-left: 0px;
+    margin-top: 3vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+#progressbar li {
+    list-style-type: none;
+    font-size: x-small;
+    width: 25%;
+    text-align: center;
+    position: relative;
+    font-weight: 400;
+    color: rgb(160, 159, 159);
+    z-index: 2;
+}
+
+#progressbar li:before {
+    content: "";
+    width: 15px;
+    height: 15px;
+    background: #ddd;
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto 10px;
+    position: relative;
+    z-index: 2;
+}
+
+#progressbar li:after {
+    content: '';
+    height: 2px;
+    background: #ddd;
+    position: absolute;
+    left: -50%;
+    right: 50%;
+    top: 7px;
+    z-index: 1;
+}
+
+#progressbar li:first-child:after {
+    left: 50%;
+}
+
+#progressbar li:last-child:after {
+    /* right: -50%; */
+}
+
+#progressbar li.active:before,
+#progressbar li.active:after {
+    background: rgb(0, 170, 20);
+}
+
+#progressbar li.active {
+    color: black;
+}
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const progressSteps = {
+        'pending': ['step1'],
+        'processing': ['step1', 'step2'],
+        'shipped': ['step1', 'step2', 'step3'],
+        'delivered': ['step1', 'step2', 'step3', 'step4'],
+        'canceled': ['step4'], // Separate style for canceled
+        'returned': ['step4']  // Separate style for returned
+    };
+
+    function updateProgressBar(status) {
+        const progressbar = document.getElementById('progressbar');
+        const steps = progressSteps[status.toLowerCase()] || [];
+
+        // Reset all steps
+        ['step1', 'step2', 'step3', 'step4'].forEach(stepId => {
+            const step = document.getElementById(stepId);
+            step.classList.remove('active');
+            step.classList.remove('canceled');
+            step.classList.remove('returned');
+        });
+
+        // Activate steps
+        steps.forEach(stepId => {
+            const step = document.getElementById(stepId);
+            step.classList.add('active');
+            
+            // Special styling for canceled or returned
+            if (status.toLowerCase() === 'canceled') {
+                step.classList.add('canceled');
+            } else if (status.toLowerCase() === 'returned') {
+                step.classList.add('returned');
+            }
+        });
+
+        // Update last step text based on status
+        const lastStep = document.getElementById('step4');
+        switch(status.toLowerCase()) {
+            case 'delivered':
+                lastStep.textContent = 'Delivered';
+                break;
+            case 'canceled':
+                lastStep.textContent = 'Cancelled';
+                break;
+            case 'returned':
+                lastStep.textContent = 'Returned';
+                break;
+            default:
+                lastStep.textContent = 'Delivered';
+        }
+    }
+
+    // Modify existing order details modal script to use the new updateProgressBar function
+    const viewDetailsButtons = document.querySelectorAll('.button.secondary');
+    const orderDetails = <?php echo json_encode($orders); ?>;
+
+    viewDetailsButtons.forEach((button, index) => {
+        button.addEventListener('click', function() {
+            const order = orderDetails[index];
+            
+            // Existing code...
+            
+            // Update progress bar based on order status
+            updateProgressBar(order.order_status || 'processing');
+        });
+    });
+});
+</script>
+
+<!-- Order Details Modal CSS -->
+<style>
+        .order-details-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .order-details-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.7);
+            transition: all 0.3s ease;
+            padding: 30px;
+        }
+
+        .order-details-modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .order-grid {
+            display: grid;
+            grid-template-columns: 2fr;
+            gap: 20px;
+        }
+
+        .product-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .order-info {
+            display: grid;
+            gap: 10px;
+        }
+
+        .order-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+        }
+
+        .order-info-item strong {
+            color: #555;
+        }
+
+        .total-section {
+            margin-top: 20px;
+            text-align: right;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .order-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+
+<style>
+.premium-alert {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.7);
+    opacity: 0;
+    z-index: 1000;
+    padding: 15px 40px 15px 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    max-width: 400px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    animation: slideIn 0.5s forwards;
+}
+
+@keyframes slideIn {
+    0% {
+        top: -100px;
+        transform: translateX(-50%) scale(0.7);
+        opacity: 0;
+    }
+    100% {
+        top: 20px;
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    0% {
+        top: 20px;
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        top: -100px;
+        transform: translateX(-50%) scale(0.7);
+        opacity: 0;
+    }
+}
+
+.premium-alert.success {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d6e9c6;
+}
+
+.premium-alert.error {
+    background-color: #f2dede;
+    color: #a94442;
+    border: 1px solid #ebccd1;
+}
+
+.premium-alert .close-alert {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.premium-alert .close-alert:hover {
+    opacity: 1;
+}
+.order-details .product-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.product-thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.empty-state {
+    text-align: center;
+    color: #888;
+    padding: 20px;
+}
+</style>
+
+
+
   <script>
     function showAddressForm() {
     const modal = document.getElementById('addressModal');
