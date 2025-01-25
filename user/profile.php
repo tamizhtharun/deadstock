@@ -1,7 +1,33 @@
-<?php require_once('header.php') ?> 
 <?php
+ob_start();
+require_once('header.php') ?> 
+<?php
+ob_start();
 include '../db_connection.php';
 
+// Check if user is logged in
+if (!isset($_SESSION['user_session']['id'])) {
+    header('Location: ../index.php');
+    exit;
+}
+
+
+// Add this near the top of the content area, just before the tab content
+if (isset($_GET['success']) || isset($_GET['error'])) {
+    $alertType = isset($_GET['success']) ? 'success' : 'error';
+    $alertMessage = isset($_GET['success']) ? htmlspecialchars($_GET['success']) : htmlspecialchars($_GET['error']);
+    echo "
+    <div class='premium-alert {$alertType}'>
+        {$alertMessage}
+        <button class='close-alert'>&times;</button>
+    </div>
+    <script>
+    document.querySelector('.close-alert').addEventListener('click', function() {
+        this.closest('.premium-alert').style.display = 'none';
+    });
+    </script>
+    ";
+}
 // Assuming user ID is stored in session
 $userId = $_SESSION['user_session']['id'];
 
@@ -78,7 +104,7 @@ try {
 }
 
 
-
+// print_r($addresses);
 // Set default avatar if no profile image is available
 $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
 $profileImage = !empty($user['profile_image']) 
@@ -248,7 +274,10 @@ $active_tab = $_GET['tab'] ?? 'profile';
                         <button class="button" onclick="showAddressForm()">+ Add New Address</button>
                     </div>
                     <div class="addresses">
-                        <?php foreach ($addresses as $address): ?>
+                       <?php if (empty($addresses)) {?>
+                            <p class="empty">No addresses found. Add a new address to get started.</p>
+                        <?php } else{
+                        foreach ($result as $address): ?>
                             <div class="address-card">
                                 <div class="address-type">
                                     <span class="badge"><?php echo htmlspecialchars($address['address_type']); ?></span>
@@ -269,7 +298,7 @@ $active_tab = $_GET['tab'] ?? 'profile';
                                     <?php endif; ?>
                                 </div>
                             </div>
-                        <?php endforeach; ?>
+                        <?php endforeach;} ?>
                     </div>
 
                 </div>
@@ -358,15 +387,15 @@ $active_tab = $_GET['tab'] ?? 'profile';
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label>Address Type</label>
                             <div class="radio-group">
-                                <input type="radio" id="home" name="type" value="Home" checked>
-                                <label for="home">Home</label>
-                                <input type="radio" id="work" name="type" value="Work">
-                                <label for="work">Work</label>
+                                <input type="radio" id="home" name="type" value="Primary" checked>
+                                <label for="home">PRIMARY</label>
+                                <input type="radio" id="work" name="type" value="Secondary">
+                                <label for="work">SECONDARY</label>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="form-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" name="default">
@@ -381,6 +410,87 @@ $active_tab = $_GET['tab'] ?? 'profile';
                 </form>
             </div>
         </div>
+
+
+
+<style>
+.premium-alert {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.7);
+    opacity: 0;
+    z-index: 1000;
+    padding: 15px 40px 15px 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    max-width: 400px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    animation: slideIn 0.5s forwards;
+}
+
+@keyframes slideIn {
+    0% {
+        top: -100px;
+        transform: translateX(-50%) scale(0.7);
+        opacity: 0;
+    }
+    100% {
+        top: 20px;
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    0% {
+        top: 20px;
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        top: -100px;
+        transform: translateX(-50%) scale(0.7);
+        opacity: 0;
+    }
+}
+
+.premium-alert.success {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d6e9c6;
+}
+
+.premium-alert.error {
+    background-color: #f2dede;
+    color: #a94442;
+    border: 1px solid #ebccd1;
+}
+
+.premium-alert .close-alert {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.premium-alert .close-alert:hover {
+    opacity: 1;
+}
+</style>
+
+
+
   <script>
     function showAddressForm() {
     const modal = document.getElementById('addressModal');

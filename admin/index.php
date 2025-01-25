@@ -279,7 +279,7 @@ $yesterday = date('Y-m-d', strtotime('-1 day'));
         max-width: none !important;
     }
 </style>
-<?php
+<!-- <?php
 // Get current UTC timestamp
 $utc_timestamp = time(); // UNIX timestamp in UTC
 
@@ -289,7 +289,7 @@ $utc_datetime = gmdate('Y-m-d H:i:s');
 // Store or use UTC timestamp for consistent time tracking
 echo "UTC Timestamp: " . $utc_timestamp;
 echo "UTC Datetime: " . $utc_datetime;
-?>
+?> -->
               
             
 		  

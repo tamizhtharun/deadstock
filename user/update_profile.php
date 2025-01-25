@@ -1,16 +1,26 @@
 <?php
 session_start();
-require '../db_connection.php'; // Include your database connection file
+require '../db_connection.php';
 
-// Ensure the user is logged in
 if (!isset($_SESSION['user_session']['id'])) {
-    die('Error: User not logged in.');
+    header('Location: profile.php?error=User not logged in');
+    exit;
 }
 
-// Get the user ID from the session
 $userId = $_SESSION['user_session']['id'];
 
-// Process the form submission
+function validateIndianPhoneNumber($phone) {
+    // Remove any non-digit characters
+    $phone = preg_replace('/\D/', '', $phone);
+    
+    // Check if the number is exactly 10 digits and starts with 6-9
+    return (
+        strlen($phone) === 10 && 
+        in_array($phone[0], ['6', '7', '8', '9'])
+    );
+}
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize and validate input fields
     $name = htmlspecialchars(trim($_POST['name']));
@@ -20,7 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validate mandatory fields
     if (empty($name) || empty($email) || empty($phone)) {
-        die('Error: All fields are required.');
+        header('Location: profile.php?error=All fields are required');
+        exit;
     }
 
     // Initialize variable for profile image path
@@ -34,7 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
     
         if (!in_array(strtolower($ext), $allowedExtensions)) {
-            die('Error: Invalid file format. Only JPG, JPEG, PNG, and GIF are allowed.');
+            header('Location: profile.php?error=Invalid file format. Only JPG, JPEG, PNG, and GIF are allowed');
+            exit;
         }
     
         // Generate the unique filename based on the user ID
@@ -53,11 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Save the relative path for storing in the database
             $profileImagePath = '/uploads/profile_photos/' . $final_name;
         } else {
-            die('Error: Failed to upload the profile photo.');
+            header('Location: profile.php?error=Failed to upload the profile photo');
+            exit;
         }
     }
     
-  
     // Prepare the SQL query
     try {
         // Start a transaction
@@ -94,13 +106,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Redirect to the profile page with a success message
-        header('Location: profile.php?message=Profile updated successfully');
+        header('Location: profile.php?success=Profile updated successfully');
         exit();
     } catch (PDOException $e) {
         // Rollback on error
         $pdo->rollBack();
-        die('Error: ' . $e->getMessage());
+        header('Location: profile.php?error=Failed to update profile');
+        exit();
     }
 } else {
-    die('Error: Invalid request method.');
+    header('Location: profile.php?error=Invalid request method');
+    exit();
 }

@@ -449,11 +449,11 @@ echo "</pre>";
                             <i class="fas fa-user"></i>
                             <span>Account</span>
                         </a>
-                        <a href="/orders" class="ds-menu-item"style="text-decoration: none !important">
+                        <a href="user/profile.php?tab=orders" class="ds-menu-item"style="text-decoration: none !important">
                             <i class="fas fa-shopping-bag"></i>
                             <span>Orders</span>
                         </a>
-                        <a href="/bidding" class="ds-menu-item"style="text-decoration: none !important">
+                        <a href="user/profile.php?tab=bidding" class="ds-menu-item"style="text-decoration: none !important">
                             <i class="fas fa-gavel"></i>
                             <span>Bidding</span>
                         </a>
