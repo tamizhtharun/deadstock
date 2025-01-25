@@ -85,7 +85,7 @@ try {
         }
     }
 
-    function updateOrderStatus($order_id, $new_status) {
+    function updateOrderStatus($order_id, $new_status, $tracking_id) {
         global $pdo;
 
         $valid_statuses = ['pending', 'processing', 'shipped', 'delivered', 'canceled'];
@@ -98,7 +98,7 @@ try {
             $pdo->beginTransaction();
 
             // Check if order exists and get current status
-            $stmt = $pdo->prepare("SELECT order_status FROM tbl_orders WHERE id = ?");
+            $stmt = $pdo->prepare("SELECT order_status, tracking_id FROM tbl_orders WHERE id = ?");
             $stmt->execute([$order_id]);
             $order = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -122,17 +122,31 @@ try {
                     $valid_transition = ($new_status === 'shipped' || $new_status === 'canceled');
                     break;
                 case 'shipped':
-                    $valid_transition = ($new_status === 'delivered' || $new_status === 'canceled');
+                    $valid_transition = ($new_status === 'delivered' || $new_status === 'canceled' || ($new_status === 'shipped' && $tracking_id));
                     break;
+            }
+
+            // Allow updating tracking ID for already shipped orders
+            if ($order['order_status'] === 'shipped' && $new_status === 'shipped' && $tracking_id) {
+                $valid_transition = true;
             }
 
             if (!$valid_transition) {
                 throw new Exception("Invalid status transition from {$order['order_status']} to {$new_status}");
             }
 
-            // Update order status
-            $stmt = $pdo->prepare("UPDATE tbl_orders SET order_status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
-            $result = $stmt->execute([$new_status, $order_id]);
+            // Update order status and tracking ID if provided
+            if ($new_status === 'shipped' && $tracking_id) {
+                $stmt = $pdo->prepare("UPDATE tbl_orders SET order_status = ?, tracking_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
+                $result = $stmt->execute([$new_status, $tracking_id, $order_id]);
+            } elseif ($order['order_status'] === 'shipped' && $new_status === 'shipped' && $tracking_id) {
+                // Only update tracking ID if the order is already shipped
+                $stmt = $pdo->prepare("UPDATE tbl_orders SET tracking_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
+                $result = $stmt->execute([$tracking_id, $order_id]);
+            } else {
+                $stmt = $pdo->prepare("UPDATE tbl_orders SET order_status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
+                $result = $stmt->execute([$new_status, $order_id]);
+            }
 
             if (!$result || $stmt->rowCount() === 0) {
                 throw new Exception('Failed to update order status in database');
@@ -146,8 +160,8 @@ try {
 
             $pdo->commit();
 
-            // Fetch the updated_at timestamp and processing_time
-            $stmt = $pdo->prepare("SELECT updated_at, processing_time FROM tbl_orders WHERE id = ?");
+            // Fetch the updated_at timestamp, processing_time, and tracking_id
+            $stmt = $pdo->prepare("SELECT updated_at, processing_time, tracking_id FROM tbl_orders WHERE id = ?");
             $stmt->execute([$order_id]);
             $updatedOrder = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -155,7 +169,8 @@ try {
                 'success' => true, 
                 'message' => 'Order status updated successfully', 
                 'new_status' => $new_status,
-                'processing_time' => $updatedOrder['processing_time']
+                'processing_time' => $updatedOrder['processing_time'],
+                'tracking_id' => $updatedOrder['tracking_id']
             ];
 
         } catch (Exception $e) {
@@ -218,6 +233,7 @@ try {
             throw $e;
         }
     }
+
     // Route actions based on GET parameters
     switch ($_GET['action']) {
         case 'send':
@@ -239,7 +255,8 @@ try {
             if (!isset($_GET['order_id']) || !isset($_GET['status'])) {
                 throw new Exception('Missing required parameters');
             }
-            $result = updateOrderStatus($_GET['order_id'], $_GET['status']);
+            $tracking_id = isset($_GET['tracking_id']) ? $_GET['tracking_id'] : null;
+            $result = updateOrderStatus($_GET['order_id'], $_GET['status'], $tracking_id);
             sendJsonResponse($result);
             break;
 
@@ -269,4 +286,3 @@ sendJsonResponse([
     'message' => 'An unexpected error occurred'
 ]);
 ?>
-
