@@ -172,7 +172,7 @@ if(!isset($_SESSION['admin_session'])) {
                         </a>
                     </li>
 
-										<li class="treeview <?php if( ($cur_page == 'bidding-order.php') ) {echo 'active';} ?>">
+										<li class="treeview <?php if( ($cur_page == 'bidding-order.php') || ($cur_page == 'direct-order.php') ) {echo 'active';} ?>">
                         <a href="#">
 												<i class="nav-icon fas fa-shopping-cart"></i>
                             <span>Order Management</span>
@@ -181,7 +181,7 @@ if(!isset($_SESSION['admin_session'])) {
 							              </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-circle-o"></i> Direct Orders</a></li>
+                            <li><a href="direct-order.php"><i class="fa fa-circle-o"></i> Direct Orders</a></li>
                             <li><a href="bidding-order.php"><i class="fa fa-circle-o"></i> Bid-Based Orders </a></li>
                         </ul>
                     </li>

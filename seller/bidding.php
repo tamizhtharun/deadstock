@@ -1,4 +1,5 @@
 <?php
+//bidding.php
 require_once('header.php');?>
 
 <link rel="stylesheet" href="css/timer.css">
@@ -14,12 +15,19 @@ $sendTime = $settingsResult['send_time'];
 $closeTime = $settingsResult['close_time'];
 
 // Set the query to get products with bid_status = 1 (sent to seller) and belonging to the logged-in seller
+// Set the query to get products with bids from today
 $query = "
     SELECT 
         p.id AS product_id,
         p.p_name,
         p.p_featured_photo,
-        (SELECT COUNT(*) FROM bidding WHERE product_id = p.id AND bid_status = 1) AS no_of_bids
+        (
+            SELECT COUNT(*) 
+            FROM bidding 
+            WHERE product_id = p.id 
+            AND bid_status = 1
+            AND DATE(bid_time) = CURDATE()
+        ) AS no_of_bids
     FROM 
         tbl_product p
     WHERE 
@@ -68,11 +76,14 @@ $remaining_seconds = $target_time - $current_time;
                 <div class="box-body table-responsive">
 
                     <!-- Display global send_time and close_time at the top of the table with red background -->
-                    <div class="alert alert-danger">
-                        <strong>Bidding Time:</strong> 
-                        Open: <?php echo $sendTime ? date('d-m-Y H:i:s', strtotime($sendTime)) : 'N/A'; ?>, 
-                        Close: <?php echo $closeTime ? date('d-m-Y H:i:s', strtotime($closeTime)) : 'N/A'; ?>
-                    </div>
+                    <!-- Conditionally display the bidding time alert only if there are bids -->
+                    <?php if (!empty($result)): ?>
+                        <div class="alert alert-danger">
+                            <strong>Bidding Time:</strong> 
+                            Open: <?php echo $sendTime ? date('d-m-Y H:i:s', strtotime($sendTime)) : 'N/A'; ?>, 
+                            Close: <?php echo $closeTime ? date('d-m-Y H:i:s', strtotime($closeTime)) : 'N/A'; ?>
+                        </div>
+                    <?php endif; ?>
 
                     <!-- Product Bidding Table -->
                     <table id="example1" class="table table-bordered table-hover table-striped">

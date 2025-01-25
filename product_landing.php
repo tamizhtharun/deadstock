@@ -163,9 +163,9 @@ if ($success_message1 != '') {
     <nav aria-label="breadcrumb" style="margin-left:6px;">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php" style="text-decoration: none;">Home</a></li>
-        <li class="breadcrumb-item"><a href="products_listing.php?id=<?php echo $tcat_id; ?>"
+        <li class="breadcrumb-item"><a href="search-result.php?type=top-category&id=<?php echo $tcat_id; ?>"
             style="text-decoration: none;"><?php echo htmlspecialchars($tcat_name); ?></a></li>
-        <li class="breadcrumb-item"><a href="products_listing.php?id=<?php echo $mcat_id; ?>"
+        <li class="breadcrumb-item"><a href="search-result.php?type=mid-category&id=<?php echo $mcat_id; ?>"
             style="text-decoration: none;"><?php echo htmlspecialchars($mcat_name); ?></a></li>
         <li class="breadcrumb-item active" aria-current="page" style="text-decoration: none;">
           <?php echo htmlspecialchars($ecat_name); ?>
