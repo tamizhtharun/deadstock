@@ -887,49 +887,6 @@ foreach ($result as $row) {
     $receive_email = $row['receive_email'];
     $receive_email_subject = $row['receive_email_subject'];
     $receive_email_thank_you_message = $row['receive_email_thank_you_message'];
-<<<<<<< HEAD
-    $forget_password_message = $row['forget_password_message'];
-    // $total_recent_post_footer        = $row['total_recent_post_footer'];
-    // $total_popular_post_footer       = $row['total_popular_post_footer'];
-    //  $total_recent_post_sidebar       = $row['total_recent_post_sidebar'];
-    //  $total_popular_post_sidebar      = $row['total_popular_post_sidebar'];
-    $total_featured_product_home = $row['total_featured_product_home'];
-    $total_latest_product_home = $row['total_latest_product_home'];
-    $total_popular_product_home = $row['total_popular_product_home'];
-    $meta_title_home = $row['meta_title_home'];
-    $meta_keyword_home = $row['meta_keyword_home'];
-    $meta_description_home = $row['meta_description_home'];
-    $banner_login = $row['banner_login'];
-    $banner_registration = $row['banner_registration'];
-    $banner_forget_password = $row['banner_forget_password'];
-    $banner_reset_password = $row['banner_reset_password'];
-    $banner_search = $row['banner_search'];
-    $banner_cart = $row['banner_cart'];
-    $banner_checkout = $row['banner_checkout'];
-    $banner_product_category = $row['banner_product_category'];
-    $featured_product_title = $row['featured_product_title'];
-    $featured_product_subtitle = $row['featured_product_subtitle'];
-    $latest_product_title = $row['latest_product_title'];
-    $latest_product_subtitle = $row['latest_product_subtitle'];
-    $popular_product_title = $row['popular_product_title'];
-    $popular_product_subtitle = $row['popular_product_subtitle'];
-    $newsletter_text = $row['newsletter_text'];
-    $paypal_email = $row['paypal_email'];
-    $bank_detail = $row['bank_detail'];
-    $before_head = $row['before_head'];
-    $after_body = $row['after_body'];
-    $before_body = $row['before_body'];
-    $home_service_on_off = $row['home_service_on_off'];
-    $home_welcome_on_off = $row['home_welcome_on_off'];
-    $home_featured_product_on_off = $row['home_featured_product_on_off'];
-    $home_latest_product_on_off = $row['home_latest_product_on_off'];
-    $home_popular_product_on_off = $row['home_popular_product_on_off'];
-    $newsletter_on_off = $row['newsletter_on_off'];
-    $quote_text = $row['quote_text'];
-    $quote_span_text = $row['quote_span_text'];
-    $user_tc = $row['user_tc'];
-    $seller_tc = $row['seller_tc'];
-=======
     $forget_password_message         = $row['forget_password_message'];
    // $total_recent_post_footer        = $row['total_recent_post_footer'];
    // $total_popular_post_footer       = $row['total_popular_post_footer'];
@@ -993,7 +950,6 @@ foreach ($result as $row) {
   $bid_send_time                        = $row['send_time'];
   $bid_close_time                       = $row['close_time'];
   $min_bid_percentage                   = $row['min_bid_pct'];
->>>>>>> 955a312a78bfb0ba6f7e07fcb80d83d4833fdc66
 
 }
 ?>
@@ -1170,10 +1126,6 @@ foreach ($result as $row) {
                                     </div>
                                 </div>
                             </div>
-<<<<<<< HEAD
-                        </form>
-                    </div>
-=======
                             </form>
 
                             <form class="form-horizontal" action="" method="POST">
@@ -1195,7 +1147,6 @@ foreach ($result as $row) {
                                 </div>
                             </form>
                         </div>
->>>>>>> 955a312a78bfb0ba6f7e07fcb80d83d4833fdc66
 
 
 
