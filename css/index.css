@@ -104,6 +104,9 @@
       gap: 0px !important;
 
     }
+    body{
+      margin-top: 50px !important;
+    }
 
     .category-box {
       flex: none;
@@ -155,7 +158,9 @@
     #notificationTrigger {
         display: none !important;
     }
-
+    .scrolling-text{
+      margin-top: 40px !important;
+    }
     .scrolling-text-content {
         white-space: nowrap;
         display: inline-block;
@@ -250,18 +255,56 @@
     }
   
     /* Adjust search bar for mobile */
+    .ds-search-section {
+      /* width: 300px !important; */
+      display: block !important;
+      /* z-index: 10 !important; */
+      margin-top: 100px !important;
+    }
     .ds-search-wrapper {
-      width: 100%;
+      align-self: center !important;
+      width: 300px !important;
+    }
+    .header{
+      height: 100px !important;
+      /* background-color: aqua !important; */
+    }
+    .ds-actions-section{
+      margin-left: -150px !important;
     }
   
     .ds-search-input {
       width: 100%;
-      padding: 10px 40px 10px 15px;
+      padding: 10px 40px 10px 40px !important;
     }
+    .banner{
+      margin-top: 300px !important;
+    }
+    .product-item{
+      max-width: 250px !important;
+      
+    }
+    .nav-link{
+      width: fit-content !important;
+      font-size: 10px !important;
+      height: fit-content !important;
+    }
+     .brand-logo{
+      width: 100px !important;
+      height: 100px !important;
+     }
+     .category-title{
+      max-width: 100px !important;
+     }
+     .section-header{
+      margin-bottom:0px !important;
+     }
+     .section-header a{
+      display: none !important;
+     }
   }
-  .banner{
-    margin-top: 300px !important;
-  }
+
+
   
   /* Small mobile devices */
   @media (max-width: 480px) {
@@ -296,6 +339,16 @@
   
     .brand-name {
       font-size: 14px;
+    }
+    .ds-actions-section{
+      margin-left: -300px !important;
+    }
+    .ds-search-section{
+      margin-left: 0px !important;
+    }
+    .ds-search-wrapper{
+      width: 300px !important;
+      margin-left: -40px !important;
     }
   }
 
