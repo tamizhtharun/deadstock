@@ -386,9 +386,9 @@ if ($success_message1 != '') {
                 <button type="button" class="btn btn-secondary" id="cancelBtn"
         style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Cancel </button>
                 <!-- Submit Request Button -->
-                <button type="button" onclick="openRazorpayModal()" class="btn-rp btn-submit-rp">Pay and Place your Bid</button>
-                <!-- <button type="button" class="btn btn-primary" onclick="validateCheckboxAndPay()"
-                style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Pay and Place your Bid </button> -->
+                <!-- <button type="button" onclick="openRazorpayModal()" class="btn-rp btn-submit-rp">Pay and Place your Bid</button> -->
+                <button type="button" class="btn btn-primary" onclick="validateCheckboxAndPay()"
+                style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Pay and Place your Bid </button>
               </div>
         </form>
     </div>      
