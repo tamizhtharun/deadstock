@@ -82,7 +82,13 @@
                         <td><?php echo ++$i; ?></td>
                         <td><img src="../assets/uploads/product-photos/<?php echo $row['p_featured_photo']; ?>" alt="Product Photo" style="width:70px;"></td>
                         <td><?php echo $row['p_name']; ?></td>
-                        <td><?php echo $row['seller_name'];?> ,<br><?php echo$row['seller_cname']; ?></td>
+                        <td>
+                            <?php echo $row['seller_name'];?> 
+                            ,<br><?php echo$row['seller_cname']; ?>
+                            <div>
+                                <a href="javascript:void(0);" onclick="openSellerModal(<?php echo $row['seller_id']; ?>)">View Seller Details</a>
+                            </div>
+                        </td>
                         <td><?php echo $row['no_of_bids']; ?></td>
                         <td><a href="view_bid.php?id=<?php echo $row['product_id']; ?>">View all Bids</a></td>
                     </tr>
@@ -104,6 +110,66 @@
     </div>
   </div>
 </section>
+<div id="sellerModal" class="seller-modal">
+    <div class="seller-modal-content">
+        <div class="seller-modal-header">
+            <h2>Seller Information Dashboard</h2>
+            <span class="seller-close">&times;</span>
+        </div>
+
+        <div class="seller-tabs">
+            <button class="seller-tab-button active" data-tab="profile">Profile</button>
+            <button class="seller-tab-button" data-tab="products">Products</button>
+            <button class="seller-tab-button" data-tab="bidding">Bidding</button>
+            <button class="seller-tab-button" data-tab="orders">Orders</button>
+        </div>
+
+        <div class="seller-tab-content">
+            <div id="profile" class="seller-tab-pane active">
+                <div class="seller-info-grid">
+                    <!-- Profile content will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <div id="products" class="seller-tab-pane">
+                <div class="seller-stats-grid">
+                    <!-- Product stats will be dynamically inserted here -->
+                </div>
+                <div class="seller-chart-container">
+                    <canvas id="productsChart"></canvas>
+                </div>
+            </div>
+
+            <div id="bidding" class="seller-tab-pane">
+                <div class="seller-stats-grid">
+                    <!-- Bidding stats will be dynamically inserted here -->
+                </div>
+                <div class="seller-chart-container">
+                    <canvas id="biddingChart"></canvas>
+                </div>
+            </div>
+
+            <div id="orders" class="seller-tab-pane">
+                <div class="seller-stats-grid">
+                    <!-- Order stats will be dynamically inserted here -->
+                </div>
+                <div class="seller-charts-grid">
+                    <div class="seller-chart-container-orders">
+                        <canvas id="ordersChart"></canvas>
+                    </div>
+                    <div class="seller-chart-container-orders">
+                        <canvas id="orderStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="seller-modal-footer">
+            <button class="seller-btn seller-secondary" id="closeSellerModal">Close</button>
+            <!-- <button class="seller-btn seller-primary">View Full Details</button> -->
+        </div>
+    </div>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -211,9 +277,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+
 </script>
 
 
 
+<script src="./js/bidding-order.js"></script>
 
 <?php require_once('footer.php'); ?>
