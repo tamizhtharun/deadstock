@@ -47,6 +47,31 @@ try {
     $stmt->execute([$seller_id]);
     $products = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    // Fetch product chart data grouped by date
+    $stmt = $pdo->prepare("
+        SELECT 
+            DATE(p_date) as date,
+            COUNT(*) as product_count
+        FROM tbl_product
+        WHERE seller_id = ?
+        GROUP BY DATE(p_date)
+        ORDER BY p_date ASC
+    ");
+    $stmt->execute([$seller_id]);
+    $product_chart_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $chart_labels = [];
+    $chart_values = [];
+    foreach ($product_chart_data as $row) {
+        $chart_labels[] = $row['date'];
+        $chart_values[] = (int)$row['product_count'];
+    }
+
+    $products_chart = [
+        'labels' => $chart_labels,
+        'values' => $chart_values
+    ];
+
     // Fetch bidding data
     $stmt = $pdo->prepare("
         SELECT 
@@ -59,6 +84,45 @@ try {
     ");
     $stmt->execute([$seller_id]);
     $bidding = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Fetch bidding chart data grouped by date
+    $stmt = $pdo->prepare("
+        SELECT 
+            DATE(bid_time) as date,
+            COUNT(*) as bid_count
+        FROM bidding b
+        JOIN tbl_product p ON b.product_id = p.id
+        WHERE p.seller_id = ?
+        GROUP BY DATE(bid_time)
+        ORDER BY bid_time ASC
+        LIMIT 7
+    ");
+    $stmt->execute([$seller_id]);
+    $bidding_chart_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $predefined_labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    $bidding_chart_values = array_fill(0, 7, 0);
+
+    $day_map = [
+        'Monday' => 0, 
+        'Tuesday' => 1, 
+        'Wednesday' => 2, 
+        'Thursday' => 3, 
+        'Friday' => 4, 
+        'Saturday' => 5, 
+        'Sunday' => 6
+    ];
+
+    foreach ($bidding_chart_data as $row) {
+        $day_name = date('l', strtotime($row['date']));
+        $index = $day_map[$day_name];
+        $bidding_chart_values[$index] = intval($row['bid_count']);
+    }
+
+    $bidding_chart = [
+        'labels' => $predefined_labels,
+        'values' => $bidding_chart_values
+    ];
 
     // Fetch orders data
     $stmt = $pdo->prepare("
@@ -74,22 +138,63 @@ try {
 
     $success_rate = $orders['total'] > 0 ? ($orders['delivered'] / $orders['total']) * 100 : 0;
 
-    // Prepare chart data (using placeholder data for simplicity)
-    $products_chart = [
-        'labels' => ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6'],
-        'values' => [5, 8, 12, 8, 10, 5]
+    // Maintain predefined labels and map actual data
+    $stmt = $pdo->prepare("
+        SELECT 
+            DAYNAME(created_at) as day_name,
+            COUNT(*) as order_count
+        FROM tbl_orders
+        WHERE seller_id = ? AND created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
+        GROUP BY day_name
+    ");
+    $stmt->execute([$seller_id]);
+    $orders_chart_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $predefined_labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    $orders_chart_values = array_fill(0, 7, 0);
+
+    $day_map = [
+        'Monday' => 0, 
+        'Tuesday' => 1, 
+        'Wednesday' => 2, 
+        'Thursday' => 3, 
+        'Friday' => 4, 
+        'Saturday' => 5, 
+        'Sunday' => 6
     ];
-    $bidding_chart = [
-        'labels' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-        'values' => [25, 35, 28, 45, 38, 42, 35]
-    ];
+
+    foreach ($orders_chart_data as $row) {
+        $index = $day_map[$row['day_name']];
+        $orders_chart_values[$index] = intval($row['order_count']);
+    }
+
     $orders_chart = [
-        'labels' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-        'values' => [18, 25, 20, 30, 22]
+        'labels' => $predefined_labels,
+        'values' => $orders_chart_values
     ];
+
+    // Fetch order status chart data
+    $stmt = $pdo->prepare("
+        SELECT 
+            order_status,
+            COUNT(*) as status_count
+        FROM tbl_orders
+        WHERE seller_id = ?
+        GROUP BY order_status
+    ");
+    $stmt->execute([$seller_id]);
+    $order_status_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $order_status_labels = [];
+    $order_status_values = [];
+    foreach ($order_status_data as $row) {
+        $order_status_labels[] = ucfirst($row['order_status']);
+        $order_status_values[] = (int)$row['status_count'];
+    }
+
     $order_status_chart = [
-        'labels' => ['Processing', 'Shipped', 'Delivered', 'Canceled'],
-        'values' => [34, 85, 170, 15]
+        'labels' => $order_status_labels,
+        'values' => $order_status_values
     ];
 
     $response = [
