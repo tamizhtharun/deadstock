@@ -417,7 +417,20 @@ if ($success_message1 != '') {
         </div>
     </div>
 </div>
-
+<script>
+  function checkExistingBid(productId) {
+    return fetch('check_bid_status.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            product_id: productId
+        })
+    })
+    .then(response => response.json());
+}
+</script>
 
 <!-- Razorpay Script -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
