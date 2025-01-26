@@ -182,29 +182,29 @@ if (!isset($_SESSION['seller_session'])) {
 					</li>
 
 
-					<li class="treeview <?php if (($cur_page == 'order.php')) {
+					<!-- <li class="treeview <?php if (($cur_page == 'order.php')) {
 						echo 'active';
 					} ?>">
 						<a href="order.php">
 							<i class="fa fa-sticky-note"></i> <span>Order Management</span>
 						</a>
-					</li>
+					</li> -->
 
 
-					<li class="treeview <?php if (($cur_page == 'order.php')) {
+					<!-- <li class="treeview <?php if (($cur_page == 'order.php')) {
 						echo 'active';
 					} ?>">
 						<a href="revenue.php">
 							<i class="fa fa-rupee"></i> <span>Revenue Management</span>
 						</a>
-					</li>
+					</li> -->
 
 
-					<li class="treeview <?php if (($cur_page == 'slider.php')) {
+					<li class="treeview <?php if (($cur_page == 'bidding.php')) {
 						echo 'active';
 					} ?>">
-						<a href="slider.php">
-							<i class="fa fa-picture-o"></i> <span>Manage Sliders</span>
+						<a href="bidding.php">
+							<i class="fa fa-gavel"></i> <span>Bid Management</span>
 						</a>
 					</li>
 					<!-- Icons to be displayed on Shop -->

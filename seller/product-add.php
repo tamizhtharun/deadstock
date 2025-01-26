@@ -440,67 +440,75 @@ if (isset($_POST['form1'])) {
 					<div class="box box-info">
 						<div class="box-body">
 
-							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">Top Level Category Name
-									<span>*</span></label>
-								<div class="col-sm-4">
-									<select name="tcat_id" class="form-control select2 top-cat">
-										<option value="">Select Top Level Category</option>
-										<?php
-										$statement = $pdo->prepare("SELECT * FROM tbl_top_category ORDER BY tcat_name ASC");
-										$statement->execute();
-										$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-										foreach ($result as $row) {
-											?>
-											<option value="<?php echo $row['tcat_id']; ?>"><?php echo $row['tcat_name']; ?>
-											</option>
-											<?php
-										}
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Top Level Category Name <span>*</span></label>
+							<div class="col-sm-4">
+								<select name="tcat_id" class="form-control select2 top-cat">
+									<option value="">Select Top Level Category</option>
+									<?php
+									$statement = $pdo->prepare("SELECT * FROM tbl_top_category ORDER BY tcat_name ASC");
+									$statement->execute();
+									$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+									foreach ($result as $row) {
 										?>
-									</select>
-								</div>
+										<option value="<?php echo $row['tcat_id']; ?>"><?php echo $row['tcat_name']; ?>
+										</option>
+										<?php
+									}
+									?>
+								</select>
 							</div>
-							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">Mid Level Category Name
-									<span>*</span></label>
-								<div class="col-sm-4">
-									<select name="mcat_id" class="form-control select2 mid-cat">
-										<option value="">Select Mid Level Category</option>
-									</select>
-								</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Mid Level Category Name <span>*</span></label>
+							<div class="col-sm-4">
+								<select name="mcat_id" class="form-control select2 mid-cat">
+									<option value="">Select Mid Level Category</option>
+								</select>
 							</div>
-							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">End Level Category Name
-									<span>*</span></label>
-								<div class="col-sm-4">
-									<select name="ecat_id" class="form-control select2 end-cat">
-										<option value="">Select End Level Category</option>
-									</select>
-								</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">End Level Category Name</label>
+							<div class="col-sm-4">
+								<select name="ecat_id" class="form-control select2 end-cat">
+									<option value="">Select End Level Category</option>
+								</select>
 							</div>
-							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">Brand <span>*</span></label>
-								<div class="col-sm-4">
-									<select name="product_brand" class="form-control select2 brand-cat">
-										<option value="">Select Brand</option>
-										<!-- Add options for brands here -->
-									</select>
-									<!-- <input type="text" name="other_brand" class="form-control" id="other-brand" style="margin-top:10px;" placeholder="Please specify brand"> -->
-								</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Brand <span>*</span></label>
+							<div class="col-sm-4">
+								<select name="product_brand" class="form-control select2 brand-cat">
+									<option value="">Select Brand</option>
+									<!-- Add options for brands here -->
+									<?php
+									$statement = $pdo->prepare("SELECT * FROM tbl_brands ORDER BY brand_name ASC");
+									$statement->execute();
+									$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+									foreach ($result as $row) {
+										?>
+										<option value="<?php echo $row['brand_id']; ?>"><?php echo $row['brand_name']; ?>
+										</option>
+										<?php
+									}
+									?>
+									<option value="Others">Others</option>
+								</select>
+								<!-- <input type="text" name="other_brand" class="form-control" id="other-brand" style="margin-top:10px;" placeholder="Please specify brand"> -->
 							</div>
-							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">Product Name <span>*</span></label>
-								<div class="col-sm-4">
-									<input type="text" name="p_name" class="form-control">
-								</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Product Name <span>*</span></label>
+							<div class="col-sm-4">
+								<input type="text" name="p_name" class="form-control">
 							</div>
-							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">Product Catalogue (PDF)
-									<span>*</span></label>
-								<div class="col-sm-4" style="padding-top:4px;">
-									<input type="file" name="product_catalogue">
-								</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Product Catalogue (PDF) <span>*</span></label>
+							<div class="col-sm-4" style="padding-top:4px;">
+								<input type="file" name="product_catalogue">
 							</div>
+						</div>
 
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Key <span>*</span></label>

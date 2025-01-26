@@ -2,7 +2,7 @@
 
 <section class="content-header">
     <div class="content-header-left">
-        <h1>Bid Based Orders</h1>
+        <h1>My Orders</h1>
     </div>
 </section>
 
@@ -39,10 +39,13 @@
                             <th width="50">#</th>
                             <th width="120">Order ID</th>
                             <th width="200">Product</th>
-                            <th width="200">Customer</th>
-                            <th width="150">Amount</th>
-                            <th width="250">Delivery Address</th>
+                            <!-- <th width="200">Customer</th> -->
+                            <th width="150">Price</th>
+                            <th width="150">Quantity</th>
+
+                            <!-- <th width="250">Delivery Address</th> -->
                             <th width="120">Status</th>
+                            <th width="150">Processing Time</th>
                             <th width="150">Actions</th>
                         </tr>
                     </thead>
@@ -57,6 +60,7 @@
                             o.quantity,
                             o.order_status,
                             o.created_at,
+                            o.processing_time,
                             p.p_name,
                             p.p_featured_photo,
                             u.username,
@@ -89,7 +93,8 @@
                         foreach ($result as $row): 
                             $i++;
                     ?>
-                    <tr class="bid-order-row" data-date="<?php echo date('Y-m-d', strtotime($row['created_at'])); ?>" data-status="<?php echo $row['order_status']; ?>"data-order-id="<?php echo $row['id']; ?>">  <!-- Add this line -->                            <td><?php echo $i; ?></td>
+                    <tr class="bid-order-row" data-date="<?php echo date('Y-m-d', strtotime($row['created_at'])); ?>" data-status="<?php echo $row['order_status']; ?>" data-order-id="<?php echo $row['id']; ?>">
+                            <td><?php echo $i; ?></td>
                             <td>
                                 <strong><?php echo $row['order_id']; ?></strong><br>
                                 <small class="text-muted"><?php echo date('M d, Y', strtotime($row['created_at'])); ?></small>
@@ -106,17 +111,19 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>
+                                <!-- <td>
                                     <strong><?php echo $row['username']; ?></strong><br>
                                     <?php echo $row['email']; ?><br>
                                     <?php echo $row['phone_number']; ?>
-                                </td>
+                                </td> -->
                                 <td>
                                     Price: ₹<?php echo number_format($row['price'], 2); ?><br>
-                                    Qty: <?php echo $row['quantity']; ?><br>
-                                    <!-- <strong>Total: ₹<?php echo number_format($row['price'] * $row['quantity'], 2); ?></strong> -->
                                 </td>
                                 <td>
+                                    Qty: <?php echo $row['quantity']; ?><br>
+                                </td>
+
+                                <!-- <td>
                                     <?php if(!empty($row['address'])): ?>
                                         <strong><?php echo $row['full_name']; ?></strong><br>
                                         <?php echo $row['delivery_phone']; ?><br>
@@ -125,48 +132,36 @@
                                     <?php else: ?>
                                         <span class="text-muted">Address not available</span>
                                     <?php endif; ?>
-                                </td>
+                                </td> -->
                                 <td class="text-center">
                                     <span class="status-badge status-<?php echo $row['order_status']; ?>">
                                         <?php echo ucfirst($row['order_status']); ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <?php if($row['order_status'] !== 'delivered' && $row['order_status'] !== 'canceled'): ?>
+                                    <?php
+                                    if (!empty($row['processing_time'])) {
+                                        echo date('Y-m-d H:i:s', strtotime($row['processing_time']));
+                                    } else {
+                                        echo '-';
+                                    }
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php if($row['order_status'] === 'pending'): ?>
                                         <div class="action-buttons">
-                                            <?php
-                                                $next_statuses = [];
-                                                switch($row['order_status']) {
-                                                    case 'pending':
-                                                        $next_statuses = ['processing'];
-                                                        break;
-                                                    case 'processing':
-                                                        $next_statuses = ['shipped', 'canceled'];
-                                                        break;
-                                                    case 'shipped':
-                                                        $next_statuses = ['delivered', 'canceled'];
-                                                        break;
-                                                }
-                                                foreach($next_statuses as $next_status):
-                                            ?>
-                                                <button 
-                                                    class="btn-status-update" 
-                                                    onclick="updateOrderStatus(<?php echo $row['id']; ?>, '<?php echo $next_status; ?>')"
-                                                >
-                                                    <?php
-                                                        $icon = '';
-                                                        switch($next_status) {
-                                                            case 'processing': $icon = 'fa-cog'; break;
-                                                            case 'shipped': $icon = 'fa-truck'; break;
-                                                            case 'delivered': $icon = 'fa-check-circle'; break;
-                                                            case 'canceled': $icon = 'fa-times-circle'; break;
-                                                        }
-                                                    ?>
-                                                    <i class="fa <?php echo $icon; ?>"></i>
-                                                    <?php echo ucfirst($next_status); ?>
-                                                </button>
-                                            <?php endforeach; ?>
+                                            <button 
+                                                class="btn-status-update" 
+                                                onclick="updateOrderStatus(<?php echo $row['id']; ?>, 'processing')"
+                                            >
+                                                <i class="fa fa-cog"></i>
+                                                Processing
+                                            </button>
                                         </div>
+                                    <?php elseif($row['order_status'] !== 'delivered' && $row['order_status'] !== 'canceled'): ?>
+                                        <button class="btn-status-update disabled">
+                                            <i class="fa fa-lock"></i> Status Updated
+                                        </button>
                                     <?php else: ?>
                                         <button class="btn-status-update disabled">
                                             <i class="fa fa-lock"></i> No Actions Available
@@ -200,8 +195,6 @@
         <img id="modalImage" class="modal-content">
     </div>
 </div>
-
-
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -291,9 +284,7 @@ function updateOrderStatus(orderId, newStatus) {
     })
     .then(response => response.json())
     .then(data => {
-        // console.log('Server response:', data);
         if (data.success) {
-            // Find the row using the order ID instead of status
             const row = document.querySelector(`tr[data-order-id="${orderId}"]`);
             
             if (row) {
@@ -309,21 +300,22 @@ function updateOrderStatus(orderId, newStatus) {
                 // Update action buttons
                 const actionCell = row.querySelector('.action-buttons');
                 if (actionCell) {
-                    if (newStatus === 'delivered' || newStatus === 'canceled') {
-                        actionCell.innerHTML = `
-                            <button class="btn-status-update disabled">
-                                <i class="fa fa-lock"></i> No Actions Available
-                            </button>
-                        `;
-                    } else {
-                        // Refresh the page to show updated status and buttons
-                        location.reload();
-                    }
+                    actionCell.innerHTML = `
+                        <button class="btn-status-update disabled">
+                            <i class="fa fa-lock"></i> Status Updated
+                        </button>
+                    `;
+                }
+
+                // Update processing time
+                const processingTimeCell = row.querySelector('td:nth-child(8)');
+                if (processingTimeCell && newStatus === 'processing') {
+                    const now = new Date();
+                    processingTimeCell.textContent = now.toISOString().slice(0, 19).replace('T', ' ');
                 }
             }
             
             alert('Order status updated successfully!');
-            // Refresh the page to ensure everything is in sync
             location.reload();
         } else {
             throw new Error(data.message || 'Failed to update order status');
@@ -380,6 +372,61 @@ document.addEventListener('DOMContentLoaded', function() {
         e.stopPropagation();
     });
 });
+
+function sendOrder(button) {
+    if (!confirm('Are you sure you want to send this order to seller?')) {
+        return;
+    }
+
+    const data = button.dataset;
+    
+    // Construct URL without order_id if it's empty
+    const url = `process_bid_order.php?action=send&bid_id=${data.bidId}&product_id=${data.productId}&user_id=${data.userId}&seller_id=${data.sellerId}&quantity=${data.quantity}&price=${data.price}` + 
+               (data.orderId ? `&order_id=${data.orderId}` : '');
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const row = button.closest('tr');
+                const statusCell = row.querySelector('.order-status');
+                const actionCell = row.querySelector('.action-column');
+
+                statusCell.innerHTML = '<span class="status-badge status-pending">Pending</span>';
+                row.setAttribute('data-status', 'pending');
+
+                actionCell.innerHTML = `
+                    <div class="action-buttons">
+                        <button 
+                            class="btn-status-update" 
+                            onclick="updateOrderStatus(${data.order_id}, 'processing')"
+                        >
+                            <i class="fa fa-cog"></i>
+                            Processing
+                        </button>
+                        <button 
+                            class="btn-status-update" 
+                            onclick="updateOrderStatus(${data.order_id}, 'canceled')"
+                        >
+                            <i class="fa fa-times-circle"></i>
+                            Canceled
+                        </button>
+                    </div>
+                `;
+
+                alert('Order sent to seller successfully.');
+            } else {
+                alert('Failed to send order: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to send order. Please try again.');
+        });
+}
+
+
 </script>
 
 <?php require_once('footer.php'); ?>
+

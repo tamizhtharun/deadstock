@@ -146,8 +146,8 @@ if (isset($_POST['form_bid_settings'])) {
 if (isset($_POST['form_min_bid'])) {
     $min_bid_percentage = trim($_POST['min_bid_pct']);
     $max_percentage = 100;
-    if($min_bid_percentage >= $max_percentage){
-        $error_message = 'Minimum bid percentage must be less than 100%.';
+    if ($min_bid_percentage < 0 || $min_bid_percentage > $max_percentage) {
+        $error_message = 'Minimum bid percentage must be less than 100% and Greater than 0%.';
     }else{
         $statement = $pdo->prepare("UPDATE bid_settings SET min_bid_pct=? WHERE id=1");
         $statement->execute([$min_bid_percentage]);
@@ -1999,9 +1999,7 @@ foreach ($result as $row) {
                                 </div>
                             </div>
                             </form>
-                        </div>
-
--->
+                        </div> -->
 
                 </div>
             </div>

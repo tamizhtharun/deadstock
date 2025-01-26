@@ -4,7 +4,7 @@ if($_POST['id'])
 {
 	$id = $_POST['id'];
 	
-	$statement = $pdo->prepare("SELECT * FROM tbl_brands WHERE tcat_id=?");
+	$statement = $pdo->prepare("SELECT * FROM tbl_brands ");
 	$statement->execute(array($id));
 	$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 	?><option value="">Select Brand</option><?php						

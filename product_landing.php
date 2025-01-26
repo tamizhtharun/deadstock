@@ -8,6 +8,8 @@ require_once('config.php');
 
 
 <?php
+
+
 if (isset($_SESSION['user_session']['id'])) {
   $user_id = $_SESSION['user_session']['id'];
 }
@@ -82,6 +84,17 @@ $statement->execute(array($p_total_view, $_REQUEST['id']));
 
 ?>
 
+<!-- for terms and conditions -->
+<?php
+  $statement = $pdo->prepare("SELECT user_tc FROM tbl_settings");
+  $statement->execute();
+  $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+  if($result){
+      $user_tc = $result['user_tc'];
+      }else{
+        $user_tc = "No terms and conditions available.";
+     }?> 
 
 <?php
 $error_message1 = '';
