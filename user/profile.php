@@ -30,16 +30,6 @@ if (isset($_GET['success']) || isset($_GET['error'])) {
 }
 // Assuming user ID is stored in session
 $userId = $_SESSION['user_session']['id'];
-function getBidStatusLabel($status) {
-    $statusLabels = [
-        '0' => 'Submitted',
-        '1' => 'Seen By Seller',
-        '2' => 'Accepted By Seller',
-        '3' => 'Not Accepted by Seller',
-        '4' => 'Seen By Seller'
-    ];
-    return $statusLabels[$status] ?? 'Unknown Status';
-}
 
 try {
     // Query to fetch user information and addresses
@@ -137,17 +127,24 @@ try {
     
     $orders = $orderStmt->fetchAll(PDO::FETCH_ASSOC);
     
-    //bid query
-    $biddingQuery = "
+
+    
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
+
+$biddingQuery = "
     SELECT 
         b.bid_id, 
         b.bid_price, 
         b.bid_quantity, 
         b.bid_time, 
         b.bid_status,
+        b.payment_id AS bid_payment_id,
+        b.refund_id AS bid_refund_id,
         p.p_name AS product_name,
         p.p_featured_photo AS product_image,
-        p.p_current_price AS reserve_price
+        p.p_current_price AS current_price
     FROM 
         bidding b
     JOIN 
@@ -163,11 +160,6 @@ $biddingStmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
 $biddingStmt->execute();
 
 $bids = $biddingStmt->fetchAll(PDO::FETCH_ASSOC);
-
-    
-} catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
 
 
 // print_r($addresses);
@@ -379,37 +371,36 @@ $active_tab = $_GET['tab'] ?? 'profile';
         <?php else: ?>
             <?php foreach ($bids as $bid): ?>
                 <div class="bidding-card">
-                    <div class="bidding-product-image">
-                        <img src="../assets/uploads/product-photos/<?php echo htmlspecialchars($bid['product_image']); ?>" 
-                             alt="<?php echo htmlspecialchars($bid['product_name']); ?>" 
-                             class="product-thumbnail">
+                    <div class="bidding-header">
+                        <h3><?php echo htmlspecialchars($bid['product_name']); ?></h3>
+                        <?php 
+    $statusLabels = [
+        0 => 'Submitted',
+        1 => 'Seen by seller',
+        2 => 'Accepted by seller',
+        3 => 'Not approved by seller (Please retry with different price)',
+        4 => 'Seen by seller'
+    ];
+
+    $bidStatusLabel = isset($statusLabels[$bid['bid_status']]) ? $statusLabels[$bid['bid_status']] : 'N/A';
+?>
+                        <span class="badge <?php echo $bid['bid_status'] == 2 ? 'active' : 'inactive'; ?>">
+    <?php echo $bidStatusLabel; ?>
+</span>
                     </div>
-                    <div class="bidding-content">
-                        <div class="bidding-header">
-                            <h3><?php echo htmlspecialchars($bid['product_name']); ?></h3>
-                            <span class="badge <?php 
-                                echo (getBidStatusLabel($bid['bid_status']) === 'Accepted By Seller') ? 'active' : 'inactive'; 
-                            ?>">
-                                <?php echo htmlspecialchars(getBidStatusLabel($bid['bid_status'])); ?>
-                            </span>
-                        </div>
-                        <div class="bidding-details">
-                            <p>Your Bid: ₹<?php echo number_format($bid['bid_price'], 2); ?></p>
-                            <!-- <p>Current Bid: ₹<?php echo number_format($bid['current_bid'], 2); ?></p> -->
-                            <p>Bid Quantity: <?php echo htmlspecialchars($bid['bid_quantity']); ?></p>
-                            <p>Bid Time: <?php echo date('M d, Y H:i', strtotime($bid['bid_time'])); ?></p>
-                        </div>
-                        <button class="button view-bid-details" data-bid-id="<?php echo $bid['bid_id']; ?>">View Details</button>
+                    <div class="bidding-details">
+                        <p>Your Bid: ₹<?php echo number_format($bid['bid_price'], 2); ?></p>
+                        <p>Quantity: <?php echo htmlspecialchars($bid['bid_quantity']); ?></p>
+                        <p>Bid Time: <?php echo date('M d, Y H:i', strtotime($bid['bid_time'])); ?></p>
                     </div>
+                    <button class="button view-bid-details" data-bid-id="<?php echo $bid['bid_id']; ?>">View Details</button>
                 </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
     </div>
-</div>
-
-            <?php elseif ($active_tab === 'orders'): ?>
-
-    <div class="card">
+    <?php elseif ($active_tab === 'orders'): ?>
+                <div class="card">
     <h2>My Orders</h2>
     <div class="orders">
         <?php if (empty($orders)): ?>
@@ -441,7 +432,7 @@ $active_tab = $_GET['tab'] ?? 'profile';
                         </div>
                         <h2 class="total">Total: ₹<?php echo number_format($order['price'] * $order['quantity'], 2); ?></h2>
                     </div>
-                    <button type="button" class="button secondary">View Details</button>
+                    <button class="button secondary">View Details</button>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>
@@ -574,7 +565,131 @@ $active_tab = $_GET['tab'] ?? 'profile';
         </div>
     </div>
 
+    <!-- bid details model  -->
+     <!-- Bid Details Modal -->
+<div class="bid-details-modal" id="bidDetailsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalBidProductName"></h2>
+            <button class="modal-close bid-modal-close">&times;</button>
+        </div>
+        <div class="bid-details-grid">
+            <!-- <div class="bid-image-container">
+                <img id="modalBidProductImage" src="" alt="Product Image" class="product-image">
+            </div> -->
+            <div class="bid-info">
+                <div class="bid-info-item">
+                    <strong>Bid ID</strong>
+                    <span id="modalBidId"></span>
+                </div>
+                <div class="bid-info-item">
+                    <strong>Bid Time</strong>
+                    <span id="modalBidTime"></span>
+                </div>
+                <div class="bid-info-item">
+                    <strong>Bid Status</strong>
+                    <span id="modalBidStatus"></span>
+                </div>
+                <div class="bid-info-item">
+                    <strong>Current Product Price</strong>
+                    <span id="modalCurrentPrice"></span>
+                </div>
+                <div class="bid-info-item">
+                    <strong>Your Bid Price</strong>
+                    <span id="modalBidPrice"></span>
+                </div>
+                <div class="bid-info-item">
+                    <strong>Bid Quantity</strong>
+                    <span id="modalBidQuantity"></span>
+                </div>
+                <div class="bid-info-item">
+                    <strong>Payment ID</strong>
+                    <span id="bidpaymentID"></span>
+                </div>
+                <div class="bid-info-item">
+                    <strong>Refund ID</strong>
+                    <span id="bidrefundID"></span>
+                </div>
+                <div class="bid-info-item">
+                    <strong>Total Bid Value</strong>
+                    <span id="modalTotalBidValue"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
     <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const bidDetails = <?php echo json_encode($bids); ?>;
+    const bidDetailsModal = document.getElementById('bidDetailsModal');
+    const viewBidDetailsButtons = document.querySelectorAll('.view-bid-details');
+    const closeBidModalBtn = document.querySelector('.bid-modal-close');
+
+
+    viewBidDetailsButtons.forEach((button, index) => {
+    button.addEventListener('click', function() {
+        // Ensure we have bid details for this index
+        if (index < bidDetails.length) {
+            const bid = bidDetails[index];
+            
+            document.getElementById('modalBidProductName').textContent = bid.product_name || 'N/A';
+            document.getElementById('modalBidId').textContent = bid.bid_id || 'N/A';
+            document.getElementById('modalBidTime').textContent = bid.bid_time ? new Date(bid.bid_time).toLocaleString() : 'N/A';
+            
+            // Add label for bid_status
+            const statusLabels = {
+                0: 'Submitted',
+                1: 'Seen by seller',
+                2: 'Accepted by seller',
+                3: 'Not approved by seller (Please retry with different price)',
+                4: 'Seen by seller'
+            };
+
+            const statusElement = document.getElementById('modalBidStatus');
+            const bidStatusLabel = statusLabels[bid.bid_status] || 'N/A';
+            statusElement.textContent = bidStatusLabel;
+            statusElement.className = 'badge ' + (bid.bid_status && bid.bid_status == 2 ? 'active' : 'inactive');
+            
+            document.getElementById('modalCurrentPrice').textContent = bid.current_price ? '₹' + parseFloat(bid.current_price).toFixed(2) : 'N/A';
+            document.getElementById('modalBidPrice').textContent = bid.bid_price ? '₹' + parseFloat(bid.bid_price).toFixed(2) : 'N/A';
+            document.getElementById('modalBidQuantity').textContent = bid.bid_quantity || 'N/A';
+            document.getElementById('modalTotalBidValue').textContent = bid.bid_price && bid.bid_quantity 
+                ? '₹' + (bid.bid_price * bid.bid_quantity).toFixed(2) 
+                : 'N/A';
+                document.getElementById('bidpaymentID').textContent = bid.bid_payment_id;
+                document.getElementById('bidrefundID').textContent = bid.bid_refund_id || 'N/A';
+            
+            // const productImageElement = document.getElementById('modalBidProductImage');
+            // productImageElement.src = bid.product_image 
+            //     ? '../assets/uploads/product-photos/' + bid.product_image 
+            //     : '../path/to/default/image.jpg';
+            
+            // Explicitly add 'show' class
+            bidDetailsModal.classList.add('show');
+            bidDetailsModal.style.display = 'flex';
+        } else {
+            console.error('No bid details found for index:', index);
+        }
+    });
+});
+
+    // Close modal functionality
+    closeBidModalBtn.addEventListener('click', function() {
+        bidDetailsModal.classList.remove('show');
+        bidDetailsModal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === bidDetailsModal) {
+            bidDetailsModal.classList.remove('show');
+            bidDetailsModal.style.display = 'none';
+        }
+    });
+});
+
+
 document.addEventListener('DOMContentLoaded', function() {
     // Status label and color mapping
     const statusMap = {
@@ -629,71 +744,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-
-document.addEventListener('DOMContentLoaded', function() {
-    const bidDetails = <?php echo json_encode($bids); ?>;
-    const viewBidDetailsButtons = document.querySelectorAll('.view-bid-details');
-
-    // Modify the existing order details modal or create a new modal for bid details
-    const bidDetailsModal = document.createElement('div');
-    bidDetailsModal.classList.add('order-details-modal');
-    bidDetailsModal.id = 'bidDetailsModal';
-    document.body.appendChild(bidDetailsModal);
-
-    viewBidDetailsButtons.forEach((button, index) => {
-        button.addEventListener('click', function() {
-            const bid = bidDetails[index];
-            
-            bidDetailsModal.innerHTML = `
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2>${bid.product_name} - Bid Details</h2>
-                        <button class="modal-close">&times;</button>
-                    </div>
-                    <div class="order-info">
-                        <div class="order-info-item">
-                            <strong>Bid ID</strong>
-                            <span>${bid.bid_id}</span>
-                        </div>
-                        <div class="order-info-item">
-                            <strong>Bid Price</strong>
-                            <span>₹${parseFloat(bid.bid_price).toFixed(2)}</span>
-                        </div>
-                        <div class="order-info-item">
-                            <strong>Bid Quantity</strong>
-                            <span>${bid.bid_quantity}</span>
-                        </div>
-                        <div class="order-info-item">
-                            <strong>Bid Time</strong>
-                            <span>${new Date(bid.bid_time).toLocaleString()}</span>
-                        </div>
-                        <div class="order-info-item">
-                            <strong>Bid Status</strong>
-                            <span><?php echo htmlspecialchars(getBidStatusLabel($bid['bid_status'])); ?></span>
-                        </div>
-                        <div class="order-info-item">
-                            <strong>Actual Price</strong>
-                            <span>₹${parseFloat(bid.reserve_price).toFixed(2)} / Unit</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            bidDetailsModal.classList.add('show');
-            
-            const closeModalBtn = bidDetailsModal.querySelector('.modal-close');
-            closeModalBtn.addEventListener('click', function() {
-                bidDetailsModal.classList.remove('show');
-            });
-            
-            window.addEventListener('click', function(event) {
-                if (event.target === bidDetailsModal) {
-                    bidDetailsModal.classList.remove('show');
-                }
-            });
-        });
-    });
-});
 </script>
 
 <!-- tracking css -->
@@ -703,7 +753,7 @@ document.addEventListener('DOMContentLoaded', function() {
     overflow: hidden;
     color: rgb(252, 103, 49);
     padding-left: 0px;
-    margin-top: 3vh;
+    margin-top: 1vh;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -942,50 +992,130 @@ document.addEventListener('DOMContentLoaded', function() {
                 grid-template-columns: 1fr;
             }
         }
-.bidding-card {
+
+        .bid-details-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 15px;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    
 }
 
-.bidding-product-image {
-    /* flex-shrink: 0; */
-    width: 150px;
-    height: 150px;
-    vertical-align: middle;
-
+.bid-details-modal.show {
+    opacity: 1;
+    visibility: visible;
 }
 
-.bidding-product-image img {
-    width: auto;
-    object-fit: cover;
-    /* border-radius: 8px; */
-    /* self-align: center; */
-    text-align: center !important;
-    vertical-align: middle;
-
+.bid-details-modal .modal-content {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.7);
+    transition: all 0.3s ease;
+    padding: 30px;
 }
 
-.bidding-content {
-    flex-grow: 1;
+.bid-details-modal.show .modal-content {
+    transform: scale(1);
 }
 
-.bidding-details {
-    margin: 10px 0;
+.bid-details-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solidrgb(224, 224, 224);
+    /* padding-bottom: 15px; */
+    /* margin-bottom: 20px; */
 }
-/* .view-bid-details {
-    background-color:rgb(179, 179, 179);
-    color: white;
+
+.bid-details-modal .modal-header h2 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.bid-details-modal .modal-close {
+    background: none;
     border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
+    font-size: 1.5rem;
+    color: #888;
     cursor: pointer;
-    transition: background-color 0.3s;
-} */
+    transition: color 0.3s ease;
+}
+
+.bid-details-modal .modal-close:hover {
+    color: #333;
+}
+
+.bid-details-grid {
+    display: grid;
+    /* grid-template-columns: 1fr 1fr; */
+    gap: 20px;
+}
+
+.bid-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bid-image-container .product-image {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.bid-info {
+    display: grid;
+    gap: 10px;
+}
+
+.bid-info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+}
+
+.bid-info-item strong {
+    color: #555;
+}
+
+.badge.active {
+    background-color: #28a745;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.badge.inactive {
+    background-color: #6c757d;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+@media (max-width: 600px) {
+    .bid-details-grid {
+        grid-template-columns: 1fr;
+    }
+}
     </style>
 
 
