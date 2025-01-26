@@ -582,7 +582,7 @@ document.addEventListener('DOMContentLoaded', function() {
     overflow: hidden;
     color: rgb(252, 103, 49);
     padding-left: 0px;
-    margin-top: 3vh;
+    margin-top: 1vh;
     display: flex;
     justify-content: space-between;
     align-items: center;
