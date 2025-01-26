@@ -218,81 +218,110 @@ if ($success_message1 != '') {
           </div>
         </aside>
         <main class="col-lg-6">
-          <class="ps-lg-3">
-            <h4 class="title text-dark">
-              <?php echo $p_name; ?>
-            </h4>
-            <div class="d-flex flex-row my-3">
-              <div class="text-warning mb-1 me-2">
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-half"></i>
-                <span class="ms-1">
-                  4.5
-                </span>
-              </div>
-              <span class="text-muted"><i class="bi bi-basket mx-1"></i><?php echo $p_qty; ?></span>
-              <span class="text-success ms-2">In stock</span>
+  <dclass="ps-lg-3">
+    <h4 class="title text-dark">
+      <?php echo $p_name; ?>
+    </h4>
+    <div class="d-flex flex-row my-3">
+      <span class="text-muted"><i class="bi bi-basket mx-1"></i>
+        <?php if ($p_qty > 10): ?>
+          <span class="text-success ms-2">In stock</span>
+        <?php elseif ($p_qty < 10): ?>
+          <span class="text-warning ms-2">Only Few left</span>
+        <?php else: ?>
+          <span class="text-danger ms-2">Out of stock</span>
+        <?php endif; ?>
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <span class="h5 mb-0" style="color: #000;">₹<?php echo $p_current_price; ?></span>
+        <span class="h6 mb-0" style="color: #9E9E9E; text-decoration: line-through;">₹<?php echo $p_old_price; ?></span>
+        <?php
+        if ($p_old_price > 0) {
+          $discount = (($p_old_price - $p_current_price) / $p_old_price) * 100;
+          echo '<span class="badge bg-success">' . round($discount) . '% OFF</span>';
+        }
+        ?>
+      </div>
+    </div>
+
+    <div class="product-grid">
+            <!-- Headers -->
+            <div class="material-suitability-icon p">P</div>
+            <div class="material-suitability-icon m">M</div>
+            <div class="material-suitability-icon k">K</div>
+            <div class="material-suitability-icon n">N</div>
+            <div class="material-suitability-icon s">S</div>
+            <div class="material-suitability-icon h">H</div>
+            <div class="material-suitability-icon o">O</div>
+
+            <?php
+
+            $product_id = isset($_GET['id']) ? $_GET['id'] : '';
+            $query = "SELECT P, M, K, N, S, H, O FROM tbl_key WHERE id = ?";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([$product_id]);
+
+            // Fetch the result
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $dot_values = [
+              'P' => isset($row['P']) ? $row['P'] : 0,
+              'M' => isset($row['M']) ? $row['M'] : 0,
+              'K' => isset($row['K']) ? $row['K'] : 0,
+              'N' => isset($row['N']) ? $row['N'] : 0,
+              'S' => isset($row['S']) ? $row['S'] : 0,
+              'H' => isset($row['H']) ? $row['H'] : 0,
+              'O' => isset($row['O']) ? $row['O'] : 0
+            ];
+            ?>
+
+            <!-- Indicator dots -->
+
+            <!-- For each alphabet, we check its value and assign the correct class -->
+            <div
+              class="material-suitability-icon Rec p <?php echo ($dot_values['P'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['P']); ?>">
             </div>
-
-            <div class="mb-3">
-              <div class="d-flex align-items-center gap-2 mb-1">
-                <span class="h5 mb-0" style="color: #000;">₹<?php echo $p_current_price; ?></span>
-                <span class="h6 mb-0"
-                  style="color: #9E9E9E; text-decoration: line-through;">₹<?php echo $p_old_price; ?></span>
-                <?php
-                // Calculate discount if applicable
-                if ($p_old_price > 0) {
-                  $discount = (($p_old_price - $p_current_price) / $p_old_price) * 100;
-                  // Round the discount to 0 decimal places and display
-                  echo '<span class="badge bg-success">' . round($discount) . '% OFF</span>';
-                }
-                ?>
-              </div>
+            <div
+              class="material-suitability-icon Rec m <?php echo ($dot_values['M'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['M']); ?>">
             </div>
+            <div
+              class="material-suitability-icon Rec k <?php echo ($dot_values['K'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['K']); ?>">
+            </div>
+            <div
+              class="material-suitability-icon Rec n <?php echo ($dot_values['N'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['N']); ?>">
+            </div>
+            <div
+              class="material-suitability-icon Rec s <?php echo ($dot_values['S'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['S']); ?>">
+            </div>
+            <div
+              class="material-suitability-icon Rec h <?php echo ($dot_values['H'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['H']); ?>">
+            </div>
+            <div
+              class="material-suitability-icon Rec o <?php echo ($dot_values['O'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['O']); ?>">
+            </div>
+          </div>
+    
 
-            <div class="product-grid">
-                  <!-- Headers -->
-                  <div class="material-suitability-icon p">P</div>
-                  <div class="material-suitability-icon m">M</div>
-                  <div class="material-suitability-icon k">K</div>
-                  <div class="material-suitability-icon n">N</div>
-                  <div class="material-suitability-icon s">S</div>
-                  <div class="material-suitability-icon h">H</div>
-                  <div class="material-suitability-icon o">O</div>
+    <!-- Key Explanation -->
+    <div class="key-button-container">
+  <button class="material-info-btn">
+    Key (explanation of symbols)
+    <span class="info-icon">ⓘ</span>
+  </button>
 
-                  <!-- Indicator dots -->
-                  <div class="material-suitability-icon Rec p icon-rank-2"></div>
-                  <div class="material-suitability-icon Rec m icon-rank-2"></div>
-                  <div class="material-suitability-icon Rec k icon-rank-1"></div>
-                  <div class="material-suitability-icon Rec n icon-rank-2"></div>
-                  <div class="material-suitability-icon Rec s"></div>
-                  <div class="material-suitability-icon Rec h"></div>
-                  <div class="material-suitability-icon Rec o"></div> 
-                </div>
-
-
-                <!-- Key Explanation -->
-                <div class="icon-explanation">
-                  <div class="key-button-container">
-                    <button class="material-info-btn">
-                      Key (explanation of symbols)
-                      <span class="info-icon">ⓘ</span>
-                    </button>
-                    <div class="l-info-icons-container">
-                      <div class="info-row">
-                        <div class="icon small icon-rank-2"></div>
-                        <div class="description">Main application</div>
-                      </div>
-                      <div class="info-row">
-                        <div class="icon small icon-rank-1"></div>
-                        <div class="description">Additional application</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+  <!-- The dropdown container that will show/hide -->
+  <div class="l-info-icons-container">
+  <div class="info-row">
+  <div class="material-suitability-icon Rec icon-rank-2"> </div>
+    <div class="description">Main application</div>
+  </div>
+  <div class="info-row">
+  <div class="material-suitability-icon Rec icon-rank-1"> </div>
+    <div class="description">Additional application</div>
+    </div>
+</div>
            
 
             <hr />
