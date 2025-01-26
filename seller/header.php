@@ -84,7 +84,7 @@ if (!isset($_SESSION['seller_session'])) {
 			</a>
 
 			<nav class="navbar navbar-static-top d-flex justify-content-between align-items-center">
-				<div class="d-flex align-items-center">
+				<div class="d-flex align-items-center profile-type">
 					<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
 						<span class="sr-only">Toggle navigation</span>
 					</a>
