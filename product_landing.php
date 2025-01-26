@@ -780,6 +780,12 @@ if ($success_message1 != '') {
 
   <!-- Script For Request Price Process -->
   <script>
+document.querySelector('.material-info-btn').addEventListener('click', function() {
+  var container = document.querySelector('.key-button-container');
+  container.classList.toggle('show-info');  // Toggle the visibility of the container
+});
+
+
     const modalOverlay = document.getElementById("modalOverlay");
     const requestBtn = document.getElementById("requestPriceBtn");
     const closeBtn = document.getElementById("closeModal");
