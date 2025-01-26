@@ -1,309 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .key-button-container {
+      margin-bottom: 10px;
+    }
 
-    <style>
-        /* Product Icons */
-        .product-icons {
-            margin-bottom: 1rem;
-        }
+    /* Initially hide the dropdown content */
+    .l-info-icons-container {
+      display: none;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+      margin-top: 10px;
+    }
 
-        .product-icon {
-            width: 40px;
-            height: 40px;
-            border: 1px solid #ccc;
-            padding: 4px;
-        }
+    /* When active, show the dropdown content */
+    .key-button-container.show-info .l-info-icons-container {
+      display: block;
+      max-height: 1000px; 
+      padding: 10px 0;
+    }
 
-        /* Material Suitability Grid */
-        .product-materials {
-            margin-top: 1rem;
-        }
-
-        .description {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 30px);
-            gap: 1px;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .material-suitability-icon {
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        /* Header cells */
-        .material-suitability-icon.header {
-            background-color: #f0f0f0;
-        }
-
-        .p {
-            background-color: #E6F3FF;
-        }
-
-        .m {
-            background-color: #FFFDE6;
-        }
-
-        .k {
-            background-color: #FFE6F7;
-        }
-
-        .n {
-            background-color: #E6FFE6;
-        }
-
-        .s {
-            background-color: #E6E6E6;
-        }
-
-        .h {
-            background-color: #E6F3FF;
-        }
-
-        .o {
-            background-color: #F0F0F0;
-        }
-
-        /* Suitability indicators */
-        .material-suitability-icon.Rec {
-            position: relative;
-            border: 1px solid #ddd;
-        }
-
-        .material-suitability-icon.Rec::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background-color: #000;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .material-suitability-icon.icon-rank-2::before {
-            box-shadow: -6px 0 0 #000;
-        }
-
-        .key-dropdown {
-            display: none;
-            padding: 10px;
-            border: 1px solid #ddd;
-            margin-top: 5px;
-            background: white;
-        }
-
-        .key-dropdown.show {
-            display: block;
-        }
-
-        /* Key explanation section */
-        .icon-explentation {
-            margin-top: 1rem;
-        }
-
-        .material-info-btn {
-            background: none;
-            border: none;
-            color: #000;
-            text-decoration: underline;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        .material-info-btn::after {
-            content: '';
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            background: url('path-to-info-icon.svg') no-repeat center;
-            margin-left: 4px;
-        }
-
-        /* Info icons for print */
-        .l-info-icons-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .icon.small {
-            width: 20px;
-            height: 20px;
-            position: relative;
-        }
-
-        .icon.small::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background-color: #000;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .icon.small.icon-rank-2::before {
-            box-shadow: -6px 0 0 #000;
-        }
-
-        .material-suitability-icon.Rec.p {
-            background-color: #E6F3FF;
-        }
-
-        .material-suitability-icon.Rec.m {
-            background-color: #FFFDE6;
-        }
-
-        .material-suitability-icon.Rec.k {
-            background-color: #FFE6F7;
-        }
-
-        .material-suitability-icon.Rec.n {
-            background-color: #E6FFE6;
-        }
-
-        .material-suitability-icon.Rec.s {
-            background-color: #E6E6E6;
-        }
-
-        .material-suitability-icon.Rec.h {
-            background-color: #E6F3FF;
-        }
-
-        .material-suitability-icon.Rec.o {
-            background-color: #F0F0F0;
-        }
-
-        /* Style for the dropdown container */
-        .icon-explentation {
-            position: relative;
-        }
-
-        .material-info-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px 0;
-        }
-
-        .show-on-print {
-            display: none;
-            margin-top: 8px;
-            padding: 12px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .show-on-print.visible {
-            display: block;
-        }
-
-        .l-info-icons-container {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .l-info-icons-container .icon.small {
-            width: 20px;
-            height: 20px;
-            border: 1px solid #ddd;
-            position: relative;
-        }
-
-        .l-info-icons-container .description {
-            margin: 0;
-            font-weight: normal;
-        }
-    </style>
+    .info-row {
+      margin: 5px 0;
+    }
+  </style>
+  <title>Dropdown Example</title>
 </head>
-
 <body>
+  <div class="key-button-container">
+    <button class="material-info-btn">
+      Key (explanation of symbols)
+      <span class="info-icon">ⓘ</span>
+    </button>
 
-
-    <div class="info-area">
-        <div class="description">WPP10G</div>
-        <div class="product-grid">
-            <!-- Headers -->
-            <div class="material-suitability-icon p">P</div>
-            <div class="material-suitability-icon m">M</div>
-            <div class="material-suitability-icon k">K</div>
-            <div class="material-suitability-icon n">N</div>
-            <div class="material-suitability-icon s">S</div>
-            <div class="material-suitability-icon h">H</div>
-            <div class="material-suitability-icon o">O</div>
-
-            <!-- Indicator dots -->
-            <div class="material-suitability-icon Rec p icon-rank-2"></div>
-            <div class="material-suitability-icon Rec m icon-rank-2"></div>
-            <div class="material-suitability-icon Rec k icon-rank-1"></div>
-            <div class="material-suitability-icon Rec n"></div>
-            <div class="material-suitability-icon Rec s"></div>
-            <div class="material-suitability-icon Rec h"></div>
-            <div class="material-suitability-icon Rec o"></div>
-        </div>
-
-        <button class="key-button">
-            Key (explanation of symbols)
-            <span class="info-icon">ⓘ</span>
-        </button>
-
-        <div class="key-dropdown">
-            <div class="explanation-item">
-                <span class="material-suitability-icon Rec icon-rank-2" style="width: 20px; height: 20px;"></span>
-                <span>Main application</span>
-            </div>
-            <div class="explanation-item">
-                <span class="material-suitability-icon Rec icon-rank-1" style="width: 20px; height: 20px;"></span>
-                <span>Additional application</span>
-            </div>
-        </div>
+    <div class="l-info-icons-container">
+      <div class="info-row">
+        <div class="icon small icon-rank-2"></div>
+        <div class="description">Main application</div>
+      </div>
+      <div class="info-row">
+        <div class="icon small icon-rank-1"></div>
+        <div class="description">Additional application</div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        const keyButton = document.querySelector('.key-button');
-        const keyDropdown = document.querySelector('.key-dropdown');
-
-        // Toggle dropdown visibility
-        keyButton.addEventListener('click', () => {
-            keyDropdown.classList.toggle('show');
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (event) => {
-            if (!keyButton.contains(event.target) && !keyDropdown.contains(event.target)) {
-                keyDropdown.classList.remove('show');
-            }
-        });
-    </script>
-
+  <script>
+    document.querySelector('.material-info-btn').addEventListener('click', function() {
+      var container = document.querySelector('.key-button-container');
+      container.classList.toggle('show-info');
+    });
+  </script>
 </body>
-
 </html>

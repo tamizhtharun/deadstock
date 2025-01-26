@@ -102,13 +102,13 @@ if (isset($_POST['form1'])) {
 		$pdf_final_name = 'product-catalogue-' . $ai_id . '.pdf';
 		move_uploaded_file($pdf_path_tmp, '../assets/uploads/product-catalogues/' . $pdf_final_name);
 
-		if (isset($_FILES['photo']["name"]) && isset($_FILES['photo']["tmp_name"])) {
+		if (isset($_FILES['photo']['name']) && isset($_FILES['photo']['tmp_name'])) {
 			$photo = array();
-			$photo = $_FILES['photo']["name"];
+			$photo = $_FILES['photo']['name'];
 			$photo = array_values(array_filter($photo));
 
 			$photo_temp = array();
-			$photo_temp = $_FILES['photo']["tmp_name"];
+			$photo_temp = $_FILES['photo']['tmp_name'];
 			$photo_temp = array_values(array_filter($photo_temp));
 
 			$statement = $pdo->prepare("SHOW TABLE STATUS LIKE 'tbl_product_photo'");
@@ -132,7 +132,7 @@ if (isset($_POST['form1'])) {
 
 			if (isset($final_name1)) {
 				for ($i = 0; $i < count($final_name1); $i++) {
-					$statement = $pdo->prepare("INSERT INTO tbl_product_photo (photo,p_id) VALUES (?,?)");
+					$statement = $pdo->prepare("INSERT INTO tbl_product_photo (photo, p_id) VALUES (?, ?)");
 					$statement->execute(array($final_name1[$i], $ai_id));
 				}
 			}
@@ -160,9 +160,9 @@ if (isset($_POST['form1'])) {
 			product_brand,
 			p_date
 		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-			   
+
 		$statement->execute(array(
-			$seller_id, 
+			$seller_id,
 			$_POST['p_name'],
 			$_POST['p_old_price'],
 			$_POST['p_current_price'],
@@ -173,8 +173,6 @@ if (isset($_POST['form1'])) {
 			$_POST['p_condition'],
 			$_POST['p_return_policy'],
 			0, // Assuming total view is 0 initially
-
-			0,
 			$_POST['ecat_id'],
 			$pdf_final_name,
 			$product_brand,
@@ -183,211 +181,482 @@ if (isset($_POST['form1'])) {
 
 		$success_message = 'Product is added successfully, wait for your administrator approval.';
 	}
+
+
+
+	$selected_values = [];
+	$keys = ['P', 'M', 'K', 'N', 'S', 'H', 'O']; // Define the keys (radio groups)
+
+	foreach ($keys as $key) {
+		if (isset($_POST[$key])) {
+			$selected_values[$key] = $_POST[$key]; // Save the selected radio value
+		} else {
+			// Optionally set a default if needed
+			$selected_values[$key] = null;
+		}
+	}
+
+	// If validation is successful
+
+	// Here you can insert or update data to your database. Below is an example.
+
+	$statement = $pdo->prepare("INSERT INTO tbl_key (
+		id,  -- Foreign key referencing tbl_product.id
+		P, M, K, N, S, H, O
+	) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+
+	$statement->execute([
+		$ai_id,                  // Use the correct product ID
+		$selected_values['P'],   // Value selected for P
+		$selected_values['M'],   // Value selected for M
+		$selected_values['K'],   // Value selected for K
+		$selected_values['N'],   // Value selected for N
+		$selected_values['S'],   // Value selected for S
+		$selected_values['H'],   // Value selected for H
+		$selected_values['O'],   // Value selected for O
+	]);
 }
+
+
 ?>
-<!-- Rest of the code remains the same -->
-
-<section class="content-header">
-	<div class="content-header-left">
-		<h1>Add Product</h1>
-	</div>
-	<div class="content-header-right">
-		<a href="product.php" class="btn btn-primary btn-sm">View All</a>
-	</div>
-</section>
 
 
-<section class="content">
+<!DOCTYPE html>
+<html lang="en">
 
-	<div class="row">
-		<div class="col-md-12">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-			<?php if ($error_message): ?>
-				<div class="callout callout-danger">
+	<!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
+	<!-- <script src="https://cdn.tailwindcss.com"></script>  -->
+	<style>
+		.grid-wrapper {
+			display: flex;
+			align-items: flex-start;
+		}
 
-					<p>
-						<?php echo $error_message; ?>
-					</p>
-				</div>
-			<?php endif; ?>
+		.product-grid {
+			display: grid;
+			grid-template-columns: repeat(7, 30px);
+			/* 7 columns for each category */
+			gap: 1px;
+			/* Space between cells */
+			margin-bottom: 1rem;
 
-			<?php if ($success_message): ?>
-				<div class="callout callout-success">
+			/* Space below the grid */
+		}
 
-					<p><?php echo $success_message; ?></p>
-				</div>
-			<?php endif; ?>
+		.material-suitability-icon-container {
+			text-align: center;
+			margin: 5px;
+		}
 
-			<form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+		/* Common styles for icons */
+		.material-suitability-icon {
+			width: 30px;
+			height: 30px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 14px;
+			/* Text size inside headers */
+			font-weight: bold;
+			/* Text emphasis */
+			border: 1px solid #ddd;
+			margin-bottom: 5px;
+			/* Border for better visibility */
+		}
 
-				<div class="box box-info">
-					<div class="box-body">
+		/* Header styles */
+		.material-suitability-icon.header {
+			background-color: #f0f0f0;
+			/* Neutral background for headers */
+		}
 
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Top Level Category Name <span>*</span></label>
-							<div class="col-sm-4">
-								<select name="tcat_id" class="form-control select2 top-cat">
-									<option value="">Select Top Level Category</option>
-									<?php
-									$statement = $pdo->prepare("SELECT * FROM tbl_top_category ORDER BY tcat_name ASC");
-									$statement->execute();
-									$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-									foreach ($result as $row) {
-										?>
-										<option value="<?php echo $row['tcat_id']; ?>"><?php echo $row['tcat_name']; ?>
-										</option>
+		/* Background colors for each column */
+		.p {
+			background-color: #E6F3FF;
+			/* Light blue */
+		}
+
+		.m {
+			background-color: #FFFDE6;
+			/* Light yellow */
+		}
+
+		.k {
+			background-color: #FFE6F7;
+			/* Light pink */
+		}
+
+		.n {
+			background-color: #E6FFE6;
+			/* Light green */
+		}
+
+		.s {
+			background-color: #E6E6E6;
+			/* Light gray */
+		}
+
+		.h {
+			background-color: #E6F3FF;
+			/* Light blue (repeated intentionally) */
+		}
+
+		.o {
+			background-color: #F0F0F0;
+			/* Neutral gray */
+		}
+
+		.radio-group {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.radio-group label {
+			margin: 2px 0;
+		}
+
+		.l-info-icons-container {
+			position: relative;
+			/* For alignment */
+			margin-left: 20px;
+			/* Distance from the grid */
+			padding: 12px;
+			background-color: rgb(253, 253, 253);
+			border-radius: 4px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+			z-index: 1000;
+			min-width: 200px;
+
+		}
+
+		.l-info-icons-container.show {
+			display: block;
+		}
+
+		/* Info Row Styling */
+		.info-row {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			/* Space between icon and description */
+			margin-bottom: 8px;
+			/* Space between rows */
+		}
+
+		/* Icon Styling */
+		.icon.small {
+			background-color: rgb(240, 236, 236);
+			border-radius: 4px;
+			box-shadow: 0 2px 8px rgba(16, 15, 15, 0.15);
+			width: 24px;
+			/* Adjust size as needed */
+			height: 24px;
+			display: inline-flex;
+			justify-content: center;
+			align-items: center;
+			position: relative;
+		}
+
+		/* Rank-Specific Icons */
+		.icon-rank-2::before,
+		.icon-rank-1::before {
+			content: "";
+			position: absolute;
+			width: 6px;
+			height: 6px;
+			background-color: #000;
+			/* Dot color */
+			border-radius: 50%;
+		}
+
+		/* Main Application (2 Dots) */
+		.icon-rank-2::before {
+			left: 5px;
+		}
+
+		.icon-rank-2::after {
+			content: "";
+			position: absolute;
+			width: 6px;
+			height: 6px;
+			background-color: #000;
+			/* Dot color */
+			border-radius: 50%;
+			right: 5px;
+		}
+
+		/* Additional Application (1 Dot) */
+		.icon-rank-1::before {
+			left: 50%;
+			transform: translateX(-50%);
+		}
+	</style>
+
+
+</head>
+
+<body>
+
+	<section class="content-header">
+		<div class="content-header-left">
+			<h1>Add Product</h1>
+		</div>
+		<div class="content-header-right">
+			<a href="product.php" class="btn btn-primary btn-sm">View All</a>
+		</div>
+	</section>
+
+
+	<section class="content">
+
+		<div class="row">
+			<div class="col-md-12">
+
+				<?php if ($error_message): ?>
+					<div class="callout callout-danger">
+
+						<p>
+							<?php echo $error_message; ?>
+						</p>
+					</div>
+				<?php endif; ?>
+
+				<?php if ($success_message): ?>
+					<div class="callout callout-success">
+
+						<p><?php echo $success_message; ?></p>
+					</div>
+				<?php endif; ?>
+
+				<form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+
+					<div class="box box-info">
+						<div class="box-body">
+
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Top Level Category Name
+									<span>*</span></label>
+								<div class="col-sm-4">
+									<select name="tcat_id" class="form-control select2 top-cat">
+										<option value="">Select Top Level Category</option>
 										<?php
-									}
-									?>
-								</select>
+										$statement = $pdo->prepare("SELECT * FROM tbl_top_category ORDER BY tcat_name ASC");
+										$statement->execute();
+										$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+										foreach ($result as $row) {
+											?>
+											<option value="<?php echo $row['tcat_id']; ?>"><?php echo $row['tcat_name']; ?>
+											</option>
+											<?php
+										}
+										?>
+									</select>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Mid Level Category Name <span>*</span></label>
-							<div class="col-sm-4">
-								<select name="mcat_id" class="form-control select2 mid-cat">
-									<option value="">Select Mid Level Category</option>
-								</select>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Mid Level Category Name
+									<span>*</span></label>
+								<div class="col-sm-4">
+									<select name="mcat_id" class="form-control select2 mid-cat">
+										<option value="">Select Mid Level Category</option>
+									</select>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">End Level Category Name <span>*</span></label>
-							<div class="col-sm-4">
-								<select name="ecat_id" class="form-control select2 end-cat">
-									<option value="">Select End Level Category</option>
-								</select>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">End Level Category Name
+									<span>*</span></label>
+								<div class="col-sm-4">
+									<select name="ecat_id" class="form-control select2 end-cat">
+										<option value="">Select End Level Category</option>
+									</select>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Brand <span>*</span></label>
-							<div class="col-sm-4">
-								<select name="product_brand" class="form-control select2 brand-cat">
-									<option value="">Select Brand</option>
-									<!-- Add options for brands here -->
-								</select>
-								<!-- <input type="text" name="other_brand" class="form-control" id="other-brand" style="margin-top:10px;" placeholder="Please specify brand"> -->
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Brand <span>*</span></label>
+								<div class="col-sm-4">
+									<select name="product_brand" class="form-control select2 brand-cat">
+										<option value="">Select Brand</option>
+										<!-- Add options for brands here -->
+									</select>
+									<!-- <input type="text" name="other_brand" class="form-control" id="other-brand" style="margin-top:10px;" placeholder="Please specify brand"> -->
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Product Name <span>*</span></label>
-							<div class="col-sm-4">
-								<input type="text" name="p_name" class="form-control">
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Product Name <span>*</span></label>
+								<div class="col-sm-4">
+									<input type="text" name="p_name" class="form-control">
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Product Catalogue (PDF) <span>*</span></label>
-							<div class="col-sm-4" style="padding-top:4px;">
-								<input type="file" name="product_catalogue">
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Product Catalogue (PDF)
+									<span>*</span></label>
+								<div class="col-sm-4" style="padding-top:4px;">
+									<input type="file" name="product_catalogue">
+								</div>
 							</div>
-						</div>
 
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Key <span>*</span></label>
-							<div class="col-sm-4">
-								<select name="selected_key" class="form-control select2 top-cat">
-									<option value="">Select Key Value</option>
-									<?php
-									$statement = $pdo->prepare("
-			SELECT COLUMN_NAME 
-			FROM INFORMATION_SCHEMA.COLUMNS 
-			WHERE TABLE_NAME = 'tbl_key' 
-			AND COLUMN_NAME != 'id' 
-			AND TABLE_SCHEMA = DATABASE()
-		");
-									$statement->execute();
-									$columns = $statement->fetchAll(PDO::FETCH_COLUMN); // Fetch only column names
-									
-									foreach ($columns as $column) {
-										// Fetch the values for the current column
-										$valueStatement = $pdo->prepare("SELECT `$column` FROM tbl_key");
-										$valueStatement->execute();
-										$values = $valueStatement->fetchAll(PDO::FETCH_COLUMN);
-										$tooltip = implode(', ', $values); // Create a comma-separated list of values
-									
-										// Create the dropdown option with a tooltip
-										echo "<option value='{$column}' data-toggle='tooltip' title='{$tooltip}'>{$column}</option>";
-									}
-									?>
-								</select>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Old Price <br><span
-									style="font-size:10px;font-weight:normal;">(In INR)</span></label>
-							<div class="col-sm-4">
-								<input type="text" name="p_old_price" class="form-control">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Current Price <span>*</span><br><span
-									style="font-size:10px;font-weight:normal;">(In INR)</span></label>
-							<div class="col-sm-4">
-								<input type="text" name="p_current_price" class="form-control">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Quantity <span>*</span></label>
-							<div class="col-sm-4">
-								<input type="text" name="p_qty" class="form-control">
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Featured Photo <span>*</span></label>
-							<div class="col-sm-4" style="padding-top:4px;">
-								<input type="file" name="p_featured_photo">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Other Photos</label>
-							<div class="col-sm-4" style="padding-top:4px;">
-								<table id="ProductTable" style="width:100%;">
-									<tbody>
-										<tr>
-											<td>
-												<div class="upload-btn">
-													<input type="file" name="photo[]" style="margin-bottom:5px;">
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Key <span>*</span></label>
+								<div class="col-sm-9">
+									<div class="grid-wrapper">
+										<!-- Product Grid -->
+										<div class="product-grid">
+											<div class="material-suitability-icon-container">
+												<div class="material-suitability-icon p">P</div>
+												<div class="radio-group">
+													<label><input type="radio" name="P" value="0"> 0</label>
+													<label><input type="radio" name="P" value="1"> 1</label>
+													<label><input type="radio" name="P" value="2"> 2</label>
 												</div>
-											</td>
-											<td style="width:28px;"><a href="javascript:void()"
-													class="Delete btn btn-danger btn-xs">X</a></td>
-										</tr>
-									</tbody>
-								</table>
+											</div>
+											<div class="material-suitability-icon-container">
+												<div class="material-suitability-icon m">M</div>
+												<div class="radio-group">
+													<label><input type="radio" name="M" value="0"> 0</label>
+													<label><input type="radio" name="M" value="1"> 1</label>
+													<label><input type="radio" name="M" value="2"> 2</label>
+												</div>
+											</div>
+											<div class="material-suitability-icon-container">
+												<div class="material-suitability-icon k">K</div>
+												<div class="radio-group">
+													<label><input type="radio" name="K" value="0"> 0</label>
+													<label><input type="radio" name="K" value="1"> 1</label>
+													<label><input type="radio" name="K" value="2"> 2</label>
+												</div>
+											</div>
+											<div class="material-suitability-icon-container">
+												<div class="material-suitability-icon n">N</div>
+												<div class="radio-group">
+													<label><input type="radio" name="N" value="0"> 0</label>
+													<label><input type="radio" name="N" value="1"> 1</label>
+													<label><input type="radio" name="N" value="2"> 2</label>
+												</div>
+											</div>
+											<div class="material-suitability-icon-container">
+												<div class="material-suitability-icon s">S</div>
+												<div class="radio-group">
+													<label><input type="radio" name="S" value="0"> 0</label>
+													<label><input type="radio" name="S" value="1"> 1</label>
+													<label><input type="radio" name="S" value="2"> 2</label>
+												</div>
+											</div>
+											<div class="material-suitability-icon-container">
+												<div class="material-suitability-icon h">H</div>
+												<div class="radio-group">
+													<label><input type="radio" name="H" value="0"> 0</label>
+													<label><input type="radio" name="H" value="1"> 1</label>
+													<label><input type="radio" name="H" value="2"> 2</label>
+												</div>
+											</div>
+											<div class="material-suitability-icon-container">
+												<div class="material-suitability-icon o">O</div>
+												<div class="radio-group">
+													<label><input type="radio" name="O" value="0"> 0</label>
+													<label><input type="radio" name="O" value="1"> 1</label>
+													<label><input type="radio" name="O" value="2"> 2</label>
+												</div>
+											</div>
+										</div>
+										<!-- Info Container -->
+										<div class="l-info-icons-container">
+											<!-- Your information or content here -->
+											<div class="info-row">
+												<div class="icon small icon-rank-2"></div>
+												<div class="description">Main application</div>
+											</div>
+											<div class="info-row">
+												<div class="icon small icon-rank-1"></div>
+												<div class="description">Additional application</div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
-							<div class="col-sm-2">
-								<input type="button" id="btnAddNew" value="Add Item"
-									style="margin-top: 5px;margin-bottom:10px;border:0;color: #fff;font-size: 14px;border-radius:3px;"
-									class="btn btn-warning btn-xs">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Description</label>
-							<div class="col-sm-8">
 
-								<textarea type="text" name="p_description" class="form-control"></textarea>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Old Price <br><span
+										style="font-size:10px;font-weight:normal;">(In INR)</span></label>
+								<div class="col-sm-4">
+									<input type="text" name="p_old_price" class="form-control">
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Features</label>
-							<div class="col-sm-8">
-								<textarea type="text" name="p_feature" class="form-control"></textarea>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Current Price <span>*</span><br><span
+										style="font-size:10px;font-weight:normal;">(In INR)</span></label>
+								<div class="col-sm-4">
+									<input type="text" name="p_current_price" class="form-control">
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Conditions</label>
-							<div class="col-sm-8">
-								<textarea type="text" name="p_condition" class="form-control"></textarea>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Quantity <span>*</span></label>
+								<div class="col-sm-4">
+									<input type="text" name="p_qty" class="form-control">
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Return Policy</label>
-							<div class="col-sm-8">
-								<textarea type="text" name="p_return_policy" class="form-control"></textarea>
+
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Featured Photo <span>*</span></label>
+								<div class="col-sm-4" style="padding-top:4px;">
+									<input type="file" name="p_featured_photo">
+								</div>
 							</div>
-						</div>
-						<!-- <div class="form-group">
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Other Photos</label>
+								<div class="col-sm-4" style="padding-top:4px;">
+									<table id="ProductTable" style="width:100%;">
+										<tbody>
+											<tr>
+												<td>
+													<div class="upload-btn">
+														<input type="file" name="photo[]" style="margin-bottom:5px;">
+													</div>
+												</td>
+												<td style="width:28px;"><a href="javascript:void()"
+														class="Delete btn btn-danger btn-xs">X</a></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="col-sm-2">
+									<input type="button" id="btnAddNew" value="Add Item"
+										style="margin-top: 5px;margin-bottom:10px;border:0;color: #fff;font-size: 14px;border-radius:3px;"
+										class="btn btn-warning btn-xs">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Description</label>
+								<div class="col-sm-8">
+
+									<textarea type="text" name="p_description" class="form-control"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Features</label>
+								<div class="col-sm-8">
+									<textarea type="text" name="p_feature" class="form-control"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Conditions</label>
+								<div class="col-sm-8">
+									<textarea type="text" name="p_condition" class="form-control"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Return Policy</label>
+								<div class="col-sm-8">
+									<textarea type="text" name="p_return_policy" class="form-control"></textarea>
+								</div>
+							</div>
+							<!-- <div class="form-group">
 							<label for="" class="col-sm-3 control-label">Is Featured?</label>
 							<div class="col-sm-8">
 								<select name="p_is_featured" class="form-control" style="width:auto;">
@@ -404,33 +673,36 @@ if (isset($_POST['form1'])) {
 									<option value="1">Yes</option>
 								</select> 
 							</div> -->
-					</div>
-					<div class="form-group">
-						<label for="" class="col-sm-3 control-label"></label>
-						<div class="col-sm-6">
-							<button type="submit" class="btn btn-success pull-left" name="form1">Add Product</button>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label"></label>
+							<div class="col-sm-6">
+								<button type="submit" class="btn btn-success pull-left" name="form1">Add
+									Product</button>
+							</div>
 						</div>
 					</div>
-				</div>
+			</div>
+
+			</form>
+
+
+		</div>
 		</div>
 
-		</form>
-
-
-	</div>
-	</div>
-
-</section>
+	</section>
 
 
 
-<script>
-	$(document).ready(function () {
-		$('.select2').select2({
-			dropdownParent: $('.form-group'), // Attach dropdown to its container
-			dropdownPosition: 'below',        // Force dropdown to appear below
+	<script>
+		$(document).ready(function () {
+			$('.select2').select2({
+				dropdownParent: $('.form-group'), // Attach dropdown to its container
+				dropdownPosition: 'below',        // Force dropdown to appear below
+			});
 		});
-	});
-</script>
+	</script>
+</body>
 
+</html>
 <?php require_once('footer.php'); ?>

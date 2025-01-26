@@ -887,7 +887,6 @@ foreach ($result as $row) {
     $receive_email = $row['receive_email'];
     $receive_email_subject = $row['receive_email_subject'];
     $receive_email_thank_you_message = $row['receive_email_thank_you_message'];
-<<<<<<< HEAD
     $forget_password_message = $row['forget_password_message'];
     // $total_recent_post_footer        = $row['total_recent_post_footer'];
     // $total_popular_post_footer       = $row['total_popular_post_footer'];
@@ -929,7 +928,6 @@ foreach ($result as $row) {
     $quote_span_text = $row['quote_span_text'];
     $user_tc = $row['user_tc'];
     $seller_tc = $row['seller_tc'];
-=======
     $forget_password_message         = $row['forget_password_message'];
    // $total_recent_post_footer        = $row['total_recent_post_footer'];
    // $total_popular_post_footer       = $row['total_popular_post_footer'];
@@ -993,7 +991,6 @@ foreach ($result as $row) {
   $bid_send_time                        = $row['send_time'];
   $bid_close_time                       = $row['close_time'];
   $min_bid_percentage                   = $row['min_bid_pct'];
->>>>>>> 955a312a78bfb0ba6f7e07fcb80d83d4833fdc66
 
 }
 ?>
@@ -1170,10 +1167,6 @@ foreach ($result as $row) {
                                     </div>
                                 </div>
                             </div>
-<<<<<<< HEAD
-                        </form>
-                    </div>
-=======
                             </form>
 
                             <form class="form-horizontal" action="" method="POST">
@@ -1195,7 +1188,6 @@ foreach ($result as $row) {
                                 </div>
                             </form>
                         </div>
->>>>>>> 955a312a78bfb0ba6f7e07fcb80d83d4833fdc66
 
 
 
