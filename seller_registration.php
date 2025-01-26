@@ -92,12 +92,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $mail->isSMTP();
                         $mail->Host = 'smtp.gmail.com';
                         $mail->SMTPAuth = true;
-                        $mail->Username = 'nithiishhh@gmail.com';
-                        $mail->Password = 'meknepblkzosmavu';
+                        $mail->Username = 'deaddstock@gmail.com';
+                        $mail->Password = 'fnsdadrefmosspym';
                         $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
                         $mail->Port = 587;
 
-                        $mail->setFrom('nithiishhh@gmail.com', 'Deadstock');
+                        $mail->setFrom('deaddstock@gmail.com', 'Deadstock');
                         $mail->addAddress($seller_email, $seller_name);
 
                         $mail->isHTML(true);
