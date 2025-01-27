@@ -328,8 +328,8 @@ $active_tab = $_GET['tab'] ?? 'profile';
                        <?php if (empty($addresses)) {?>
                             <p class="empty">No addresses found. Add a new address to get started.</p>
                         <?php } else{
-                        foreach ($result as $address): ?>
-                            <div class="address-card">
+                        foreach ($addresses as $address): ?>
+                            <div class="address-card" data-address-id="<?php echo htmlspecialchars($address['id']); ?>">
                                 <div class="address-type">
                                     <span class="badge"><?php echo htmlspecialchars($address['address_type']); ?></span>
                                     <?php if ($address['is_default']): ?>
@@ -343,13 +343,13 @@ $active_tab = $_GET['tab'] ?? 'profile';
                                     <?php echo htmlspecialchars("{$address['city']}, {$address['state']} {$address['pincode']}"); ?>
                                 </p>
                                 <div class="address-actions">
-                                    <button class="btn-edit">Edit</button>
+                                    <button class="btn-edit" data-id="<?php echo htmlspecialchars($address['id']); ?>">Edit</button>
                                     <?php if (!$address['is_default']): ?>
-                                        <button class="btn-delete">Delete</button>
+                                        <button class="btn-delete" data-id="<?php echo htmlspecialchars($address['id']); ?>">Delete</button>
                                     <?php endif; ?>
                                 </div>
                             </div>
-                        <?php endforeach;} ?>
+                        <?php endforeach; }?>
                     </div>
 
                 </div>
@@ -739,6 +739,101 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Add this to your existing JavaScript in profile.php
+document.addEventListener('DOMContentLoaded', function() {
+    // Edit address functionality
+    const editButtons = document.querySelectorAll('.btn-edit');
+    editButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const addressId = this.getAttribute('data-id');
+            
+            // Fetch address details
+            fetch(`edit_address.php?id=${addressId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                    
+                    // Populate the modal form
+                    document.getElementById('addr_name').value = data.full_name;
+                    document.getElementById('addr_phone').value = data.phone_number;
+                    document.getElementById('address').value = data.address;
+                    document.getElementById('city').value = data.city;
+                    document.getElementById('state').value = data.state;
+                    document.getElementById('pincode').value = data.pincode;
+                    document.querySelector('input[name="default"]').checked = data.is_default == 1;
+                    
+                    // Update form action and method
+                    const form = document.querySelector('.address-form');
+                    form.action = 'edit_address.php';
+                    
+                    // Add address ID to form
+                    let addressIdInput = document.querySelector('input[name="address_id"]');
+                    if (!addressIdInput) {
+                        addressIdInput = document.createElement('input');
+                        addressIdInput.type = 'hidden';
+                        addressIdInput.name = 'address_id';
+                        form.appendChild(addressIdInput);
+                    }
+                    addressIdInput.value = addressId;
+                    
+                    // Show modal
+                    showAddressForm();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to fetch address details');
+                });
+        });
+    });
+    
+    // Delete address functionality
+    const deleteButtons = document.querySelectorAll('.btn-delete');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to delete this address?')) {
+                const addressId = this.getAttribute('data-id');
+                
+                // Create and submit form
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'delete_address.php';
+                
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'address_id';
+                input.value = addressId;
+                
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    });
+    
+    // Reset form when adding new address
+    const addAddressButton = document.querySelector('button[onclick="showAddressForm()"]');
+    if (addAddressButton) {
+        addAddressButton.addEventListener('click', function() {
+            const form = document.querySelector('.address-form');
+            form.reset();
+            form.action = 'add_address.php';
+            
+            // Remove address_id input if it exists
+            const addressIdInput = form.querySelector('input[name="address_id"]');
+            if (addressIdInput) {
+                addressIdInput.remove();
+            }
+        });
+    }
+});
+
+
 </script>
 
 <!-- tracking css -->
