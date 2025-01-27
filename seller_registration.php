@@ -5,6 +5,8 @@ require 'db_connection.php'; // Update with actual DB connection code if inline 
 require 'phpmailer/src/PHPMailer.php';
 require 'phpmailer/src/SMTP.php';
 require 'phpmailer/src/Exception.php';
+require_once('track_view.php');
+trackPageView('SRF', 'Seller Registration Form');
 
 // Initialize variables for error messages and success message
 $errorMessages = [];
@@ -905,5 +907,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
-</html>
 <?php include 'footer.php'; ?>

@@ -22,7 +22,7 @@ if (!isset($_SESSION['seller_session'])) {
 
 	// Bind parameters
 	$seller_id = $_SESSION['seller_session']['seller_id'];
-	$seller_status = 0;
+	$seller_status = 2;
 	$stmt->bind_param("ii", $seller_id, $seller_status);
 
 	// Execute the statement
@@ -105,9 +105,9 @@ if (!isset($_SESSION['seller_session'])) {
 							aria-expanded="false">
 							<?php
 							// Check if the profile photo exists; if not, use the Font Awesome user icon
-							if (!empty($_SESSION['selelr_session']['profile_photo'])) {
-								$profile_photo = $_SESSION['seller_session']['seller_name'];
-								echo '<img src="' . $profile_photo . '" style="width: 30px; height: 30px; border-radius: 50%;">';
+							if (!empty($_SESSION['seller_session']['seller_photo'])) {
+								$profile_photo = $_SESSION['seller_session']['seller_photo'];
+								echo '<img src="../assets/uploads/profile-pictures/' . $profile_photo . '" style="width: 30px; height: 30px; border-radius: 50%;">';
 							} else {
 								// Display the Font Awesome user icon
 								echo '<i class="fa fa-user" style="font-size: 20px;"></i>';

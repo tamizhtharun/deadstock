@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 22, 2025 at 07:37 AM
+-- Generation Time: Jan 27, 2025 at 10:04 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -49,7 +49,9 @@ CREATE TABLE `bidding` (
 --
 
 INSERT INTO `bidding` (`bid_id`, `product_id`, `user_id`, `bid_price`, `bid_quantity`, `payment_id`, `order_id`, `bid_time`, `bid_status`, `refund_status`, `refund_id`, `refund_amount`, `refund_date`, `refund_error`) VALUES
-(26, 163, 11, 50.00, 10, 'pay_PldYUj8aIIpb9J', 'order_PldXXwTCszKoxZ', '2025-01-20 14:17:48', 2, NULL, NULL, NULL, NULL, NULL);
+(29, 162, 11, 50.00, 60, 'pay_PnxuG8019DtDQU', 'order_PnxttQVoBYxND6', '2025-01-26 11:30:18', 2, NULL, NULL, NULL, NULL, NULL),
+(11123, 169, 11, 10.00, 600, 'pay_Po3xnTLqv3nRrM', 'order_Po3xQqltvYheTu', '2025-01-26 17:25:47', 3, NULL, NULL, NULL, NULL, NULL),
+(11124, 164, 11, 50.00, 60, 'pay_PoNOz6fP47So8l', 'order_PoNOVr5Bm3BzTa', '2025-01-27 12:26:44', 2, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -72,7 +74,7 @@ CREATE TABLE `bid_settings` (
 --
 
 INSERT INTO `bid_settings` (`id`, `send_time`, `close_time`, `created_at`, `updated_at`, `last_updated`, `min_bid_pct`) VALUES
-(1, '14:20:00', '14:37:00', '2025-01-11 08:38:00', '2025-01-22 05:02:27', '2025-01-20', 56);
+(1, '12:27:00', '12:30:00', '2025-01-11 08:38:00', '2025-01-27 06:58:41', '2025-01-27', 57);
 
 -- --------------------------------------------------------
 
@@ -101,7 +103,8 @@ CREATE TABLE `sellers` (
 --
 
 INSERT INTO `sellers` (`seller_id`, `seller_name`, `seller_cname`, `seller_email`, `seller_phone`, `seller_gst`, `seller_address`, `seller_state`, `seller_city`, `seller_zipcode`, `seller_password`, `created_at`, `seller_status`) VALUES
-(9, 'TAMIL SELVAN V', 'Deadstock Tooling', 'mailtotharun23@gmail.com', '9597049879', '22AAAAA0000A1Z5', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$bMO/LgY/F2pMyocMrUaeRudf5xMYmkkkZecWFeQjhQ/X16T63btKm', '2025-01-09 04:34:52', 1);
+(9, 'TAMIL SELVAN V', 'Deadstock Tooling', 'mailtotharun23@gmail.com', '9597049879', '22AAAAA0000A1Z5', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$bMO/LgY/F2pMyocMrUaeRudf5xMYmkkkZecWFeQjhQ/X16T63btKm', '2025-01-09 04:34:52', 1),
+(10, 'TAMIL SELVAN V', 'IMET', '927622bal049@mkce.ac.in', '9597049879', '22AAAAA0000A1Z5', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', '2025-01-26 11:23:02', 1);
 
 -- --------------------------------------------------------
 
@@ -146,8 +149,7 @@ INSERT INTO `tbl_brands` (`brand_id`, `tcat_id`, `brand_name`, `brand_descriptio
 (63, 10, 'Walter Tools', '', 'brand-logo-63.png'),
 (64, 10, 'Widia', '', 'brand-logo-64.png'),
 (65, 10, 'YG1', '', 'brand-logo-65.png'),
-(66, 10, 'Dormar', '', 'brand-logo-66.png'),
-(67, 15, 'Others', '', 'brand-logo-67.png');
+(66, 10, 'Dormar', '', 'brand-logo-66.png');
 
 -- --------------------------------------------------------
 
@@ -288,6 +290,32 @@ INSERT INTO `tbl_faq` (`faq_id`, `faq_title`, `faq_content`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_key`
+--
+
+CREATE TABLE `tbl_key` (
+  `id` int(11) NOT NULL,
+  `P` varchar(1) NOT NULL,
+  `M` varchar(1) NOT NULL,
+  `K` varchar(1) NOT NULL,
+  `N` varchar(1) NOT NULL,
+  `S` varchar(1) NOT NULL,
+  `H` varchar(1) NOT NULL,
+  `O` varchar(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_key`
+--
+
+INSERT INTO `tbl_key` (`id`, `P`, `M`, `K`, `N`, `S`, `H`, `O`) VALUES
+(0, '0', '1', '2', '1', '0', '1', '2'),
+(168, '0', '1', '2', '1', '0', '1', '2'),
+(169, '0', '1', '2', '1', '0', '1', '2');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_mid_category`
 --
 
@@ -354,19 +382,24 @@ CREATE TABLE `tbl_orders` (
   `quantity` int(11) NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `order_status` enum('pending','processing','shipped','delivered','canceled') DEFAULT 'pending',
+  `tracking_id` varchar(255) DEFAULT NULL,
   `bid_id` int(11) NOT NULL,
   `payment_id` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `order_type` enum('bid','direct') NOT NULL
+  `order_type` enum('bid','direct') NOT NULL,
+  `processing_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_orders`
 --
 
-INSERT INTO `tbl_orders` (`id`, `order_id`, `product_id`, `user_id`, `seller_id`, `quantity`, `price`, `order_status`, `bid_id`, `payment_id`, `created_at`, `updated_at`, `order_type`) VALUES
-(1, 'order_PldXXwTCszKoxZ', 163, 11, 9, 10, 50.00, 'canceled', 26, 'pay_PldYUj8aIIpb9J', '2025-01-20 09:07:40', '2025-01-20 09:09:41', 'bid');
+INSERT INTO `tbl_orders` (`id`, `order_id`, `product_id`, `user_id`, `seller_id`, `quantity`, `price`, `order_status`, `tracking_id`, `bid_id`, `payment_id`, `created_at`, `updated_at`, `order_type`, `processing_time`) VALUES
+(3, 'order_PnCOIZeJbQLF5n', 164, 11, 9, 20, 1000.00, 'pending', NULL, 27, 'pay_PnCQQCMZ9TQs5c', '2025-01-25 16:18:38', '2025-01-25 16:18:38', 'bid', NULL),
+(4, 'order_PldXXwTCszKoxZ', 163, 11, 9, 10, 50.00, 'delivered', 'TRACKING 123 ID', 26, 'pay_PldYUj8aIIpb9J', '2025-01-25 16:18:42', '2025-01-25 16:19:37', 'bid', '2025-01-25 21:49:01'),
+(5, 'order_PnxttQVoBYxND6', 162, 11, 9, 60, 50.00, 'shipped', NULL, 29, 'pay_PnxuG8019DtDQU', '2025-01-26 11:56:49', '2025-01-27 05:29:09', 'bid', NULL),
+(6, 'order_PoNOVr5Bm3BzTa', 164, 11, 9, 60, 50.00, 'delivered', 'TRACKING ID 132', 11124, 'pay_PoNOz6fP47So8l', '2025-01-27 07:00:28', '2025-01-27 07:01:53', 'bid', '2025-01-27 12:31:04');
 
 -- --------------------------------------------------------
 
@@ -392,18 +425,21 @@ CREATE TABLE `tbl_product` (
   `p_is_approve` int(1) NOT NULL,
   `ecat_id` int(11) NOT NULL,
   `product_catalogue` varchar(500) NOT NULL,
-  `product_brand` varchar(500) NOT NULL
+  `product_brand` varchar(500) NOT NULL,
+  `p_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `tbl_product`
 --
 
-INSERT INTO `tbl_product` (`id`, `seller_id`, `p_name`, `p_old_price`, `p_current_price`, `p_qty`, `p_featured_photo`, `p_description`, `p_feature`, `p_condition`, `p_return_policy`, `p_total_view`, `p_is_featured`, `p_is_active`, `p_is_approve`, `ecat_id`, `product_catalogue`, `product_brand`) VALUES
-(162, 9, 'Shank tool – Rigid clamping', '1329', '400', 222, 'product-featured-162.jpg', '', '', '', '', 103, 1, 1, 1, 97, 'product-catalogue-162.pdf', '41'),
-(163, 9, 'Turning Insert – Positive rhombic 80°', '986', '439', 122, 'product-featured-163.png', '', '', '', '', 83, 1, 1, 1, 112, 'product-catalogue-163.pdf', '42'),
-(164, 9, 'CNMG120404-NF WPP20S', '599', '299', 1500, 'product-featured-164.png', '<table _ngcontent-ng-c3418793634=\"\" class=\"product-detail-data-table ng-star-inserted\" style=\"-webkit-font-smoothing: antialiased; font-family: Arial, Verdana, sans-serif; scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); background-color: rgb(255, 255, 255); width: 931.737px; font-size: 15px;\"><tbody _ngcontent-ng-c3418793634=\"\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0);\"><tr _ngcontent-ng-c3418793634=\"\" class=\"data-row hidden-print\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0);\"><td _ngcontent-ng-c3418793634=\"\" class=\"description\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 10px 10px 10px 5px;\">Description</td><td _ngcontent-ng-c3418793634=\"\" class=\"symbol\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 10px;\">Symbol</td><td _ngcontent-ng-c3418793634=\"\" class=\"value\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding-top: 10px; padding-bottom: 10px; font-weight: 700; text-wrap-mode: nowrap;\">Value</td></tr><tr _ngcontent-ng-c3418793634=\"\" itemprop=\"additionalProperty\" itemscope=\"\" itemtype=\"http://schema.org/PropertyValue\" class=\"data-row ng-star-inserted\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); background-color: rgb(250, 250, 250);\"><td _ngcontent-ng-c3418793634=\"\" itemprop=\"name\" class=\"description\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 10px 10px 10px 5px;\">Diameter of inscribed circle</td><td _ngcontent-ng-c3418793634=\"\" itemprop=\"value\" class=\"symbol\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 10px;\">d</td><td _ngcontent-ng-c3418793634=\"\" itemprop=\"unitText\" class=\"value\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding-top: 10px; padding-bottom: 10px; font-weight: 700; text-wrap-mode: nowrap;\">12.7&nbsp;<span _ngcontent-ng-c3418793634=\"\" itemprop=\"unitText\" class=\"unit ng-star-inserted\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); font-weight: initial;\">mm</span></td></tr><tr _ngcontent-ng-c3418793634=\"\" itemprop=\"additionalProperty\" itemscope=\"\" itemtype=\"http://schema.org/PropertyValue\" class=\"data-row ng-star-inserted\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0);\"><td _ngcontent-ng-c3418793634=\"\" itemprop=\"name\" class=\"description\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 10px 10px 10px 5px;\">Corner radius</td><td _ngcontent-ng-c3418793634=\"\" itemprop=\"value\" class=\"symbol\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 10px;\">r</td><td _ngcontent-ng-c3418793634=\"\" itemprop=\"unitText\" class=\"value\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding-top: 10px; padding-bottom: 10px; font-weight: 700; text-wrap-mode: nowrap;\">0.4&nbsp;<span _ngcontent-ng-c3418793634=\"\" itemprop=\"unitText\" class=\"unit ng-star-inserted\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); font-weight: initial;\">mm</span></td></tr><tr _ngcontent-ng-c3418793634=\"\" itemprop=\"additionalProperty\" itemscope=\"\" itemtype=\"http://schema.org/PropertyValue\" class=\"data-row ng-star-inserted\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); background-color: rgb(250, 250, 250);\"><td _ngcontent-ng-c3418793634=\"\" itemprop=\"name\" class=\"description\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 10px 10px 10px 5px;\">Feed per revolution</td><td _ngcontent-ng-c3418793634=\"\" itemprop=\"value\" class=\"symbol\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 10px;\">f</td><td _ngcontent-ng-c3418793634=\"\" itemprop=\"unitText\" class=\"value\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding-top: 10px; padding-bottom: 10px; font-weight: 700; text-wrap-mode: nowrap;\">0.1–0.4&nbsp;<span _ngcontent-ng-c3418793634=\"\" itemprop=\"unitText\" class=\"unit ng-star-inserted\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); font-weight: initial;\">mm</span></td></tr><tr _ngcontent-ng-c3418793634=\"\" itemprop=\"additionalProperty\" itemscope=\"\" itemtype=\"http://schema.org/PropertyValue\" class=\"data-row ng-star-inserted\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0);\"><td _ngcontent-ng-c3418793634=\"\" itemprop=\"name\" class=\"description\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 10px 10px 10px 5px;\">Depth of cut</td><td _ngcontent-ng-c3418793634=\"\" itemprop=\"value\" class=\"symbol\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 10px;\">a<span style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); font-size: 11.25px; line-height: 0; position: relative; vertical-align: baseline; bottom: -0.25em;\">p</span></td><td _ngcontent-ng-c3418793634=\"\" itemprop=\"unitText\" class=\"value\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding-top: 10px; padding-bottom: 10px; font-weight: 700; text-wrap-mode: nowrap;\">0.4–2&nbsp;<span _ngcontent-ng-c3418793634=\"\" itemprop=\"unitText\" class=\"unit ng-star-inserted\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); font-weight: initial;\">mm</span></td></tr><tr _ngcontent-ng-c3418793634=\"\" itemprop=\"additionalProperty\" itemscope=\"\" itemtype=\"http://schema.org/PropertyValue\" class=\"data-row iso-materials ng-star-inserted\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); background-color: rgb(250, 250, 250);\"><td _ngcontent-ng-c3418793634=\"\" itemprop=\"name\" class=\"description\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 10px 10px 10px 5px;\"><span _ngcontent-ng-c3418793634=\"\" class=\"ng-star-inserted\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0);\">Cutting Speed</span></td><td _ngcontent-ng-c3418793634=\"\" itemprop=\"value\" class=\"symbol\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 10px;\"><div _ngcontent-ng-c3418793634=\"\" class=\"material-suitability-icons\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); display: flex; flex-wrap: wrap; align-items: center; gap: 6px;\"><div _ngcontent-ng-c3418793634=\"\" class=\"material-property\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0);\">V<span _ngcontent-ng-c3418793634=\"\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); font-size: 11.25px; line-height: 0; position: relative; vertical-align: baseline; bottom: -0.25em;\">c</span></div><div _ngcontent-ng-c3418793634=\"\" class=\"material-suitability-icon p\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); user-select: none; width: 30px; line-height: 30px; font-weight: 700; text-align: center; background-color: var(--color-iso-p) !important;\">P</div></div></td><td _ngcontent-ng-c3418793634=\"\" itemprop=\"unitText\" class=\"value\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding-top: 10px; padding-bottom: 10px; font-weight: 700; text-wrap-mode: nowrap;\"><span _ngcontent-ng-c3418793634=\"\" itemprop=\"value\" class=\"value\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 0px; text-wrap-mode: wrap;\">180–340 m/min</span></td></tr><tr _ngcontent-ng-c3418793634=\"\" itemprop=\"additionalProperty\" itemscope=\"\" itemtype=\"http://schema.org/PropertyValue\" class=\"data-row iso-materials ng-star-inserted\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0);\"><td _ngcontent-ng-c3418793634=\"\" itemprop=\"name\" class=\"description\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 10px 10px 10px 5px;\"></td><td _ngcontent-ng-c3418793634=\"\" itemprop=\"value\" class=\"symbol\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 10px;\"><div _ngcontent-ng-c3418793634=\"\" class=\"material-suitability-icons\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); display: flex; flex-wrap: wrap; align-items: center; gap: 6px;\"><div _ngcontent-ng-c3418793634=\"\" class=\"material-property\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0);\">V<span _ngcontent-ng-c3418793634=\"\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); font-size: 11.25px; line-height: 0; position: relative; vertical-align: baseline; bottom: -0.25em;\">c</span></div><div _ngcontent-ng-c3418793634=\"\" class=\"k material-suitability-icon\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); user-select: none; width: 30px; line-height: 30px; font-weight: 700; text-align: center; background-color: var(--color-iso-k) !important;\">K</div></div></td><td _ngcontent-ng-c3418793634=\"\" itemprop=\"unitText\" class=\"value\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding-top: 10px; padding-bottom: 10px; font-weight: 700; text-wrap-mode: nowrap;\"><span _ngcontent-ng-c3418793634=\"\" itemprop=\"value\" class=\"value\" style=\"-webkit-font-smoothing: antialiased; font-family: var(--font-family-default); scrollbar-color: var(--color-gray-400) var(--color-gray-200); -webkit-tap-highlight-color: rgba(255, 255, 255, 0); padding: 0px; text-wrap-mode: wrap;\">250–600 m/min</span></td></tr></tbody></table>', '', '', '', 24, 1, 1, 1, 99, 'product-catalogue-164.pdf', '63'),
-(166, 9, 'M5008-016-T14-02-01', '580', '259', 222, 'product-featured-166.png', '', '', '', '', 1, 0, 0, 1, 101, 'product-catalogue-166.pdf', '63');
+INSERT INTO `tbl_product` (`id`, `seller_id`, `p_name`, `p_old_price`, `p_current_price`, `p_qty`, `p_featured_photo`, `p_description`, `p_feature`, `p_condition`, `p_return_policy`, `p_total_view`, `p_is_featured`, `p_is_active`, `p_is_approve`, `ecat_id`, `product_catalogue`, `product_brand`, `p_date`) VALUES
+(162, 9, 'Shank tool – Rigid clamping', '1329', '400', 222, 'product-featured-162.jpg', '', '', '', '', 191, 1, 1, 1, 97, 'product-catalogue-162.pdf', '41', NULL),
+(163, 9, 'Turning Insert – Positive rhombic 80°', '986', '439', 122, 'product-featured-163.png', '', '', '', '', 120, 1, 1, 1, 112, 'product-catalogue-163.pdf', '42', NULL),
+(164, 9, 'CNMG120404-NF WPP20S', '599', '299', 1500, 'product-featured-164.png', 'Description provided by the seller', '', '', '', 120, 1, 1, 1, 99, 'product-catalogue-164.pdf', '63', NULL),
+(166, 9, 'M5008-016-T14-02-01', '580', '259', 222, 'product-featured-166.png', '', '', '', '', 7, 0, 0, 1, 101, 'product-catalogue-166.pdf', '63', NULL),
+(168, 10, 'TS5008-016-T14-02-01', '1429', '400', 1500, 'product-featured-168.png', '', '', '', '', 1, 0, 0, 1, 0, 'product-catalogue-168.pdf', '43', '2025-01-26 12:36:26'),
+(169, 10, '111008-016-T14-02-01', '1329', '400', 100, 'product-featured-169.png', '', '', '', '', 17, 1, 1, 1, 99, 'product-catalogue-169.pdf', '41', '2025-01-26 12:48:53');
 
 -- --------------------------------------------------------
 
@@ -427,7 +463,13 @@ INSERT INTO `tbl_product_photo` (`pp_id`, `photo`, `p_id`) VALUES
 (3, '3.png', 161),
 (7, '7.png', 166),
 (8, '8.png', 166),
-(9, '9.png', 166);
+(9, '9.png', 166),
+(13, '13.png', 168),
+(14, '14.png', 168),
+(15, '15.png', 168),
+(16, '16.png', 168),
+(17, '17.png', 168),
+(18, '18.png', 168);
 
 -- --------------------------------------------------------
 
@@ -523,15 +565,17 @@ CREATE TABLE `tbl_settings` (
   `ads_above_testimonial_on_off` int(1) NOT NULL,
   `ads_category_sidebar_on_off` int(1) NOT NULL,
   `quote_text` longtext NOT NULL,
-  `quote_span_text` longtext NOT NULL
+  `quote_span_text` longtext NOT NULL,
+  `user_tc` varchar(1000) NOT NULL,
+  `seller_tc` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_settings`
 --
 
-INSERT INTO `tbl_settings` (`id`, `logo`, `favicon`, `running_text`, `footer_about`, `footer_copyright`, `contact_address`, `contact_email`, `contact_phone`, `contact_fax`, `contact_map_iframe`, `receive_email`, `receive_email_subject`, `receive_email_thank_you_message`, `forget_password_message`, `total_recent_post_footer`, `total_popular_post_footer`, `total_recent_post_sidebar`, `total_popular_post_sidebar`, `total_featured_product_home`, `total_latest_product_home`, `total_popular_product_home`, `meta_title_home`, `meta_keyword_home`, `meta_description_home`, `banner_login`, `banner_registration`, `banner_forget_password`, `banner_reset_password`, `banner_search`, `banner_cart`, `banner_checkout`, `banner_product_category`, `banner_blog`, `cta_title`, `cta_content`, `cta_read_more_text`, `cta_read_more_url`, `cta_photo`, `featured_product_title`, `featured_product_subtitle`, `latest_product_title`, `latest_product_subtitle`, `popular_product_title`, `popular_product_subtitle`, `testimonial_title`, `testimonial_subtitle`, `testimonial_photo`, `blog_title`, `blog_subtitle`, `newsletter_text`, `paypal_email`, `stripe_public_key`, `stripe_secret_key`, `bank_detail`, `before_head`, `after_body`, `before_body`, `home_service_on_off`, `home_welcome_on_off`, `home_featured_product_on_off`, `home_latest_product_on_off`, `home_popular_product_on_off`, `home_testimonial_on_off`, `home_blog_on_off`, `newsletter_on_off`, `ads_above_welcome_on_off`, `ads_above_featured_product_on_off`, `ads_above_latest_product_on_off`, `ads_above_popular_product_on_off`, `ads_above_testimonial_on_off`, `ads_category_sidebar_on_off`, `quote_text`, `quote_span_text`) VALUES
-(1, 'logo.png', 'favicon.png', 'Dead stock is inventory that is unsellable. A business may find itself with dead stock because it ordered or manufactured too many items and then found they didn\'t sell as anticipated. Dead stock can also include damaged items, incorrect deliveries, leftover seasonal products or expired raw materials.', '<p>Lorem ipsum dolor sit amet, omnis signiferumque in mei, mei ex enim concludaturque. Senserit salutandi euripidis no per, modus maiestatis scribentur est an.Â Ea suas pertinax has.</p>\n', '', 'Tamil', '', '', '', '', 'support@ecommercephp.com', 'Visitor Email Message from Ecommerce Site PHP', 'Thank you for sending email. We will contact you shortly.', 'A confirmation link is sent to your email address. You will get the password reset information in there.', 4, 4, 5, 5, 0, 0, 0, 'Ecommerce PHP', 'online fashion store, garments shop, online garments', 'ecommerce php project with mysql database', 'banner_login.jpg', 'banner_registration.jpg', 'banner_forget_password.jpg', 'banner_reset_password.jpg', 'banner_search.jpg', 'banner_cart.jpg', 'banner_checkout.jpg', 'banner_product_category.png', 'banner_blog.jpg', 'Welcome To Our Ecommerce Website', 'Lorem ipsum dolor sit amet, an labores explicari qui, eu nostrum copiosae argumentum has. Latine propriae quo no, unum ridens expetenda id sit, \r\nat usu eius eligendi singulis. Sea ocurreret principes ne. At nonumy aperiri pri, nam quodsi copiosae intellegebat et, ex deserunt euripidis usu. ', 'Read More', '#', 'cta.jpg', 'Featured Products', 'Our list on Top Featured Products', 'Latest Products', 'Our list of recently added products', 'Popular Products', 'Popular products based on customer\'s choice', 'Testimonials', 'See what our clients tell about us', 'testimonial.jpg', 'Latest Blog', 'See all our latest articles and news from below', 'Sign-up to our newsletter for latest promotions and discounts.', 'admin@ecom.com', 'pk_test_0SwMWadgu8DwmEcPdUPRsZ7b', 'sk_test_TFcsLJ7xxUtpALbDo1L5c1PN', 'Bank Name: WestView Bank\r\nAccount Number: CA100270589600\r\nBranch Name: CA Branch\r\nCountry: USA', '', '<div id=\"fb-root\"></div>\r\n<script>(function(d, s, id) {\r\n  var js, fjs = d.getElementsByTagName(s)[0];\r\n  if (d.getElementById(id)) return;\r\n  js = d.createElement(s); js.id = id;\r\n  js.src = \"//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=323620764400430\";\r\n  fjs.parentNode.insertBefore(js, fjs);\r\n}(document, \'script\', \'facebook-jssdk\'));</script>', '<!--Start of Tawk.to Script-->\r\n<script type=\"text/javascript\">\r\nvar Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();\r\n(function(){\r\nvar s1=document.createElement(\"script\"),s0=document.getElementsByTagName(\"script\")[0];\r\ns1.async=true;\r\ns1.src=\'https://embed.tawk.to/5ae370d7227d3d7edc24cb96/default\';\r\ns1.charset=\'UTF-8\';\r\ns1.setAttribute(\'crossorigin\',\'*\');\r\ns0.parentNode.insertBefore(s1,s0);\r\n})();\r\n</script>\r\n<!--End of Tawk.to Script-->', 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, ', your game in our auction', 'Start');
+INSERT INTO `tbl_settings` (`id`, `logo`, `favicon`, `running_text`, `footer_about`, `footer_copyright`, `contact_address`, `contact_email`, `contact_phone`, `contact_fax`, `contact_map_iframe`, `receive_email`, `receive_email_subject`, `receive_email_thank_you_message`, `forget_password_message`, `total_recent_post_footer`, `total_popular_post_footer`, `total_recent_post_sidebar`, `total_popular_post_sidebar`, `total_featured_product_home`, `total_latest_product_home`, `total_popular_product_home`, `meta_title_home`, `meta_keyword_home`, `meta_description_home`, `banner_login`, `banner_registration`, `banner_forget_password`, `banner_reset_password`, `banner_search`, `banner_cart`, `banner_checkout`, `banner_product_category`, `banner_blog`, `cta_title`, `cta_content`, `cta_read_more_text`, `cta_read_more_url`, `cta_photo`, `featured_product_title`, `featured_product_subtitle`, `latest_product_title`, `latest_product_subtitle`, `popular_product_title`, `popular_product_subtitle`, `testimonial_title`, `testimonial_subtitle`, `testimonial_photo`, `blog_title`, `blog_subtitle`, `newsletter_text`, `paypal_email`, `stripe_public_key`, `stripe_secret_key`, `bank_detail`, `before_head`, `after_body`, `before_body`, `home_service_on_off`, `home_welcome_on_off`, `home_featured_product_on_off`, `home_latest_product_on_off`, `home_popular_product_on_off`, `home_testimonial_on_off`, `home_blog_on_off`, `newsletter_on_off`, `ads_above_welcome_on_off`, `ads_above_featured_product_on_off`, `ads_above_latest_product_on_off`, `ads_above_popular_product_on_off`, `ads_above_testimonial_on_off`, `ads_category_sidebar_on_off`, `quote_text`, `quote_span_text`, `user_tc`, `seller_tc`) VALUES
+(1, 'logo.png', 'favicon.png', 'Dead stock is inventory that is unsellable. A business may find itself with dead stock because it ordered or manufactured too many items and then found they didn\'t sell as anticipated. Dead stock can also include damaged items, incorrect deliveries, leftover seasonal products or expired raw materials.', '<p>Lorem ipsum dolor sit amet, omnis signiferumque in mei, mei ex enim concludaturque. Senserit salutandi euripidis no per, modus maiestatis scribentur est an.Â Ea suas pertinax has.</p>\n', '', 'Tamil', '', '', '', '', 'support@ecommercephp.com', 'Visitor Email Message from Ecommerce Site PHP', 'Thank you for sending email. We will contact you shortly.', 'A confirmation link is sent to your email address. You will get the password reset information in there.', 4, 4, 5, 5, 0, 0, 0, 'Ecommerce PHP', 'online fashion store, garments shop, online garments', 'ecommerce php project with mysql database', 'banner_login.jpg', 'banner_registration.jpg', 'banner_forget_password.jpg', 'banner_reset_password.jpg', 'banner_search.jpg', 'banner_cart.jpg', 'banner_checkout.jpg', 'banner_product_category.png', 'banner_blog.jpg', 'Welcome To Our Ecommerce Website', 'Lorem ipsum dolor sit amet, an labores explicari qui, eu nostrum copiosae argumentum has. Latine propriae quo no, unum ridens expetenda id sit, \r\nat usu eius eligendi singulis. Sea ocurreret principes ne. At nonumy aperiri pri, nam quodsi copiosae intellegebat et, ex deserunt euripidis usu. ', 'Read More', '#', 'cta.jpg', 'Featured Products', 'Our list on Top Featured Products', 'Latest Products', 'Our list of recently added products', 'Popular Products', 'Popular products based on customer\'s choice', 'Testimonials', 'See what our clients tell about us', 'testimonial.jpg', 'Latest Blog', 'See all our latest articles and news from below', 'Sign-up to our newsletter for latest promotions and discounts.', 'admin@ecom.com', 'pk_test_0SwMWadgu8DwmEcPdUPRsZ7b', 'sk_test_TFcsLJ7xxUtpALbDo1L5c1PN', 'Bank Name: WestView Bank\r\nAccount Number: CA100270589600\r\nBranch Name: CA Branch\r\nCountry: USA', '', '<div id=\"fb-root\"></div>\r\n<script>(function(d, s, id) {\r\n  var js, fjs = d.getElementsByTagName(s)[0];\r\n  if (d.getElementById(id)) return;\r\n  js = d.createElement(s); js.id = id;\r\n  js.src = \"//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=323620764400430\";\r\n  fjs.parentNode.insertBefore(js, fjs);\r\n}(document, \'script\', \'facebook-jssdk\'));</script>', '<!--Start of Tawk.to Script-->\r\n<script type=\"text/javascript\">\r\nvar Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();\r\n(function(){\r\nvar s1=document.createElement(\"script\"),s0=document.getElementsByTagName(\"script\")[0];\r\ns1.async=true;\r\ns1.src=\'https://embed.tawk.to/5ae370d7227d3d7edc24cb96/default\';\r\ns1.charset=\'UTF-8\';\r\ns1.setAttribute(\'crossorigin\',\'*\');\r\ns0.parentNode.insertBefore(s1,s0);\r\n})();\r\n</script>\r\n<!--End of Tawk.to Script-->', 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, ', your game in our auction', 'Start', 'Users Terms', 'Seller terms');
 
 -- --------------------------------------------------------
 
@@ -630,16 +674,17 @@ CREATE TABLE `users` (
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `user_gst` varchar(50) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `profile_image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `phone_number`, `email`, `password`, `user_gst`, `created_at`) VALUES
-(10, 'tamizhtharun', '9597049879', 'user@mail.com', '$2y$10$UfjZWLicsEiA.dMhXThReuWkDeWMRmZw5xZ/6M24AYesX/XTDGmtG', '', '2025-01-10 15:32:06'),
-(11, 'visva', '9865969899', 'visva@gmail.com', '$2y$10$6Pzahdk9UuJg5quo1hjqY.GgSBMwFeh3k00c3GCU6LkmUyt/oOIae', '', '2025-01-11 04:17:31');
+INSERT INTO `users` (`id`, `username`, `phone_number`, `email`, `password`, `user_gst`, `created_at`, `profile_image`) VALUES
+(10, 'TAMIL SELVAN V', '9597049879', 'user@mail.com', '$2y$10$UfjZWLicsEiA.dMhXThReuWkDeWMRmZw5xZ/6M24AYesX/XTDGmtG', '', '2025-01-10 15:32:06', NULL),
+(11, 'TAMIL SELVAN V', '9597049879', 'visva@gmail.com', '$2y$10$6Pzahdk9UuJg5quo1hjqY.GgSBMwFeh3k00c3GCU6LkmUyt/oOIae', '', '2025-01-11 04:17:31', 'profile-11.png');
 
 -- --------------------------------------------------------
 
@@ -656,11 +701,19 @@ CREATE TABLE `users_addresses` (
   `city` varchar(100) NOT NULL,
   `state` varchar(100) NOT NULL,
   `pincode` varchar(10) NOT NULL,
-  `address_type` enum('Home','Work','Other') DEFAULT 'Home',
+  `address_type` enum('Primary','Secondary') NOT NULL DEFAULT 'Primary',
   `is_default` tinyint(1) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users_addresses`
+--
+
+INSERT INTO `users_addresses` (`id`, `user_id`, `full_name`, `phone_number`, `address`, `city`, `state`, `pincode`, `address_type`, `is_default`, `created_at`, `updated_at`) VALUES
+(4, 11, 'Tharun', '9597049879', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Dindigul', 'Tamil Nadu', '624710', 'Primary', 0, '2025-01-25 04:54:40', '2025-01-27 05:38:02'),
+(9, 11, 'SRIRAM R', '7708401467', '1/20, Matha kovil street, Karai- po, Alathur- tk, Perambalur.', 'Perambalur', 'Tamil Nadu', '621109', 'Secondary', 1, '2025-01-27 05:37:33', '2025-01-27 05:38:02');
 
 -- --------------------------------------------------------
 
@@ -688,7 +741,8 @@ INSERT INTO `user_login` (`id`, `user_name`, `user_email`, `user_phone`, `user_p
 (17, 'TAMIL SELVAN V', 'seller@deadstock.in', '', '', '$2y$10$ZSY8tFAINSJ45Hg7Y.Oeq.VckmCjVCD0LDwQ8oDk28n8shHNfIKaG', 'seller'),
 (18, 'TAMIL SELVAN V', 'mailtotharun23@gmail.com', '', '', '$2y$10$bMO/LgY/F2pMyocMrUaeRudf5xMYmkkkZecWFeQjhQ/X16T63btKm', 'seller'),
 (19, 'tamizhtharun', 'user@mail.com', '', '', '$2y$10$UfjZWLicsEiA.dMhXThReuWkDeWMRmZw5xZ/6M24AYesX/XTDGmtG', 'user'),
-(20, 'visva', 'visva@gmail.com', '', '', '$2y$10$6Pzahdk9UuJg5quo1hjqY.GgSBMwFeh3k00c3GCU6LkmUyt/oOIae', 'user');
+(20, 'visva', 'visva@gmail.com', '', '', '$2y$10$6Pzahdk9UuJg5quo1hjqY.GgSBMwFeh3k00c3GCU6LkmUyt/oOIae', 'user'),
+(21, 'TAMIL SELVAN V', '927622bal049@mkce.ac.in', '', '', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', 'seller');
 
 --
 -- Indexes for dumped tables
@@ -795,6 +849,12 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email` (`email`);
 
 --
+-- Indexes for table `users_addresses`
+--
+ALTER TABLE `users_addresses`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `user_login`
 --
 ALTER TABLE `user_login`
@@ -808,7 +868,7 @@ ALTER TABLE `user_login`
 -- AUTO_INCREMENT for table `bidding`
 --
 ALTER TABLE `bidding`
-  MODIFY `bid_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `bid_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11125;
 
 --
 -- AUTO_INCREMENT for table `bid_settings`
@@ -820,7 +880,7 @@ ALTER TABLE `bid_settings`
 -- AUTO_INCREMENT for table `sellers`
 --
 ALTER TABLE `sellers`
-  MODIFY `seller_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `seller_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `tbl_brands`
@@ -850,19 +910,19 @@ ALTER TABLE `tbl_mid_category`
 -- AUTO_INCREMENT for table `tbl_orders`
 --
 ALTER TABLE `tbl_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_product`
 --
 ALTER TABLE `tbl_product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=170;
 
 --
 -- AUTO_INCREMENT for table `tbl_product_photo`
 --
 ALTER TABLE `tbl_product_photo`
-  MODIFY `pp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `pp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `tbl_slider`
@@ -889,10 +949,16 @@ ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
+-- AUTO_INCREMENT for table `users_addresses`
+--
+ALTER TABLE `users_addresses`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
 -- AUTO_INCREMENT for table `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Constraints for dumped tables

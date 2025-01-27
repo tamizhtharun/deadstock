@@ -1,4 +1,7 @@
-<?php require_once('header.php');?>
+<?php require_once('header.php');
+require_once('track_view.php');
+trackPageView('HP', 'Home page');
+?>
 <link rel="stylesheet" href="./css/index.css">
 <div class="category-pad">
     <div class="category-box">

@@ -4,14 +4,24 @@ echo "<pre>";
 print_r($_SESSION['seller_session']); // Display all session variables
 echo "</pre>";
 ?> -->
-
+<?php
+     $statement = $pdo->prepare("SELECT seller_status FROM sellers WHERE seller_id = ?");
+	 $statement->execute([$seller_id]);
+	 $seller_status = $statement->fetchColumn();
+// $seller_status = $_SESSION['seller_session']['seller_status'];
+?>
 
 <section class="content-header">
 	<div class="content-header-left">
 		<h1>View Products</h1>
+		<!-- <?php echo $seller_status; ?> -->
 	</div>
 	<div class="content-header-right">
-		<a href="product-add.php" class="btn btn-primary btn-sm">Add Product</a>
+		<?php if($seller_status == 1){?>
+			<a href="product-add.php" class="btn btn-primary btn-sm" >Add Product</a>
+			<?php }else{ ?>
+				<a href="profile-edit.php" class="btn btn-primary btn-sm disabled" >Add Product</a>
+		<?php } ?>
 	</div>
 </section>
 
@@ -20,6 +30,14 @@ echo "</pre>";
 		<div class="col-md-12">
 			<div class="box box-info">
 				<div class="box-body table-responsive">
+					<?php if($seller_status==0){ ?>
+						<div class="alert no-details">
+							<i class="fa fa-exclamation-triangle"></i>
+							<h2>Profile Incomplete</h2>
+							<h5>Complete your profile to add products</h5>
+							<a href="profile-edit.php" class="btn btn-primary btn-sm" >Complete Your Profile</a>
+						</div>
+					<?php } else{ ?>
 					<table id="example1" class="table table-bordered table-hover table-striped">
 					<thead class="thead-dark">
 							<tr>
@@ -107,6 +125,7 @@ echo "</pre>";
 		</div>
 	</div>
 </section>
+<?php } ?>
 
 
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -127,5 +146,16 @@ echo "</pre>";
         </div>
     </div>
 </div>
+
+<style>
+        .alert {
+            padding: 10px;
+            width: 100%;
+            text-align: center;
+        }
+        .alert i {
+            font-size: 70px;
+        }
+    </style>
 
 <?php require_once('footer.php'); ?>
