@@ -7,51 +7,26 @@ trackPageView('SRP', 'Seller Panel');
 <section class="content-header">
 	<h1>Dashboard</h1>
 </section>
-
 <?php
-// $statement = $pdo->prepare("SELECT * FROM tbl_top_category");
-// $statement->execute();
-// $total_top_category = $statement->rowCount();
-
-// $statement = $pdo->prepare("SELECT * FROM tbl_mid_category");
-// $statement->execute();
-// $total_mid_category = $statement->rowCount();
-
-// $statement = $pdo->prepare("SELECT * FROM tbl_end_category");
-// $statement->execute();
-// $total_end_category = $statement->rowCount();
+if(isset($_SESSION['seller_session'])) {
+    $seller_id = $_SESSION['seller_session']['seller_id'];
+    
+    // Get seller status from database
+    $statement = $pdo->prepare("SELECT seller_status FROM sellers WHERE seller_id = ?");
+    $statement->execute([$seller_id]);
+    $seller_status = $statement->fetchColumn();
+    
+    if($seller_status == 0) {
+        header('Location: profile-edit.php');
+        exit;
+    }
+}
 
 $statement = $pdo->prepare("SELECT * FROM tbl_product");
 $statement->execute();
 $total_product = $statement->rowCount();
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_customer WHERE seller_status='1'");
-// $statement->execute();
-// $total_customers = $statement->rowCount();
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_subscriber WHERE subs_active='1'");
-// $statement->execute();
-// $total_subscriber = $statement->rowCount();
-
-// $statement = $pdo->prepare("SELECT * FROM tbl_shipping_cost");
-// $statement->execute();
-// $available_shipping = $statement->rowCount();
-
-// $statement = $pdo->prepare("SELECT * FROM tbl_payment WHERE payment_status=?");
-// $statement->execute(array('Completed'));
-// $total_order_completed = $statement->rowCount();
-
-// $statement = $pdo->prepare("SELECT * FROM tbl_payment WHERE shipping_status=?");
-// $statement->execute(array('Completed'));
-// $total_shipping_completed = $statement->rowCount();
-
-// $statement = $pdo->prepare("SELECT * FROM tbl_payment WHERE payment_status=?");
-// $statement->execute(array('Pending'));
-// $total_order_pending = $statement->rowCount();
-
-// $statement = $pdo->prepare("SELECT * FROM tbl_payment WHERE payment_status=? AND shipping_status=?");
-// $statement->execute(array('Completed','Pending'));
-// $total_order_complete_shipping_pending = $statement->rowCount();
 ?>
 <head>
     <!-- Include Chart.js -->
@@ -475,7 +450,6 @@ if ($latestDate) {
             </div>
     </div>
 </div>
-    
 
 <script>
 function createDynamicRevenueChart(initialLabels, initialRevenues, initialOrders) {
@@ -502,7 +476,7 @@ function createDynamicRevenueChart(initialLabels, initialRevenues, initialOrders
                     label: 'Orders',
                     data: orders,
                     type: 'line',
-                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderColor: 'rgba(75, 192, 192, 0.8)',
                     borderWidth: 2,
                     fill: false,
                     yAxisID: 'y1'
@@ -595,7 +569,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </style>
               
             
-		  
+  
 </section>
 
 <?php require_once('footer.php'); ?>
