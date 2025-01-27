@@ -110,6 +110,8 @@
     </div>
   </div>
 </section>
+
+
 <div id="sellerModal" class="seller-modal">
     <div class="seller-modal-content">
         <div class="seller-modal-header">

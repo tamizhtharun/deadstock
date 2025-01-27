@@ -388,26 +388,55 @@ function fetchSellerData(sellerId) {
 }
 
 function updateSellerModal(data) {
-  const seller = data.seller;
+  const seller = data.seller
+  const defaultImage = "../assets/uploads/profile-pictures/user-1.jpg"
+
   document.querySelector("#profile .seller-info-grid").innerHTML = `
         <div class="seller-info-item"><label>Name</label><span>${seller.seller_name}</span></div>
+        <div class="seller-info-item">
+            <label>Photo</label>
+            <div class="seller-photo-container">
+                <img src="${seller.seller_photo || defaultImage}" alt="Seller Photo" class="seller-photo">
+            </div>
+            <div class="photo-modal">
+                <img src="${seller.seller_photo || defaultImage}" alt="Seller Photo">
+            </div>
+        </div>
         <div class="seller-info-item"><label>Company Name</label><span>${seller.seller_cname}</span></div>
+        <div class="seller-info-item revenue-item">
+            <label>Total Revenue</label>
+            <span class="revenue-value">₹300</span>
+        </div>
         <div class="seller-info-item"><label>Email</label><span>${seller.seller_email}</span></div>
         <div class="seller-info-item"><label>Phone</label><span>${seller.seller_phone}</span></div>
         <div class="seller-info-item"><label>GST Number</label><span>${seller.seller_gst}</span></div>
         <div class="seller-info-item"><label>Registration Date</label><span>${seller.created_at}</span></div>
-        <div class="seller-info-item"><label>Status</label><span>${seller.seller_status ? "Active" : "Inactive"}</span></div>
+        <div class="seller-info-item"><label>Status</label><span class="status-badge ${seller.seller_status ? "active" : "inactive"}">${seller.seller_status ? "Active" : "Inactive"}</span></div>
         <div class="seller-info-item seller-address">
             <label>Business Address</label>
             <span>${seller.seller_address} <br> ${seller.seller_city}, ${seller.seller_state} ${seller.seller_zipcode}</span>
         </div>
         <div class="seller-info-item">
-        <label>Business Certification</label>
+            <label>Business Certification</label>
             <button id="downloadSellerCertificate" class="btn btn-primary">
                 <i class="fa fa-download"></i> Download Seller Certificate
             </button>
         </div>
-    `;
+    `
+
+  // Add click event listeners for the photo modal
+  const photoContainer = document.querySelector(".seller-photo-container")
+  const modal = document.querySelector(".photo-modal")
+  const photo = photoContainer.querySelector(".seller-photo")
+
+  photo.addEventListener("click", () => {
+    modal.classList.add("active")
+  })
+
+  modal.addEventListener("click", () => {
+    modal.classList.remove("active")
+  })
+
 
   document.querySelector("#products .seller-stats-grid").innerHTML = `
         <div class="seller-stat-card"><h3>Total Products</h3><p>${data.products.total}</p></div>
@@ -418,7 +447,7 @@ function updateSellerModal(data) {
   document.querySelector("#bidding .seller-stats-grid").innerHTML = `
         <div class="seller-stat-card"><h3>Total Bids</h3><p>${data.bidding.total}</p></div>
         <div class="seller-stat-card"><h3>Winning Bids</h3><p>${data.bidding.winning}</p></div>
-        <div class="seller-stat-card"><h3>Avg. Bid Amount</h3><p>$${data.bidding.avg_amount.toFixed(2)}</p></div>
+        <div class="seller-stat-card"><h3>Avg. Bid Amount</h3><p>₹${data.bidding.avg_amount.toFixed(2)}</p></div>
     `;
 
   document.querySelector("#orders .seller-stats-grid").innerHTML = `
