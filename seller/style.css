@@ -599,6 +599,18 @@ select {
     }
 }
 
+@media(max-width: 480px){
+  .profile-type{
+    margin-left: -5px !important;
+  }
+  .profile-type span{
+    padding: 0px !important;
+  }
+  .sidebar-toggle{
+    margin-right: 0px !important;
+  }
+}
+
 /* Improved visibility for active menu items */
 .sidebar-menu li.active > a {
     background-color: rgba(255, 255, 255, 0.1);

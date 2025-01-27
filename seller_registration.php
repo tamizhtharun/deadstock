@@ -126,6 +126,160 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('sellerRegistrationForm');
+    const gstInput = document.getElementById('seller_gst');
+    const gstError = document.getElementById('gst-error');
+    const phoneInput = document.getElementById('seller_phone');
+    const phoneError = document.getElementById('phone-error');
+    const passwordInput = document.getElementById('seller_password');
+    const confirmPasswordInput = document.getElementById('seller_confirm_password');
+    const passwordError = document.getElementById('password-error');
+    
+
+
+    // GST validation
+    function validateGST(gstNumber) {
+        const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[Z]{1}[A-Z0-9]{1}$/;
+        return gstRegex.test(gstNumber);
+    }
+
+    // Indian phone number validation
+    function validatePhone(phoneNumber) {
+        const phoneRegex = /^(?:(?:\+|0{0,2})91(\s*[-]\s*)?|[0]?)?[6789]\d{9}$/;
+        return phoneRegex.test(phoneNumber);
+    }
+
+    // Password validation
+    function validatePasswords() {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        if (confirmPassword.length > 0) {
+            if (password !== confirmPassword) {
+                passwordError.style.display = 'block';
+                return false;
+            } else {
+                passwordError.style.display = 'none';
+                return true;
+            }
+        }
+        return true;
+    }
+
+    gstInput.addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+        if (this.value.length > 0) {
+            if (!validateGST(this.value)) {
+                gstError.style.display = 'block';
+            } else {
+                gstError.style.display = 'none';
+            }
+        } else {
+            gstError.style.display = 'none';
+        }
+    });
+
+    phoneInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+        if (this.value.length > 0) {
+            if (!validatePhone(this.value)) {
+                phoneError.style.display = 'block';
+            } else {
+                phoneError.style.display = 'none';
+            }
+        } else {
+            phoneError.style.display = 'none';
+        }
+    });
+
+    confirmPasswordInput.addEventListener('input', validatePasswords);
+    passwordInput.addEventListener('input', validatePasswords);
+
+    // ZIP code validation
+    const zipcodeInput = document.getElementById('seller_zipcode');
+    zipcodeInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(event) {
+        // Validate GST
+        if (!validateGST(gstInput.value)) {
+            event.preventDefault();
+            gstError.style.display = 'block';
+            gstInput.focus();
+            return;
+        }
+
+        // Validate Phone
+        if (!validatePhone(phoneInput.value)) {
+            event.preventDefault();
+            phoneError.style.display = 'block';
+            phoneInput.focus();
+            return;
+        }
+
+        // Validate Passwords
+        if (!validatePasswords()) {
+            event.preventDefault();
+            passwordError.style.display = 'block';
+            confirmPasswordInput.focus();
+            return;
+        }
+
+        // Validate ZIP code
+        const zipcode = zipcodeInput.value;
+        if (!/^\d{6}$/.test(zipcode)) {
+            event.preventDefault();
+            alert('Please enter a valid 6-digit ZIP code.');
+            zipcodeInput.focus();
+            return;
+        }
+    });
+});
+gstInput.addEventListener('input', function() {
+    this.value = this.value.toUpperCase();
+    if (this.value.length > 0) {
+        if (!validateGST(this.value)) {
+            gstError.classList.add('active');
+        } else {
+            gstError.classList.remove('active');
+        }
+    } else {
+        gstError.classList.remove('active');
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const zipcodeInput = document.getElementById('seller_zipcode');
+    const zipcodeError = document.getElementById('zipcode-error');
+
+    // ZIP code validation
+    zipcodeInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, ''); // Allow only numbers
+        if (this.value.length > 0 && this.value.length !== 6) {
+            zipcodeError.textContent = 'Please enter a valid 6-digit ZIP code.';
+        } else {
+            zipcodeError.textContent = '';
+        }
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(event) {
+        const zipcode = zipcodeInput.value;
+        if (!/^\d{6}$/.test(zipcode)) {
+            event.preventDefault();
+            zipcodeError.textContent = 'Please enter a valid 6-digit ZIP code.';
+            zipcodeInput.focus();
+        }
+    });
+});
+
+</script>
+
 <style>
   :root {
     --primary-color: #0071e3;

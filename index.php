@@ -272,7 +272,7 @@ if (!empty($topCategories)) {
                           slidesPerView: 2,
                       },
                       768: {
-                          slidesPerView: 3,
+                          slidesPerView: 6,
                       },
                       1024: {
                           slidesPerView: 4,
