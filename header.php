@@ -1,4 +1,5 @@
 <?php
+ob_start();
 session_start();
 include 'db_connection.php';
 $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
@@ -34,8 +35,8 @@ unset($_SESSION['error_message']);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#your-brand-color">
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> -->
+<!-- <meta name="theme-color" content="#your-brand-color"> -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dead Stock Processing</title>
@@ -66,256 +67,7 @@ unset($_SESSION['error_message']);
 <style>
     
 
-:root {
-  --apple-bg: #ffffff;
-  --apple-text: #1d1d1f;
-  --apple-secondary: #86868b;
-  --apple-blue: #0071e3;
-  --apple-gray: #f5f5f7;
-  --apple-border: #d2d2d7;
-  --apple-shadow: rgba(0, 0, 0, 0.1);
-  --apple-radius: 12px;
-}
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
-}
-
-body {
-  background-color: var(--apple-gray);
-  color: var(--apple-text);
-  -webkit-font-smoothing: antialiased;
-}
-
-.navbar {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 100;
-  border-bottom: 1px solid var(--apple-border);
-}
-
-.nav-brand {
-  font-size: 1.5rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-
-.notification-trigger {
-  position: relative;
-  cursor: pointer;
-  padding: 0.5rem;
-  z-index: 20;
-}
-
-.notification-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: var(--apple-blue);
-  color: white;
-  border-radius: 12px;
-  padding: 0.15rem 0.4rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.notification-panel {
-  position: absolute;
-  top: calc(100% + 0.8rem);
-  right: -1rem;
-  width: 380px;
-  background: var(--apple-bg);
-  border-radius: var(--apple-radius);
-  box-shadow: 0 4px 24px var(--apple-shadow);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.2s ease;
-}
-
-.notification-trigger:hover .notification-panel {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.notification-header {
-  padding: 1rem 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--apple-border);
-}
-
-.notification-header h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.mark-all-read {
-  color: var(--apple-blue);
-  background: none;
-  border: none;
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 0.5rem;
-}
-
-.notification-tabs {
-  display: flex;
-  padding: 0.5rem;
-  gap: 0.5rem;
-  border-bottom: 1px solid var(--apple-border);
-}
-
-.tab {
-  padding: 0.5rem 1rem;
-  border: none;
-  background: none;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  color: var(--apple-secondary);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.tab:hover {
-  background: var(--apple-gray);
-}
-
-.tab.active {
-  background: var(--apple-gray);
-  color: var(--apple-text);
-  font-weight: 500;
-}
-
-.notification-list {
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.notification-item {
-  padding: 1rem 1.5rem;
-  display: flex;
-  gap: 1rem;
-  border-bottom: 1px solid var(--apple-border);
-  transition: background 0.2s ease;
-}
-
-.notification-item:hover {
-  background: var(--apple-gray);
-}
-
-.notification-item.unread {
-  background: rgba(0, 113, 227, 0.05);
-}
-
-.notification-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--apple-gray);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.notification-content {
-  flex: 1;
-}
-
-.notification-title {
-  font-weight: 500;
-  margin-bottom: 0.25rem;
-}
-
-.notification-message {
-  color: var(--apple-secondary);
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
-
-.notification-time {
-  font-size: 0.8rem;
-  color: var(--apple-secondary);
-  margin-top: 0.25rem;
-}
-
-.notification-image {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  object-fit: cover;
-}
-
-.notification-badge {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  background-color: #ff3b30;
-  color: white;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border: 2px solid var(--apple-bg); /* Matches background color */
-  min-width: 20px;
-  height: 20px; /* Explicit height for the circle */
-  display: flex;
-  align-items: center; /* Centers text vertically */
-  justify-content: center; /* Centers text horizontally */
-  line-height: 1; /* Prevents text from shifting */
-  transform: translate(50%, -50%); /* Centers above the bell icon */
-  animation: badge-pulse 2s infinite;
-}
-
-.notification-list {
-  max-height: 350px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--apple-border) transparent;
-}
-
-.mark-all-read {
-  color: var(--apple-blue);
-  background: none;
-  border: none;
-  font-size: 1.2rem; /* Icon size */
-  cursor: pointer;
-  padding: 0.3rem 0.8rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem; /* Space between icon and text */
-  border-radius: 20px; /* Rounded style */
-  transition: background 0.3s ease, transform 0.2s ease;
-  height: auto; /* Allow dynamic height */
-}
-
-.read-all-text {
-  font-size: 0.9rem; /* Slightly smaller than the icon */
-  font-weight: 500; /* Medium weight for a premium feel */
-  color: var(--apple-blue);
-  transition: color 0.2s ease;
-}
-
-.mark-all-read:hover {
-  background: rgba(0, 113, 227, 0.1); /* Subtle hover background */
-  transform: scale(1.05); /* Slight zoom-in effect */
-}
-
-.mark-all-read:hover .read-all-text {
-  color: var(--apple-text); /* Change text color on hover */
-}
 
 
 </style>
@@ -397,28 +149,7 @@ echo "</pre>";
             
             <!-- Notification -->
 
-            <div class="notification-trigger ds-icon-button" id="notificationTrigger">
-             <i class="fas fa-bell"></i>
-                <span class="notification-badge" id="notificationBadge">3</span>
-                <div class="notification-panel" id="notificationPanel">
-                    <div class="notification-header">
-                        <h3>Notifications</h3>
-                        <!-- <button class="mark-all-read">Mark all as read</button> -->
-                        <button class="mark-all-read">
-                            <i class="fas fa-check-double" title="Mark all as read"></i>
-                            <span class="read-all-text">Read All</span>
-                        </button>
-
-
-                    </div>
-                    <div class="notification-tabs">
-                        <button class="tab active" data-tab="all">All</button>
-                        <button class="tab" data-tab="orders">Orders</button>
-                        <button class="tab" data-tab="bids">Bids</button>
-                    </div>
-                    <div class="notification-list" id="notificationList"></div>
-                </div>
-            </div>
+            
 
             <div class="ds-profile-menu">
                 <button class="ds-profile-trigger">
@@ -448,11 +179,11 @@ echo "</pre>";
                             <i class="fas fa-user"></i>
                             <span>Account</span>
                         </a>
-                        <a href="/orders" class="ds-menu-item"style="text-decoration: none !important">
+                        <a href="user/profile.php?tab=orders" class="ds-menu-item"style="text-decoration: none !important">
                             <i class="fas fa-shopping-bag"></i>
                             <span>Orders</span>
                         </a>
-                        <a href="/bidding" class="ds-menu-item"style="text-decoration: none !important">
+                        <a href="user/profile.php?tab=bidding" class="ds-menu-item"style="text-decoration: none !important">
                             <i class="fas fa-gavel"></i>
                             <span>Bidding</span>
                         </a>

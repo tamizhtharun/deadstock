@@ -82,7 +82,11 @@ try {
     }
 
     // Update order status
-    $stmt = $pdo->prepare("UPDATE tbl_orders SET order_status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND seller_id = ?");
+    if ($new_status === 'processing') {
+        $stmt = $pdo->prepare("UPDATE tbl_orders SET order_status = ?, updated_at = CURRENT_TIMESTAMP, processing_time = CURRENT_TIMESTAMP WHERE id = ? AND seller_id = ?");
+    } else {
+        $stmt = $pdo->prepare("UPDATE tbl_orders SET order_status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND seller_id = ?");
+    }
     $result = $stmt->execute([$new_status, $order_id, $seller_id]);
 
     if (!$result || $stmt->rowCount() === 0) {
@@ -116,3 +120,4 @@ try {
     ]);
 }
 ?>
+

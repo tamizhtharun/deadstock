@@ -27,6 +27,49 @@ body {
   z-index: 1000;
 }
 
+.terms-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+
+/* terms modal link button */
+#terms-link{
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+
+}
+
+/* Terms Modal Styling */
+#termsModal {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.terms-content {
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.terms-content p {
+  margin-bottom: 1rem;
+}
+
 #priceRequestModal {
   background: white;
   border-radius: 8px;
@@ -51,16 +94,21 @@ body {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #e5e7eb;
-  }
+}
 
+  .terms-modal-header-rp {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    }
 .modal-header-rp h3 {
-    /* color: #1e3a8a; */
-    font-size: 1.25rem;
-    font-weight: 600;
+  /* color: #1e3a8a; */
+  font-size: 1.25rem;
+  font-weight: 600;
 }
 
 .form-group {
-    margin-bottom: 1.25rem;
+  margin-bottom: 1.25rem;
 }
 
 .form-group label {
@@ -70,6 +118,7 @@ body {
   font-size: 0.95rem;
   font-weight: 500;
 }
+
 .form-group input {
   width: 100%;
   padding: 0.75rem;
@@ -78,10 +127,11 @@ body {
   font-size: 1rem;
   transition: border-color 0.2s ease;
 }
+
 .form-group input:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .modal-footer {
@@ -93,53 +143,343 @@ body {
   border-top: 1px solid #e5e7eb;
 }
 
-   .btn-rp {
-          padding: 0.75rem 1.5rem;
-          border-radius: 6px;
-          font-size: 0.95rem;
+   .btn-sm {
+          padding: 0.60rem 1rem;
+          border-radius: 4px;
+          font-size: 0.80rem;
           cursor: pointer;
           transition: all 0.2s ease;
       }
 
       .btn-submit-rp {
-          background-color: #2563eb;
+          background-color: #4a4a4c;
           color: white;
           border: none;
       }
 
       .btn-submit-rp:hover {
-          background-color: #1d4ed8;
+          background-color: #989898;
       }
+.btn-rp {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
-      .btn-cancel-rp {
-          background-color: #f3f4f6;
-          color: #4b5563;
-          border: 1px solid #e5e7eb;
-      }
+.btn-submit-rp {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+}
 
-      .btn-cancel-rp:hover {
-          background-color: #e5e7eb;
-      }
+.btn-submit-rp:hover {
+  background-color: #1d4ed8;
+}
 
-      .close-button-rp {
-          position: absolute;
-          top: 1rem;
-          right: 1rem;
-          background: none;
-          border: none;
-          color: #6b7280;
-          cursor: pointer;
-          font-size: 1.25rem;
-          padding: 0.25rem;
-      }
+.btn-cancel-rp {
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+}
 
-      .close-button-rp:hover {
-          color: #4b5563;
-      }
-      
-      @media (max-width: 640px) {
-          #priceRequestModal {
-              margin: 1rem;
-              padding: 1.5rem;
-          }
-      }
+.btn-cancel-rp:hover {
+  background-color: #e5e7eb;
+}
+
+.close-button-rp {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0.25rem;
+}
+
+.close-button-rp:hover {
+  color: #4b5563;
+}
+
+@media (max-width: 640px) {
+  #priceRequestModal {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+}
+
+.product-icons {
+  margin-bottom: 1rem;
+}
+
+.product-icon {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ccc;
+  padding: 4px;
+}
+
+/* Material Suitability Grid */
+.product-materials {
+  margin-top: 1rem;
+}
+
+.description {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+/* Grid layout for the product grid */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 30px);
+  /* 7 columns for each category */
+  gap: 1px;
+  /* Space between cells */
+  margin-bottom: 1rem;
+  /* Space below the grid */
+}
+
+/* Common styles for icons */
+.material-suitability-icon {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  /* Text size inside headers */
+  font-weight: bold;
+  /* Text emphasis */
+  border: 1px solid #ddd;
+  /* Border for better visibility */
+}
+
+/* Header styles */
+.material-suitability-icon.header {
+  background-color: #f0f0f0;
+  /* Neutral background for headers */
+}
+
+/* Background colors for each column */
+.p {
+  background-color: #E6F3FF;
+  /* Light blue */
+}
+
+.m {
+  background-color: #FFFDE6;
+  /* Light yellow */
+}
+
+.k {
+  background-color: #FFE6F7;
+  /* Light pink */
+}
+
+.n {
+  background-color: #E6FFE6;
+  /* Light green */
+}
+
+.s {
+  background-color: #E6E6E6;
+  /* Light gray */
+}
+
+.h {
+  background-color: #E6F3FF;
+  /* Light blue (repeated intentionally) */
+}
+
+.o {
+  background-color: #F0F0F0;
+  /* Neutral gray */
+}
+
+/* Dots for Suitability Indicators */
+.material-suitability-icon.Rec {
+  position: relative;
+}
+
+.material-suitability-icon.Rec.p {
+  background-color: #E6F3FF;
+  /* Color for P column */
+}
+
+.material-suitability-icon.Rec.m {
+  background-color: #FFFDE6;
+  /* Color for M column */
+}
+
+.material-suitability-icon.Rec.k {
+  background-color: #FFE6F7;
+  /* Color for K column */
+}
+
+.material-suitability-icon.Rec.n {
+  background-color: #E6FFE6;
+  /* Color for N column */
+}
+
+.material-suitability-icon.Rec.s {
+  background-color: #E6E6E6;
+  /* Color for S column */
+}
+
+.material-suitability-icon.Rec.h {
+  background-color: #E6F3FF;
+  /* Color for H column */
+}
+
+.material-suitability-icon.Rec.o {
+  background-color: #F0F0F0;
+  /* Color for O column */
+}
+
+.material-suitability-icon.Rec.no-dot {
+  border: none;
+  /* No border for empty cells */
+}
+
+/* Rank 1: Single Dot */
+.material-suitability-icon.icon-rank-1::before {
+  content: '•';
+  font-size: 25px;
+  /* Slightly smaller dot */
+  color: #000;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Rank 2: Double Dot */
+.material-suitability-icon.icon-rank-2::before {
+  content: '••';
+  font-size: 25px;
+  color: #000;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+.key-dropdown {
+  display: none;
+  padding: 10px;
+  border: 1px solid #ddd;
+  margin-top: 5px;
+  background: white;
+}
+
+.key-dropdown.show {
+  display: block;
+}
+
+/* Key explanation section */
+.icon-explentation {
+  margin-top: 1rem;
+}
+
+.material-info-btn {
+  background: none;
+  border: none;
+  color: #000;
+  text-decoration: underline;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.material-info-btn::after {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: url('path-to-info-icon.svg') no-repeat center;
+  margin-left: 4px;
+}
+
+.icon-explanation {
+  margin-top: 10px;
+  position: relative;
+}
+
+.material-info-btn {
+  background: none !important;
+  border: none !important;
+  color: #333 !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  padding: 5px 0 !important;
+  text-decoration: underline !important;
+  transition: color 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  box-shadow: none !important;
+}
+
+.material-info-btn:hover {
+  color: #666 !important;
+}
+
+
+.icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #000;
+  border-radius: 50%;
+  margin-right: 10px;
+  position: relative;
+  gap: 1px; /* Gap between icon elements */
+}
+
+.l-info-icons-container {
+  display: none;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+  margin-top: 10px;
+}
+
+.key-button-container.show-info .l-info-icons-container {
+  display: block;
+  max-height: 1000px;
+  padding: 10px 0;
+}
+
+.l-info-icons-container.show {
+  display: block;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.icon.small.icon-rank-2::before {
+  content: '••'; /* Two bullet points */
+  /* font-size: 25px; */
+  /* color: #000; */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap; /* Keep on the same line */
+  letter-spacing: 10px; /* Add more space between dots */
+  padding-left: 10px !important;
+}
+
+
+/* key values css */
+
+

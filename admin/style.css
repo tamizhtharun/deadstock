@@ -752,6 +752,27 @@ select {
   border: none;
   color: white;
 }
+.btn-status-update {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-status-update:hover {
+  background-color: #f8f9fa;
+}
+
+.btn-status-update.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 .btn-primary:hover {
   background: #2980b9;
@@ -1410,3 +1431,187 @@ select {
   color: #dc2626;
 }
 
+
+
+
+#downloadCertification {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+#downloadCertification:hover {
+  background-color: #45a049;
+}
+
+#downloadCertification i {
+  margin-right: 8px;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.btn-status-update {
+  padding: 5px 10px;
+  font-size: 12px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-status-update:not(.disabled):hover {
+  opacity: 0.8;
+}
+
+.btn-status-update.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-status-update i {
+  margin-right: 5px;
+}
+
+.btn-status-update[onclick*="processing"] {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.btn-status-update[onclick*="shipped"] {
+  background-color: #17a2b8;
+  color: #fff;
+}
+
+.btn-status-update[onclick*="delivered"] {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.btn-status-update[onclick*="canceled"] {
+  background-color: #dc3545;
+  color: #fff;
+}
+.seller-photo-container {
+
+  text-align: center; /* Centers the image horizontally */
+  margin: 2px 0; /* Adds spacing around the image */
+  margin-bottom: -40px;
+
+}
+
+.seller-photo {
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #ddd; /* Adds a subtle border around the image */
+
+}
+
+.photo-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 999;
+  cursor: pointer;
+}
+
+.photo-modal.active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.photo-modal img {
+  max-width: 80vw;
+  max-height: 80vh;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.status-badge {
+ margin-top: 2px;
+  border-radius: 9999px;
+  
+}
+
+.status-badge.active {
+  background-color: #28a745;
+  color: white;
+}
+
+.status-badge.inactive {
+  background-color: #dc3545;
+  color: white;
+}
+
+.seller-address {
+  grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+  .seller-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .seller-address {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .seller-photo {
+    width: 70px; /* Adjust width for smaller screens */
+    height: 70px; /* Adjust height for smaller screens */
+  }
+  .seller-photo-container{
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .seller-photo {
+    width: 70px; /* Further adjust width for extra small screens */
+    height: 70px; /* Further adjust height for extra small screens */
+  }
+  .seller-photo-container{
+    margin-bottom: 10px;
+  }
+}
+
+.seller-tab-content {
+  max-height: 80vh; /* Restrict the height to 80% of the viewport */
+  overflow-y: hidden; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+  .seller-tab-content {
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden;  }
+}
+
+@media (max-width: 480px) {
+  .seller-tab-content {
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden;  }
+}

@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password
     $user_gst = $_POST['user_gst'];
-    
+
     // Insert user into the users table
     $sql = "INSERT INTO users (username, phone_number, email, password, user_gst) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql_login = "INSERT INTO user_login (user_name, user_email, user_password, user_role) VALUES (?, ?, ?, ?)";
         $stmt_login = $conn->prepare($sql_login);
         $stmt_login->bind_param("ssss", $username, $email, $password, $user_role);
-        
+
         if ($stmt_login->execute()) {
             echo '<script>
                 alert("Registration successful");

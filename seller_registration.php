@@ -13,6 +13,17 @@ $successMessage = "";
 $seller_name = $seller_cname = $seller_email = $seller_phone = $seller_gst = "";
 $seller_address = $seller_state = $seller_city = $seller_zipcode = "";
 
+
+
+// Add this at the top of your PHP file
+$query = "SELECT seller_tc FROM tbl_settings LIMIT 1";
+$result = mysqli_query($conn, $query);
+$terms = '';
+if ($row = mysqli_fetch_assoc($result)) {
+    $terms = htmlspecialchars($row['seller_tc']);
+}
+
+
 // Process form submission if POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Collect and sanitize input data
@@ -113,13 +124,235 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Registration</title>
-</head>
+
+<div class="container">
+    <div class="registration-wrapper">
+        <div class="form-header">
+            <h1>Seller Registration</h1>
+        </div>
+        
+
+        <!-- Display messages -->
+        <?php if (!empty($successMessage)): ?>
+            <div class="message message-success">
+                <?= htmlspecialchars($successMessage) ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($errorMessages)): ?>
+            <div class="message message-error">
+                <ul>
+                    <?php foreach ($errorMessages as $message): ?>
+                        <li><?= htmlspecialchars($message) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+            <form class="registration-form" method="POST" action="">
+        <div class="form-grid">
+            <div class="input-group">
+                <input type="text" id="seller_name" name="seller_name" placeholder="Full Name" value="<?= htmlspecialchars($seller_name) ?>" required>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="seller_cname" name="seller_cname" placeholder="Company Name" value="<?= htmlspecialchars($seller_cname) ?>" required>
+            </div>
+
+            <div class="input-group">
+                <input type="email" id="seller_email" name="seller_email" placeholder="Email Address" value="<?= htmlspecialchars($seller_email) ?>" required>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="seller_phone" name="seller_phone" placeholder="Phone Number" value="<?= htmlspecialchars($seller_phone) ?>" required>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="seller_gst" name="seller_gst" placeholder="GST Number" value="<?= htmlspecialchars($seller_gst) ?>" required>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="seller_password" name="seller_password" placeholder="Password" required>
+            </div>
+
+            <div class="input-group full-width">
+                <textarea id="seller_address" name="seller_address" placeholder="Address" required><?= htmlspecialchars($seller_address) ?></textarea>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="seller_state" name="seller_state" placeholder="State" value="<?= htmlspecialchars($seller_state) ?>" required>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="seller_city" name="seller_city" placeholder="City" value="<?= htmlspecialchars($seller_city) ?>" required>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="seller_zipcode" name="seller_zipcode" placeholder="ZIP Code" value="<?= htmlspecialchars($seller_zipcode) ?>" required maxlength="6">
+            </div>
+        </div>
+
+        <div class="form-footer">
+            <button type="submit" class="submit-btn">Register</button>
+        </div>
+    </form>
+
+    </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('sellerRegistrationForm');
+    const gstInput = document.getElementById('seller_gst');
+    const gstError = document.getElementById('gst-error');
+    const phoneInput = document.getElementById('seller_phone');
+    const phoneError = document.getElementById('phone-error');
+    const passwordInput = document.getElementById('seller_password');
+    const confirmPasswordInput = document.getElementById('seller_confirm_password');
+    const passwordError = document.getElementById('password-error');
+    
+
+
+    // GST validation
+    function validateGST(gstNumber) {
+        const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[Z]{1}[A-Z0-9]{1}$/;
+        return gstRegex.test(gstNumber);
+    }
+
+    // Indian phone number validation
+    function validatePhone(phoneNumber) {
+        const phoneRegex = /^(?:(?:\+|0{0,2})91(\s*[-]\s*)?|[0]?)?[6789]\d{9}$/;
+        return phoneRegex.test(phoneNumber);
+    }
+
+    // Password validation
+    function validatePasswords() {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        if (confirmPassword.length > 0) {
+            if (password !== confirmPassword) {
+                passwordError.style.display = 'block';
+                return false;
+            } else {
+                passwordError.style.display = 'none';
+                return true;
+            }
+        }
+        return true;
+    }
+
+    gstInput.addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+        if (this.value.length > 0) {
+            if (!validateGST(this.value)) {
+                gstError.style.display = 'block';
+            } else {
+                gstError.style.display = 'none';
+            }
+        } else {
+            gstError.style.display = 'none';
+        }
+    });
+
+    phoneInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+        if (this.value.length > 0) {
+            if (!validatePhone(this.value)) {
+                phoneError.style.display = 'block';
+            } else {
+                phoneError.style.display = 'none';
+            }
+        } else {
+            phoneError.style.display = 'none';
+        }
+    });
+
+    confirmPasswordInput.addEventListener('input', validatePasswords);
+    passwordInput.addEventListener('input', validatePasswords);
+
+    // ZIP code validation
+    const zipcodeInput = document.getElementById('seller_zipcode');
+    zipcodeInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(event) {
+        // Validate GST
+        if (!validateGST(gstInput.value)) {
+            event.preventDefault();
+            gstError.style.display = 'block';
+            gstInput.focus();
+            return;
+        }
+
+        // Validate Phone
+        if (!validatePhone(phoneInput.value)) {
+            event.preventDefault();
+            phoneError.style.display = 'block';
+            phoneInput.focus();
+            return;
+        }
+
+        // Validate Passwords
+        if (!validatePasswords()) {
+            event.preventDefault();
+            passwordError.style.display = 'block';
+            confirmPasswordInput.focus();
+            return;
+        }
+
+        // Validate ZIP code
+        const zipcode = zipcodeInput.value;
+        if (!/^\d{6}$/.test(zipcode)) {
+            event.preventDefault();
+            alert('Please enter a valid 6-digit ZIP code.');
+            zipcodeInput.focus();
+            return;
+        }
+    });
+});
+gstInput.addEventListener('input', function() {
+    this.value = this.value.toUpperCase();
+    if (this.value.length > 0) {
+        if (!validateGST(this.value)) {
+            gstError.classList.add('active');
+        } else {
+            gstError.classList.remove('active');
+        }
+    } else {
+        gstError.classList.remove('active');
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const zipcodeInput = document.getElementById('seller_zipcode');
+    const zipcodeError = document.getElementById('zipcode-error');
+
+    // ZIP code validation
+    zipcodeInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, ''); // Allow only numbers
+        if (this.value.length > 0 && this.value.length !== 6) {
+            zipcodeError.textContent = 'Please enter a valid 6-digit ZIP code.';
+        } else {
+            zipcodeError.textContent = '';
+        }
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(event) {
+        const zipcode = zipcodeInput.value;
+        if (!/^\d{6}$/.test(zipcode)) {
+            event.preventDefault();
+            zipcodeError.textContent = 'Please enter a valid 6-digit ZIP code.';
+            zipcodeInput.focus();
+        }
+    });
+});
+
+</script>
+
 <style>
   :root {
     --primary-color: #0071e3;
@@ -330,6 +563,124 @@ body {
     }
 }
 
+/* Terms and Conditions Styles */
+.terms-checkbox-container {
+    margin: 20px 0;
+    text-align: left;
+    padding: 0 20px;
+}
+
+.terms-checkbox-container label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.terms-checkbox-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    border: 2px solid var(--border-color);
+    border-radius: 0; /* Removed border radius */
+}
+
+.terms-link {
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.terms-link:hover {
+    color: #005bbf;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+   
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    z-index: 99999;
+    animation: fadeIn 0.2s ease-out;
+}
+.modal-content {
+    position: relative;
+    background-color: var(--input-background);
+    margin: 40px auto;
+    padding: 24px;
+    width: 90%;
+    max-width: 600px;
+    max-height: calc(100vh - 80px);
+    border-radius: 0; /* Ensure no border-radius */
+    /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);  */
+    overflow-y: auto;
+}
+
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 24px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary-text);
+    transition: color 0.2s ease;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.modal-close:hover {
+    color: var(--text-color);
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-right: 40px;
+    color: var(--text-color);
+}
+
+.modal-dialog {
+    border-radius: 0; /* Remove rounding from parent container */
+}
+
+.modal-header, .modal-body, .modal-footer {
+    border-radius: 0; /* Remove rounding from child elements */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 20px;
+        width: auto;
+        max-height: calc(100vh - 40px);
+    }
+    
+    .terms-checkbox-container {
+        padding: 0 16px;
+    }
+}
+
 </style>
 <body>
 <div class="container">
@@ -399,11 +750,28 @@ body {
             </div>
         </div>
 
+        <div class="terms-checkbox-container">
+    <label>
+        <input type="checkbox" id="terms-checkbox" name="terms_accepted" required>
+        <span>I agree to the <span class="terms-link" onclick="showTermsModal()">Terms and Conditions</span></span>
+    </label>
+</div>
+
         <div class="form-footer">
             <button type="submit" class="submit-btn">Register</button>
         </div>
     </form>
 
+    </div>
+</div>
+
+<div id="terms-modal" class="modal">
+    <div class="modal-content">
+        <button type="button" class="modal-close" onclick="closeTermsModal()" aria-label="Close modal">&times;</button>
+        <h2 class="modal-title">Terms and Conditions</h2>
+        <div class="modal-body">
+            <?php echo nl2br($terms); ?>
+        </div>
     </div>
 </div>
 </body>
@@ -520,6 +888,57 @@ body {
         }
     });
 });
+
+// Terms and Conditions Modal Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.registration-form');
+    const termsCheckbox = document.getElementById('terms-checkbox');
+    const submitBtn = document.querySelector('.submit-btn');
+    const modal = document.getElementById('terms-modal');
+
+    // Prevent modal from closing when clicking inside modal content
+    modal.querySelector('.modal-content').addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+
+    // Form submission handler
+    form.addEventListener('submit', function(event) {
+        if (!termsCheckbox.checked) {
+            event.preventDefault();
+            alert('Please agree to the Terms and Conditions before registering.');
+            return;
+        }
+        // Your existing form validation continues here...
+    });
+});
+
+function showTermsModal() {
+    const modal = document.getElementById('terms-modal');
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeTermsModal() {
+    const modal = document.getElementById('terms-modal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('terms-modal');
+    if (event.target === modal) {
+        closeTermsModal();
+    }
+});
+
+// Close modal on escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeTermsModal();
+    }
+});
+
 gstInput.addEventListener('input', function() {
     this.value = this.value.toUpperCase();
     if (this.value.length > 0) {

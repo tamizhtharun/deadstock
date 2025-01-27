@@ -204,10 +204,11 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
                 </h1>
                 <p class="search-summary">Found <?php echo $total_results; ?> results</p>
             </div>
-
+            
+            <?php if ($total_results > 0): ?>
             <div class="search-grid">
-                <?php if ($total_results > 0): ?>
-                    <?php foreach ($products as $product): ?>
+            
+                <?php foreach ($products as $product): ?>
                         <div class="product-card" data-available="<?php echo $product['stock_quantity'] > 0 ? 'true' : 'false'; ?>">
                         <a href="product_landing.php?id=<?php echo $product['id']; ?>">
                             <div class="product-img">
@@ -255,15 +256,17 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
                             </div>
                         </a>
                         </div>
+                        
                     <?php endforeach; ?>
+                    </div>
                 <?php else: ?>
                     <div class="no-results">
-                        <i class="fas fa-search"></i>
+                        <i class="fas fa-search"></i>   
                         <h2>No products found</h2>
                         <p>Try different keywords or browse our categories</p>
                     </div>
                 <?php endif; ?>
-            </div>
+        
         </div>
     </div>
 
