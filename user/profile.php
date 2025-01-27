@@ -224,15 +224,8 @@ $active_tab = $_GET['tab'] ?? 'profile';
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile | E-commerce</title>
     <link rel="stylesheet" href="css/profile.css">
-</head>
-<body>
+
     <div class="container">
 
         <!-- Profile Header -->
@@ -618,6 +611,8 @@ $active_tab = $_GET['tab'] ?? 'profile';
         </div>
     </div>
 </div>
+
+<?php //require_once '../footer.php'; ?>
     
     <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -883,115 +878,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Order Details Modal CSS -->
 <style>
-        .order-details-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
 
-        .order-details-modal.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 700px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            transform: scale(0.7);
-            transition: all 0.3s ease;
-            padding: 30px;
-        }
-
-        .order-details-modal.show .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #f0f0f0;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-
-        .modal-header h2 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: #333;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #888;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .modal-close:hover {
-            color: #333;
-        }
-
-        .order-grid {
-            display: grid;
-            grid-template-columns: 2fr;
-            gap: 20px;
-        }
-
-        .product-image {
-            width: 100%;
-            max-height: 300px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .order-info {
-            display: grid;
-            gap: 10px;
-        }
-
-        .order-info-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-radius: 6px;
-        }
-
-        .order-info-item strong {
-            color: #555;
-        }
-
-        .total-section {
-            margin-top: 20px;
-            text-align: right;
-            border-top: 1px solid #f0f0f0;
-            padding-top: 15px;
-        }
-
-        @media (max-width: 600px) {
-            .order-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+       
 
         .bid-details-modal {
     position: fixed;
@@ -1008,6 +896,19 @@ document.addEventListener('DOMContentLoaded', function() {
     visibility: hidden;
     transition: all 0.3s ease;
     
+}
+.container{
+    position: relative;
+    margin-top: 0px !important;
+}
+
+.view-bid-details{
+    background-color:#edf2f7;
+    color:#4a5568;
+}
+.view-bid-details:hover{
+    background-color:rgb(231, 231, 239);
+    /* color:white; */
 }
 
 .bid-details-modal.show {
@@ -1216,32 +1117,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   <script>
-    function showAddressForm() {
+    // JavaScript for address modal
+function showAddressForm() {
     const modal = document.getElementById('addressModal');
-    modal.style.display = 'flex'; // Ensure it uses flex for centering
-      }
+    modal.style.display = 'flex';
+    // Add show class after a brief timeout to trigger transition
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+}
 
-      function closeAddressModal() {
-          const modal = document.getElementById('addressModal');
-          modal.style.display = 'none';
-      }
+function closeAddressModal() {
+    const modal = document.getElementById('addressModal');
+    modal.classList.remove('show');
+    // Wait for transition to complete before hiding
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300); // Match this with your transition duration
+}
 
-      // Ensure clicking outside the modal closes it
-      window.onclick = function(event) {
-          const modal = document.getElementById('addressModal');
-          if (event.target === modal) {
-              closeAddressModal();
-          }
-    };
-
-
-    // Trigger script for profile photo update
-
-    document.getElementById('trigger-upload').addEventListener('click', function () {
-    document.getElementById('profile_photo').click();
-    
-});
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('addressModal');
+    if (event.target === modal) {
+        closeAddressModal();
+    }
+};
 
 </script>
-</body>
-</html>

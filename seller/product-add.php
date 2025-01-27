@@ -6,7 +6,7 @@ if (!isset($_SESSION['seller_session'])) {
 	// Handle the error, e.g., redirect to login or show a message
 	die("Seller ID is not set.");
 }
-
+$ai_id=0;
 if (isset($_POST['form1'])) {
 	$valid = 1;
 	$seller_id = $_SESSION['seller_session']['seller_id'];

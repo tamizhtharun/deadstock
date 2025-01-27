@@ -532,36 +532,146 @@ input:focus {
   }
 }
 
-/* Add this CSS in your style.css file */
-
-
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+/* Common modal base styles */
+.modal,
+.order-details-modal,
+.bid-details-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
 }
 
-.modal-content {
-  background-color: var(--card-background);
-  padding: 2rem;
-  border-radius: 0.5rem;
-  width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
+/* Show state for all modals */
+.modal.show,
+.order-details-modal.show,
+.bid-details-modal.show {
+    opacity: 1;
+    visibility: visible;
+    display: flex;
+}
+
+/* Common modal content styles */
+.modal .modal-content,
+.order-details-modal .modal-content,
+.bid-details-modal .modal-content {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(1);
+    transition: all 0.1s ease;
+    padding: 30px;
+}
+
+/* Show state transform for all modal content */
+.modal.show .modal-content,
+.order-details-modal.show .modal-content,
+.bid-details-modal.show .modal-content {
+    transform: scale(1);
+}
+
+/* Common header styles */
+.modal .modal-header,
+.order-details-modal .modal-header,
+.bid-details-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+/* Common close button styles */
+.modal-close,
+.bid-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.modal-close:hover,
+.bid-modal-close:hover {
+    color: #333;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .modal .modal-content,
+    .order-details-modal .modal-content,
+    .bid-details-modal .modal-content {
+        width: 95%;
+        padding: 20px;
+        margin: 10px;
+    }
+}
+.order-grid {
+  display: grid;
+  grid-template-columns: 2fr;
+  gap: 20px;
+}
+
+.product-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.order-info {
+  display: grid;
+  gap: 10px;
+}
+
+.order-info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+}
+
+.order-info-item strong {
+  color: #555;
+}
+
+.total-section {
+  margin-top: 20px;
+  text-align: right;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 15px;
+}
+
+@media (max-width: 600px) {
+  .order-grid {
+      grid-template-columns: 1fr;
+  }
 }
 
 
 .form-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
   gap: 1rem;
 }
 
