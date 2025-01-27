@@ -165,7 +165,7 @@ if ($success_message1 != '') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+ 
   <link rel="stylesheet" href="css/product_landing.css">
 </head>
 
@@ -190,34 +190,46 @@ if ($success_message1 != '') {
       </nav>
 
       <div class="row gx-5">
-        <aside class="col-lg-6">
-          <div class="border rounded-4 mb-3 d-flex justify-content-center">
-            <a data-bs-toggle="modal" class="rounded-4" data-bs-target="#imageModal" href="#">
-              <!-- <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4" src="icons\hole.png" /> -->
-              <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4"
-                src="assets/uploads/product-photos/<?php echo $p_featured_photo; ?>">
+      <aside class="col-lg-6">
+    <!-- Main Image -->
+    <div class="border rounded-4 mb-3 d-flex justify-content-center" style="width: 500px; height: 310px; overflow: hidden; position: relative;">
+    <a data-bs-toggle="modal" id="mainImageLink" class="rounded-4" data-bs-target="#imageModal" href="#">
+        <!-- Default Big Photo -->
+        <img id="mainImage" class="rounded-4 zoom-effect"
+             class="rounded-4" src="assets/uploads/product-photos/<?php echo $p_featured_photo; ?>">
+    </a>
+</div>
+    <!-- Thumbnail Images -->
+    <div class="d-flex justify-content-center mb-3">
+        <div class="d-flex flex-wrap">
+            <?php
+            echo '
+            <a class="border mx-1 rounded-2 thumbnail-link" href="javascript:void(0);">
+                <img width="60" height="60" class="rounded-2" 
+                     src="assets/uploads/product-photos/' . $p_featured_photo . '" 
+                     data-full-image="assets/uploads/product-photos/' . $p_featured_photo . '">
+            </a>';
+            $stmt = $pdo->prepare("SELECT photo FROM tbl_product_photo WHERE p_id = :product_id");
+            $stmt->execute([':product_id' => $product_id]);
+            $product_photos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            </a>
-          </div>
-          <div class="d-flex justify-content-center mb-3">
-            <a class="border mx-1 rounded-2" href="#" data-bs-toggle="modal" data-bs-target="#imageModal">
-              <img width="60" height="60" class="rounded-2" src="icons\hole.png" />
-            </a>
-            <a class="border mx-1 rounded-2" href="#" data-bs-toggle="modal" data-bs-target="#imageModal">
-              <img width="60" height="60" class="rounded-2" src="icons\hole.png" />
-            </a>
-            <a class="border mx-1 rounded-2" href="#" data-bs-toggle="modal" data-bs-target="#imageModal">
-              <img width="60" height="60" class="rounded-2" src="icons\hole.png" />
-            </a>
-            <a class="border mx-1 rounded-2" href="#" data-bs-toggle="modal" data-bs-target="#imageModal">
-              <img width="60" height="60" class="rounded-2" src="icons\hole.png" />
-            </a>
-            <a class="border mx-1 rounded-2" href="#" data-bs-toggle="modal" data-bs-target="#imageModal">
-              <img width="60" height="60" class="rounded-2" src="icons\hole.png" />
-            </a>
-          </div>
-        </aside>
-        <main class="col-lg-6">
+            if (!empty($product_photos)) {
+                foreach ($product_photos as $photo) {
+                    $photo_url = htmlspecialchars($photo['photo'], ENT_QUOTES, 'UTF-8'); // Secure the URL
+                    echo '
+                    <a class="border mx-1 rounded-2 thumbnail-link" href="javascript:void(0);">
+                        <img width="60" height="60" class="rounded-2" 
+                             src="assets/uploads/product-photos/' . $photo_url . '" 
+                             data-full-image="assets/uploads/product-photos/' . $photo_url . '">
+                    </a>';
+                }
+            }
+            ?>
+        </div>
+    </div>
+</aside>
+
+<main class="col-lg-6">
   <dclass="ps-lg-3">
     <h4 class="title text-dark">
       <?php echo $p_name; ?>
@@ -860,10 +872,41 @@ document.querySelector('.material-info-btn').addEventListener('click', function(
         }
       });
     });
-  </script>
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const thumbnailLinks = document.querySelectorAll(".thumbnail-link img");
+        const mainImage = document.getElementById("mainImage");
+
+        thumbnailLinks.forEach((thumbnail) => {
+            thumbnail.addEventListener("click", () => {
+                const fullImageSrc = thumbnail.getAttribute("data-full-image");
+                mainImage.src = fullImageSrc; // Update the main image dynamically
+            });
+        });
+
+        // Ensure the main image defaults to `p_featured_photo`
+        mainImage.src = "<?php echo 'assets/uploads/product-photos/' . $p_featured_photo; ?>";
+    });
+    const img = document.querySelector('.zoom-effect');
+
+    img.addEventListener('mousemove', function(e) {
+        const mouseX = e.offsetX;
+        const mouseY = e.offsetY;
+
+        const width = img.width;
+        const height = img.height;
+        const percentX = (mouseX / width) * 100;
+        const percentY = (mouseY / height) * 100;
+
+        img.style.transformOrigin = `${percentX}% ${percentY}%`; 
+    });
+
+    img.addEventListener('mouseleave', function() {
+        img.style.transformOrigin = 'center center'; // Defaults back to center zoom
+    });
+
+    </script>
 </body>
-
 </html>
 
 <?php include 'footer.php'; ?>
