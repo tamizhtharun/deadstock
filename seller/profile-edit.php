@@ -390,9 +390,7 @@ foreach ($result as $row) {
                         <?php endif; ?>
 
                         <?php if(isset($_POST['form4']) && $success_message): ?>
-                        <div class="callout callout-success">
-                            <p><?php echo $success_message; ?></p>
-                        </div>
+                    
                         <?php endif; ?>
 
                         <!-- Form to add new brand -->
