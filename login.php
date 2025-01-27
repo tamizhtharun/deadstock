@@ -2,7 +2,6 @@
 include 'db_connection.php';
 
 $error_message = ""; // Variable to store error messages
-
 $user_data = []; // Array to store user data
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -15,11 +14,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
-
-    $sql = "SELECT * FROM users";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $user_result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
@@ -46,8 +40,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $password_verified = false;
             }
             $stmt_seller->close();
+        } elseif ($user['user_role'] === 'user') {
+            // For users, verify password from users table
+            $sql_user = "SELECT * FROM users WHERE email = ?";
+            $stmt_user = $conn->prepare($sql_user);
+            $stmt_user->bind_param("s", $email);
+            $stmt_user->execute();
+            $result_user = $stmt_user->get_result();
+            
+            if ($result_user->num_rows > 0) {
+                $user_details = $result_user->fetch_assoc();
+                $password_verified = password_verify($password, $user_details['password']);
+                $user_data_ = $user_details; // Store user details for session
+            } else {
+                $password_verified = false;
+            }
+            $stmt_user->close();
         } else {
-            // For other users, verify password from user_login table
+            // For admin, verify password from user_login table
             $password_verified = password_verify($password, $user['user_password']);
         }
 
@@ -61,16 +71,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     header("Location: admin/index.php");
                     exit();
                 case 'user':
-                    $sql_user_data = "SELECT * FROM users WHERE email = ?";
-                    $stmt_user_data = $conn->prepare($sql_user_data);
-                    $stmt_user_data->bind_param("s", $email);
-                    $stmt_user_data->execute();
-                    $result_user_data = $stmt_user_data->get_result();
-            
-                    if ($result_user_data->num_rows > 0) {
-                        $user_data_ = $result_user_data->fetch_assoc();
-                    }
-
                     session_start();
                     $_SESSION['user_session'] = $user_data_;
                     $_SESSION['user_email'] = $user['user_email'];
