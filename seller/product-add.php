@@ -1,6 +1,7 @@
 <?php require_once('header.php');
 ?>
 <?php
+$a_id=0;
 $seller_id = $_SESSION['seller_session'];
 if (!isset($_SESSION['seller_session'])) {
 	// Handle the error, e.g., redirect to login or show a message
@@ -497,6 +498,7 @@ if (isset($_POST['form1'])) {
 								<!-- <input type="text" name="other_brand" class="form-control" id="other-brand" style="margin-top:10px;" placeholder="Please specify brand"> -->
 							</div>
 						</div>
+						
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Product Name <span>*</span></label>
 							<div class="col-sm-4">
@@ -699,17 +701,20 @@ if (isset($_POST['form1'])) {
 		</div>
 
 	</section>
+<script>
+	$(document).ready(function () {
+    $('.select2').select2();
+});
+</script>
 
-
-
-	<script>
+	<!-- <script>
 		$(document).ready(function () {
 			$('.select2').select2({
 				dropdownParent: $('.form-group'), // Attach dropdown to its container
 				dropdownPosition: 'below',        // Force dropdown to appear below
 			});
 		});
-	</script>
+	</script> -->
 </body>
 
 </html>
