@@ -363,33 +363,32 @@ tabButtons.forEach((button) => {
     document.getElementById(button.dataset.tab).classList.add("active")
   })
 })
-
 function fetchSellerData(sellerId) {
-  console.log("Fetching data for seller ID:", sellerId)
+  console.log("Fetching data for seller ID:", sellerId);
   fetch(`get_seller_data.php?seller_id=${sellerId}`)
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return response.json()
+      return response.json();
     })
     .then((data) => {
-      console.log("Received data:", data)
+      console.log("Received data:", data);
       if (data.error) {
-        throw new Error(data.error)
+        throw new Error(data.error);
       } else {
-        updateSellerModal(data)
-        updateCharts(data)
+        updateSellerModal(data);
+        updateCharts(data);
       }
     })
     .catch((error) => {
-      console.error("Fetch error:", error)
-      alert("Failed to fetch seller data. Please try again. Error: " + error.message)
-    })
+      console.error("Fetch error:", error);
+      alert("Failed to fetch seller data. Please try again. Error: " + error.message);
+    });
 }
 
 function updateSellerModal(data) {
-  const seller = data.seller
+  const seller = data.seller;
   document.querySelector("#profile .seller-info-grid").innerHTML = `
         <div class="seller-info-item"><label>Name</label><span>${seller.seller_name}</span></div>
         <div class="seller-info-item"><label>Company Name</label><span>${seller.seller_cname}</span></div>
@@ -408,53 +407,60 @@ function updateSellerModal(data) {
                 <i class="fa fa-download"></i> Download Seller Certificate
             </button>
         </div>
-    `
+    `;
 
-  // Update other tabs
   document.querySelector("#products .seller-stats-grid").innerHTML = `
         <div class="seller-stat-card"><h3>Total Products</h3><p>${data.products.total}</p></div>
         <div class="seller-stat-card"><h3>Active Products</h3><p>${data.products.active}</p></div>
         <div class="seller-stat-card"><h3>Categories</h3><p>${data.products.categories}</p></div>
-    `
+    `;
 
   document.querySelector("#bidding .seller-stats-grid").innerHTML = `
         <div class="seller-stat-card"><h3>Total Bids</h3><p>${data.bidding.total}</p></div>
         <div class="seller-stat-card"><h3>Winning Bids</h3><p>${data.bidding.winning}</p></div>
         <div class="seller-stat-card"><h3>Avg. Bid Amount</h3><p>$${data.bidding.avg_amount.toFixed(2)}</p></div>
-    `
+    `;
 
   document.querySelector("#orders .seller-stats-grid").innerHTML = `
         <div class="seller-stat-card"><h3>Total Orders</h3><p>${data.orders.total}</p></div>
         <div class="seller-stat-card"><h3>Pending Orders</h3><p>${data.orders.pending}</p></div>
         <div class="seller-stat-card"><h3>Success Rate</h3><p>${data.orders.success_rate.toFixed(2)}%</p></div>
-    `
+    `;
 }
 
 function updateCharts(data) {
-  // Destroy existing charts before creating new ones
-  ;["productsChart", "biddingChart", "ordersChart", "orderStatusChart"].forEach((chartId) => {
-    const chartInstance = Chart.getChart(chartId)
+  ["productsChart", "biddingChart", "ordersChart", "orderStatusChart"].forEach((chartId) => {
+    const chartInstance = Chart.getChart(chartId);
     if (chartInstance) {
-      chartInstance.destroy()
+      chartInstance.destroy();
     }
-  })
+  });
 
-  updateProductsChart(data.products.chart_data)
-  updateBiddingChart(data.bidding.chart_data)
-  updateOrdersChart(data.orders.chart_data)
-  updateOrderStatusChart(data.orders.status_data)
+  updateProductsChart(data.products.chart_data);
+  updateBiddingChart(data.bidding.chart_data);
+  updateOrdersChart(data.orders.chart_data);
+  updateOrderStatusChart(data.orders.status_data);
 }
 
 function updateProductsChart(data) {
-  const ctx = document.getElementById("productsChart").getContext("2d")
+  // Extract last 10 days, ensuring professional date formatting
+  const limitedData = {
+    labels: data.labels.slice(-10).map(date => {
+      const options = { month: 'short', day: 'numeric' };
+      return new Date(date).toLocaleDateString('en-US', options);
+    }),
+    values: data.values.slice(-10)
+  };
+
+  const ctx = document.getElementById("productsChart").getContext("2d");
   new Chart(ctx, {
     type: "line",
     data: {
-      labels: data.labels,
+      labels: limitedData.labels,
       datasets: [
         {
           label: "Active Products",
-          data: data.values,
+          data: limitedData.values,
           borderColor: "rgba(37, 99, 235, 1)",
           backgroundColor: "rgba(37, 99, 235, 0.1)",
           fill: true,
@@ -465,38 +471,46 @@ function updateProductsChart(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false,
+      plugins: { 
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'Products Added in Last 10 Days',
+          padding: {
+    
+            bottom: 20
+          },
+      
         },
+        tooltip: {
+          callbacks: {
+            title: (context) => context[0].label,
+            label: (context) => `Products: ${context.parsed.y}`
+          }
+        }
       },
       scales: {
-        y: {
-          beginAtZero: true,
-          grid: {
-            display: false,
-          },
+        y: { 
+          beginAtZero: true, 
+          grid: { display: false }
         },
-        x: {
-          grid: {
-            display: false,
-          },
+        x: { 
+          grid: { display: false }
         },
       },
     },
-  })
+  });
 }
-
 function updateBiddingChart(data) {
-  const ctx = document.getElementById("biddingChart").getContext("2d")
+  const ctx = document.getElementById("biddingChart").getContext("2d");
   new Chart(ctx, {
     type: "line",
     data: {
-      labels: data.labels,
+      labels: data.labels, // Fixed labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
       datasets: [
         {
-          label: "Bids",
-          data: data.values,
+          label: "Total Bids",
+          data: data.values, // Bidding data for each day
           borderColor: "rgba(124, 58, 237, 1)",
           backgroundColor: "rgba(124, 58, 237, 0.1)",
           fill: true,
@@ -511,6 +525,13 @@ function updateBiddingChart(data) {
         legend: {
           display: false,
         },
+        title: {
+          display: true,
+          text: "Bidding Activity (Last 7 Days)",
+          padding: {
+            bottom: 16,
+          },
+        },
       },
       scales: {
         y: {
@@ -526,7 +547,7 @@ function updateBiddingChart(data) {
         },
       },
     },
-  })
+  });
 }
 
 function updateOrdersChart(data) {
