@@ -368,7 +368,8 @@ $active_tab = $_GET['tab'] ?? 'profile';
             <?php foreach ($bids as $bid): ?>
                 <div class="bidding-card">
                     <div class="bidding-header">
-                        <h3><?php echo htmlspecialchars($bid['product_name']); ?></h3>
+                        <h3><?php echo 'Bid ID : '.$bid['bid_id']; ?></h3>
+                        <p class="date">Placed on <?php echo date('M d, Y', strtotime($bid['bid_time'])); ?></p>
                         <?php 
     $statusLabels = [
         0 => 'Submitted',
@@ -385,10 +386,17 @@ $active_tab = $_GET['tab'] ?? 'profile';
 </span>
                     </div>
                     <div class="bidding-details">
+                    <a href="../product_landing.php?id=<?php echo $bid['p_id']; ?>">
+                        <div class="product-info">
+                        <img src="../assets/uploads/product-photos/<?php echo htmlspecialchars($bid['product_image']); ?>" alt="Product Image" class="product-thumbnail">
+                        <div class="product-details">
+                        <h3><?php echo htmlspecialchars($bid['product_name']); ?></h3>
                         <p>Your Bid: ₹<?php echo number_format($bid['bid_price'], 2); ?></p>
                         <p>Quantity: <?php echo htmlspecialchars($bid['bid_quantity']); ?></p>
                         <p>Bid Time: <?php echo date('M d, Y H:i', strtotime($bid['bid_time'])); ?></p>
                     </div>
+</div></a>
+</div>
                     <button class="button view-bid-details" data-bid-id="<?php echo $bid['bid_id']; ?>">View Details</button>
                 </div>
                 <?php endforeach; ?>
@@ -1235,7 +1243,11 @@ document.addEventListener('DOMContentLoaded', function() {
     text-decoration:none !important;
     color: rgb(113, 128, 150);
 }
-
+.product-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 .product-thumbnail {
     width: 120px;
     height: relative;

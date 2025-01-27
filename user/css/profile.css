@@ -456,6 +456,11 @@ input:focus {
   gap: 8px;
   margin-bottom: 15px;
   color: #718096;
+  
+}
+.bidding-details a{
+  text-decoration: none !important;
+  color: rgb(113, 128, 150);
 }
 
 .badge.active {
