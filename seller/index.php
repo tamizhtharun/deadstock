@@ -1,4 +1,8 @@
-<?php require_once('header.php'); ?>
+<?php require_once('header.php'); 
+
+require_once('../track_view.php');
+trackPageView('SRP', 'Seller Panel');
+?>
 
 <section class="content-header">
 	<h1>Dashboard</h1>
