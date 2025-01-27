@@ -108,6 +108,7 @@ try {
             o.created_at,
             p_name AS product_name,
             p_featured_photo AS product_image,
+            p.id AS p_id,
             o.order_type,
             o.tracking_id,
             o.payment_id
@@ -144,6 +145,7 @@ $biddingQuery = "
         b.refund_id AS bid_refund_id,
         p.p_name AS product_name,
         p.p_featured_photo AS product_image,
+        p.id AS p_id,
         p.p_current_price AS current_price
     FROM 
         bidding b
@@ -165,8 +167,9 @@ $bids = $biddingStmt->fetchAll(PDO::FETCH_ASSOC);
 // print_r($addresses);
 // Set default avatar if no profile image is available
 $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
-$profileImage = !empty($user['profile_image']) 
-    ? 'uploads/profile_photos/' . htmlspecialchars($user['profile_image'])  : $defaultAvatar;
+$profileImage = !empty($userInfo['profile_image']) 
+    ? '../uploads/profile-photos/' . htmlspecialchars($userInfo['profile_image'])
+    : $defaultAvatar;
 
 
 // Simulating user data - in production, this would come from a database
@@ -224,15 +227,8 @@ $active_tab = $_GET['tab'] ?? 'profile';
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile | E-commerce</title>
     <link rel="stylesheet" href="css/profile.css">
-</head>
-<body>
+
     <div class="container">
 
         <!-- Profile Header -->
@@ -240,9 +236,9 @@ $active_tab = $_GET['tab'] ?? 'profile';
             <div class="profile-image-container">
                 <?php
                     $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"; // Default avatar URL
-                    $profileImage = isset($user['profile_image']) && !empty($user['profile_image']) 
-                        ? htmlspecialchars($user['profile_image']) 
-                        : $defaultAvatar;
+                    $profileImage = isset($userInfo['profile_image']) && !empty($userInfo['profile_image']) 
+        ? 'uploads/profile-photos/' . htmlspecialchars($userInfo['profile_image'])
+        : $defaultAvatar;
                 ?>
                 <!-- Placeholder image if no profile image is available -->
                 <img src="<?php echo $profileImage; ?>" alt="Profile" class="profile-image">
@@ -294,18 +290,18 @@ $active_tab = $_GET['tab'] ?? 'profile';
                     <!-- Personal Information Form -->
                     <form action="update_profile.php" method="POST" class="form" enctype="multipart/form-data">
                     <div class="form-group profile-upload">
-                        <?php
-                        $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"; // Default avatar URL
-                        $profileImage = isset($user['profile_image']) && !empty($user['profile_image']) 
-                            ? htmlspecialchars($user['profile_image']) 
-                            : $defaultAvatar;
-                        ?>
-                        <div class="profile-image-container">
-                            <img src="<?php echo $profileImage; ?>" alt="Profile Photo" class="profile-image">
-                            <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="file-input">
-                            <div class="plus-icon" id="trigger-upload">+</div>
-                        </div>
-                    </div>
+    <?php
+    $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
+    $profileImage = isset($userInfo['profile_image']) && !empty($userInfo['profile_image']) 
+        ? 'uploads/profile-photos/' . htmlspecialchars($userInfo['profile_image'])
+        : $defaultAvatar;
+    ?>
+    <div class="profile-image-container">
+        <img src="<?php echo $profileImage; ?>" alt="Profile Photo" class="profile-image">
+        <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="file-input">
+        <div class="plus-icon" id="trigger-upload">+</div>
+    </div>
+</div>
 
 
 
@@ -335,8 +331,8 @@ $active_tab = $_GET['tab'] ?? 'profile';
                        <?php if (empty($addresses)) {?>
                             <p class="empty">No addresses found. Add a new address to get started.</p>
                         <?php } else{
-                        foreach ($result as $address): ?>
-                            <div class="address-card">
+                        foreach ($addresses as $address): ?>
+                            <div class="address-card" data-address-id="<?php echo htmlspecialchars($address['id']); ?>">
                                 <div class="address-type">
                                     <span class="badge"><?php echo htmlspecialchars($address['address_type']); ?></span>
                                     <?php if ($address['is_default']): ?>
@@ -350,13 +346,13 @@ $active_tab = $_GET['tab'] ?? 'profile';
                                     <?php echo htmlspecialchars("{$address['city']}, {$address['state']} {$address['pincode']}"); ?>
                                 </p>
                                 <div class="address-actions">
-                                    <button class="btn-edit">Edit</button>
+                                    <button class="btn-edit" data-id="<?php echo htmlspecialchars($address['id']); ?>">Edit</button>
                                     <?php if (!$address['is_default']): ?>
-                                        <button class="btn-delete">Delete</button>
+                                        <button class="btn-delete" data-id="<?php echo htmlspecialchars($address['id']); ?>">Delete</button>
                                     <?php endif; ?>
                                 </div>
                             </div>
-                        <?php endforeach;} ?>
+                        <?php endforeach; }?>
                     </div>
 
                 </div>
@@ -372,7 +368,8 @@ $active_tab = $_GET['tab'] ?? 'profile';
             <?php foreach ($bids as $bid): ?>
                 <div class="bidding-card">
                     <div class="bidding-header">
-                        <h3><?php echo htmlspecialchars($bid['product_name']); ?></h3>
+                        <h3><?php echo 'Bid ID : '.$bid['bid_id']; ?></h3>
+                        <p class="date">Placed on <?php echo date('M d, Y', strtotime($bid['bid_time'])); ?></p>
                         <?php 
     $statusLabels = [
         0 => 'Submitted',
@@ -389,10 +386,17 @@ $active_tab = $_GET['tab'] ?? 'profile';
 </span>
                     </div>
                     <div class="bidding-details">
+                    <a href="../product_landing.php?id=<?php echo $bid['p_id']; ?>">
+                        <div class="product-info">
+                        <img src="../assets/uploads/product-photos/<?php echo htmlspecialchars($bid['product_image']); ?>" alt="Product Image" class="product-thumbnail">
+                        <div class="product-details">
+                        <h3><?php echo htmlspecialchars($bid['product_name']); ?></h3>
                         <p>Your Bid: ₹<?php echo number_format($bid['bid_price'], 2); ?></p>
                         <p>Quantity: <?php echo htmlspecialchars($bid['bid_quantity']); ?></p>
                         <p>Bid Time: <?php echo date('M d, Y H:i', strtotime($bid['bid_time'])); ?></p>
                     </div>
+</div></a>
+</div>
                     <button class="button view-bid-details" data-bid-id="<?php echo $bid['bid_id']; ?>">View Details</button>
                 </div>
                 <?php endforeach; ?>
@@ -417,7 +421,8 @@ $active_tab = $_GET['tab'] ?? 'profile';
                             <?php echo htmlspecialchars($order['order_status']); ?>
                         </span> -->
                     </div>
-                    <div class="order-details">
+                    <div class="order-details" >
+                        <a href="../product_landing.php?id=<?php echo $order['p_id']; ?>">
                         <div class="product-info">
                             <img src="../assets/uploads/product-photos/<?php echo htmlspecialchars($order['product_image']); ?>" alt="Product Image" class="product-thumbnail">
                             <div class="product-details">
@@ -429,7 +434,7 @@ $active_tab = $_GET['tab'] ?? 'profile';
                                     echo "Direct Order";
                                 };?>
                             </div>
-                        </div>
+                        </div></a>
                         <h2 class="total">Total: ₹<?php echo number_format($order['price'] * $order['quantity'], 2); ?></h2>
                     </div>
                     <button class="button secondary">View Details</button>
@@ -618,6 +623,8 @@ $active_tab = $_GET['tab'] ?? 'profile';
         </div>
     </div>
 </div>
+
+<?php //require_once '../footer.php'; ?>
     
     <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -744,6 +751,101 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Add this to your existing JavaScript in profile.php
+document.addEventListener('DOMContentLoaded', function() {
+    // Edit address functionality
+    const editButtons = document.querySelectorAll('.btn-edit');
+    editButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const addressId = this.getAttribute('data-id');
+            
+            // Fetch address details
+            fetch(`edit_address.php?id=${addressId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                    
+                    // Populate the modal form
+                    document.getElementById('addr_name').value = data.full_name;
+                    document.getElementById('addr_phone').value = data.phone_number;
+                    document.getElementById('address').value = data.address;
+                    document.getElementById('city').value = data.city;
+                    document.getElementById('state').value = data.state;
+                    document.getElementById('pincode').value = data.pincode;
+                    document.querySelector('input[name="default"]').checked = data.is_default == 1;
+                    
+                    // Update form action and method
+                    const form = document.querySelector('.address-form');
+                    form.action = 'edit_address.php';
+                    
+                    // Add address ID to form
+                    let addressIdInput = document.querySelector('input[name="address_id"]');
+                    if (!addressIdInput) {
+                        addressIdInput = document.createElement('input');
+                        addressIdInput.type = 'hidden';
+                        addressIdInput.name = 'address_id';
+                        form.appendChild(addressIdInput);
+                    }
+                    addressIdInput.value = addressId;
+                    
+                    // Show modal
+                    showAddressForm();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to fetch address details');
+                });
+        });
+    });
+    
+    // Delete address functionality
+    const deleteButtons = document.querySelectorAll('.btn-delete');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to delete this address?')) {
+                const addressId = this.getAttribute('data-id');
+                
+                // Create and submit form
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'delete_address.php';
+                
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'address_id';
+                input.value = addressId;
+                
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    });
+    
+    // Reset form when adding new address
+    const addAddressButton = document.querySelector('button[onclick="showAddressForm()"]');
+    if (addAddressButton) {
+        addAddressButton.addEventListener('click', function() {
+            const form = document.querySelector('.address-form');
+            form.reset();
+            form.action = 'add_address.php';
+            
+            // Remove address_id input if it exists
+            const addressIdInput = form.querySelector('input[name="address_id"]');
+            if (addressIdInput) {
+                addressIdInput.remove();
+            }
+        });
+    }
+});
+
+
 </script>
 
 <!-- tracking css -->
@@ -881,117 +983,43 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle profile photo upload
+    const fileInput = document.getElementById('profile_photo');
+    const triggerUpload = document.getElementById('trigger-upload');
+    const profileImage = document.querySelector('.profile-image');
+
+    if (triggerUpload && fileInput) {
+        triggerUpload.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    profileImage.src = e.target.result;
+                };
+
+                reader.readAsDataURL(this.files[0]);
+                
+                // Automatically submit the form when a file is selected
+                const form = this.closest('form');
+                if (form) {
+                    form.submit();
+                }
+            }
+        });
+    }
+});
+</script>
+
 <!-- Order Details Modal CSS -->
 <style>
-        .order-details-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
 
-        .order-details-modal.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 700px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            transform: scale(0.7);
-            transition: all 0.3s ease;
-            padding: 30px;
-        }
-
-        .order-details-modal.show .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #f0f0f0;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-
-        .modal-header h2 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: #333;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #888;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .modal-close:hover {
-            color: #333;
-        }
-
-        .order-grid {
-            display: grid;
-            grid-template-columns: 2fr;
-            gap: 20px;
-        }
-
-        .product-image {
-            width: 100%;
-            max-height: 300px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .order-info {
-            display: grid;
-            gap: 10px;
-        }
-
-        .order-info-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-radius: 6px;
-        }
-
-        .order-info-item strong {
-            color: #555;
-        }
-
-        .total-section {
-            margin-top: 20px;
-            text-align: right;
-            border-top: 1px solid #f0f0f0;
-            padding-top: 15px;
-        }
-
-        @media (max-width: 600px) {
-            .order-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+       
 
         .bid-details-modal {
     position: fixed;
@@ -1008,6 +1036,19 @@ document.addEventListener('DOMContentLoaded', function() {
     visibility: hidden;
     transition: all 0.3s ease;
     
+}
+.container{
+    position: relative;
+    margin-top: 0px !important;
+}
+
+.view-bid-details{
+    background-color:#edf2f7;
+    color:#4a5568;
+}
+.view-bid-details:hover{
+    background-color:rgb(231, 231, 239);
+    /* color:white; */
 }
 
 .bid-details-modal.show {
@@ -1198,10 +1239,18 @@ document.addEventListener('DOMContentLoaded', function() {
     align-items: center;
     gap: 15px;
 }
-
+.order-details a{
+    text-decoration:none !important;
+    color: rgb(113, 128, 150);
+}
+.product-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 .product-thumbnail {
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: relative;
     object-fit: cover;
     border-radius: 8px;
 }
@@ -1216,32 +1265,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   <script>
-    function showAddressForm() {
+    // JavaScript for address modal
+function showAddressForm() {
     const modal = document.getElementById('addressModal');
-    modal.style.display = 'flex'; // Ensure it uses flex for centering
-      }
+    modal.style.display = 'flex';
+    // Add show class after a brief timeout to trigger transition
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+}
 
-      function closeAddressModal() {
-          const modal = document.getElementById('addressModal');
-          modal.style.display = 'none';
-      }
+function closeAddressModal() {
+    const modal = document.getElementById('addressModal');
+    modal.classList.remove('show');
+    // Wait for transition to complete before hiding
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300); // Match this with your transition duration
+}
 
-      // Ensure clicking outside the modal closes it
-      window.onclick = function(event) {
-          const modal = document.getElementById('addressModal');
-          if (event.target === modal) {
-              closeAddressModal();
-          }
-    };
-
-
-    // Trigger script for profile photo update
-
-    document.getElementById('trigger-upload').addEventListener('click', function () {
-    document.getElementById('profile_photo').click();
-    
-});
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('addressModal');
+    if (event.target === modal) {
+        closeAddressModal();
+    }
+};
 
 </script>
-</body>
-</html>

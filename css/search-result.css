@@ -305,23 +305,29 @@ input[type="range"]::-webkit-slider-thumb:hover {
 @media (max-width: 1024px) {
   .search-layout {
     grid-template-columns: 240px 1fr;
+    padding: 0px !important;
   }
 }
 
 @media (max-width: 768px) {
   .search-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
   }
   
   .filters-sidebar {
     position: static;
-    margin-bottom: 2rem;
+    margin-bottom: 0rem;
 
   }
   
   .search-grid {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+    gap: 0 !important;
   }
+  .product-card {
+    border-radius: 0px !important;
+  }
+
 }
 
 /* Notification Styles */
