@@ -263,7 +263,7 @@ button:disabled {
                                         echo '<span class="label label-danger">Refunded</span>';
                                         break;
                                     case 4:
-                                        echo '<span class="label label-info">Approved, not Fully Approved</span>';
+                                        echo '<span class="label label-info">Partial Approve</span>';
                                         break;
                                     default:
                                         echo '<span class="label label-warning">Pending</span>';

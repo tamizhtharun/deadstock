@@ -306,7 +306,7 @@ require_once('header.php');
 
         <div class="seller-modal-footer">
             <button class="seller-btn seller-secondary" id="closeSellerModal">Close</button>
-            <button class="seller-btn seller-primary">View Full Details</button>
+            <!-- <button class="seller-btn seller-primary">View Full Details</button> -->
         </div>
     </div>
 </div>

@@ -125,47 +125,60 @@ $bids = $statement->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <div class="box box-info">
-                <div class="box-body table-responsive">
-                    <table id="example1" class="table table-bordered table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Product Photo</th>
-                                <th>Product Name</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Status</th>
-                                <th>Bid Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($bids as $index => $bid): ?>
-                                <tr>
-                                    <td><?php echo $index + 1; ?></td>
-                                    <td>
-                                        <img src="../assets/uploads/product-photos/<?php echo $bid['p_featured_photo']; ?>" 
-                                             alt="Product Photo" 
-                                             style="width:70px;">
-                                    </td>
-                                    <td><?php echo $bid['p_name']; ?></td>
-                                    <td><?php echo $bid['bid_quantity']; ?></td>
-                                    <td>₹<?php echo number_format($bid['bid_price'], 2); ?></td>
-                                    <td>
-                                        <?php
-                                        if ($bid['bid_status'] == 2) {
-                                            echo 'Approved';
-                                        } else {
-                                            echo 'Refunded';
-                                        }
-                                        ?>
-                                    </td>
-                                    <td><?php echo date('Y-m-d', strtotime($bid['bid_time'])); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+    <div class="box-body table-responsive">
+        <?php if (empty($bids)): ?>
+            <div id="no-bids-message" class="no-bids-container" style="display: block;">
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div class="no-data-icon">
+                        <i class="fa fa-search" style="font-size: 64px; color: #ccc; margin-bottom: 20px;"></i>
+                    </div>
+                    <h3 style="color: #666; margin-bottom: 10px;">No Bids Found</h3>
+                    <p style="color: #888; font-size: 16px;">There are no bids matching the selected filters.</p>
                 </div>
             </div>
+        <?php else: ?>
+            <table id="example1" class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product Photo</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Bid Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($bids as $index => $bid): ?>
+                        <tr>
+                            <td><?php echo $index + 1; ?></td>
+                            <td>
+                                <img src="../assets/uploads/product-photos/<?php echo $bid['p_featured_photo']; ?>" 
+                                     alt="Product Photo" 
+                                     style="width:70px;">
+                            </td>
+                            <td><?php echo $bid['p_name']; ?></td>
+                            <td><?php echo $bid['bid_quantity']; ?></td>
+                            <td>₹<?php echo number_format($bid['bid_price'], 2); ?></td>
+                            <td>
+                                <?php
+                                if ($bid['bid_status'] == 2) {
+                                    echo 'Approved';
+                                } else {
+                                    echo 'Refunded';
+                                }
+                                ?>
+                            </td>
+                            <td><?php echo date('Y-m-d', strtotime($bid['bid_time'])); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+</div>
+
         </div>
     </div>
     
