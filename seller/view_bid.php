@@ -200,6 +200,10 @@ button:disabled {
     <div class="content-header-right">
     <div class="timer-display">
             <div class="time-segment">
+                <div class="time-value" id="info">Ends</div>
+                <div class="time-label">in</div>
+            </div>
+            <div class="time-segment">
                 <div class="time-value" id="hours">00</div>
                 <div class="time-label">Hours</div>
             </div>

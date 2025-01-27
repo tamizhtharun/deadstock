@@ -1,4 +1,4 @@
-<?php require_once( 'header.php');?>
+<?php require_once('header.php');?>
 <link rel="stylesheet" href="./css/index.css">
 <div class="category-pad">
     <div class="category-box">
@@ -292,7 +292,7 @@ if (!empty($topCategories)) {
 <!-- End Display the product -->
 
 <!-- Display the Best selling Product -->
-<?php require_once('best-selling-homepage.php')?>
+<?php //require_once('best-selling-homepage.php')?>
 <!-- End Display the Best selling Product -->
 
 <!-- Display All Brands  -->
@@ -321,10 +321,4 @@ if (!empty($topCategories)) {
 
   </style>
 
-  <?php require_once( 'footer.php');?>
-
-
-
-
-
-
+  <?php require_once('footer.php');?>

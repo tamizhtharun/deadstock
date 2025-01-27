@@ -13,6 +13,17 @@ $successMessage = "";
 $seller_name = $seller_cname = $seller_email = $seller_phone = $seller_gst = "";
 $seller_address = $seller_state = $seller_city = $seller_zipcode = "";
 
+
+
+// Add this at the top of your PHP file
+$query = "SELECT seller_tc FROM tbl_settings LIMIT 1";
+$result = mysqli_query($conn, $query);
+$terms = '';
+if ($row = mysqli_fetch_assoc($result)) {
+    $terms = htmlspecialchars($row['seller_tc']);
+}
+
+
 // Process form submission if POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Collect and sanitize input data
@@ -113,13 +124,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Registration</title>
-</head>
+
+
 <style>
   :root {
     --primary-color: #0071e3;
@@ -330,6 +336,124 @@ body {
     }
 }
 
+/* Terms and Conditions Styles */
+.terms-checkbox-container {
+    margin: 20px 0;
+    text-align: left;
+    padding: 0 20px;
+}
+
+.terms-checkbox-container label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.terms-checkbox-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    border: 2px solid var(--border-color);
+    border-radius: 0; /* Removed border radius */
+}
+
+.terms-link {
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.terms-link:hover {
+    color: #005bbf;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+   
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    z-index: 99999;
+    animation: fadeIn 0.2s ease-out;
+}
+.modal-content {
+    position: relative;
+    background-color: var(--input-background);
+    margin: 40px auto;
+    padding: 24px;
+    width: 90%;
+    max-width: 600px;
+    max-height: calc(100vh - 80px);
+    border-radius: 0; /* Ensure no border-radius */
+    /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);  */
+    overflow-y: auto;
+}
+
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 24px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary-text);
+    transition: color 0.2s ease;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.modal-close:hover {
+    color: var(--text-color);
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-right: 40px;
+    color: var(--text-color);
+}
+
+.modal-dialog {
+    border-radius: 0; /* Remove rounding from parent container */
+}
+
+.modal-header, .modal-body, .modal-footer {
+    border-radius: 0; /* Remove rounding from child elements */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 20px;
+        width: auto;
+        max-height: calc(100vh - 40px);
+    }
+    
+    .terms-checkbox-container {
+        padding: 0 16px;
+    }
+}
+
 </style>
 <body>
 <div class="container">
@@ -399,11 +523,28 @@ body {
             </div>
         </div>
 
+        <div class="terms-checkbox-container">
+    <label>
+        <input type="checkbox" id="terms-checkbox" name="terms_accepted" required>
+        <span>I agree to the <span class="terms-link" onclick="showTermsModal()">Terms and Conditions</span></span>
+    </label>
+</div>
+
         <div class="form-footer">
             <button type="submit" class="submit-btn">Register</button>
         </div>
     </form>
 
+    </div>
+</div>
+
+<div id="terms-modal" class="modal">
+    <div class="modal-content">
+        <button type="button" class="modal-close" onclick="closeTermsModal()" aria-label="Close modal">&times;</button>
+        <h2 class="modal-title">Terms and Conditions</h2>
+        <div class="modal-body">
+            <?php echo nl2br($terms); ?>
+        </div>
     </div>
 </div>
 </body>
@@ -520,6 +661,57 @@ body {
         }
     });
 });
+
+// Terms and Conditions Modal Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.registration-form');
+    const termsCheckbox = document.getElementById('terms-checkbox');
+    const submitBtn = document.querySelector('.submit-btn');
+    const modal = document.getElementById('terms-modal');
+
+    // Prevent modal from closing when clicking inside modal content
+    modal.querySelector('.modal-content').addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+
+    // Form submission handler
+    form.addEventListener('submit', function(event) {
+        if (!termsCheckbox.checked) {
+            event.preventDefault();
+            alert('Please agree to the Terms and Conditions before registering.');
+            return;
+        }
+        // Your existing form validation continues here...
+    });
+});
+
+function showTermsModal() {
+    const modal = document.getElementById('terms-modal');
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeTermsModal() {
+    const modal = document.getElementById('terms-modal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('terms-modal');
+    if (event.target === modal) {
+        closeTermsModal();
+    }
+});
+
+// Close modal on escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeTermsModal();
+    }
+});
+
 gstInput.addEventListener('input', function() {
     this.value = this.value.toUpperCase();
     if (this.value.length > 0) {

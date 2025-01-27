@@ -154,7 +154,7 @@ move_uploaded_file($pdf_path_tmp, '../assets/uploads/product-catalogues/'.$pdf_f
 
 
         	$statement = $pdo->prepare("UPDATE tbl_product SET 
-        							p_name=?, 
+        							
         							p_old_price=?, 
         							p_current_price=?, 
         							p_qty=?,
@@ -163,13 +163,12 @@ move_uploaded_file($pdf_path_tmp, '../assets/uploads/product-catalogues/'.$pdf_f
         							p_feature=?,
         							p_condition=?,
         							p_return_policy=?,
-        							p_is_featured=?,
-        							p_is_active=?,
-        							ecat_id=?,
+        							
+        							
 									product_catalogue=?
-        							WHERE p_id=?");
+        							WHERE id=?");
         	$statement->execute(array(
-        							$_POST['p_name'],
+        						
         							$_POST['p_old_price'],
         							$_POST['p_current_price'],
         							$_POST['p_qty'],
@@ -178,9 +177,6 @@ move_uploaded_file($pdf_path_tmp, '../assets/uploads/product-catalogues/'.$pdf_f
         							$_POST['p_feature'],
         							$_POST['p_condition'],
         							$_POST['p_return_policy'],
-        							$_POST['p_is_featured'],
-        							$_POST['p_is_active'],
-        							$_POST['ecat_id'],
 									$pdf_final_name,
         							$_REQUEST['id']
         						));
@@ -456,7 +452,7 @@ foreach ($result as $row) {
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Description</label>
 							<div class="col-sm-8">
-								<textarea name="p_description" class="form-control" cols="30" rows="10" id="editor1"><?php echo $p_description; ?></textarea>
+								<textarea name="p_description" class="form-control" ><?php echo $p_description; ?></textarea>
 							</div>
 						</div>
 						<!-- <div class="form-group">
@@ -468,19 +464,19 @@ foreach ($result as $row) {
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Features</label>
 							<div class="col-sm-8">
-								<textarea name="p_feature" class="form-control" cols="30" rows="10" id="editor3"><?php echo $p_feature; ?></textarea>
+								<textarea name="p_feature" class="form-control" ><?php echo $p_feature; ?></textarea>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Conditions</label>
 							<div class="col-sm-8">
-								<textarea name="p_condition" class="form-control" cols="30" rows="10" id="editor4"><?php echo $p_condition; ?></textarea>
+								<textarea name="p_condition" class="form-control" ><?php echo $p_condition; ?></textarea>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Return Policy</label>
 							<div class="col-sm-8">
-								<textarea name="p_return_policy" class="form-control" cols="30" rows="10" id="editor5"><?php echo $p_return_policy; ?></textarea>
+								<textarea name="p_return_policy" class="form-control" ><?php echo $p_return_policy; ?></textarea>
 							</div>
 						</div>
 						<!-- <div class="form-group">

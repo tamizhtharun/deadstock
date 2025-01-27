@@ -1,13 +1,5 @@
 
 
-        // Make chart responsive
-        window.addEventListener('resize', function() {
-            myChart.resize();
-        });
-
-
-
-
 // Pie chart
 const pieCtx = document.getElementById('pieChart').getContext('2d');
         const pieChart = new Chart(pieCtx, {

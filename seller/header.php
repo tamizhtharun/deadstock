@@ -13,40 +13,41 @@ $success_message1 = '';
 // echo "</pre>";
 
 // Check if the seller is logged in or not
-if(!isset($_SESSION['seller_session'])) {
-    header('location: ../index.php');
-    exit;
+if (!isset($_SESSION['seller_session'])) {
+	header('location: ../index.php');
+	exit;
 } else {
-    // If customer is logged in, but admin make him inactive, then force logout this user.
-    $stmt = $conn->prepare("SELECT * FROM sellers WHERE seller_id=? AND seller_status=?");
+	// If customer is logged in, but admin make him inactive, then force logout this user.
+	$stmt = $conn->prepare("SELECT * FROM sellers WHERE seller_id=? AND seller_status=?");
 
-// Bind parameters
-$seller_id = $_SESSION['seller_session']['seller_id'];
-$seller_status = 0;
-$stmt->bind_param("ii", $seller_id, $seller_status);
+	// Bind parameters
+	$seller_id = $_SESSION['seller_session']['seller_id'];
+	$seller_status = 0;
+	$stmt->bind_param("ii", $seller_id, $seller_status);
 
-// Execute the statement
-$stmt->execute();
+	// Execute the statement
+	$stmt->execute();
 
-// Get the result
-$result = $stmt->get_result();
-$total = $result->num_rows;
+	// Get the result
+	$result = $stmt->get_result();
+	$total = $result->num_rows;
 
-// Check if any rows were returned
-if ($total) {
-    header('location: logout.php');
-    exit;
-}
+	// Check if any rows were returned
+	if ($total) {
+		header('location: logout.php');
+		exit;
+	}
 
-// Close the statement and connection
-$stmt->close();
-// $conn->close();
+	// Close the statement and connection
+	$stmt->close();
+	// $conn->close();
 }
 
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -66,7 +67,7 @@ $stmt->close();
 	<link rel="stylesheet" href="css/jquery.fancybox.css">
 	<link rel="stylesheet" href="css/AdminLTE.min.css">
 	<link rel="stylesheet" href="css/_all-skins.min.css">
-	<link rel="stylesheet" href="css/on-off-switch.css"/>
+	<link rel="stylesheet" href="css/on-off-switch.css" />
 	<link rel="stylesheet" href="css/summernote.css">
 	<link rel="stylesheet" href="style.css">
 
@@ -83,107 +84,147 @@ $stmt->close();
 			</a>
 
 			<nav class="navbar navbar-static-top d-flex justify-content-between align-items-center">
-    <div class="d-flex align-items-center">
-        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-            <span class="sr-only">Toggle navigation</span>
-        </a>
-        <span style="line-height:50px;color:#fff;padding-left:15px;font-size:18px; font-weight:800;">Seller Panel</span>
-    </div>
-    
-    <!-- Alert Message -->
-    <div id="message" style="display:none; position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1000; padding: 10px; border-radius: 5px; color: #fff; font-size: 14px;"></div>
-    <!-- Alert Message end -->
+				<div class="d-flex align-items-center">
+					<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+						<span class="sr-only">Toggle navigation</span>
+					</a>
+					<span style="line-height:50px;color:#fff;padding-left:15px;font-size:18px; font-weight:800;">Seller
+						Panel</span>
+				</div>
 
-    <!-- Top Bar ... User Information .. Login/Log out Area -->
-    <div class="navbar-custom-menu">
-	<div class="dropdown">
-    <button id="profile-btn" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-    <?php 
-    // Check if the profile photo exists; if not, use the Font Awesome user icon
-    if (!empty($_SESSION['selelr_session']['profile_photo'])) {
-        $profile_photo = $_SESSION['seller_session']['seller_name'];
-        echo '<img src="' . $profile_photo . '" style="width: 30px; height: 30px; border-radius: 50%;">';
-    } else {
-        // Display the Font Awesome user icon
-        echo '<i class="fa fa-user" style="font-size: 20px;"></i>';
-    }
-    ?>
-     Hi, <span style="font-weight:800"><?php echo $_SESSION['seller_session']['seller_name']; ?></span>
-    <!-- <i class="fas fa-chevron-down"></i> -->
-</button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="profile-edit.php">Edit Profile</a>
-        <a class="dropdown-item text-danger" href="logout.php">Log out</a>
-    </div>
-</div>
-    </div>
-</nav>
+				<!-- Alert Message -->
+				<div id="message"
+					style="display:none; position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1000; padding: 10px; border-radius: 5px; color: #fff; font-size: 14px;">
+				</div>
+				<!-- Alert Message end -->
+
+				<!-- Top Bar ... User Information .. Login/Log out Area -->
+				<div class="navbar-custom-menu">
+					<div class="dropdown">
+						<button id="profile-btn" class="btn dropdown-toggle" data-bs-toggle="dropdown"
+							aria-expanded="false">
+							<?php
+							// Check if the profile photo exists; if not, use the Font Awesome user icon
+							if (!empty($_SESSION['selelr_session']['profile_photo'])) {
+								$profile_photo = $_SESSION['seller_session']['seller_name'];
+								echo '<img src="' . $profile_photo . '" style="width: 30px; height: 30px; border-radius: 50%;">';
+							} else {
+								// Display the Font Awesome user icon
+								echo '<i class="fa fa-user" style="font-size: 20px;"></i>';
+							}
+							?>
+							Hi, <span
+								style="font-weight:800"><?php echo $_SESSION['seller_session']['seller_name']; ?></span>
+							<!-- <i class="fas fa-chevron-down"></i> -->
+						</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item" href="profile-edit.php">Edit Profile</a>
+							<a class="dropdown-item text-danger" href="logout.php">Log out</a>
+						</div>
+					</div>
+				</div>
+			</nav>
 		</header>
 
-  		<?php $cur_page = substr($_SERVER["SCRIPT_NAME"],strrpos($_SERVER["SCRIPT_NAME"],"/")+1); ?>
-<!-- Side Bar to Manage Shop Activities -->
-  		<aside class="main-sidebar">
-    		<section class="sidebar">
-      
-      			<ul class="sidebar-menu">
+		<?php $cur_page = substr($_SERVER["SCRIPT_NAME"], strrpos($_SERVER["SCRIPT_NAME"], "/") + 1); ?>
+		<!-- Side Bar to Manage Shop Activities -->
+		<aside class="main-sidebar">
+			<section class="sidebar">
 
-			        <li class="treeview <?php if($cur_page == 'index.php') {echo 'active';} ?>">
-			          <a href="index.php">
-			            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-			          </a>
-			        </li>
+				<ul class="sidebar-menu">
 
-					
-			        <!-- <li class="treeview <?php if( ($cur_page == 'settings.php') ) {echo 'active';} ?>">
-			          <a href="settings.php">
-			            <i class="fa fa-sliders"></i> <span>Website Settings</span>
-			          </a>
-			        </li> -->
+					<li class="treeview <?php if ($cur_page == 'index.php') {
+						echo 'active';
+					} ?>">
+						<a href="index.php">
+							<i class="fa fa-dashboard"></i> <span>Dashboard</span>
+						</a>
+					</li>
 
-                    <li class="treeview <?php if( ($cur_page == 'size.php') || ($cur_page == 'size-add.php') || ($cur_page == 'size-edit.php') || ($cur_page == 'color.php') || ($cur_page == 'color-add.php') || ($cur_page == 'color-edit.php') || ($cur_page == 'country.php') || ($cur_page == 'country-add.php') || ($cur_page == 'country-edit.php') || ($cur_page == 'shipping-cost.php') || ($cur_page == 'shipping-cost-edit.php') || ($cur_page == 'top-category.php') || ($cur_page == 'top-category-add.php') || ($cur_page == 'top-category-edit.php') || ($cur_page == 'mid-category.php') || ($cur_page == 'mid-category-add.php') || ($cur_page == 'mid-category-edit.php') || ($cur_page == 'end-category.php') || ($cur_page == 'end-category-add.php') || ($cur_page == 'end-category-edit.php') ) {echo 'active';} ?>">
-                        <!-- <a href="#">
-                            <i class="fa fa-cogs"></i>
-                            <span>Shop Settings</span>
-                            <span class="pull-right-container">
+
+					<!-- <li class="treeview <?php if (($cur_page == 'settings.php')) {
+						echo 'active';
+					} ?>">
+					  <a href="settings.php">
+						<i class="fa fa-sliders"></i> <span>Website Settings</span>
+					  </a>
+					</li> -->
+
+					<li
+						class="treeview <?php if (($cur_page == 'size.php') || ($cur_page == 'size-add.php') || ($cur_page == 'size-edit.php') || ($cur_page == 'color.php') || ($cur_page == 'color-add.php') || ($cur_page == 'color-edit.php') || ($cur_page == 'country.php') || ($cur_page == 'country-add.php') || ($cur_page == 'country-edit.php') || ($cur_page == 'shipping-cost.php') || ($cur_page == 'shipping-cost-edit.php') || ($cur_page == 'top-category.php') || ($cur_page == 'top-category-add.php') || ($cur_page == 'top-category-edit.php') || ($cur_page == 'mid-category.php') || ($cur_page == 'mid-category-add.php') || ($cur_page == 'mid-category-edit.php') || ($cur_page == 'end-category.php') || ($cur_page == 'end-category-add.php') || ($cur_page == 'end-category-edit.php')) {
+							echo 'active';
+						} ?>">
+						<!-- <a href="#">
+							<i class="fa fa-cogs"></i>
+							<span>Shop Settings</span>
+							<span class="pull-right-container">
 								<i class="fa fa-angle-left pull-right"></i>
 							</span>
-                        </a> -->
-                        <ul class="treeview-menu">
+						</a> -->
+						<ul class="treeview-menu">
 
-                            <li><a href="country.php"><i class="fa fa-circle-o"></i> Country</a></li>
-                            <li><a href="shipping-cost.php"><i class="fa fa-circle-o"></i> Shipping Cost</a></li>
-                            <li><a href="top-category.php"><i class="fa fa-circle-o"></i> Top Level Category</a></li>
-                            <li><a href="mid-category.php"><i class="fa fa-circle-o"></i> Mid Level Category</a></li>
-                            <li><a href="end-category.php"><i class="fa fa-circle-o"></i> End Level Category</a></li>
-                        </ul>
-                    </li>
-
-
-                    <li class="treeview <?php if( ($cur_page == 'product.php') || ($cur_page == 'product-add.php') || ($cur_page == 'product-edit.php') ) {echo 'active';} ?>">
-                        <a href="product.php">
-                            <i class="fa fa-shopping-bag"></i> <span>Product Management</span>
-                        </a>
-                    </li>
+							<li><a href="country.php"><i class="fa fa-circle-o"></i> Country</a></li>
+							<li><a href="shipping-cost.php"><i class="fa fa-circle-o"></i> Shipping Cost</a></li>
+							<li><a href="top-category.php"><i class="fa fa-circle-o"></i> Top Level Category</a></li>
+							<li><a href="mid-category.php"><i class="fa fa-circle-o"></i> Mid Level Category</a></li>
+							<li><a href="end-category.php"><i class="fa fa-circle-o"></i> End Level Category</a></li>
+						</ul>
+					</li>
 
 
-                    <li class="treeview <?php if( ($cur_page == 'bidding.php') ) {echo 'active';} ?>">
-                        <a href="bidding.php">
-                            <i class="fa fa-sticky-note"></i> <span>Bidding Management</span>
-                        </a>
-                    </li>
-					<li class="treeview <?php if( ($cur_page == 'bidded_orders.php') || ($cur_page == 'orders.php') ) {echo 'active';} ?>">
-					<!-- <li class="treeview <?php if( ($cur_page == 'active-bid.php') || ($cur_page == 'closed-bid.php') || ($cur_page == 'request.php') ) {echo 'active';} ?>">
+					<li
+						class="treeview <?php if (($cur_page == 'product.php') || ($cur_page == 'product-add.php') || ($cur_page == 'product-edit.php')) {
+							echo 'active';
+						} ?>">
+						<a href="product.php">
+							<i class="fa fa-shopping-bag"></i> <span>Product Management</span>
+						</a>
+					</li>
+
+
+					<!-- <li class="treeview <?php if (($cur_page == 'order.php')) {
+						echo 'active';
+					} ?>">
+						<a href="order.php">
+							<i class="fa fa-sticky-note"></i> <span>Order Management</span>
+						</a>
+					</li> -->
+
+
+					<!-- <li class="treeview <?php if (($cur_page == 'order.php')) {
+						echo 'active';
+					} ?>">
+						<a href="revenue.php">
+							<i class="fa fa-rupee"></i> <span>Revenue Management</span>
+						</a>
+					</li> -->
+
+
+					<li class="treeview <?php if (($cur_page == 'bidding.php')) {
+						echo 'active';
+					} ?>">
+						<a href="bidding.php">
+							<i class="fa fa-gavel"></i> <span>Bid Management</span>
+						</a>
+					</li>
+					<!-- Icons to be displayed on Shop -->
+
+
+					<!-- <li class="treeview <?php if (($cur_page == 'service.php')) {
+						echo 'active';
+					} ?>">
 						<a href="#">
-							<i class="fa fa-gavel"></i>  Use an appropriate icon for Bid Hub 
-							<span>Orders Management</span>
+							<i class="fa fa-list-ol"></i>
+							<span>Services</span>
 							<span class="pull-right-container">
 								<i class="fa fa-angle-left pull-right"></i>
 							</span>
 						</a>
 						<ul class="treeview-menu">
-							<li><a href="active-bid.php"><i class="fa fa-circle-o"></i> Active Bid</a></li>
-							<li><a href="closed-bid.php"><i class="fa fa-circle-o"></i> Closed Bid</a></li>
-							<li><a href="request-price.php"><i class="fa fa-circle-o"></i> Request Price</a></li>
+
+							<li><a href="#"><i class="fa fa-circle-o"></i> Scrolling Text</a></li>
+							<li><a href="#"><i class="fa fa-circle-o"></i> Quote</a></li>
+							<li><a href="#"><i class="fa fa-circle-o"></i> Category</a></li>
 						</ul>
 					</li> -->
 
@@ -239,37 +280,47 @@ $stmt->close();
 			          </a>
 			        </li>
 
-							<!-- <li class="treeview <?php if( ($cur_page == 'seller.php') || ($cur_page == 'seller-add.php') || ($cur_page == 'seller-edit.php') ) {echo 'active';} ?>">
+					<!-- <li class="treeview <?php if (($cur_page == 'seller.php') || ($cur_page == 'seller-add.php') || ($cur_page == 'seller-edit.php')) {
+						echo 'active';
+					} ?>">
 									<a href="seller.php">
 										<i class="fa fa-user-plus"></i> <span>Registered Seller</span>
 									</a>
 							</li>
 							
-							<li class="treeview <?php if( ($cur_page == 'customer.php') || ($cur_page == 'customer-add.php') || ($cur_page == 'customer-edit.php') ) {echo 'active';} ?>">
+							<li class="treeview <?php if (($cur_page == 'customer.php') || ($cur_page == 'customer-add.php') || ($cur_page == 'customer-edit.php')) {
+								echo 'active';
+							} ?>">
 									<a href="customer.php">
 										<i class="fa fa-user-plus"></i> <span>Customer</span>
 									</a>
 							</li>
-			        <li class="treeview <?php if( ($cur_page == 'page.php') ) {echo 'active';} ?>">
-			          <a href="page.php">
-			            <i class="fa fa-tasks"></i> <span>Page Settings</span>
-			          </a>
-			        </li> -->
+					<li class="treeview <?php if (($cur_page == 'page.php')) {
+						echo 'active';
+					} ?>">
+					  <a href="page.php">
+						<i class="fa fa-tasks"></i> <span>Page Settings</span>
+					  </a>
+					</li> -->
 
-			        <!-- <li class="treeview <?php if( ($cur_page == 'social-media.php') ) {echo 'active';} ?>">
-			          <a href="social-media.php">
-			            <i class="fa fa-globe"></i> <span>Social Media</span>
-			          </a>
-			        </li>
+					<!-- <li class="treeview <?php if (($cur_page == 'social-media.php')) {
+						echo 'active';
+					} ?>">
+					  <a href="social-media.php">
+						<i class="fa fa-globe"></i> <span>Social Media</span>
+					  </a>
+					</li>
 
-			        <li class="treeview <?php if( ($cur_page == 'subscriber.php')||($cur_page == 'subscriber.php') ) {echo 'active';} ?>">
-			          <a href="subscriber.php">
-			            <i class="fa fa-hand-o-right"></i> <span>Subscriber</span>
-			          </a>
-			        </li> -->
+					<li class="treeview <?php if (($cur_page == 'subscriber.php') || ($cur_page == 'subscriber.php')) {
+						echo 'active';
+					} ?>">
+					  <a href="subscriber.php">
+						<i class="fa fa-hand-o-right"></i> <span>Subscriber</span>
+					  </a>
+					</li> -->
 
-      			</ul>
-    		</section>
-  		</aside>
+				</ul>
+			</section>
+		</aside>
 
-  		<div class="content-wrapper">
+		<div class="content-wrapper">
