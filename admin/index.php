@@ -52,7 +52,16 @@ $yesterday = date('Y-m-d', strtotime('-1 day'));
 // $statement->execute(array('Completed','Pending'));
 // $total_order_complete_shipping_pending = $statement->rowCount();
 ?>
+<head>
+    <!-- Include Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- <script>
+        Chart.defaults.responsive = true;
+        Chart.defaults.maintainAspectRatio = false;
+    </script> -->
+</head>
 <section class="content">
 <!-- <div class="container"> -->
 <div class="row ">
@@ -239,23 +248,110 @@ $yesterday = date('Y-m-d', strtotime('-1 day'));
     </div>
 
 
-    <!-- Graph -->
-    <div class="container-fluid py-4 px-1">
+<!-- Revenue Distribution Pie Chart -->
+<?php
+function getRevenueData($pdo) {
+    // First, get the most recent date from the database
+    $getLatestDate = "
+        SELECT DATE(created_at) as latest_date 
+        FROM tbl_orders 
+        WHERE order_status != 'canceled'
+        ORDER BY created_at DESC 
+        LIMIT 1
+    ";
+    
+    try {
+        $stmt = $pdo->query($getLatestDate);
+        $latestDate = $stmt->fetch(PDO::FETCH_COLUMN);
+        
+        // If no data found, return empty array
+        if (!$latestDate) {
+            return [];
+        }
+        
+        // Get data for the last 6 days based on the latest order date
+        $query = "
+            SELECT 
+                DATE(created_at) as sale_date,
+                SUM(price * quantity) as daily_revenue,
+                COUNT(DISTINCT id) as order_count
+            FROM 
+                tbl_orders
+            WHERE 
+                order_status != 'canceled'
+                AND DATE(created_at) BETWEEN DATE_SUB(?, INTERVAL 5 DAY) AND ?
+            GROUP BY 
+                DATE(created_at)
+            ORDER BY 
+                sale_date ASC
+        ";
+        
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$latestDate, $latestDate]);
+        return [
+            'data' => $stmt->fetchAll(PDO::FETCH_ASSOC),
+            'latest_date' => $latestDate
+        ];
+    } catch (PDOException $e) {
+        error_log("Revenue data fetch error: " . $e->getMessage());
+        return [];
+    }
+}
+
+// Initialize data arrays
+$labels = [];
+$revenues = [];
+$orderCounts = [];
+
+// Get the revenue data
+$result = getRevenueData($pdo);
+$revenueData = $result['data'] ?? [];
+$latestDate = $result['latest_date'] ?? null;
+
+if ($latestDate) {
+    // Create a map for quick data lookup
+    $revenueMap = [];
+    $orderCountMap = [];
+    foreach ($revenueData as $data) {
+        $revenueMap[$data['sale_date']] = $data['daily_revenue'];
+        $orderCountMap[$data['sale_date']] = $data['order_count'];
+    }
+
+    // Generate last 6 days data based on the latest order date
+    for ($i = 5; $i >= 0; $i--) {
+        $currentDate = date('Y-m-d', strtotime($latestDate . " -$i days"));
+        $labels[] = date('M d', strtotime($currentDate));
+        $revenues[] = $revenueMap[$currentDate] ?? 0;
+        $orderCounts[] = $orderCountMap[$currentDate] ?? 0;
+    }
+
+    // Calculate summary statistics
+    $totalRevenue = array_sum($revenues);
+    $averageRevenue = $totalRevenue > 0 ? $totalRevenue / count(array_filter($revenues)) : 0;
+    $totalOrders = array_sum($orderCounts);
+} else {
+    // Handle case when no orders exist
+    $totalRevenue = 0;
+    $averageRevenue = 0;
+    $totalOrders = 0;
+}
+?>
+<!-- Graph -->
+<div class="container-fluid py-4 px-1">
     <div class="row mx-0 d-flex">
         <div class="col-lg-8 mb-4">
             <div class="card shadow">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0">Sales Analytics</h5>
+                    <h5 class="mb-0">Revenue Analytics</h5>
                 </div>
                 <div class="card-body">
                     <div class="chart-container" style="position: relative; height:40vh; width:100%">
-                        <canvas id="myChart"></canvas>
+                        <canvas id="myChart" style="max-height:100%;"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-            <!-- Pie  -->
         <div class="col-lg-4 mb-4">
                 <div class="card shadow">
                     <div class="card-header bg-light">
@@ -270,6 +366,115 @@ $yesterday = date('Y-m-d', strtotime('-1 day'));
             </div>
     </div>
 </div>
+
+<script>
+function createDynamicRevenueChart(initialLabels, initialRevenues, initialOrders) {
+    const ctx = document.getElementById('myChart').getContext('2d');
+    let chartInstance = null;
+
+    function updateChart(labels, revenues, orders) {
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+
+        chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Revenue (₹)',
+                    data: revenues,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgb(17, 18, 19)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                }, {
+                    label: 'Orders',
+                    data: orders,
+                    type: 'line',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    fill: false,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Revenue (₹)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Orders'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                if (context.dataset.label === 'Revenue (₹)') {
+                                    return `Revenue: ₹${context.parsed.y.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                                }
+                                return `Orders: ${context.parsed.y}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function fetchAndUpdateRevenueData() {
+        fetch('get_revenue_data.php')
+            .then(response => response.json())
+            .then(data => {
+                updateChart(data.labels.slice(-6), data.revenues.slice(-6), data.orders.slice(-6));
+            })
+            .catch(error => console.error('Error fetching revenue data:', error));
+    }
+
+    // Initial chart rendering
+    updateChart(initialLabels, initialRevenues, initialOrders);
+
+    // Update every 5 minutes
+    setInterval(fetchAndUpdateRevenueData, 5 * 60 * 1000);
+
+    return {
+        update: fetchAndUpdateRevenueData,
+        getCurrentChart: () => chartInstance
+    };
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const initialLabels = <?php echo json_encode($labels); ?>;
+    const initialRevenues = <?php echo json_encode($revenues); ?>;
+    const initialOrders = <?php echo json_encode($orderCounts); ?>;
+    
+    const revenueChart = createDynamicRevenueChart(initialLabels, initialRevenues, initialOrders);
+});
+</script>
 
 <style>
     /* .chart-container {
