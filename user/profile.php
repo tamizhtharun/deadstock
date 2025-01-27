@@ -108,6 +108,7 @@ try {
             o.created_at,
             p_name AS product_name,
             p_featured_photo AS product_image,
+            p.id AS p_id,
             o.order_type,
             o.tracking_id,
             o.payment_id
@@ -144,6 +145,7 @@ $biddingQuery = "
         b.refund_id AS bid_refund_id,
         p.p_name AS product_name,
         p.p_featured_photo AS product_image,
+        p.id AS p_id,
         p.p_current_price AS current_price
     FROM 
         bidding b
@@ -165,8 +167,9 @@ $bids = $biddingStmt->fetchAll(PDO::FETCH_ASSOC);
 // print_r($addresses);
 // Set default avatar if no profile image is available
 $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
-$profileImage = !empty($user['profile_image']) 
-    ? 'uploads/profile_photos/' . htmlspecialchars($user['profile_image'])  : $defaultAvatar;
+$profileImage = !empty($userInfo['profile_image']) 
+    ? '../uploads/profile-photos/' . htmlspecialchars($userInfo['profile_image'])
+    : $defaultAvatar;
 
 
 // Simulating user data - in production, this would come from a database
@@ -233,9 +236,9 @@ $active_tab = $_GET['tab'] ?? 'profile';
             <div class="profile-image-container">
                 <?php
                     $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"; // Default avatar URL
-                    $profileImage = isset($user['profile_image']) && !empty($user['profile_image']) 
-                        ? htmlspecialchars($user['profile_image']) 
-                        : $defaultAvatar;
+                    $profileImage = isset($userInfo['profile_image']) && !empty($userInfo['profile_image']) 
+        ? 'uploads/profile-photos/' . htmlspecialchars($userInfo['profile_image'])
+        : $defaultAvatar;
                 ?>
                 <!-- Placeholder image if no profile image is available -->
                 <img src="<?php echo $profileImage; ?>" alt="Profile" class="profile-image">
@@ -287,18 +290,18 @@ $active_tab = $_GET['tab'] ?? 'profile';
                     <!-- Personal Information Form -->
                     <form action="update_profile.php" method="POST" class="form" enctype="multipart/form-data">
                     <div class="form-group profile-upload">
-                        <?php
-                        $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"; // Default avatar URL
-                        $profileImage = isset($user['profile_image']) && !empty($user['profile_image']) 
-                            ? htmlspecialchars($user['profile_image']) 
-                            : $defaultAvatar;
-                        ?>
-                        <div class="profile-image-container">
-                            <img src="<?php echo $profileImage; ?>" alt="Profile Photo" class="profile-image">
-                            <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="file-input">
-                            <div class="plus-icon" id="trigger-upload">+</div>
-                        </div>
-                    </div>
+    <?php
+    $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
+    $profileImage = isset($userInfo['profile_image']) && !empty($userInfo['profile_image']) 
+        ? 'uploads/profile-photos/' . htmlspecialchars($userInfo['profile_image'])
+        : $defaultAvatar;
+    ?>
+    <div class="profile-image-container">
+        <img src="<?php echo $profileImage; ?>" alt="Profile Photo" class="profile-image">
+        <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="file-input">
+        <div class="plus-icon" id="trigger-upload">+</div>
+    </div>
+</div>
 
 
 
@@ -410,7 +413,8 @@ $active_tab = $_GET['tab'] ?? 'profile';
                             <?php echo htmlspecialchars($order['order_status']); ?>
                         </span> -->
                     </div>
-                    <div class="order-details">
+                    <div class="order-details" >
+                        <a href="../product_landing.php?id=<?php echo $order['p_id']; ?>">
                         <div class="product-info">
                             <img src="../assets/uploads/product-photos/<?php echo htmlspecialchars($order['product_image']); ?>" alt="Product Image" class="product-thumbnail">
                             <div class="product-details">
@@ -422,7 +426,7 @@ $active_tab = $_GET['tab'] ?? 'profile';
                                     echo "Direct Order";
                                 };?>
                             </div>
-                        </div>
+                        </div></a>
                         <h2 class="total">Total: ₹<?php echo number_format($order['price'] * $order['quantity'], 2); ?></h2>
                     </div>
                     <button class="button secondary">View Details</button>
@@ -971,6 +975,39 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle profile photo upload
+    const fileInput = document.getElementById('profile_photo');
+    const triggerUpload = document.getElementById('trigger-upload');
+    const profileImage = document.querySelector('.profile-image');
+
+    if (triggerUpload && fileInput) {
+        triggerUpload.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    profileImage.src = e.target.result;
+                };
+
+                reader.readAsDataURL(this.files[0]);
+                
+                // Automatically submit the form when a file is selected
+                const form = this.closest('form');
+                if (form) {
+                    form.submit();
+                }
+            }
+        });
+    }
+});
+</script>
+
 <!-- Order Details Modal CSS -->
 <style>
 
@@ -1194,10 +1231,14 @@ document.addEventListener('DOMContentLoaded', function() {
     align-items: center;
     gap: 15px;
 }
+.order-details a{
+    text-decoration:none !important;
+    color: rgb(113, 128, 150);
+}
 
 .product-thumbnail {
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: relative;
     object-fit: cover;
     border-radius: 8px;
 }
