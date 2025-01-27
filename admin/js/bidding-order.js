@@ -389,7 +389,7 @@ function fetchSellerData(sellerId) {
 
 function updateSellerModal(data) {
   const seller = data.seller
-  const defaultImage = "../assets/uploads/profile-pictures/user-1.jpg"
+  const defaultImage = "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"; // Reliable default image
 
   document.querySelector("#profile .seller-info-grid").innerHTML = `
         <div class="seller-info-item"><label>Name</label><span>${seller.seller_name}</span></div>
