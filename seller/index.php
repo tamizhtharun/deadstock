@@ -68,6 +68,18 @@ $total_product = $statement->rowCount();
                 <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
                 <div class="mb-0">
                     <h5 class="card-title mb-0">Approved Products</h5>
+
+
+
+
+
+
+
+
+
+
+
+
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
                     <div class="col-8">
@@ -97,6 +109,22 @@ $total_product = $statement->rowCount();
                 <div class="progress mt-1" data-height="8" style="height: 8px;">
                     <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percentage_of_approved_products; ?>%;"></div>
                 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
         </div>
     </div>
@@ -107,6 +135,17 @@ $total_product = $statement->rowCount();
                 <div class="card-icon card-icon-large"><i class="fas fa-users"></i></div>
                 <div class="mb-6">
                     <h5 class="card-title mb-0">Orders</h5>
+
+
+
+
+
+
+
+
+
+
+
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
                     <div class="col-8">
@@ -141,6 +180,10 @@ $total_product = $statement->rowCount();
                 <div class="progress mt-1" data-height="8" style="height: 8px;">
                     <div class="progress-bar l-bg-green" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percentage_of_non_cancelled_orders; ?>%;"></div>
                 </div>
+
+
+
+
             </div>
         </div>
     </div>
@@ -151,6 +194,12 @@ $total_product = $statement->rowCount();
                 <div class="card-icon card-icon-large"><i class="fas fa-gavel"></i></div>
                 <div class="mb-4">
                     <h5 class="card-title mb-0">Today's Bids</h5>
+
+
+
+
+
+
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
                     <div class="col-8">
@@ -203,6 +252,9 @@ $total_product = $statement->rowCount();
                     ?>
                     <div class="progress-bar l-bg-orange" role="progressbar" aria-valuenow="<?php echo $progress_percentage; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $progress_percentage; ?>%;"></div>
                 </div>
+
+
+
             </div>
         </div>
     </div>
@@ -281,12 +333,12 @@ $total_product = $statement->rowCount();
                     <div class="progress-bar l-bg-yellow" role="progressbar" aria-valuenow="<?php echo $progress_percentage; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $progress_percentage; ?>%;"></div>
                 </div>
             </div>
+
+
+
         </div>
     </div>
 </div>
-</div>
-
-
 
 
 
@@ -404,6 +456,7 @@ if ($latestDate) {
             </div>
         </div>
 
+
         <div class="col-lg-4 mb-4">
                 <div class="card shadow">
                     <div class="card-header bg-light">
@@ -418,6 +471,7 @@ if ($latestDate) {
             </div>
     </div>
 </div>
+    
 
 <script>
 function createDynamicRevenueChart(initialLabels, initialRevenues, initialOrders) {
