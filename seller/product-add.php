@@ -1,13 +1,12 @@
 <?php require_once('header.php');
 ?>
 <?php
-$a_id=0;
 $seller_id = $_SESSION['seller_session'];
 if (!isset($_SESSION['seller_session'])) {
 	// Handle the error, e.g., redirect to login or show a message
 	die("Seller ID is not set.");
 }
-
+$ai_id=0;
 if (isset($_POST['form1'])) {
 	$valid = 1;
 	$seller_id = $_SESSION['seller_session']['seller_id'];
@@ -50,14 +49,8 @@ if (isset($_POST['form1'])) {
 			$valid = 0;
 			$error_message .= "You must specify the brand name<br>";
 		} else {
+			
 			$product_brand = $_POST['other_brand'];
-		}
-	} else {
-		if (empty($_POST['product_brand'])) {
-			$valid = 0;
-			$error_message .= "Product Brand should be selected<br>";
-		} else {
-			$product_brand = $_POST['product_brand'];
 		}
 	}
 
@@ -176,7 +169,7 @@ if (isset($_POST['form1'])) {
 			0, // Assuming total view is 0 initially
 			$_POST['ecat_id'],
 			$pdf_final_name,
-			$product_brand,
+			$_POST['product_brand'],
 			date('Y-m-d H:i:s')
 		));
 
@@ -331,7 +324,7 @@ if (isset($_POST['form1'])) {
 			padding: 12px;
 			background-color: rgb(253, 253, 253);
 			border-radius: 4px;
-			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+			/* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); */
 			z-index: 1000;
 			min-width: 200px;
 
@@ -498,7 +491,6 @@ if (isset($_POST['form1'])) {
 								<!-- <input type="text" name="other_brand" class="form-control" id="other-brand" style="margin-top:10px;" placeholder="Please specify brand"> -->
 							</div>
 						</div>
-						
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Product Name <span>*</span></label>
 							<div class="col-sm-4">
@@ -701,20 +693,17 @@ if (isset($_POST['form1'])) {
 		</div>
 
 	</section>
-<script>
-	$(document).ready(function () {
-    $('.select2').select2();
-});
-</script>
 
-	<!-- <script>
+
+
+	<script>
 		$(document).ready(function () {
 			$('.select2').select2({
 				dropdownParent: $('.form-group'), // Attach dropdown to its container
 				dropdownPosition: 'below',        // Force dropdown to appear below
 			});
 		});
-	</script> -->
+	</script>
 </body>
 
 </html>
