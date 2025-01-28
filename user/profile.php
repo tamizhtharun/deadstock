@@ -41,6 +41,7 @@ try {
             a.id AS address_id, 
             a.full_name, 
             a.phone_number, 
+            u.user_gst,
             a.address, 
             a.city, 
             a.state, 
@@ -86,6 +87,7 @@ try {
                 'full_name' => $row['full_name'],
                 'phone_number' => $row['phone_number'],
                 'address' => $row['address'],
+                'user_gst' => $row['user_gst'],
                 'city' => $row['city'],
                 'state' => $row['state'],
                 'pincode' => $row['pincode'],
@@ -323,6 +325,10 @@ $active_tab = $_GET['tab'] ?? 'profile';
                         <div class="form-group">
                             <label for="phone">Phone</label>
                             <input type="tel" id="phone" name="phone" value="<?php echo htmlspecialchars($_SESSION['user_session']['phone_number']); ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="user_gst">GST Number</label>
+                            <input type="text" id="user_gst" name="user_gst" value="<?php echo htmlspecialchars($_SESSION['user_session']['user_gst']); ?>" required>
                         </div>
                         <button type="submit" class="button">Save Changes</button>
                     </form>
