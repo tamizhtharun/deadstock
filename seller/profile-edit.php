@@ -13,62 +13,123 @@ $active_tab = isset($_POST['form4']) ? 'tab_4' : 'tab_1';
     
 
 
-if(isset($_POST['form1'])) {
-    if($_SESSION['seller_session']){
-        $valid = 1;
-
-        if(empty($_POST['full_name'])) {
-            $valid = 0;
-            $error_message .= "Name can not be empty<br>";
-        }
-
-        if(empty($_POST['email'])) {
-            $valid = 0;
-            $error_message .= 'Email address can not be empty<br>';
-        } else {
-            if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) === false) {
+    if(isset($_POST['form1'])) {
+        if($_SESSION['seller_session']) {
+            $valid = 1;
+            $error_message = '';
+            
+            // Name validation
+            if(empty($_POST['full_name'])) {
                 $valid = 0;
-                $error_message .= 'Email address must be valid<br>';
+                $error_message .= "Name can not be empty. ";
+            }
+            
+            // Email validation
+            if(empty($_POST['email'])) {
+                $valid = 0;
+                $error_message .= 'Email address can not be empty. ';
             } else {
-                // current email address that is in the database
-                $statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_id=?");
-                $statement->execute(array($_SESSION['seller_session']['seller_id']));
-                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-                foreach($result as $row) {
-                    $current_email = $row['seller_email'];
-                }
-
-                $statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_email=? and seller_email!=?");
-                $statement->execute(array($_POST['email'],$current_email));
-                $total = $statement->rowCount();              
-                if($total) {
+                if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) === false) {
                     $valid = 0;
-                    $error_message .= 'Email address already exists<br>';
+                    $error_message .= 'Email address must be valid. ';
+                } else {
+                    // Check for duplicate email
+                    $statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_id=?");
+                    $statement->execute(array($_SESSION['seller_session']['seller_id']));
+                    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                    $current_email = $result[0]['seller_email'];
+                    
+                    $statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_email=? AND seller_email!=?");
+                    $statement->execute(array($_POST['email'], $current_email));
+                    if($statement->rowCount() > 0) {
+                        $valid = 0;
+                        $error_message .= 'Email address already exists. ';
+                    }
                 }
             }
-        }
-
-        if($valid == 1) {
-            $_SESSION['seller_session']['seller_name'] = $_POST['full_name'];
-            $_SESSION['seller_session']['seller_email'] = $_POST['email'];
-
-            // updating the database
-            $statement = $pdo->prepare("UPDATE sellers SET seller_name=?, seller_email=?, seller_phone=? WHERE seller_id=?");
-            $statement->execute(array($_POST['full_name'],$_POST['email'],$_POST['phone'],$_SESSION['seller_session']['seller_id']));
-
-            $success_message = 'User Information is updated successfully.';
+            
+            // Phone validation
+            if(empty($_POST['seller_phone'])) {
+                $valid = 0;
+                $error_message .= 'Phone number cannot be empty. ';
+            } else {
+                // Assuming Indian phone number format
+                if(!preg_match('/^[6-9]\d{9}$/', $_POST['seller_phone'])) {
+                    $valid = 0;
+                    $error_message .= 'Invalid phone number format. Must be 10 digits starting with 6-9. ';
+                }
+            }
+            
+            // GST validation
+            if(!empty($_POST['seller_gst'])) {
+                // GST format: 2 digits state code + 10 digits PAN + 1 digit entity number + 1 digit check sum
+                if(!preg_match('/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/', $_POST['seller_gst'])) {
+                    $valid = 0;
+                    $error_message .= 'Invalid GST format. ';
+                }
+            }
+            
+            // Zipcode validation
+            if(!empty($_POST['seller_zipcode'])) {
+                // Assuming Indian PIN code
+                if(!preg_match('/^[1-9][0-9]{5}$/', $_POST['seller_zipcode'])) {
+                    $valid = 0;
+                    $error_message .= 'Invalid PIN code format. ';
+                }
+            }
+            
+            if($valid == 1) {
+                try {
+                    // Update session data
+                    $_SESSION['seller_session']['seller_name'] = $_POST['full_name'];
+                    $_SESSION['seller_session']['seller_email'] = $_POST['email'];
+                    $_SESSION['seller_session']['seller_phone'] = $_POST['seller_phone'];
+                    
+                    // Update database
+                    $statement = $pdo->prepare("UPDATE sellers SET 
+                        seller_name = ?,
+                        seller_cname = ?,
+                        seller_email = ?,
+                        seller_phone = ?,
+                        seller_gst = ?,
+                        seller_address = ?,
+                        seller_state = ?,
+                        seller_city = ?,
+                        seller_zipcode = ?
+                        WHERE seller_id = ?");
+                    
+                    $statement->execute(array(
+                        $_POST['full_name'],
+                        $_POST['seller_cname'],
+                        $_POST['email'],
+                        $_POST['seller_phone'],
+                        $_POST['seller_gst'],
+                        $_POST['seller_address'],
+                        $_POST['seller_state'],
+                        $_POST['seller_city'],
+                        $_POST['seller_zipcode'],
+                        $_SESSION['seller_session']['seller_id']
+                    ));
+                    
+                    $success_message = 'User Information is updated successfully.';
+                } catch(PDOException $e) {
+                    $error_message = 'Database error: ' . $e->getMessage();
+                }
+            }
+        } else {
+            // Handle phone update for non-seller session
+            if(!empty($_POST['phone']) && preg_match('/^[6-9]\d{9}$/', $_POST['phone'])) {
+                $_SESSION['seller_session']['seller_phone'] = $_POST['phone'];
+                
+                $statement = $pdo->prepare("UPDATE sellers SET seller_phone=? WHERE seller_id=?");
+                $statement->execute(array($_POST['phone'], $_SESSION['seller_session']['seller_id']));
+                
+                $success_message = 'Phone number updated successfully.';
+            } else {
+                $error_message = 'Invalid phone number format.';
+            }
         }
     }
-    else {
-        $_SESSION['seller_session']['seller_phone'] = $_POST['phone'];
-
-        // updating the database
-        $statement = $pdo->prepare("UPDATE sellers SET seller_phone=? WHERE seller_id=?");
-        $statement->execute(array($_POST['phone'],$_SESSION['seller_session']['seller_id']));
-
-        $success_message = 'User Information is updated successfully.'; 
-    }
-}
 
 if(isset($_POST['form2'])) {
     $valid = 1;
@@ -244,6 +305,12 @@ foreach ($result as $row) {
     $full_name = $row['seller_name'];
     $email     = $row['seller_email'];
     $phone     = $row['seller_phone'];
+    $address   = $row['seller_address'];
+    $state    = $row['seller_state'];
+    $city    = $row['seller_city'];
+    $zipcode    = $row['seller_zipcode'];
+    $gst    = $row['seller_gst'];
+    $cname    = $row['seller_cname'];
     $status    = $row['seller_status'];
     $role      = 'Seller';
 }
@@ -301,6 +368,18 @@ foreach ($result as $row) {
                                         </div>
                                     </div>
                                     <div class="form-group">
+                                        <label for="" class="col-sm-2 control-label">Company Name <span>*</span></label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" name="seller_cname" value="<?php echo $cname; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-2 control-label">GST Number <span>*</span></label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" name="seller_gst" value="<?php echo $gst; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="" class="col-sm-2 control-label">Email Address <span>*</span></label>
                                         <div class="col-sm-4">
                                             <input type="email" class="form-control" name="email" value="<?php echo $email; ?>">
@@ -309,7 +388,31 @@ foreach ($result as $row) {
                                     <div class="form-group">
                                         <label for="" class="col-sm-2 control-label">Phone </label>
                                         <div class="col-sm-4">
-                                            <input type="text" class="form-control" name="phone" value="<?php echo $phone; ?>">
+                                            <input type="text" class="form-control" name="seller_phone" value="<?php echo $phone; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-2 control-label">Address </label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" name="seller_address" value="<?php echo $address; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-2 control-label">City </label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" name="seller_city" value="<?php echo $city; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-2 control-label">State </label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" name="seller_state" value="<?php echo $state; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-2 control-label">Pincode </label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" name="seller_zipcode" value="<?php echo $zipcode; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group">
