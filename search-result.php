@@ -10,16 +10,15 @@ $selected_category = isset($_GET['category']) ? trim($_GET['category']) : '';
 $price_filter = isset($_GET['price']) ? floatval($_GET['price']) : 0;
 $sort_by = isset($_GET['sort']) ? trim($_GET['sort']) : 'name_asc';
 
-// Base query for products with dynamic category filtering
-$base_sql = "SELECT p.*, c.ecat_name, s.seller_cname,
+// Base query for products with mid-category filtering
+$base_sql = "SELECT p.*, m.mcat_name, s.seller_cname,
              COALESCE(
                  (SELECT SUM(p_qty) FROM tbl_product WHERE id = p.id), 
                  0
              ) as stock_quantity
              FROM tbl_product p
-             LEFT JOIN tbl_end_category c ON p.ecat_id = c.ecat_id
-             LEFT JOIN tbl_mid_category m ON c.mcat_id = m.mcat_id
-             LEFT JOIN tbl_top_category t ON m.tcat_id = t.tcat_id
+             LEFT JOIN tbl_mid_category m ON p.mcat_id = m.mcat_id
+             LEFT JOIN tbl_top_category t ON p.tcat_id = t.tcat_id
              LEFT JOIN sellers s ON p.seller_id = s.seller_id
              WHERE p.p_is_approve = '1'";
 
@@ -32,9 +31,6 @@ if ($category_type && $category_id) {
         case 'mid-category':
             $base_sql .= " AND m.mcat_id = :category_id";
             break;
-        case 'end-category':
-            $base_sql .= " AND c.ecat_id = :category_id";
-            break;
     }
 }
 
@@ -42,13 +38,13 @@ if ($category_type && $category_id) {
 if (!empty($search_query)) {
     $base_sql .= " AND (p.p_name LIKE :search 
                   OR p.p_description LIKE :search 
-                  OR c.ecat_name LIKE :search 
+                  OR m.mcat_name LIKE :search 
                   OR s.seller_cname LIKE :search)";
 }
 
 // Add additional category filter
 if (!empty($selected_category)) {
-    $base_sql .= " AND c.ecat_id = :selected_category";
+    $base_sql .= " AND m.mcat_id = :selected_category";
 }
 
 // Add price filter
@@ -102,27 +98,17 @@ if ($category_type && $category_id) {
     switch ($category_type) {
         case 'top-category':
             $cat_stmt = $pdo->prepare("
-                SELECT DISTINCT c.ecat_id, c.ecat_name 
-                FROM tbl_end_category c
-                JOIN tbl_mid_category m ON c.mcat_id = m.mcat_id
+                SELECT DISTINCT m.mcat_id, m.mcat_name 
+                FROM tbl_mid_category m
                 WHERE m.tcat_id = ?
-                ORDER BY c.ecat_name
-            ");
-            $cat_stmt->execute([$category_id]);
-            break;
-        case 'mid-category':
-            $cat_stmt = $pdo->prepare("
-                SELECT DISTINCT c.ecat_id, c.ecat_name 
-                FROM tbl_end_category c
-                WHERE c.mcat_id = ?
-                ORDER BY c.ecat_name
+                ORDER BY m.mcat_name
             ");
             $cat_stmt->execute([$category_id]);
             break;
     }
 } else {
-    // Default: fetch all end categories
-    $cat_stmt = $pdo->query("SELECT ecat_id, ecat_name FROM tbl_end_category ORDER BY ecat_name");
+    // Default: fetch all mid categories
+    $cat_stmt = $pdo->query("SELECT mcat_id, mcat_name FROM tbl_mid_category ORDER BY mcat_name");
 }
 
 $categories = $cat_stmt ? $cat_stmt->fetchAll(PDO::FETCH_ASSOC) : [];
@@ -166,9 +152,9 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
                         <select id="category" name="category" class="filter-select">
                             <option value="">All Categories</option>
                             <?php foreach ($categories as $category): ?>
-                                <option value="<?php echo htmlspecialchars($category['ecat_id']); ?>"
-                                        <?php echo $selected_category == $category['ecat_id'] ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($category['ecat_name']); ?>
+                                <option value="<?php echo htmlspecialchars($category['mcat_id']); ?>"
+                                        <?php echo $selected_category == $category['mcat_id'] ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($category['mcat_name']); ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -207,30 +193,22 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
             
             <?php if ($total_results > 0): ?>
             <div class="search-grid">
-            
                 <?php foreach ($products as $product): ?>
-                        <div class="product-card" data-available="<?php echo $product['stock_quantity'] > 0 ? 'true' : 'false'; ?>">
+                    <div class="product-card" data-available="<?php echo $product['stock_quantity'] > 0 ? 'true' : 'false'; ?>">
                         <a href="product_landing.php?id=<?php echo $product['id']; ?>">
                             <div class="product-img">
-                            <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($product['p_featured_photo']); ?>"
-                                 alt="<?php echo htmlspecialchars($product['p_name']); ?>"
-                                 class="product-image">
-                                 </div>
+                                <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($product['p_featured_photo']); ?>"
+                                     alt="<?php echo htmlspecialchars($product['p_name']); ?>"
+                                     class="product-image">
+                            </div>
                             <div class="product-details">
                                 <div class="product-name">
-                                <h2 class="product-name"><?php echo htmlspecialchars($product['p_name']); ?></h2>
+                                    <h2 class="product-name"><?php echo htmlspecialchars($product['p_name']); ?></h2>
                                 </div>
                                 <div class="product-meta">
                                     <i class="fas fa-tag"></i>
-                                    <span class="product-category"><?php echo htmlspecialchars($product['ecat_name']); ?></span>
+                                    <span class="product-category"><?php echo htmlspecialchars($product['mcat_name']); ?></span>
                                 </div>
-
-                                <!-- <?php if (isset($product['seller_cname'])): ?>
-                                    <div class="product-meta">
-                                        <i class="fas fa-store"></i>
-                                        <span class="product-seller"><?php echo htmlspecialchars($product['seller_cname']); ?></span>
-                                    </div>
-                                <?php endif; ?> -->
 
                                 <div class="product-meta">
                                     <i class="fas fa-box"></i>
@@ -239,34 +217,21 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
                                     </span>
                                 </div>
                                 <div class="price-tag">
-                                <p class="product-price">₹<?php echo number_format($product['p_current_price'], 2); ?></p>
-                                <p class="product-old-price">₹<?php echo number_format($product['p_old_price'],2 ) ?></p>
+                                    <p class="product-price">₹<?php echo number_format($product['p_current_price'], 2); ?></p>
+                                    <p class="product-old-price">₹<?php echo number_format($product['p_old_price'], 2); ?></p>
                                 </div>
-                                <!-- <div class="product-actions">
-                                    <a href="product_landing.php?id=<?php echo $product['id']; ?>"
-                                       class="btn btn-primary">View Details</a>
-                                    
-                                    <?php if ($product['stock_quantity'] > 0): ?>
-                                        <button onclick="cart.add(<?php echo $product['id']; ?>)"
-                                                class="btn btn-secondary">
-                                            <i class="fas fa-cart-plus"></i>
-                                        </button>
-                                    <?php endif; ?>
-                                </div> -->
                             </div>
                         </a>
-                        </div>
-                        
-                    <?php endforeach; ?>
                     </div>
-                <?php else: ?>
-                    <div class="no-results">
-                        <i class="fas fa-search"></i>   
-                        <h2>No products found</h2>
-                        <p>Try different keywords or browse our categories</p>
-                    </div>
-                <?php endif; ?>
-        
+                <?php endforeach; ?>
+            </div>
+            <?php else: ?>
+                <div class="no-results">
+                    <i class="fas fa-search"></i>   
+                    <h2>No products found</h2>
+                    <p>Try different keywords or browse our categories</p>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -284,7 +249,6 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
             });
         }
     </script>
-    <!-- <script src='js/search-result.js'></script> -->
-     <?php include 'footer.php' ?>
+    <?php include 'footer.php' ?>
 </body>
-</html>
+</html> 
