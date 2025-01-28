@@ -30,7 +30,10 @@ $total_product = $statement->rowCount();
 $today_date = date('Y-m-d');
 $yesterday = date('Y-m-d', strtotime('-1 day'));
 
-// New code for fetching view statistics
+
+
+
+// fetching view statistics
 $statement = $pdo->prepare("SELECT SUM(view_count) FROM page_views");
 $statement->execute();
 $total_views = $statement->fetchColumn();
@@ -92,7 +95,38 @@ if ($result && $row = $result->fetch_assoc()) {
     $total_revenue = $row['total_revenue'];
 }
 
+try {
+    // Top Performing Products
+    $statement = $pdo->prepare("
+        SELECT p.p_name, p.p_featured_photo, SUM(o.quantity) as total_sold, SUM(o.quantity * o.price) as total_revenue
+        FROM tbl_product p
+        JOIN tbl_orders o ON p.id = o.product_id
+        WHERE o.order_status != 'canceled'
+        GROUP BY p.id
+        ORDER BY total_sold DESC
+        LIMIT 10
+    ");
+    $statement->execute();
+    $top_products = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+    // Seller Performance Dashboard
+    $statement = $pdo->prepare("
+        SELECT s.seller_name, COUNT(DISTINCT o.order_id) as total_orders, SUM(o.quantity * o.price) as total_revenue
+        FROM sellers s
+        LEFT JOIN tbl_orders o ON s.seller_id = o.seller_id
+        WHERE o.order_status != 'canceled'
+        GROUP BY s.seller_id
+        ORDER BY total_revenue DESC
+        LIMIT 10
+    ");
+    $statement->execute();
+    $top_sellers = $statement->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // Handle the error (e.g., log it or display a user-friendly message)
+    error_log("Database Error: " . $e->getMessage());
+    // You might want to set $top_products and $top_sellers to empty arrays here
+    $top_products = $top_sellers = [];
+}
 ?>
 <head>
     <!-- Include Chart.js -->
@@ -365,8 +399,6 @@ if ($result && $row = $result->fetch_assoc()) {
     </div>
 </div>
 
-    
-</div>
 
 
 <!-- Revenue Distribution Pie Chart -->
@@ -486,6 +518,77 @@ if ($latestDate) {
                 </div>
             </div>
     </div>
+
+    <div class="row">
+        <!-- Top Performing Products -->
+        <div class="col-md-6 mb-4">
+        <div class="card shadow">
+
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"> Top Performing Products</h5>
+                </div>
+                <div class="box-body">
+                    <div class="table-responsive" style="height: 300px; overflow-y: auto;">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Total Sold</th>
+                                    <th>Total Revenue</th>
+                                </tr>
+                            </thead>
+                            <!-- <?php echo $product['p_featured_photo']; ?> -->
+                            <tbody>
+                                <?php foreach ($top_products as $product): ?>
+                                <tr>
+                                    <td>
+                                        <img src="../assets/uploads/product-featured-161.png" alt="<?php echo $product['p_name']; ?>" style="width: 50px; height: 50px; object-fit: cover;">
+                                        <?php echo $product['p_name']; ?>
+                                    </td>
+                                    <td><?php echo number_format($product['total_sold']); ?></td>
+                                    <td>₹<?php echo number_format($product['total_revenue'], 2); ?></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seller Performance Dashboard -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Seller Performance Dashboard</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="height: 300px; overflow-y: auto;">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Seller Name</th>
+                                    <th>Total Orders</th>
+                                    <th>Total Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($top_sellers as $seller): ?>
+                                <tr>
+                                    <td><?php echo $seller['seller_name']; ?></td>
+                                    <td><?php echo number_format($seller['total_orders']); ?></td>
+                                    <td>₹<?php echo number_format($seller['total_revenue'], 2); ?></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row mx-0">
         <!-- Views Over Time Graph -->
         <div class="col-lg-8 mb-4">
@@ -538,6 +641,111 @@ if ($latestDate) {
             </div>
         </div>
     </div>
+    <div class="row mx-0">
+    <!-- Users Distribution -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Users Distribution by District</h5>
+            </div>
+            <div class="card-body" style="height: 400px; overflow-y: auto;">
+                <?php
+                // Get users distribution by district
+                $stmt = $pdo->prepare("
+                    SELECT 
+                        TRIM(SUBSTRING_INDEX(city, ',', -1)) as district,
+                        COUNT(DISTINCT user_id) as user_count,
+                        (COUNT(DISTINCT user_id) * 100.0 / (
+                            SELECT COUNT(DISTINCT user_id) FROM users_addresses
+                        )) as percentage
+                    FROM users_addresses
+                    WHERE city REGEXP '^[A-Za-z]'
+                    GROUP BY district
+                    HAVING district != ''
+                    ORDER BY user_count DESC
+                ");
+                $stmt->execute();
+                $userDistricts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                ?>
+                
+                <div class="district-analytics">
+                    <?php foreach ($userDistricts as $district): ?>
+                    <div class="district-item mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="fw-medium"><?php echo htmlspecialchars($district['district']); ?></span>
+                            <span class="text-muted"><?php echo number_format($district['percentage'], 1); ?>%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-primary" 
+                                 role="progressbar" 
+                                 style="width: <?php echo $district['percentage']; ?>%" 
+                                 aria-valuenow="<?php echo $district['percentage']; ?>" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+                        <div class="small text-muted mt-1">
+                            <?php echo number_format($district['user_count']); ?> users
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sellers Distribution -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Sellers Distribution by District</h5>
+            </div>
+            <div class="card-body" style="height: 400px; overflow-y: auto;">
+                <?php
+                // Get sellers distribution by district
+                $stmt = $pdo->prepare("
+                    SELECT 
+                        TRIM(SUBSTRING_INDEX(seller_city, ',', -1)) as district,
+                        COUNT(*) as seller_count,
+                        (COUNT(*) * 100.0 / (
+                            SELECT COUNT(*) FROM sellers
+                        )) as percentage
+                    FROM sellers
+                    WHERE seller_city REGEXP '^[A-Za-z]'
+                    GROUP BY district
+                    HAVING district != ''
+                    ORDER BY seller_count DESC
+                ");
+                $stmt->execute();
+                $sellerDistricts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                ?>
+                
+                <div class="district-analytics">
+                    <?php foreach ($sellerDistricts as $district): ?>
+                    <div class="district-item mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="fw-medium"><?php echo htmlspecialchars($district['district']); ?></span>
+                            <span class="text-muted"><?php echo number_format($district['percentage'], 1); ?>%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" 
+                                 role="progressbar" 
+                                 style="width: <?php echo $district['percentage']; ?>%" 
+                                 aria-valuenow="<?php echo $district['percentage']; ?>" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+                        <div class="small text-muted mt-1">
+                            <?php echo number_format($district['seller_count']); ?> sellers
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 
 
