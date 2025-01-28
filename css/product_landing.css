@@ -522,3 +522,49 @@ body {
   transform: scale(1.3);
   transition: transform 0.2s ease, object-position 0.2s ease;
 }
+
+.premium-alert.error {
+  background-color: #ffeaea; /* Soft background matching error tone */
+  color: #b71c1c; /* Apply's primary error text color */
+  border: 1.5px solid #f5a9a9; /* Border matching the error theme */
+  padding: 10px 15px; /* Compact padding to match modal theme */
+  border-radius: 5px; /* Slight rounding for uniformity */
+  margin-top: 10px; /* Space below header or input fields */
+  font-size: 14px; /* Consistent font size */
+  font-weight: 400; /* Regular weight for Apply theme text */
+  display: none; /* Hidden by default */
+  position: relative; /* For the close button positioning */
+  animation: fadeIn 0.3s ease-out; /* Smooth fade-in animation */
+}
+
+.premium-alert.error.show {
+  display: block;
+}
+
+.premium-alert .message {
+  display: inline-block;
+}
+
+.premium-alert .close-btn {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 16px; /* Standard size for consistency */
+  cursor: pointer;
+  color: #b71c1c; /* Matches the text color */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

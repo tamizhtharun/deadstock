@@ -4,8 +4,6 @@ require_once('vendor/autoload.php');
 require_once('config.php');
 ?>
 
-<!-- Style  -->
-
 
 <?php
 
@@ -209,7 +207,17 @@ if ($ecat_id) {
         $ecat_name = $result['ecat_name'];
     }
 }
+
+$stmt = $pdo->prepare("SELECT min_bid_pct FROM bid_settings ORDER BY created_at DESC LIMIT 1");
+$stmt->execute();
+$bid_settings = $stmt->fetch(PDO::FETCH_ASSOC);
+$min_bid_pct = $bid_settings ? $bid_settings['min_bid_pct'] : 0;
+
+// Calculate minimum allowed bid price
+$min_allowed_price = $p_current_price * (1 - ($min_bid_pct/100));
 ?>
+<!DOCTYPE html>
+<html lang="en">
 
  
   <link rel="stylesheet" href="css/product_landing.css">
@@ -431,57 +439,65 @@ if ($ecat_id) {
 
   </section>
 
-  <!-- Modal Overlay For Request Price -->
-  <div class="modal-overlay" id="modalOverlay" style="display: none;">
-    <!-- Modal -->
-    <div id="priceRequestModal">
-      <button class="close-button-rp" id="closeModal">&times;</button>
-      <div class="terms-modal-header-rp">
-        <h3>Request a Price</h3>
+<!-- Modal Overlay For Request Price -->
+<div class="modal-overlay" id="modalOverlay" style="display: none;">
+  <!-- Modal -->
+  <div id="priceRequestModal">
+    <button class="close-button-rp" id="closeModal">&times;</button>
+    <div class="terms-modal-header-rp">
+      <h3>Request a Price</h3>
+    </div>
+
+    <!-- Error Notification -->
+    <div class="premium-alert error" id="errorNotification" style="display: none;">
+      <span class="message" id="errorMessage"></span>
+      <button class="close-btn" onclick="closeNotification()">×</button>
+    </div>
+
+    <!-- Form -->
+    <form id="priceRequestForm" method="POST" action="submit_bid.php">
+      <input type="hidden" name="product_id"
+        value="<?php echo htmlspecialchars($_REQUEST['id'], ENT_QUOTES, 'UTF-8'); ?>">
+
+      <div class="form-group">
+        <label for="quantity">Quantity</label>
+        <input type="number" id="quantity" name="quantity" required min="1" placeholder="Enter quantity" />
       </div>
-      <form id="priceRequestForm" method="POST" action="submit_bid.php">
-        <input type="hidden" name="product_id"
-          value="<?php echo htmlspecialchars($_REQUEST['id'], ENT_QUOTES, 'UTF-8'); ?>">
 
-        <div class="form-group">
-          <label for="quantity">Quantity</label>
-          <input type="number" id="quantity" name="quantity" required min="1" placeholder="Enter quantity" />
-        </div>
+      <div class="form-group">
+        <label for="proposedPrice">Your Bid Price (₹)</label>
+        <input
+          type="number"
+          id="proposedPrice"
+          name="proposed_price"
+          required
+          min="0"
+          step="0.01"
+          placeholder="Enter Price Per Unit"
+        />
+      </div>
 
-            <div class="form-group">
-                <label for="proposedPrice">Your Bid Price (₹)</label>
-                <input
-                    type="number"
-                    id="proposedPrice"
-                    name="proposed_price"
-                    required
-                    min="0"
-                    step="0.01"
-                    placeholder="Enter Price Per Unit"
-                />
-            </div>
-            <div className="terms-checkbox">
-                    
-                    <label>
         <label>
-    <input type="checkbox" id="terms-checkbox" name="terms_accepted" required>
-    <span>I agree to the <span class="terms-link" id = "terms-btn" onclick="showTermsModal(event)">Terms and Conditions</span></span>
-</label>
-    </label>
-                </div>
+          <input type="checkbox" id="terms-checkbox" name="terms_accepted" required>
+          <span>
+            I agree to the <span class="terms-link" id="terms-btn" style="text-decoration: underline; cursor: pointer;" onclick="showTermsModal(event)">Terms and Conditions</span>
+          </span>
+        </label>
 
-            <div class="modal-footer">
-                <!-- <button type="button" class="btn-rp btn-cancel-rp" id="cancelBtn">Cancel</button> -->
-                <button type="button" class="btn btn-secondary" id="cancelBtn"
-        style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Cancel </button>
-                <!-- Submit Request Button -->
-                <!-- <button type="button" onclick="openRazorpayModal()" class="btn-rp btn-submit-rp">Pay and Place your Bid</button> -->
-                <button type="button" class="btn btn-primary" onclick="validateCheckboxAndPay()"
-                style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Pay and Place your Bid </button>
-              </div>
-        </form>
-    </div>      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancelBtn"
+          style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary" onclick="validateCheckboxAndPay()"
+          style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;">
+          Pay and Place your Bid
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
+
 <script>
   function showTermsModal(event) {
     event.preventDefault();
@@ -526,24 +542,49 @@ if ($ecat_id) {
 <script>
 
 
-    // Function to validate checkbox and handle payment
-    function validateCheckboxAndPay() {
-        const termsCheckbox = document.getElementById('terms-checkbox');
-        const quantityField = document.getElementById('quantity');
-        const proposedPrice = document.getElementById('proposedPrice');
-        
-        if (quantityField.value <= 0){
-            alert('Please enter the quantity');
-        } else if (proposedPrice.value <= 0){
-            alert('Please enter the Proposed price')
-        }else if (!termsCheckbox.checked) {
-            // Display notification if the checkbox is not checked
-            alert('Please agree to the Terms and Conditions before proceeding with the payment.');
-        } else {
-            // Proceed with payment logic
-            openRazorpayModal();
-        }
-    }
+function showNotification(message) {
+  const notification = document.getElementById('errorNotification');
+  const messageElement = document.getElementById('errorMessage');
+  
+  messageElement.textContent = message;
+  notification.style.display = 'block';
+  notification.classList.add('show');
+  
+  // Auto-dismiss after 3 seconds
+  setTimeout(() => {
+    closeNotification();
+  }, 3000);
+}
+
+function closeNotification() {
+  const notification = document.getElementById('errorNotification');
+  notification.classList.remove('show');
+  
+  setTimeout(() => {
+    notification.style.display = 'none';
+  }, 400);
+}
+
+function validateCheckboxAndPay() {
+  const termsCheckbox = document.getElementById('terms-checkbox');
+  const quantityField = document.getElementById('quantity');
+  const proposedPrice = document.getElementById('proposedPrice');
+  
+  const minAllowedPrice = <?php echo $min_allowed_price; ?>;
+  
+  if (quantityField.value <= 0) {
+    showNotification('Please enter a valid quantity');
+  } else if (proposedPrice.value <= 0) {
+    showNotification('Please enter a valid bid price');
+  } else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
+    showNotification('Minimum bid price is ₹' + minAllowedPrice.toFixed(2));
+  } else if (!termsCheckbox.checked) {
+    showNotification('You must agree to the Terms and Conditions');
+  } else {
+    openRazorpayModal();
+  }
+}
+
     // Function to open Razorpay modal
     function openRazorpayModal() {
 
