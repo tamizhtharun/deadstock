@@ -2,10 +2,19 @@
 ?>
 <?php
 $seller_id = $_SESSION['seller_session'];
+$seller_status = $_SESSION['seller_session']['seller_status'];
 if (!isset($_SESSION['seller_session'])) {
 	// Handle the error, e.g., redirect to login or show a message
 	die("Seller ID is not set.");
 }
+
+if ($seller_status==0) {
+	// Handle the error, e.g., redirect to login or show a message
+	header("location: profile-edit.php");
+	exit();
+}
+
+
 $ai_id=0;
 if (isset($_POST['form1'])) {
 	$valid = 1;
