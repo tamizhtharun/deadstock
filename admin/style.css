@@ -1615,3 +1615,93 @@ select {
     overflow-y: auto; /* Enable vertical scrolling */
     overflow-x: hidden;  }
 }
+
+
+.district-analytics {
+  padding-right: 5px;
+}
+
+.district-analytics::-webkit-scrollbar {
+  width: 6px;
+}
+
+.district-analytics::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.district-analytics::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.district-analytics::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.district-item {
+  padding: 10px;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+}
+
+.district-item:hover {
+  background-color: #f0f0f0;
+}
+
+.progress {
+  background-color: rgba(0,0,0,0.05);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  transition: width 0.6s ease;
+}
+
+.bg-primary {
+  background-color: #4CAF50 !important;
+}
+
+.bg-success {
+  background-color: #2196F3 !important;
+}
+
+.card-body {
+  scrollbar-width: thin;
+  scrollbar-color: #bbb #fafafa;
+}
+
+/* Webkit-based browsers (Chrome, Edge, Safari) */
+.card-body::-webkit-scrollbar {
+  width: 6px; /* Reduces scrollbar width */
+}
+
+.card-body::-webkit-scrollbar-thumb {
+  background-color: #bbb; /* Lighter scrollbar color */
+  border-radius: 10px; /* Rounded corners */
+}
+
+.card-body::-webkit-scrollbar-track {
+  background-color: #fafafa; /* Lighter track color */
+}
+
+
+.fw-medium {
+  font-weight: 500;
+}
+
+.table-responsive::-webkit-scrollbar {
+  width: 6px;
+}
+.table-responsive::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
