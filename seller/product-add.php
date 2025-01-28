@@ -2,10 +2,21 @@
 ?>
 <?php
 $seller_id = $_SESSION['seller_session'];
-if (!isset($_SESSION['seller_session'])) {
-	// Handle the error, e.g., redirect to login or show a message
-	die("Seller ID is not set.");
+if(isset($_SESSION['seller_session'])) {
+    $seller_id = $_SESSION['seller_session']['seller_id'];
+    
+    // Get seller status from database
+    $statement = $pdo->prepare("SELECT seller_status FROM sellers WHERE seller_id = ?");
+    $statement->execute([$seller_id]);
+    $seller_status = $statement->fetchColumn();
+    
+    if($seller_status == 0) {
+        header('Location: profile-edit.php');
+        exit;
+    }
 }
+
+
 $ai_id=0;
 if (isset($_POST['form1'])) {
 	$valid = 1;
@@ -149,11 +160,13 @@ if (isset($_POST['form1'])) {
 			p_condition,
 			p_return_policy,
 			p_total_view,
+			tcat_id,
+			mcat_id,
 			ecat_id,
 			product_catalogue,
 			product_brand,
 			p_date
-		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		$statement->execute(array(
 			$seller_id,
@@ -167,6 +180,8 @@ if (isset($_POST['form1'])) {
 			$_POST['p_condition'],
 			$_POST['p_return_policy'],
 			0, // Assuming total view is 0 initially
+			$_POST['tcat_id'],
+			$_POST['mcat_id'],
 			$_POST['ecat_id'],
 			$pdf_final_name,
 			$_POST['product_brand'],

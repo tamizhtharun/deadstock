@@ -259,6 +259,13 @@ $active_tab = $_GET['tab'] ?? 'profile';
                 </svg>
                 Personal Information
             </a>
+            <a href="?tab=password" class="tab <?php echo $active_tab === 'password' ? 'active' : ''; ?>">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+    Change Password
+</a>
             <a href="?tab=addresses" class="tab <?php echo $active_tab === 'addresses' ? 'active' : ''; ?>">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
@@ -443,7 +450,70 @@ $active_tab = $_GET['tab'] ?? 'profile';
         <?php endif; ?>
     </div>
 </div>
-            <?php endif; ?>
+<?php elseif ($active_tab === 'password'): ?>
+    <div class="card">
+        <h2>Change Password</h2>
+        <form action="update_password.php" method="POST" class="form">
+            <div class="form-group">
+                <label for="current_password">Current Password</label>
+                <input type="password" id="current_password" name="current_password" required>
+            </div>
+            <div class="form-group">
+                <label for="new_password">New Password</label>
+                <input type="password" id="new_password" name="new_password" required 
+                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+                       title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters">
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Confirm New Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+            <div id="password-requirements" class="password-requirements" style="margin-bottom: 20px; font-size: 0.9em; color: #666;">
+                Password must contain:
+                <ul style="margin-top: 5px; padding-left: 20px;">
+                    <li>At least 8 characters</li>
+                    <li>At least one uppercase letter</li>
+                    <li>At least one lowercase letter</li>
+                    <li>At least one number</li>
+                </ul>
+            </div>
+            <button type="submit" class="button">Update Password</button>
+        </form>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const newPassword = document.getElementById('new_password');
+        const confirmPassword = document.getElementById('confirm_password');
+
+        form.addEventListener('submit', function(e) {
+            if(newPassword.value !== confirmPassword.value) {
+                e.preventDefault();
+                alert('New passwords do not match!');
+                return false;
+            }
+        });
+
+        // Real-time password match validation
+        confirmPassword.addEventListener('input', function() {
+            if(newPassword.value !== confirmPassword.value) {
+                confirmPassword.setCustomValidity('Passwords do not match');
+            } else {
+                confirmPassword.setCustomValidity('');
+            }
+        });
+
+        newPassword.addEventListener('input', function() {
+            if(confirmPassword.value && newPassword.value !== confirmPassword.value) {
+                confirmPassword.setCustomValidity('Passwords do not match');
+            } else {
+                confirmPassword.setCustomValidity('');
+            }
+        });
+    });
+    </script>
+<?php endif; ?>
             
         </div>
     </div>
@@ -912,6 +982,38 @@ document.addEventListener('DOMContentLoaded', function() {
 #progressbar li.active {
     color: black;
 }
+.password-requirements {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.password-requirements ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.password-requirements li {
+    color: #666;
+    margin: 5px 0;
+}
+
+/* Add to your existing form styles */
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input[type="password"]:focus {
+    border-color: #4a90e2;
+    outline: none;
+}
+
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
