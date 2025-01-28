@@ -49,8 +49,8 @@ if(isset($_POST['form1'])) {
         }
 
         if($valid == 1) {
-            $_SESSION['user']['full_name'] = $_POST['full_name'];
-            $_SESSION['user']['email'] = $_POST['email'];
+            $_SESSION['seller_session']['seller_name'] = $_POST['full_name'];
+            $_SESSION['seller_session']['seller_email'] = $_POST['email'];
 
             // updating the database
             $statement = $pdo->prepare("UPDATE sellers SET seller_name=?, seller_email=?, seller_phone=? WHERE seller_id=?");
@@ -60,7 +60,7 @@ if(isset($_POST['form1'])) {
         }
     }
     else {
-        $_SESSION['user']['phone'] = $_POST['phone'];
+        $_SESSION['seller_session']['seller_phone'] = $_POST['phone'];
 
         // updating the database
         $statement = $pdo->prepare("UPDATE sellers SET seller_phone=? WHERE seller_id=?");
@@ -73,13 +73,18 @@ if(isset($_POST['form1'])) {
 if(isset($_POST['form2'])) {
     $valid = 1;
 
-    $path = $_FILES['photo']['name'];
-    $path_tmp = $_FILES['photo']['tmp_name'];
+    // Check if a file was actually selected
+    if(empty($_FILES['photo']['name'])) {
+        $valid = 0;
+        $error_message .= 'Please select a photo to upload<br>';
+    } else {
+        $path = $_FILES['photo']['name'];
+        $path_tmp = $_FILES['photo']['tmp_name'];
 
-    if($path!='') {
-        $ext = pathinfo( $path, PATHINFO_EXTENSION );
+        $ext = pathinfo($path, PATHINFO_EXTENSION );
         $file_name = basename( $path, '.' . $ext );
-        if( $ext!='jpg' && $ext!='png' && $ext!='jpeg' && $ext!='gif' ) {
+        
+        if($ext!='jpg' && $ext!='png' && $ext!='jpeg' && $ext!='gif' ) {
             $valid = 0;
             $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
         }
@@ -252,10 +257,23 @@ foreach ($result as $row) {
 
 <section class="content">
     <div class="row">
-		<div class="col-md-12">
-			<?php if($seller_status ==0){ ?>
-						<div class="callout callout-info"> Complete your profile to get Started</div>
-				<?php } ?>
+        <div class="col-md-12">
+            <?php if($seller_status == 0): ?>
+                <div class="callout callout-info">Complete your profile to get Started</div>
+            <?php endif; ?>
+
+            <?php if($error_message): ?>
+                <div class="callout callout-danger">
+                    <p><?php echo $error_message; ?></p>
+                </div>
+            <?php endif; ?>
+
+            <?php if($success_message): ?>
+                <div class="callout callout-success">
+                    <p><?php echo $success_message; ?></p>
+                </div>
+            <?php endif; ?>
+
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li class="<?php echo ($active_tab == 'tab_1') ? 'active' : ''; ?>">
@@ -365,18 +383,7 @@ foreach ($result as $row) {
                     </div>
 					<div class="tab-pane <?php echo ($active_tab == 'tab_4') ? 'active' : ''; ?>" id="tab_4">
                         <!-- Display error/success messages only if form4 was submitted -->
-                        <?php if(isset($_POST['form4']) && $error_message): ?>
-                        <div class="callout callout-danger">
-                            <p><?php echo $error_message; ?></p>
-                        </div>
-                        <?php endif; ?>
-
-                        <?php if(isset($_POST['form4']) && $success_message): ?>
-                        <div class="callout callout-success">
-                            <p><?php echo $success_message; ?></p>
-                        </div>
-                        <?php endif; ?>
-
+                        
                         <!-- Form to add new brand -->
                         <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
                             <div class="box box-info">

@@ -60,35 +60,39 @@ $statement = $pdo->prepare("
 $statement->execute();
 $views_over_time = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+// Total orders
+$query = "SELECT COUNT(*) AS total_orders FROM tbl_orders WHERE order_status != 'canceled'";
+$result = $conn->query($query);
+
+$total_orders = 0;
+if ($result && $row = $result->fetch_assoc()) {
+    $total_orders = $row['total_orders'];
+}
 
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_customer WHERE seller_status='1'");
-// $statement->execute();
-// $total_customers = $statement->rowCount();
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_subscriber WHERE subs_active='1'");
-// $statement->execute();
-// $total_subscriber = $statement->rowCount();
+// Function to format numbers as 1k, 1M, etc.
+function format_number_short($number) {
+    if ($number >= 1000000) {
+        return round($number / 1000000, 1) . 'M';
+    } elseif ($number >= 1000) {
+        return round($number / 1000, 1) . 'k';
+    }
+    return $number;
+}
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_shipping_cost");
-// $statement->execute();
-// $available_shipping = $statement->rowCount();
+// Query to calculate total revenue
+$query = "SELECT SUM(price * quantity) AS total_revenue 
+          FROM tbl_orders 
+          WHERE order_status != 'canceled'";
+$result = $conn->query($query);
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_payment WHERE payment_status=?");
-// $statement->execute(array('Completed'));
-// $total_order_completed = $statement->rowCount();
+$total_revenue = 0;
+if ($result && $row = $result->fetch_assoc()) {
+    $total_revenue = $row['total_revenue'];
+}
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_payment WHERE shipping_status=?");
-// $statement->execute(array('Completed'));
-// $total_shipping_completed = $statement->rowCount();
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_payment WHERE payment_status=?");
-// $statement->execute(array('Pending'));
-// $total_order_pending = $statement->rowCount();
-
-// $statement = $pdo->prepare("SELECT * FROM tbl_payment WHERE payment_status=? AND shipping_status=?");
-// $statement->execute(array('Completed','Pending'));
-// $total_order_complete_shipping_pending = $statement->rowCount();
 ?>
 <head>
     <!-- Include Chart.js -->
@@ -283,9 +287,31 @@ $views_over_time = $statement->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
   </div>
+
+  <!-- Orders card -->
+  <div class="col-xl-3 col-lg-3">
+  <div class="card l-bg-orange-dark">
+        <div class="card-statistic-3 p-4">
+            <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
+            <div class="mb-4">
+                <h5 class="card-title mb-0">Total Orders</h5>
+            </div>
+            <div class="row align-items-center mb-2 d-flex">
+                <div class="col-8">
+                    <h2 class="d-flex align-items-center mb-0">
+                        <?php echo number_format($total_orders); ?>
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
           <!-- New card for Total Views -->
           <div class="col-xl-3 col-lg-3">
-            <div class="card l-bg-blue-dark">
+          <div class="card l-bg-cherry">
                 <div class="card-statistic-3 p-4">
                     <div class="card-icon card-icon-large"><i class="fas fa-eye"></i></div>
                     <div class="mb-4">
@@ -304,7 +330,7 @@ $views_over_time = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         <!-- New card for Today's Views -->
         <div class="col-xl-3 col-lg-3">
-            <div class="card l-bg-green-dark">
+        <div class="card l-bg-blue-dark">
                 <div class="card-statistic-3 p-4">
                     <div class="card-icon card-icon-large"><i class="fas fa-chart-line"></i></div>
                     <div class="mb-4">
@@ -320,6 +346,25 @@ $views_over_time = $statement->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
         </div>
+        <div class="col-xl-3 col-lg-3">
+    <div class="card l-bg-green-dark">
+        <div class="card-statistic-3 p-4">
+            <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i></div>
+            <div class="mb-4">
+                <h5 class="card-title mb-0">Total Revenue</h5>
+            </div>
+            <div class="row align-items-center mb-2 d-flex">
+                <div class="col-8">
+                    <h2 class="d-flex align-items-center mb-0">
+                        <?php echo "₹" .format_number_short($total_revenue); ?>
+
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
     
 </div>
 
@@ -521,7 +566,7 @@ function createDynamicRevenueChart(initialLabels, initialRevenues, initialOrders
                     label: 'Orders',
                     data: orders,
                     type: 'line',
-                    borderColor: 'rgba(75, 192, 192, 0.8)',
+                    borderColor: 'rgba(75, 192, 192,0.8)',
                     borderWidth: 2,
                     fill: false,
                     yAxisID: 'y1'

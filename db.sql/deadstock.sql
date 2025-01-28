@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 27, 2025 at 10:04 AM
+-- Generation Time: Jan 28, 2025 at 05:57 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -79,6 +79,41 @@ INSERT INTO `bid_settings` (`id`, `send_time`, `close_time`, `created_at`, `upda
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `page_views`
+--
+
+CREATE TABLE `page_views` (
+  `id` int(11) NOT NULL,
+  `page_id` varchar(255) NOT NULL,
+  `page_title` varchar(255) NOT NULL,
+  `view_count` int(11) DEFAULT 0,
+  `view_date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `page_views`
+--
+
+INSERT INTO `page_views` (`id`, `page_id`, `page_title`, `view_count`, `view_date`) VALUES
+(0, 'SRP', 'Seller Panel', 1, '2025-01-27'),
+(0, 'dashboard', 'Admin Dashboard', 1, '2025-01-27'),
+(0, 'HP', 'Home page', 1, '2025-01-27'),
+(0, 'SRP', 'Seller Panel', 1, '2025-01-27'),
+(0, 'dashboard', 'Admin Dashboard', 1, '2025-01-27'),
+(0, 'HP', 'Home page', 1, '2025-01-27'),
+(0, 'HP', 'Home page', 1, '2025-01-28'),
+(0, 'SRP', 'Seller Panel', 1, '2025-01-28'),
+(0, 'HP', 'Home page', 1, '2025-01-28'),
+(0, 'dashboard', 'Admin Dashboard', 1, '2025-01-28'),
+(0, 'SRP', 'Seller Panel', 1, '2025-01-28'),
+(0, 'HP', 'Home page', 1, '2025-01-28'),
+(0, 'dashboard', 'Admin Dashboard', 1, '2025-01-28'),
+(0, 'SRF', 'Seller Registration Form', 1, '2025-01-28'),
+(0, 'SRP', 'Seller Panel', 1, '2025-01-28');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `sellers`
 --
 
@@ -95,16 +130,44 @@ CREATE TABLE `sellers` (
   `seller_zipcode` varchar(10) NOT NULL,
   `seller_password` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `seller_status` tinyint(4) DEFAULT 0
+  `seller_status` tinyint(4) DEFAULT 0,
+  `seller_photo` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `sellers`
 --
 
-INSERT INTO `sellers` (`seller_id`, `seller_name`, `seller_cname`, `seller_email`, `seller_phone`, `seller_gst`, `seller_address`, `seller_state`, `seller_city`, `seller_zipcode`, `seller_password`, `created_at`, `seller_status`) VALUES
-(9, 'TAMIL SELVAN V', 'Deadstock Tooling', 'mailtotharun23@gmail.com', '9597049879', '22AAAAA0000A1Z5', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$bMO/LgY/F2pMyocMrUaeRudf5xMYmkkkZecWFeQjhQ/X16T63btKm', '2025-01-09 04:34:52', 1),
-(10, 'TAMIL SELVAN V', 'IMET', '927622bal049@mkce.ac.in', '9597049879', '22AAAAA0000A1Z5', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', '2025-01-26 11:23:02', 1);
+INSERT INTO `sellers` (`seller_id`, `seller_name`, `seller_cname`, `seller_email`, `seller_phone`, `seller_gst`, `seller_address`, `seller_state`, `seller_city`, `seller_zipcode`, `seller_password`, `created_at`, `seller_status`, `seller_photo`) VALUES
+(9, 'TAMIL SELVAN V', 'Deadstock Tooling', 'mailtotharun23@gmail.com', '9865969799', '22AAAAA0000A1Z5', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$bMO/LgY/F2pMyocMrUaeRudf5xMYmkkkZecWFeQjhQ/X16T63btKm', '2025-01-09 04:34:52', 1, ''),
+(10, 'TAMIL SELVAN V', 'IMET', '927622bal049@mkce.ac.in', '9597049879', '22AAAAA0000A1Z5', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', '2025-01-26 11:23:02', 1, ''),
+(11, 'Test Seller', 'IMET TOOLING', 'seller@deadstock.in', '9865969799', '22AAAAA0000A1Z5', '1/20, Matha kovil street, Karai- po, Alathur- tk, Perambalur.', 'Tamil Nadu', 'Perambalur', '621109', '$2y$10$qzRaXi.d9lgOEqFGDAKG4uNHfJ95sptoMLJXEXfI68wfanQ7bwGNC', '2025-01-27 14:25:15', 1, 'seller-11.jpg'),
+(12, 'Seller 1', 'Company 11', 'company@deadstock.in', '9876543213', '22AAAAA0000A1Z5', 'Sullerumbu', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$qzRaXi.d9lgOEqFGDAKG4uNHfJ95sptoMLJXEXfI68wfanQ7bwGNC', '2025-01-27 16:29:00', 1, 'seller-12.png');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `seller_brands`
+--
+
+CREATE TABLE `seller_brands` (
+  `seller_id` int(11) NOT NULL,
+  `brand_id` int(11) NOT NULL,
+  `brand_certificate` varchar(255) DEFAULT NULL,
+  `valid_to` date NOT NULL,
+  `created_at` date NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `seller_brands`
+--
+
+INSERT INTO `seller_brands` (`seller_id`, `brand_id`, `brand_certificate`, `valid_to`, `created_at`) VALUES
+(9, 45, 'certificate-9-45-1737980452.pdf', '2025-01-31', '2025-01-27'),
+(11, 44, 'certificate-11-44-1738038507.pdf', '2025-01-28', '2025-01-28'),
+(11, 49, 'certificate-11-49-1738039496.pdf', '2025-05-29', '2025-01-28'),
+(12, 42, 'certificate-12-42-1737997120.pdf', '2025-01-28', '2025-01-27'),
+(12, 51, 'certificate-12-51-1737996748.pdf', '2028-10-24', '2025-01-27');
 
 -- --------------------------------------------------------
 
@@ -311,7 +374,8 @@ CREATE TABLE `tbl_key` (
 INSERT INTO `tbl_key` (`id`, `P`, `M`, `K`, `N`, `S`, `H`, `O`) VALUES
 (0, '0', '1', '2', '1', '0', '1', '2'),
 (168, '0', '1', '2', '1', '0', '1', '2'),
-(169, '0', '1', '2', '1', '0', '1', '2');
+(169, '0', '1', '2', '1', '0', '1', '2'),
+(170, '0', '0', '1', '2', '2', '1', '0');
 
 -- --------------------------------------------------------
 
@@ -423,7 +487,9 @@ CREATE TABLE `tbl_product` (
   `p_is_featured` int(1) NOT NULL,
   `p_is_active` int(1) NOT NULL,
   `p_is_approve` int(1) NOT NULL,
-  `ecat_id` int(11) NOT NULL,
+  `tcat_id` int(11) NOT NULL,
+  `mcat_id` int(11) NOT NULL,
+  `ecat_id` int(11) DEFAULT NULL,
   `product_catalogue` varchar(500) NOT NULL,
   `product_brand` varchar(500) NOT NULL,
   `p_date` datetime DEFAULT NULL
@@ -433,13 +499,14 @@ CREATE TABLE `tbl_product` (
 -- Dumping data for table `tbl_product`
 --
 
-INSERT INTO `tbl_product` (`id`, `seller_id`, `p_name`, `p_old_price`, `p_current_price`, `p_qty`, `p_featured_photo`, `p_description`, `p_feature`, `p_condition`, `p_return_policy`, `p_total_view`, `p_is_featured`, `p_is_active`, `p_is_approve`, `ecat_id`, `product_catalogue`, `product_brand`, `p_date`) VALUES
-(162, 9, 'Shank tool – Rigid clamping', '1329', '400', 222, 'product-featured-162.jpg', '', '', '', '', 191, 1, 1, 1, 97, 'product-catalogue-162.pdf', '41', NULL),
-(163, 9, 'Turning Insert – Positive rhombic 80°', '986', '439', 122, 'product-featured-163.png', '', '', '', '', 120, 1, 1, 1, 112, 'product-catalogue-163.pdf', '42', NULL),
-(164, 9, 'CNMG120404-NF WPP20S', '599', '299', 1500, 'product-featured-164.png', 'Description provided by the seller', '', '', '', 120, 1, 1, 1, 99, 'product-catalogue-164.pdf', '63', NULL),
-(166, 9, 'M5008-016-T14-02-01', '580', '259', 222, 'product-featured-166.png', '', '', '', '', 7, 0, 0, 1, 101, 'product-catalogue-166.pdf', '63', NULL),
-(168, 10, 'TS5008-016-T14-02-01', '1429', '400', 1500, 'product-featured-168.png', '', '', '', '', 1, 0, 0, 1, 0, 'product-catalogue-168.pdf', '43', '2025-01-26 12:36:26'),
-(169, 10, '111008-016-T14-02-01', '1329', '400', 100, 'product-featured-169.png', '', '', '', '', 17, 1, 1, 1, 99, 'product-catalogue-169.pdf', '41', '2025-01-26 12:48:53');
+INSERT INTO `tbl_product` (`id`, `seller_id`, `p_name`, `p_old_price`, `p_current_price`, `p_qty`, `p_featured_photo`, `p_description`, `p_feature`, `p_condition`, `p_return_policy`, `p_total_view`, `p_is_featured`, `p_is_active`, `p_is_approve`, `tcat_id`, `mcat_id`, `ecat_id`, `product_catalogue`, `product_brand`, `p_date`) VALUES
+(162, 9, 'Shank tool – Rigid clamping', '1329', '400', 222, 'product-featured-162.jpg', '', '', '', '', 196, 1, 1, 1, 0, 0, 97, 'product-catalogue-162.pdf', '41', NULL),
+(163, 9, 'Turning Insert – Positive rhombic 80°', '986', '439', 122, 'product-featured-163.png', '', '', '', '', 127, 1, 1, 1, 0, 0, 112, 'product-catalogue-163.pdf', '42', NULL),
+(164, 9, 'CNMG120404-NF WPP20S', '599', '299', 1500, 'product-featured-164.png', 'Description provided by the seller', '', '', '', 123, 1, 1, 1, 0, 0, 99, 'product-catalogue-164.pdf', '63', NULL),
+(166, 9, 'M5008-016-T14-02-01', '580', '259', 222, 'product-featured-166.png', '', '', '', '', 7, 0, 0, 1, 0, 0, 101, 'product-catalogue-166.pdf', '63', NULL),
+(168, 10, 'TS5008-016-T14-02-01', '1429', '400', 1500, 'product-featured-168.png', '', '', '', '', 2, 0, 0, 1, 0, 0, 0, 'product-catalogue-168.pdf', '43', '2025-01-26 12:36:26'),
+(169, 10, '111008-016-T14-02-01', '1329', '400', 100, 'product-featured-169.png', '', '', '', '', 22, 1, 1, 1, 0, 0, 99, 'product-catalogue-169.pdf', '41', '2025-01-26 12:48:53'),
+(170, 11, 'M5008-016-T14-02-01', '299', '111', 4800, 'product-featured-170.png', 'Tamilselvan', '', '', '', 28, 0, 0, 1, 13, 78, NULL, 'product-catalogue-170.pdf', '43', '2025-01-27 18:23:06');
 
 -- --------------------------------------------------------
 
@@ -469,7 +536,9 @@ INSERT INTO `tbl_product_photo` (`pp_id`, `photo`, `p_id`) VALUES
 (15, '15.png', 168),
 (16, '16.png', 168),
 (17, '17.png', 168),
-(18, '18.png', 168);
+(18, '18.png', 168),
+(19, '19.png', 170),
+(22, '22.png', 170);
 
 -- --------------------------------------------------------
 
@@ -626,44 +695,6 @@ INSERT INTO `tbl_top_category` (`tcat_id`, `tcat_name`, `show_on_menu`, `photo`)
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_waiting_products`
---
-
-CREATE TABLE `tbl_waiting_products` (
-  `p_id` int(11) NOT NULL,
-  `p_name` varchar(255) NOT NULL,
-  `p_old_price` varchar(10) NOT NULL,
-  `p_current_price` varchar(10) NOT NULL,
-  `p_qty` int(10) NOT NULL,
-  `p_featured_photo` varchar(255) NOT NULL,
-  `p_description` text NOT NULL,
-  `p_short_description` text NOT NULL,
-  `p_feature` text NOT NULL,
-  `p_condition` text NOT NULL,
-  `p_return_policy` text NOT NULL,
-  `p_total_view` int(11) NOT NULL,
-  `p_is_featured` int(1) NOT NULL,
-  `p_is_active` int(1) NOT NULL,
-  `ecat_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `tbl_waiting_products`
---
-
-INSERT INTO `tbl_waiting_products` (`p_id`, `p_name`, `p_old_price`, `p_current_price`, `p_qty`, `p_featured_photo`, `p_description`, `p_short_description`, `p_feature`, `p_condition`, `p_return_policy`, `p_total_view`, `p_is_featured`, `p_is_active`, `ecat_id`) VALUES
-(1, 'Nithish', '', '123', 12, 'product-featured-.png', '', '', '', '', '', 0, 1, 1, 80),
-(2, 'Nithish', '', '123', 123, 'product-featured-108.png', '', '', '', '', '', 0, 0, 1, 93),
-(3, 'Tamil', '', '123', 123, 'product-featured-108.png', '', '', '', '', '', 0, 0, 1, 89),
-(4, 'Tamil', '', '123', 123, 'product-featured-108.png', '', '', '', '', '', 0, 0, 1, 89),
-(5, 'Nirbiehiwf', '', '124', 1222, 'product-featured-108.png', '', '', '', '', '', 0, 0, 1, 93),
-(6, 'ABCD', '', '987', 222, 'product-featured-108.png', '', '', '', '', '', 0, 0, 1, 80),
-(7, 'tools', '123', '234', 46, 'product-featured-108.png', '', '', '', '', '', 0, 0, 1, 80),
-(8, 'tTTT', '12', '123', 12313, 'product-featured-112.png', '', '', '', '', '', 0, 0, 0, 80);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `users`
 --
 
@@ -684,7 +715,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `phone_number`, `email`, `password`, `user_gst`, `created_at`, `profile_image`) VALUES
 (10, 'TAMIL SELVAN V', '9597049879', 'user@mail.com', '$2y$10$UfjZWLicsEiA.dMhXThReuWkDeWMRmZw5xZ/6M24AYesX/XTDGmtG', '', '2025-01-10 15:32:06', NULL),
-(11, 'TAMIL SELVAN V', '9597049879', 'visva@gmail.com', '$2y$10$6Pzahdk9UuJg5quo1hjqY.GgSBMwFeh3k00c3GCU6LkmUyt/oOIae', '', '2025-01-11 04:17:31', 'profile-11.png');
+(11, 'TAMIL SELVAN V', '9597049879', 'visva@gmail.com', '$2y$10$0Mbk8unYwk6MdOzHl8q8veV3ujQ5.q1REfM/gV36hHodyerqlwNfq', '', '2025-01-11 04:17:31', 'profile-11.png');
 
 -- --------------------------------------------------------
 
@@ -712,8 +743,8 @@ CREATE TABLE `users_addresses` (
 --
 
 INSERT INTO `users_addresses` (`id`, `user_id`, `full_name`, `phone_number`, `address`, `city`, `state`, `pincode`, `address_type`, `is_default`, `created_at`, `updated_at`) VALUES
-(4, 11, 'Tharun', '9597049879', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Dindigul', 'Tamil Nadu', '624710', 'Primary', 0, '2025-01-25 04:54:40', '2025-01-27 05:38:02'),
-(9, 11, 'SRIRAM R', '7708401467', '1/20, Matha kovil street, Karai- po, Alathur- tk, Perambalur.', 'Perambalur', 'Tamil Nadu', '621109', 'Secondary', 1, '2025-01-27 05:37:33', '2025-01-27 05:38:02');
+(4, 11, 'Tharun', '9597049879', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Dindigul', 'Tamil Nadu', '624710', 'Primary', 1, '2025-01-25 04:54:40', '2025-01-27 09:17:02'),
+(9, 11, 'SRIRAM R', '7708401467', '1/20, Matha kovil street, Karai- po, Alathur- tk, Perambalur.', 'Perambalur', 'Tamil Nadu', '621109', 'Secondary', 0, '2025-01-27 05:37:33', '2025-01-27 09:17:02');
 
 -- --------------------------------------------------------
 
@@ -737,12 +768,14 @@ CREATE TABLE `user_login` (
 
 INSERT INTO `user_login` (`id`, `user_name`, `user_email`, `user_phone`, `user_photo`, `user_password`, `user_role`) VALUES
 (1, 'தமிழ்', 'superadmin@deadstock.in', '9597049879', 'user-1.jpg', '$2y$10$tj6EZTOvNTR2h6Xed7AoDe7l23pXGUYc/ngxpIRCsb0bRobtTyjTi', 'admin'),
-(3, 'Admin', 'admin@deadstock.in', '', '', '$2y$10$A.gx7L08.unOG1kxmZXGYu33IcQ7yM/tO3aQk7zwXzx7u9fVji6lG', 'admin'),
+(3, 'Admin', 'admin@deadstock.in', '', 'user-3.jpg', '$2y$10$A.gx7L08.unOG1kxmZXGYu33IcQ7yM/tO3aQk7zwXzx7u9fVji6lG', 'admin'),
 (17, 'TAMIL SELVAN V', 'seller@deadstock.in', '', '', '$2y$10$ZSY8tFAINSJ45Hg7Y.Oeq.VckmCjVCD0LDwQ8oDk28n8shHNfIKaG', 'seller'),
 (18, 'TAMIL SELVAN V', 'mailtotharun23@gmail.com', '', '', '$2y$10$bMO/LgY/F2pMyocMrUaeRudf5xMYmkkkZecWFeQjhQ/X16T63btKm', 'seller'),
 (19, 'tamizhtharun', 'user@mail.com', '', '', '$2y$10$UfjZWLicsEiA.dMhXThReuWkDeWMRmZw5xZ/6M24AYesX/XTDGmtG', 'user'),
-(20, 'visva', 'visva@gmail.com', '', '', '$2y$10$6Pzahdk9UuJg5quo1hjqY.GgSBMwFeh3k00c3GCU6LkmUyt/oOIae', 'user'),
-(21, 'TAMIL SELVAN V', '927622bal049@mkce.ac.in', '', '', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', 'seller');
+(20, 'visva', 'visva@gmail.com', '', '', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', 'user'),
+(21, 'TAMIL SELVAN V', '927622bal049@mkce.ac.in', '', '', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', 'seller'),
+(22, 'Test Seller', 'seller@deadstock.in', '', '', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5...', 'seller'),
+(23, 'Seller 1', 'company@deadstock.in', '', '', '$2y$10$A.gx7L08.unOG1kxmZXGYu33IcQ7yM/tO3aQk7zwXzx7u9fVji6lG1', 'seller');
 
 --
 -- Indexes for dumped tables
@@ -768,6 +801,13 @@ ALTER TABLE `bid_settings`
 ALTER TABLE `sellers`
   ADD PRIMARY KEY (`seller_id`),
   ADD UNIQUE KEY `seller_email` (`seller_email`);
+
+--
+-- Indexes for table `seller_brands`
+--
+ALTER TABLE `seller_brands`
+  ADD PRIMARY KEY (`seller_id`,`brand_id`),
+  ADD KEY `brand_id` (`brand_id`);
 
 --
 -- Indexes for table `tbl_brands`
@@ -836,12 +876,6 @@ ALTER TABLE `tbl_top_category`
   ADD PRIMARY KEY (`tcat_id`);
 
 --
--- Indexes for table `tbl_waiting_products`
---
-ALTER TABLE `tbl_waiting_products`
-  ADD PRIMARY KEY (`p_id`);
-
---
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -880,7 +914,7 @@ ALTER TABLE `bid_settings`
 -- AUTO_INCREMENT for table `sellers`
 --
 ALTER TABLE `sellers`
-  MODIFY `seller_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `seller_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `tbl_brands`
@@ -916,13 +950,13 @@ ALTER TABLE `tbl_orders`
 -- AUTO_INCREMENT for table `tbl_product`
 --
 ALTER TABLE `tbl_product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=170;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
 
 --
 -- AUTO_INCREMENT for table `tbl_product_photo`
 --
 ALTER TABLE `tbl_product_photo`
-  MODIFY `pp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `pp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `tbl_slider`
@@ -935,12 +969,6 @@ ALTER TABLE `tbl_slider`
 --
 ALTER TABLE `tbl_top_category`
   MODIFY `tcat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
-
---
--- AUTO_INCREMENT for table `tbl_waiting_products`
---
-ALTER TABLE `tbl_waiting_products`
-  MODIFY `p_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -958,7 +986,7 @@ ALTER TABLE `users_addresses`
 -- AUTO_INCREMENT for table `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Constraints for dumped tables
@@ -970,6 +998,13 @@ ALTER TABLE `user_login`
 ALTER TABLE `bidding`
   ADD CONSTRAINT `bidding_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `tbl_product` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `bidding_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `seller_brands`
+--
+ALTER TABLE `seller_brands`
+  ADD CONSTRAINT `seller_brands_ibfk_1` FOREIGN KEY (`seller_id`) REFERENCES `sellers` (`seller_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `seller_brands_ibfk_2` FOREIGN KEY (`brand_id`) REFERENCES `tbl_brands` (`brand_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

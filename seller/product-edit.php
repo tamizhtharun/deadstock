@@ -432,8 +432,8 @@ foreach ($result as $row) {
 			                        	foreach ($result as $row) {
 			                        		?>
 											<tr>
-				                                <td>
-				                                    <img src="../assets/uploads/product_photos/<?php echo $row['photo']; ?>" alt="" style="width:150px;margin-bottom:5px;">
+				                                <td >
+				                                    <img src="../assets/uploads/product-photos/<?php echo $row['photo'];?>" alt="<?php echo $row['photo']?>" style="width:60px;">
 				                                </td>
 				                                <td style="width:28px;">
 				                                	<a onclick="return confirmDelete();" href="product-other-photo-delete.php?id=<?php echo $row['pp_id']; ?>&id1=<?php echo $_REQUEST['id']; ?>" class="btn btn-danger btn-xs">X</a>

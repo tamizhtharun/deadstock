@@ -27,7 +27,69 @@ $statement->execute();
 $total_product = $statement->rowCount();
 
 
+// Query to calculate total revenue
+$query = "SELECT SUM(price * quantity) AS total_revenue 
+          FROM tbl_orders 
+          WHERE order_status != 'canceled'";
+$result = $conn->query($query);
+
+$total_revenue = 0;
+if ($result && $row = $result->fetch_assoc()) {
+    $total_revenue = $row['total_revenue'];
+}
+// Calculate today's revenue for the seller
+$statement = $pdo->prepare("
+    SELECT SUM(price * quantity) AS total_revenue 
+    FROM tbl_orders 
+    WHERE order_status != 'cancelled' 
+      AND DATE(created_at) = CURDATE() 
+      AND seller_id = ?
+");
+$statement->execute([$seller_id]);
+$today_revenue = $statement->fetchColumn();
+$today_revenue = $today_revenue ? $today_revenue : 0; // Handle null values
+
+// echo "₹" . format_number_short($today_revenue);
+// Calculate today's total orders for the seller, excluding canceled orders
+$statement = $pdo->prepare("
+    SELECT COUNT(*) AS total_orders 
+    FROM tbl_orders 
+    WHERE order_status != 'cancelled' 
+      AND DATE(created_at) = CURDATE() 
+      AND seller_id = ?
+");
+$statement->execute([$seller_id]);
+$todays_orders = $statement->fetchColumn();
+$todays_orders = $todays_orders ? $todays_orders : 0; // Handle null values
+
+// Calculate total bids for the seller, excluding canceled orders
+$statement = $pdo->prepare("
+    SELECT COUNT(*) AS total_bids 
+    FROM tbl_orders 
+    WHERE seller_id = ? 
+      AND bid_id IS NOT NULL
+      AND order_type = 'bid'
+      AND order_status != 'canceled'
+");
+$statement->execute([$seller_id]);
+$total_bids = $statement->fetchColumn();
+$total_bids = $total_bids ? $total_bids : 0; // Handle null values
+
+
+// Calculate today's direct buys for the seller, excluding canceled orders
+$statement = $pdo->prepare("
+    SELECT COUNT(*) AS today_direct_buys 
+    FROM tbl_orders 
+    WHERE seller_id = ? 
+      AND order_type = 'direct' 
+      AND order_status != 'cancelled'
+      AND DATE(created_at) = CURDATE()
+");
+$statement->execute([$seller_id]);
+$today_direct_buys = $statement->fetchColumn();
+$today_direct_buys = $today_direct_buys ? $today_direct_buys : 0; // Handle null values
 ?>
+
 <head>
     <!-- Include Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -47,17 +109,6 @@ $total_product = $statement->rowCount();
                 <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
                 <div class="mb-0">
                     <h5 class="card-title mb-0">Approved Products</h5>
-
-
-
-
-
-
-
-
-
-
-
 
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
@@ -88,22 +139,6 @@ $total_product = $statement->rowCount();
                 <div class="progress mt-1" data-height="8" style="height: 8px;">
                     <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percentage_of_approved_products; ?>%;"></div>
                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </div>
         </div>
     </div>
@@ -111,20 +146,9 @@ $total_product = $statement->rowCount();
     <div class="col-xl-3 col-lg-3">
         <div class="card l-bg-blue-dark">
             <div class="card-statistic-3 p-3">
-                <div class="card-icon card-icon-large"><i class="fas fa-users"></i></div>
+                <div class="card-icon card-icon-large"><i class="fas fa-box"></i></div>
                 <div class="mb-6">
-                    <h5 class="card-title mb-0">Orders</h5>
-
-
-
-
-
-
-
-
-
-
-
+                    <h5 class="card-title mb-0">Total Orders</h5>
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
                     <div class="col-8">
@@ -158,11 +182,7 @@ $total_product = $statement->rowCount();
                 </div>
                 <div class="progress mt-1" data-height="8" style="height: 8px;">
                     <div class="progress-bar l-bg-green" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percentage_of_non_cancelled_orders; ?>%;"></div>
-                </div>
-
-
-
-
+                    </div>
             </div>
         </div>
     </div>
@@ -173,12 +193,6 @@ $total_product = $statement->rowCount();
                 <div class="card-icon card-icon-large"><i class="fas fa-gavel"></i></div>
                 <div class="mb-4">
                     <h5 class="card-title mb-0">Today's Bids</h5>
-
-
-
-
-
-
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
                     <div class="col-8">
@@ -237,13 +251,14 @@ $total_product = $statement->rowCount();
             </div>
         </div>
     </div>
+    
 
     <div class="col-xl-3 col-lg-3">
         <div class="card l-bg-orange-dark">
             <div class="card-statistic-3 p-4">
                 <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i></div>
                 <div class="mb-4">
-                    <h5 class="card-title mb-0">Revenue</h5>
+                    <h5 class="card-title mb-0">Total Revenue</h5>
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
                     <div class="col-8">
@@ -312,11 +327,87 @@ $total_product = $statement->rowCount();
                     <div class="progress-bar l-bg-yellow" role="progressbar" aria-valuenow="<?php echo $progress_percentage; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $progress_percentage; ?>%;"></div>
                 </div>
             </div>
-
-
-
         </div>
     </div>
+    <div class="col-xl-3 col-lg-3">
+    <div class="card l-bg-blue-dark">
+        <div class="card-statistic-3 p-4">
+            <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i>
+            </div>
+            <div class="mb-4">
+                <h5 class="card-title mb-0">Today's Revenue</h5>
+            </div>
+            <div class="row align-items-center mb-2 d-flex">
+                <div class="col-8">
+                    <h2 class="d-flex align-items-center mb-0">
+                        <?php echo "₹" . format_number_short($today_revenue); ?>
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-xl-3 col-lg-3">
+ <div class="card l-bg-orange-dark">
+        <div class="card-statistic-3 p-4">
+            <div class="card-icon card-icon-large">
+                <i class="fas fa-box"></i>
+            </div>
+            <div class="mb-4">
+                <h5 class="card-title mb-0">Today's Orders</h5>
+            </div>
+            <div class="row align-items-center mb-2 d-flex">
+                <div class="col-8">
+                    <h2 class="d-flex align-items-center mb-0">
+                        <?php echo number_format($todays_orders); ?>
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-xl-3 col-lg-3">
+<div class="card l-bg-cherry">
+<div class="card-statistic-3 p-4">
+            <div class="card-icon card-icon-large">
+                <i class="fas fa-gavel"></i>
+            </div>
+            <div class="mb-4">
+                <h5 class="card-title mb-0">Total Bids</h5>
+            </div>
+            <div class="row align-items-center mb-2 d-flex">
+                <div class="col-8">
+                    <h2 class="d-flex align-items-center mb-0">
+                        <?php echo number_format($total_bids); ?>
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-xl-3 col-lg-3">
+    <div class="card l-bg-green-dark">
+        <div class="card-statistic-3 p-4">
+            <div class="card-icon card-icon-large">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="mb-4">
+                <h5 class="card-title mb-0">Today's Direct Buys</h5>
+            </div>
+            <div class="row align-items-center mb-2 d-flex">
+                <div class="col-8">
+                    <h2 class="d-flex align-items-center mb-0">
+                        <?php echo $today_direct_buys; ?>
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 </div>
 
 
@@ -476,7 +567,7 @@ function createDynamicRevenueChart(initialLabels, initialRevenues, initialOrders
                     label: 'Orders',
                     data: orders,
                     type: 'line',
-                    borderColor: 'rgba(75, 192, 192, 0.8)',
+                    borderColor: 'rgba(75, 192, 192,0.8)',
                     borderWidth: 2,
                     fill: false,
                     yAxisID: 'y1'
@@ -571,5 +662,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
   
 </section>
+
 
 <?php require_once('footer.php'); ?>
