@@ -383,18 +383,7 @@ foreach ($result as $row) {
                     </div>
 					<div class="tab-pane <?php echo ($active_tab == 'tab_4') ? 'active' : ''; ?>" id="tab_4">
                         <!-- Display error/success messages only if form4 was submitted -->
-                        <?php if(isset($_POST['form4']) && $error_message): ?>
-                        <div class="callout callout-danger">
-                            <p><?php echo $error_message; ?></p>
-                        </div>
-                        <?php endif; ?>
-
-                        <?php if(isset($_POST['form4']) && $success_message): ?>
-                        <div class="callout callout-success">
-                            <p><?php echo $success_message; ?></p>
-                        </div>
-                        <?php endif; ?>
-
+                        
                         <!-- Form to add new brand -->
                         <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
                             <div class="box box-info">

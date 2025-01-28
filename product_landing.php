@@ -157,6 +157,57 @@ if ($success_message1 != '') {
   header('location: product.php?id=' . $_REQUEST['id']);
 }
 
+// Get product details first
+$statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
+$statement->execute(array($_REQUEST['id']));
+$total = $statement->rowCount();
+$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+if ($total == 0) {
+    header('location: index.php');
+    exit;
+}
+
+// Initialize category IDs and names
+$tcat_id = $mcat_id = $ecat_id = 0;
+$tcat_name = $mcat_name = $ecat_name = 'Uncategorized';
+
+foreach ($result as $row) {
+    $tcat_id = $row['tcat_id'];
+    $mcat_id = $row['mcat_id'];
+    $ecat_id = $row['ecat_id'];
+}
+
+// Get top category name
+if ($tcat_id) {
+    $statement = $pdo->prepare("SELECT tcat_name FROM tbl_top_category WHERE tcat_id=?");
+    $statement->execute(array($tcat_id));
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+    if ($result) {
+        $tcat_name = $result['tcat_name'];
+    }
+}
+
+// Get mid category name
+if ($mcat_id) {
+    $statement = $pdo->prepare("SELECT mcat_name FROM tbl_mid_category WHERE mcat_id=?");
+    $statement->execute(array($mcat_id));
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+    if ($result) {
+        $mcat_name = $result['mcat_name'];
+    }
+}
+
+// Get end category name
+if ($ecat_id) {
+    $statement = $pdo->prepare("SELECT ecat_name FROM tbl_end_category WHERE ecat_id=?");
+    $statement->execute(array($ecat_id));
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+    if ($result) {
+        $ecat_name = $result['ecat_name'];
+    }
+}
+
 $stmt = $pdo->prepare("SELECT min_bid_pct FROM bid_settings ORDER BY created_at DESC LIMIT 1");
 $stmt->execute();
 $bid_settings = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -165,37 +216,35 @@ $min_bid_pct = $bid_settings ? $bid_settings['min_bid_pct'] : 0;
 // Calculate minimum allowed bid price
 $min_allowed_price = $p_current_price * (1 - ($min_bid_pct/100));
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
   <link rel="stylesheet" href="css/product_landing.css">
-</head>
-
-<body>
 
 
   <!-- content -->
   <section class="py-5">
     <div class="container" style="margin-top: -30px;">
-      <!-- Breadcrumb Section -->
-      <nav aria-label="breadcrumb" style="margin-left:6px;">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.php" style="text-decoration: none;">Home</a></li>
-          <li class="breadcrumb-item"><a href="products_listing.php?id=<?php echo $tcat_id; ?>"
-              style="text-decoration: none;"><?php echo htmlspecialchars($tcat_name); ?></a></li>
-          <li class="breadcrumb-item"><a href="products_listing.php?id=<?php echo $mcat_id; ?>"
-              style="text-decoration: none;"><?php echo htmlspecialchars($mcat_name); ?></a></li>
-          <li class="breadcrumb-item active" aria-current="page" style="text-decoration: none;">
-            <?php echo htmlspecialchars($ecat_name); ?>
-          </li>
-        </ol>
-      </nav>
-
+      <!-- breadcrumb -->
+    <nav aria-label="breadcrumb" style="margin-left:6px;">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php" style="text-decoration: none;">Home</a></li>
+        <?php if ($tcat_id && $tcat_name !== 'Uncategorized'): ?>
+            <li class="breadcrumb-item"><a href="search-result.php?type=top-category&id=<?php echo $tcat_id; ?>" style="text-decoration: none;"><?php echo htmlspecialchars($tcat_name); ?></a></li>
+        <?php endif; ?>
+        
+        <?php if ($mcat_id && $mcat_name !== 'Uncategorized'): ?>
+            <li class="breadcrumb-item"><a href="search-result.php?type=mid-category&id=<?php echo $mcat_id; ?>" style="text-decoration: none;"><?php echo htmlspecialchars($mcat_name); ?></a></li>
+        <?php endif; ?>
+        
+        <?php if ($ecat_id && $ecat_name !== 'Uncategorized'): ?>
+            <li class="breadcrumb-item active" aria-current="page" style="text-decoration: none;">
+                <?php echo htmlspecialchars($ecat_name); ?>
+            </li>
+        <?php endif; ?>
+    </ol>
+</nav>
       <div class="row gx-5">
       <aside class="col-lg-6">
     <!-- Main Image -->
