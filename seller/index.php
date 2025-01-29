@@ -1,54 +1,95 @@
-<?php require_once('header.php'); ?>
+<?php require_once('header.php'); 
+
+// require_once('../track_view.php');
+// trackPageView('SRP', 'Seller Panel');
+?>
 
 <section class="content-header">
 	<h1>Dashboard</h1>
 </section>
-
 <?php
-// $statement = $pdo->prepare("SELECT * FROM tbl_top_category");
-// $statement->execute();
-// $total_top_category = $statement->rowCount();
-
-// $statement = $pdo->prepare("SELECT * FROM tbl_mid_category");
-// $statement->execute();
-// $total_mid_category = $statement->rowCount();
-
-// $statement = $pdo->prepare("SELECT * FROM tbl_end_category");
-// $statement->execute();
-// $total_end_category = $statement->rowCount();
+if(isset($_SESSION['seller_session'])) {
+    $seller_id = $_SESSION['seller_session']['seller_id'];
+    
+    // Get seller status from database
+    $statement = $pdo->prepare("SELECT seller_status FROM sellers WHERE seller_id = ?");
+    $statement->execute([$seller_id]);
+    $seller_status = $statement->fetchColumn();
+    
+    if($seller_status == 0) {
+        header('Location: profile-edit.php');
+        exit;
+    }
+}
 
 $statement = $pdo->prepare("SELECT * FROM tbl_product");
 $statement->execute();
 $total_product = $statement->rowCount();
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_customer WHERE seller_status='1'");
-// $statement->execute();
-// $total_customers = $statement->rowCount();
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_subscriber WHERE subs_active='1'");
-// $statement->execute();
-// $total_subscriber = $statement->rowCount();
+// Query to calculate total revenue
+$query = "SELECT SUM(price * quantity) AS total_revenue 
+          FROM tbl_orders 
+          WHERE order_status != 'canceled'";
+$result = $conn->query($query);
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_shipping_cost");
-// $statement->execute();
-// $available_shipping = $statement->rowCount();
+$total_revenue = 0;
+if ($result && $row = $result->fetch_assoc()) {
+    $total_revenue = $row['total_revenue'];
+}
+// Calculate today's revenue for the seller
+$statement = $pdo->prepare("
+    SELECT SUM(price * quantity) AS total_revenue 
+    FROM tbl_orders 
+    WHERE order_status != 'cancelled' 
+      AND DATE(created_at) = CURDATE() 
+      AND seller_id = ?
+");
+$statement->execute([$seller_id]);
+$today_revenue = $statement->fetchColumn();
+$today_revenue = $today_revenue ? $today_revenue : 0; // Handle null values
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_payment WHERE payment_status=?");
-// $statement->execute(array('Completed'));
-// $total_order_completed = $statement->rowCount();
+// echo "₹" . format_number_short($today_revenue);
+// Calculate today's total orders for the seller, excluding canceled orders
+$statement = $pdo->prepare("
+    SELECT COUNT(*) AS total_orders 
+    FROM tbl_orders 
+    WHERE order_status != 'cancelled' 
+      AND DATE(created_at) = CURDATE() 
+      AND seller_id = ?
+");
+$statement->execute([$seller_id]);
+$todays_orders = $statement->fetchColumn();
+$todays_orders = $todays_orders ? $todays_orders : 0; // Handle null values
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_payment WHERE shipping_status=?");
-// $statement->execute(array('Completed'));
-// $total_shipping_completed = $statement->rowCount();
+// Calculate total bids for the seller, excluding canceled orders
+$statement = $pdo->prepare("
+    SELECT COUNT(*) AS total_bids 
+    FROM tbl_orders 
+    WHERE seller_id = ? 
+      AND bid_id IS NOT NULL
+      AND order_type = 'bid'
+      AND order_status != 'canceled'
+");
+$statement->execute([$seller_id]);
+$total_bids = $statement->fetchColumn();
+$total_bids = $total_bids ? $total_bids : 0; // Handle null values
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_payment WHERE payment_status=?");
-// $statement->execute(array('Pending'));
-// $total_order_pending = $statement->rowCount();
 
-// $statement = $pdo->prepare("SELECT * FROM tbl_payment WHERE payment_status=? AND shipping_status=?");
-// $statement->execute(array('Completed','Pending'));
-// $total_order_complete_shipping_pending = $statement->rowCount();
+// Calculate today's direct buys for the seller, excluding canceled orders
+$statement = $pdo->prepare("
+    SELECT COUNT(*) AS today_direct_buys 
+    FROM tbl_orders 
+    WHERE seller_id = ? 
+      AND order_type = 'direct' 
+      AND order_status != 'cancelled'
+      AND DATE(created_at) = CURDATE()
+");
+$statement->execute([$seller_id]);
+$today_direct_buys = $statement->fetchColumn();
+$today_direct_buys = $today_direct_buys ? $today_direct_buys : 0; // Handle null values
 ?>
+
 <head>
     <!-- Include Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -68,6 +109,7 @@ $total_product = $statement->rowCount();
                 <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
                 <div class="mb-0">
                     <h5 class="card-title mb-0">Approved Products</h5>
+
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
                     <div class="col-8">
@@ -104,9 +146,9 @@ $total_product = $statement->rowCount();
     <div class="col-xl-3 col-lg-3">
         <div class="card l-bg-blue-dark">
             <div class="card-statistic-3 p-3">
-                <div class="card-icon card-icon-large"><i class="fas fa-users"></i></div>
+                <div class="card-icon card-icon-large"><i class="fas fa-box"></i></div>
                 <div class="mb-6">
-                    <h5 class="card-title mb-0">Orders</h5>
+                    <h5 class="card-title mb-0">Total Orders</h5>
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
                     <div class="col-8">
@@ -140,7 +182,7 @@ $total_product = $statement->rowCount();
                 </div>
                 <div class="progress mt-1" data-height="8" style="height: 8px;">
                     <div class="progress-bar l-bg-green" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percentage_of_non_cancelled_orders; ?>%;"></div>
-                </div>
+                    </div>
             </div>
         </div>
     </div>
@@ -203,16 +245,20 @@ $total_product = $statement->rowCount();
                     ?>
                     <div class="progress-bar l-bg-orange" role="progressbar" aria-valuenow="<?php echo $progress_percentage; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $progress_percentage; ?>%;"></div>
                 </div>
+
+
+
             </div>
         </div>
     </div>
+    
 
     <div class="col-xl-3 col-lg-3">
         <div class="card l-bg-orange-dark">
             <div class="card-statistic-3 p-4">
                 <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i></div>
                 <div class="mb-4">
-                    <h5 class="card-title mb-0">Revenue</h5>
+                    <h5 class="card-title mb-0">Total Revenue</h5>
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
                     <div class="col-8">
@@ -283,10 +329,86 @@ $total_product = $statement->rowCount();
             </div>
         </div>
     </div>
+    <div class="col-xl-3 col-lg-3">
+    <div class="card l-bg-blue-dark">
+        <div class="card-statistic-3 p-4">
+            <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i>
+            </div>
+            <div class="mb-4">
+                <h5 class="card-title mb-0">Today's Revenue</h5>
+            </div>
+            <div class="row align-items-center mb-2 d-flex">
+                <div class="col-8">
+                    <h2 class="d-flex align-items-center mb-0">
+                        <?php echo "₹" . format_number_short($today_revenue); ?>
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<div class="col-xl-3 col-lg-3">
+ <div class="card l-bg-orange-dark">
+        <div class="card-statistic-3 p-4">
+            <div class="card-icon card-icon-large">
+                <i class="fas fa-box"></i>
+            </div>
+            <div class="mb-4">
+                <h5 class="card-title mb-0">Today's Orders</h5>
+            </div>
+            <div class="row align-items-center mb-2 d-flex">
+                <div class="col-8">
+                    <h2 class="d-flex align-items-center mb-0">
+                        <?php echo number_format($todays_orders); ?>
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-xl-3 col-lg-3">
+<div class="card l-bg-cherry">
+<div class="card-statistic-3 p-4">
+            <div class="card-icon card-icon-large">
+                <i class="fas fa-gavel"></i>
+            </div>
+            <div class="mb-4">
+                <h5 class="card-title mb-0">Total Bids</h5>
+            </div>
+            <div class="row align-items-center mb-2 d-flex">
+                <div class="col-8">
+                    <h2 class="d-flex align-items-center mb-0">
+                        <?php echo number_format($total_bids); ?>
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-xl-3 col-lg-3">
+    <div class="card l-bg-green-dark">
+        <div class="card-statistic-3 p-4">
+            <div class="card-icon card-icon-large">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="mb-4">
+                <h5 class="card-title mb-0">Today's Direct Buys</h5>
+            </div>
+            <div class="row align-items-center mb-2 d-flex">
+                <div class="col-8">
+                    <h2 class="d-flex align-items-center mb-0">
+                        <?php echo $today_direct_buys; ?>
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
+
+
+</div>
 
 
 
@@ -404,6 +526,7 @@ if ($latestDate) {
             </div>
         </div>
 
+
         <div class="col-lg-4 mb-4">
                 <div class="card shadow">
                     <div class="card-header bg-light">
@@ -444,7 +567,7 @@ function createDynamicRevenueChart(initialLabels, initialRevenues, initialOrders
                     label: 'Orders',
                     data: orders,
                     type: 'line',
-                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderColor: 'rgba(75, 192, 192,0.8)',
                     borderWidth: 2,
                     fill: false,
                     yAxisID: 'y1'
@@ -537,7 +660,8 @@ document.addEventListener('DOMContentLoaded', function() {
 </style>
               
             
-		  
+  
 </section>
+
 
 <?php require_once('footer.php'); ?>

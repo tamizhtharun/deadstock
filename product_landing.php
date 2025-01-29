@@ -4,8 +4,6 @@ require_once('vendor/autoload.php');
 require_once('config.php');
 ?>
 
-<!-- Style  -->
-
 
 <?php
 
@@ -166,37 +164,95 @@ if ($success_message1 != '') {
   echo "<script>alert('" . $success_message1 . "')</script>";
   header('location: product.php?id=' . $_REQUEST['id']);
 }
+
+// Get product details first
+$statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
+$statement->execute(array($_REQUEST['id']));
+$total = $statement->rowCount();
+$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+if ($total == 0) {
+    header('location: index.php');
+    exit;
+}
+
+// Initialize category IDs and names
+$tcat_id = $mcat_id = $ecat_id = 0;
+$tcat_name = $mcat_name = $ecat_name = 'Uncategorized';
+
+foreach ($result as $row) {
+    $tcat_id = $row['tcat_id'];
+    $mcat_id = $row['mcat_id'];
+    $ecat_id = $row['ecat_id'];
+}
+
+// Get top category name
+if ($tcat_id) {
+    $statement = $pdo->prepare("SELECT tcat_name FROM tbl_top_category WHERE tcat_id=?");
+    $statement->execute(array($tcat_id));
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+    if ($result) {
+        $tcat_name = $result['tcat_name'];
+    }
+}
+
+// Get mid category name
+if ($mcat_id) {
+    $statement = $pdo->prepare("SELECT mcat_name FROM tbl_mid_category WHERE mcat_id=?");
+    $statement->execute(array($mcat_id));
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+    if ($result) {
+        $mcat_name = $result['mcat_name'];
+    }
+}
+
+// Get end category name
+if ($ecat_id) {
+    $statement = $pdo->prepare("SELECT ecat_name FROM tbl_end_category WHERE ecat_id=?");
+    $statement->execute(array($ecat_id));
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+    if ($result) {
+        $ecat_name = $result['ecat_name'];
+    }
+}
+
+$stmt = $pdo->prepare("SELECT min_bid_pct FROM bid_settings ORDER BY created_at DESC LIMIT 1");
+$stmt->execute();
+$bid_settings = $stmt->fetch(PDO::FETCH_ASSOC);
+$min_bid_pct = $bid_settings ? $bid_settings['min_bid_pct'] : 0;
+
+// Calculate minimum allowed bid price
+$min_allowed_price = $p_current_price * (1 - ($min_bid_pct/100));
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
   <link rel="stylesheet" href="css/product_landing.css">
-</head>
-
-<body>
 
 
   <!-- content -->
   <section class="py-5">
     <div class="container" style="margin-top: -30px;">
-      <!-- Breadcrumb Section -->
-      <nav aria-label="breadcrumb" style="margin-left:6px;">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.php" style="text-decoration: none;">Home</a></li>
-          <li class="breadcrumb-item"><a href="products_listing.php?id=<?php echo $tcat_id; ?>"
-              style="text-decoration: none;"><?php echo htmlspecialchars($tcat_name); ?></a></li>
-          <li class="breadcrumb-item"><a href="products_listing.php?id=<?php echo $mcat_id; ?>"
-              style="text-decoration: none;"><?php echo htmlspecialchars($mcat_name); ?></a></li>
-          <li class="breadcrumb-item active" aria-current="page" style="text-decoration: none;">
-            <?php echo htmlspecialchars($ecat_name); ?>
-          </li>
-        </ol>
-      </nav>
-
+      <!-- breadcrumb -->
+    <nav aria-label="breadcrumb" style="margin-left:6px;">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php" style="text-decoration: none;">Home</a></li>
+        <?php if ($tcat_id && $tcat_name !== 'Uncategorized'): ?>
+            <li class="breadcrumb-item"><a href="search-result.php?type=top-category&id=<?php echo $tcat_id; ?>" style="text-decoration: none;"><?php echo htmlspecialchars($tcat_name); ?></a></li>
+        <?php endif; ?>
+        
+        <?php if ($mcat_id && $mcat_name !== 'Uncategorized'): ?>
+            <li class="breadcrumb-item"><a href="search-result.php?type=mid-category&id=<?php echo $mcat_id; ?>" style="text-decoration: none;"><?php echo htmlspecialchars($mcat_name); ?></a></li>
+        <?php endif; ?>
+        
+        <?php if ($ecat_id && $ecat_name !== 'Uncategorized'): ?>
+            <li class="breadcrumb-item active" aria-current="page" style="text-decoration: none;">
+                <?php echo htmlspecialchars($ecat_name); ?>
+            </li>
+        <?php endif; ?>
+    </ol>
+</nav>
       <div class="row gx-5">
       <aside class="col-lg-6">
     <!-- Main Image -->
@@ -391,57 +447,65 @@ if ($success_message1 != '') {
 
   </section>
 
-  <!-- Modal Overlay For Request Price -->
-  <div class="modal-overlay" id="modalOverlay" style="display: none;">
-    <!-- Modal -->
-    <div id="priceRequestModal">
-      <button class="close-button-rp" id="closeModal">&times;</button>
-      <div class="terms-modal-header-rp">
-        <h3>Request a Price</h3>
+<!-- Modal Overlay For Request Price -->
+<div class="modal-overlay" id="modalOverlay" style="display: none;">
+  <!-- Modal -->
+  <div id="priceRequestModal">
+    <button class="close-button-rp" id="closeModal">&times;</button>
+    <div class="terms-modal-header-rp">
+      <h3>Request a Price</h3>
+    </div>
+
+    <!-- Error Notification -->
+    <div class="premium-alert error" id="errorNotification" style="display: none;">
+      <span class="message" id="errorMessage"></span>
+      <button class="close-btn" onclick="closeNotification()">×</button>
+    </div>
+
+    <!-- Form -->
+    <form id="priceRequestForm" method="POST" action="submit_bid.php">
+      <input type="hidden" name="product_id"
+        value="<?php echo htmlspecialchars($_REQUEST['id'], ENT_QUOTES, 'UTF-8'); ?>">
+
+      <div class="form-group">
+        <label for="quantity">Quantity</label>
+        <input type="number" id="quantity" name="quantity" required min="1" placeholder="Enter quantity" />
       </div>
-      <form id="priceRequestForm" method="POST" action="submit_bid.php">
-        <input type="hidden" name="product_id"
-          value="<?php echo htmlspecialchars($_REQUEST['id'], ENT_QUOTES, 'UTF-8'); ?>">
 
-        <div class="form-group">
-          <label for="quantity">Quantity</label>
-          <input type="number" id="quantity" name="quantity" required min="1" placeholder="Enter quantity" />
-        </div>
+      <div class="form-group">
+        <label for="proposedPrice">Your Bid Price (₹)</label>
+        <input
+          type="number"
+          id="proposedPrice"
+          name="proposed_price"
+          required
+          min="0"
+          step="0.01"
+          placeholder="Enter Price Per Unit"
+        />
+      </div>
 
-            <div class="form-group">
-                <label for="proposedPrice">Your Bid Price (₹)</label>
-                <input
-                    type="number"
-                    id="proposedPrice"
-                    name="proposed_price"
-                    required
-                    min="0"
-                    step="0.01"
-                    placeholder="Enter Price Per Unit"
-                />
-            </div>
-            <div className="terms-checkbox">
-                    
-                    <label>
         <label>
-    <input type="checkbox" id="terms-checkbox" name="terms_accepted" required>
-    <span>I agree to the <span class="terms-link" id = "terms-btn" onclick="showTermsModal(event)">Terms and Conditions</span></span>
-</label>
-    </label>
-                </div>
+          <input type="checkbox" id="terms-checkbox" name="terms_accepted" required>
+          <span>
+            I agree to the <span class="terms-link" id="terms-btn" style="text-decoration: underline; cursor: pointer;" onclick="showTermsModal(event)">Terms and Conditions</span>
+          </span>
+        </label>
 
-            <div class="modal-footer">
-                <!-- <button type="button" class="btn-rp btn-cancel-rp" id="cancelBtn">Cancel</button> -->
-                <button type="button" class="btn btn-secondary" id="cancelBtn"
-        style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Cancel </button>
-                <!-- Submit Request Button -->
-                <!-- <button type="button" onclick="openRazorpayModal()" class="btn-rp btn-submit-rp">Pay and Place your Bid</button> -->
-                <button type="button" class="btn btn-primary" onclick="validateCheckboxAndPay()"
-                style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Pay and Place your Bid </button>
-              </div>
-        </form>
-    </div>      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancelBtn"
+          style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary" onclick="validateCheckboxAndPay()"
+          style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;">
+          Pay and Place your Bid
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
+
 <script>
   function showTermsModal(event) {
     event.preventDefault();
@@ -486,24 +550,49 @@ if ($success_message1 != '') {
 <script>
 
 
-    // Function to validate checkbox and handle payment
-    function validateCheckboxAndPay() {
-        const termsCheckbox = document.getElementById('terms-checkbox');
-        const quantityField = document.getElementById('quantity');
-        const proposedPrice = document.getElementById('proposedPrice');
-        
-        if (quantityField.value <= 0){
-            alert('Please enter the quantity');
-        } else if (proposedPrice.value <= 0){
-            alert('Please enter the Proposed price')
-        }else if (!termsCheckbox.checked) {
-            // Display notification if the checkbox is not checked
-            alert('Please agree to the Terms and Conditions before proceeding with the payment.');
-        } else {
-            // Proceed with payment logic
-            openRazorpayModal();
-        }
-    }
+function showNotification(message) {
+  const notification = document.getElementById('errorNotification');
+  const messageElement = document.getElementById('errorMessage');
+  
+  messageElement.textContent = message;
+  notification.style.display = 'block';
+  notification.classList.add('show');
+  
+  // Auto-dismiss after 3 seconds
+  setTimeout(() => {
+    closeNotification();
+  }, 3000);
+}
+
+function closeNotification() {
+  const notification = document.getElementById('errorNotification');
+  notification.classList.remove('show');
+  
+  setTimeout(() => {
+    notification.style.display = 'none';
+  }, 400);
+}
+
+function validateCheckboxAndPay() {
+  const termsCheckbox = document.getElementById('terms-checkbox');
+  const quantityField = document.getElementById('quantity');
+  const proposedPrice = document.getElementById('proposedPrice');
+  
+  const minAllowedPrice = <?php echo $min_allowed_price; ?>;
+  
+  if (quantityField.value <= 0) {
+    showNotification('Please enter a valid quantity');
+  } else if (proposedPrice.value <= 0) {
+    showNotification('Please enter a valid bid price');
+  } else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
+    showNotification('Minimum bid price is ₹' + minAllowedPrice.toFixed(2));
+  } else if (!termsCheckbox.checked) {
+    showNotification('You must agree to the Terms and Conditions');
+  } else {
+    openRazorpayModal();
+  }
+}
+
     // Function to open Razorpay modal
     function openRazorpayModal() {
 

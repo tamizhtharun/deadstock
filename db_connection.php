@@ -26,7 +26,4 @@ try {
     echo "PDO connection failed: " . $e->getMessage();
 }
 
-// Close MySQLi connection
-// define('RAZORPAY_KEY_ID', 'rzp_test_koL1BRqoOVUbHE');      // Test Key ID
-// define('RAZORPAY_KEY_SECRET', 'M7qE3q6DDRMhf1nGsWGZAL6p');  // Test Key Secret
 ?>

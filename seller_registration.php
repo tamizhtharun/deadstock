@@ -5,6 +5,8 @@ require 'db_connection.php'; // Update with actual DB connection code if inline 
 require 'phpmailer/src/PHPMailer.php';
 require 'phpmailer/src/SMTP.php';
 require 'phpmailer/src/Exception.php';
+require_once('track_view.php');
+trackPageView('SRF', 'Seller Registration Form');
 
 // Initialize variables for error messages and success message
 $errorMessages = [];
@@ -126,6 +128,160 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('sellerRegistrationForm');
+    const gstInput = document.getElementById('seller_gst');
+    const gstError = document.getElementById('gst-error');
+    const phoneInput = document.getElementById('seller_phone');
+    const phoneError = document.getElementById('phone-error');
+    const passwordInput = document.getElementById('seller_password');
+    const confirmPasswordInput = document.getElementById('seller_confirm_password');
+    const passwordError = document.getElementById('password-error');
+    
+
+
+    // GST validation
+    function validateGST(gstNumber) {
+        const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[Z]{1}[A-Z0-9]{1}$/;
+        return gstRegex.test(gstNumber);
+    }
+
+    // Indian phone number validation
+    function validatePhone(phoneNumber) {
+        const phoneRegex = /^(?:(?:\+|0{0,2})91(\s*[-]\s*)?|[0]?)?[6789]\d{9}$/;
+        return phoneRegex.test(phoneNumber);
+    }
+
+    // Password validation
+    function validatePasswords() {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        if (confirmPassword.length > 0) {
+            if (password !== confirmPassword) {
+                passwordError.style.display = 'block';
+                return false;
+            } else {
+                passwordError.style.display = 'none';
+                return true;
+            }
+        }
+        return true;
+    }
+
+    gstInput.addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+        if (this.value.length > 0) {
+            if (!validateGST(this.value)) {
+                gstError.style.display = 'block';
+            } else {
+                gstError.style.display = 'none';
+            }
+        } else {
+            gstError.style.display = 'none';
+        }
+    });
+
+    phoneInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+        if (this.value.length > 0) {
+            if (!validatePhone(this.value)) {
+                phoneError.style.display = 'block';
+            } else {
+                phoneError.style.display = 'none';
+            }
+        } else {
+            phoneError.style.display = 'none';
+        }
+    });
+
+    confirmPasswordInput.addEventListener('input', validatePasswords);
+    passwordInput.addEventListener('input', validatePasswords);
+
+    // ZIP code validation
+    const zipcodeInput = document.getElementById('seller_zipcode');
+    zipcodeInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(event) {
+        // Validate GST
+        if (!validateGST(gstInput.value)) {
+            event.preventDefault();
+            gstError.style.display = 'block';
+            gstInput.focus();
+            return;
+        }
+
+        // Validate Phone
+        if (!validatePhone(phoneInput.value)) {
+            event.preventDefault();
+            phoneError.style.display = 'block';
+            phoneInput.focus();
+            return;
+        }
+
+        // Validate Passwords
+        if (!validatePasswords()) {
+            event.preventDefault();
+            passwordError.style.display = 'block';
+            confirmPasswordInput.focus();
+            return;
+        }
+
+        // Validate ZIP code
+        const zipcode = zipcodeInput.value;
+        if (!/^\d{6}$/.test(zipcode)) {
+            event.preventDefault();
+            alert('Please enter a valid 6-digit ZIP code.');
+            zipcodeInput.focus();
+            return;
+        }
+    });
+});
+gstInput.addEventListener('input', function() {
+    this.value = this.value.toUpperCase();
+    if (this.value.length > 0) {
+        if (!validateGST(this.value)) {
+            gstError.classList.add('active');
+        } else {
+            gstError.classList.remove('active');
+        }
+    } else {
+        gstError.classList.remove('active');
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const zipcodeInput = document.getElementById('seller_zipcode');
+    const zipcodeError = document.getElementById('zipcode-error');
+
+    // ZIP code validation
+    zipcodeInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, ''); // Allow only numbers
+        if (this.value.length > 0 && this.value.length !== 6) {
+            zipcodeError.textContent = 'Please enter a valid 6-digit ZIP code.';
+        } else {
+            zipcodeError.textContent = '';
+        }
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(event) {
+        const zipcode = zipcodeInput.value;
+        if (!/^\d{6}$/.test(zipcode)) {
+            event.preventDefault();
+            zipcodeError.textContent = 'Please enter a valid 6-digit ZIP code.';
+            zipcodeInput.focus();
+        }
+    });
+});
+
+</script>
+
 <style>
   :root {
     --primary-color: #0071e3;
@@ -192,14 +348,35 @@ body {
     margin-bottom: 8px;
 }
 
-.input-group.full-width {
+.input-group.full-width,  {
+    grid-column: 1 / -1;
+}
+
+.input-group .icon {
+    position: absolute;
+    top: 50%;
+    left: 12px; /* Adjust the left position as needed */
+    transform: translateY(-50%);
+    color: #86868b; /* Adjust icon color */
+    font-size: 16px; /* Adjust icon size */
+}
+
+.input-group .icon-address {
+    position: absolute;
+    top: 25%;
+    left: 12px; /* Adjust the left position as needed */
+    transform: translateY(-50%);
+    color: #86868b; /* Adjust icon color */
+    font-size: 16px; /* Adjust icon size */
     grid-column: 1 / -1;
 }
 
 .input-group input,
 .input-group textarea {
     width: 100%;
-    padding: 12px 16px;
+    
+    padding: 12px 16px; /* Default padding for text */
+    padding-left: 40px; /* Extra left padding to ensure the text does not overlap with the icon */
     font-size: 16px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -404,7 +581,7 @@ body {
     width: 32px;
     height: 32px;
     display: flex;
-    align-items: center;
+    align-items: center;      
     justify-content: center;
     color: var(--secondary-text);
     transition: color 0.2s ease;
@@ -455,6 +632,9 @@ body {
 }
 
 </style>
+
+<!-- Font awesome for icons -->
+<script src="https://kit.fontawesome.com/dbb791f861.js" crossorigin="anonymous"></script>
 <body>
 <div class="container">
     <div class="registration-wrapper">
@@ -483,43 +663,74 @@ body {
             <form class="registration-form" method="POST" action="">
         <div class="form-grid">
             <div class="input-group">
-                <input type="text" id="seller_name" name="seller_name" placeholder="Full Name" value="<?= htmlspecialchars($seller_name) ?>" required>
+            <span class="icon">
+                <i class="fa-sharp-duotone fa-solid fa-user"></i>
+            </span>  
+                <input type="text" id="seller_name" name="seller_name" placeholder="    Full Name" value="<?= htmlspecialchars($seller_name) ?>" required>
             </div>
 
             <div class="input-group">
-                <input type="text" id="seller_cname" name="seller_cname" placeholder="Company Name" value="<?= htmlspecialchars($seller_cname) ?>" required>
+            <span class="icon">
+            <i class="fa-regular fa-building"></i>
+            </span> 
+                <input type="text" id="seller_cname" name="seller_cname" placeholder="    Company Name" value="<?= htmlspecialchars($seller_cname) ?>" required>
             </div>
 
             <div class="input-group">
-                <input type="email" id="seller_email" name="seller_email" placeholder="Email Address" value="<?= htmlspecialchars($seller_email) ?>" required>
+            <span class="icon">
+                <i class="fa-sharp-duotone fa-solid fa-envelope"></i>
+            </span> 
+                <input type="email" id="seller_email" name="seller_email" placeholder="    Email Address" value="<?= htmlspecialchars($seller_email) ?>" required>
             </div>
 
             <div class="input-group">
-                <input type="text" id="seller_phone" name="seller_phone" placeholder="Phone Number" value="<?= htmlspecialchars($seller_phone) ?>" required>
+                <span class = "icon">
+                    <i class="fa-sharp-duotone fa-solid fa-phone"></i>
+                </span>
+
+                <input type="text" id="seller_phone" name="seller_phone" placeholder="    Phone Number" value="<?= htmlspecialchars($seller_phone) ?>" required>
             </div>
 
             <div class="input-group">
-                <input type="text" id="seller_gst" name="seller_gst" placeholder="GST Number" value="<?= htmlspecialchars($seller_gst) ?>" required>
+            <span class="icon">
+                <i class="fa-solid fa-scale-balanced"></i>
+            </span> 
+                <input type="text" id="seller_gst" name="seller_gst" placeholder="    GST Number" value="<?= htmlspecialchars($seller_gst) ?>" required>
             </div>
 
             <div class="input-group">
-                <input type="password" id="seller_password" name="seller_password" placeholder="Password" required>
+            <span class="icon">
+                <i class="fa-solid fa-lock"></i>
+            </span>
+                <input type="password" id="seller_password" name="seller_password" placeholder="    Password" required>
             </div>
 
             <div class="input-group full-width">
-                <textarea id="seller_address" name="seller_address" placeholder="Address" required><?= htmlspecialchars($seller_address) ?></textarea>
+            <span class="icon-address">
+                <i class="fa-sharp-duotone fa-solid fa-location-dot"></i>
+            </span>
+                <textarea id="seller_address" name="seller_address" placeholder="    Address" required>    <?= htmlspecialchars($seller_address) ?></textarea>
             </div>
 
             <div class="input-group">
-                <input type="text" id="seller_state" name="seller_state" placeholder="State" value="<?= htmlspecialchars($seller_state) ?>" required>
+            <span class="icon">
+            <i class="fa-solid fa-globe"></i>
+            </span>
+                <input type="text" id="seller_state" name="seller_state" placeholder="    State" value="<?= htmlspecialchars($seller_state) ?>" required>
             </div>
 
             <div class="input-group">
-                <input type="text" id="seller_city" name="seller_city" placeholder="City" value="<?= htmlspecialchars($seller_city) ?>" required>
+            <span class="icon">
+                <i class="fa-solid fa-city"></i>
+            </span>
+                <input type="text" id="seller_city" name="seller_city" placeholder="     City" value="<?= htmlspecialchars($seller_city) ?>" required>
             </div>
 
             <div class="input-group">
-                <input type="text" id="seller_zipcode" name="seller_zipcode" placeholder="ZIP Code" value="<?= htmlspecialchars($seller_zipcode) ?>" required maxlength="6">
+            <span class="icon">
+                <i class="fa-solid fa-truck"></i>
+            </span>
+                <input type="text" id="seller_zipcode" name="seller_zipcode" placeholder="    ZIP Code" value="<?= htmlspecialchars($seller_zipcode) ?>" required maxlength="6">
             </div>
         </div>
 
@@ -751,5 +962,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
-</html>
 <?php include 'footer.php'; ?>

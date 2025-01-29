@@ -324,7 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 })
 
-// Modal functionality
+//// Modal functionality
 const sellerModal = document.getElementById("sellerModal")
 const closeSellerModal = document.getElementById("closeSellerModal")
 const closeSellerX = document.querySelector(".seller-close")
@@ -363,33 +363,35 @@ tabButtons.forEach((button) => {
     document.getElementById(button.dataset.tab).classList.add("active")
   })
 })
+
 function fetchSellerData(sellerId) {
-  console.log("Fetching data for seller ID:", sellerId);
+  console.log("Fetching data for seller ID:", sellerId)
   fetch(`get_seller_data.php?seller_id=${sellerId}`)
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
-      return response.json();
+      return response.json()
     })
     .then((data) => {
-      console.log("Received data:", data);
+      console.log("Received data:", data)
       if (data.error) {
-        throw new Error(data.error);
+        throw new Error(data.error)
       } else {
-        updateSellerModal(data);
-        updateCharts(data);
+        updateSellerModal(data)
+        updateCharts(data)
+        updateCertificationTab(data.certifications)
       }
     })
     .catch((error) => {
-      console.error("Fetch error:", error);
-      alert("Failed to fetch seller data. Please try again. Error: " + error.message);
-    });
+      console.error("Fetch error:", error)
+      alert("Failed to fetch seller data. Please try again. Error: " + error.message)
+    })
 }
 
 function updateSellerModal(data) {
   const seller = data.seller
-  const defaultImage = "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"; // Reliable default image
+  const defaultImage = "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
 
   document.querySelector("#profile .seller-info-grid").innerHTML = `
         <div class="seller-info-item"><label>Name</label><span>${seller.seller_name}</span></div>
@@ -437,51 +439,50 @@ function updateSellerModal(data) {
     modal.classList.remove("active")
   })
 
-
   document.querySelector("#products .seller-stats-grid").innerHTML = `
         <div class="seller-stat-card"><h3>Total Products</h3><p>${data.products.total}</p></div>
         <div class="seller-stat-card"><h3>Active Products</h3><p>${data.products.active}</p></div>
         <div class="seller-stat-card"><h3>Categories</h3><p>${data.products.categories}</p></div>
-    `;
+    `
 
   document.querySelector("#bidding .seller-stats-grid").innerHTML = `
         <div class="seller-stat-card"><h3>Total Bids</h3><p>${data.bidding.total}</p></div>
         <div class="seller-stat-card"><h3>Winning Bids</h3><p>${data.bidding.winning}</p></div>
         <div class="seller-stat-card"><h3>Avg. Bid Amount</h3><p>₹${data.bidding.avg_amount.toFixed(2)}</p></div>
-    `;
+    `
 
   document.querySelector("#orders .seller-stats-grid").innerHTML = `
         <div class="seller-stat-card"><h3>Total Orders</h3><p>${data.orders.total}</p></div>
         <div class="seller-stat-card"><h3>Pending Orders</h3><p>${data.orders.pending}</p></div>
         <div class="seller-stat-card"><h3>Success Rate</h3><p>${data.orders.success_rate.toFixed(2)}%</p></div>
-    `;
+    `
 }
 
 function updateCharts(data) {
-  ["productsChart", "biddingChart", "ordersChart", "orderStatusChart"].forEach((chartId) => {
-    const chartInstance = Chart.getChart(chartId);
+  ;["productsChart", "biddingChart", "ordersChart", "orderStatusChart"].forEach((chartId) => {
+    const chartInstance = Chart.getChart(chartId)
     if (chartInstance) {
-      chartInstance.destroy();
+      chartInstance.destroy()
     }
-  });
+  })
 
-  updateProductsChart(data.products.chart_data);
-  updateBiddingChart(data.bidding.chart_data);
-  updateOrdersChart(data.orders.chart_data);
-  updateOrderStatusChart(data.orders.status_data);
+  updateProductsChart(data.products.chart_data)
+  updateBiddingChart(data.bidding.chart_data)
+  updateOrdersChart(data.orders.chart_data)
+  updateOrderStatusChart(data.orders.status_data)
 }
 
 function updateProductsChart(data) {
   // Extract last 10 days, ensuring professional date formatting
   const limitedData = {
-    labels: data.labels.slice(-10).map(date => {
-      const options = { month: 'short', day: 'numeric' };
-      return new Date(date).toLocaleDateString('en-US', options);
+    labels: data.labels.slice(-10).map((date) => {
+      const options = { month: "short", day: "numeric" }
+      return new Date(date).toLocaleDateString("en-US", options)
     }),
-    values: data.values.slice(-10)
-  };
+    values: data.values.slice(-10),
+  }
 
-  const ctx = document.getElementById("productsChart").getContext("2d");
+  const ctx = document.getElementById("productsChart").getContext("2d")
   new Chart(ctx, {
     type: "line",
     data: {
@@ -500,46 +501,44 @@ function updateProductsChart(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { 
+      plugins: {
         legend: { display: false },
         title: {
           display: true,
-          text: 'Products Added in Last 10 Days',
+          text: "Products Added in Last 10 Days",
           padding: {
-    
-            bottom: 20
+            bottom: 20,
           },
-      
         },
         tooltip: {
           callbacks: {
             title: (context) => context[0].label,
-            label: (context) => `Products: ${context.parsed.y}`
-          }
-        }
+            label: (context) => `Products: ${context.parsed.y}`,
+          },
+        },
       },
       scales: {
-        y: { 
-          beginAtZero: true, 
-          grid: { display: false }
+        y: {
+          beginAtZero: true,
+          grid: { display: false },
         },
-        x: { 
-          grid: { display: false }
+        x: {
+          grid: { display: false },
         },
       },
     },
-  });
+  })
 }
 function updateBiddingChart(data) {
-  const ctx = document.getElementById("biddingChart").getContext("2d");
+  const ctx = document.getElementById("biddingChart").getContext("2d")
   new Chart(ctx, {
     type: "line",
     data: {
-      labels: data.labels, // Fixed labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      labels: data.labels,
       datasets: [
         {
           label: "Total Bids",
-          data: data.values, // Bidding data for each day
+          data: data.values,
           borderColor: "rgba(124, 58, 237, 1)",
           backgroundColor: "rgba(124, 58, 237, 0.1)",
           fill: true,
@@ -576,7 +575,7 @@ function updateBiddingChart(data) {
         },
       },
     },
-  });
+  })
 }
 
 function updateOrdersChart(data) {
@@ -670,13 +669,60 @@ function updateOrderStatusChart(data) {
   })
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.body.addEventListener("click", (e) => {
-    if (e.target && e.target.id === "downloadSellerCertificate") {
-      e.preventDefault()
-      alert("Downloading certification...")
-      // Add actual download logic here
-    }
+function updateCertificationTab(certifications) {
+  const certificationGrid = document.getElementById("certificationGrid")
+  certificationGrid.innerHTML = ""
+
+  console.log("Updating certification tab with data:", certifications)
+
+  if (!certifications || certifications.length === 0) {
+    const noCertMessage = document.createElement("div")
+    noCertMessage.className = "no-certification-message"
+    noCertMessage.innerHTML = `
+      <i class="fas fa-certificate"></i>
+      <h3>No Certifications Available</h3>
+      <p>This seller has not uploaded any brand certifications yet.</p>
+    `
+    certificationGrid.appendChild(noCertMessage)
+    return
+  }
+
+  certifications.forEach((cert) => {
+    const certCard = document.createElement("div")
+    certCard.className = "certification-card"
+    certCard.innerHTML = `
+      <div class="certification-header">
+        <img src="../assets/uploads/brand-logos/${cert.brand_logo}" alt="${cert.brand_name} logo" class="brand-logo">
+        <h3>${cert.brand_name}</h3>
+      </div>
+      <div class="certification-body">
+        <p class="cert-description">${cert.brand_description ? cert.brand_description.substring(0, 100) + "..." : "No description available."}</p>
+        <p><strong>Valid Until:</strong> ${cert.valid_to ? new Date(cert.valid_to).toLocaleDateString() : "Not specified"}</p>
+        <p><strong>Issued On:</strong> ${cert.created_at ? new Date(cert.created_at).toLocaleDateString() : "Not specified"}</p>
+      </div>
+      <div class="certification-footer">
+        <button class="view-certificate-btn" data-certificate="../assets/uploads/certificates/${cert.brand_certificate}">View Certificate</button>
+      </div>
+    `
+    certificationGrid.appendChild(certCard)
+  })
+
+  // Add event listeners to view certificate buttons
+ document.querySelectorAll(".view-certificate-btn").forEach((button) => {
+  button.addEventListener("click", function () {
+    const certificateUrl = this.getAttribute("data-certificate")
+    // Check if certificate exists before opening
+    fetch(certificateUrl, { method: "HEAD" })
+      .then((response) => {
+        if (response.ok) {
+          window.open(certificateUrl, "_blank")
+        } else {
+          window.open("./error-pages/certificate-not-found.html", "_blank")
+        }
+      })
+      .catch(() => {
+        window.open("./error-pages/certificate-not-found.html", "_blank")
+      })
   })
 })
-
+}

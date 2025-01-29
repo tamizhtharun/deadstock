@@ -35,7 +35,11 @@
 								?>
 								<tr class="<?php if($row['seller_status']==1) {echo 'bg-g';}else {echo 'bg-r';} ?>">
 									<td><?php echo $i; ?></td>
-									<td><?php echo $row['seller_name']; ?></td>
+									<td><?php echo $row['seller_name']; ?>
+									<div>
+											<a href="javascript:void(0);" onclick="openSellerModal(<?php echo $row['seller_id']; ?>)">View Seller Details</a>
+									</div>
+								  </td>
 									<td><?php echo $row['seller_email']; ?></td>
 									<td>
 										<?php echo $row['seller_address']; ?><br>
@@ -68,6 +72,78 @@
 
 </section>
 
+<div id="sellerModal" class="seller-modal">
+    <div class="seller-modal-content">
+        <div class="seller-modal-header">
+            <h2>Seller Information Dashboard</h2>
+            <span class="seller-close">&times;</span>
+        </div>
+
+        <div class="seller-tabs">
+            <button class="seller-tab-button active" data-tab="profile">Profile</button>
+            <button class="seller-tab-button" data-tab="products">Products</button>
+            <button class="seller-tab-button" data-tab="bidding">Bidding</button>
+            <button class="seller-tab-button" data-tab="orders">Orders</button>
+            <button class="seller-tab-button" data-tab="certification">Certification</button>
+        </div>
+
+        <div class="seller-tab-content">
+            <div id="profile" class="seller-tab-pane active">
+                <div class="seller-info-grid">
+                    <!-- Profile content will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <div id="products" class="seller-tab-pane">
+                <div class="seller-stats-grid">
+                    <!-- Product stats will be dynamically inserted here -->
+                </div>
+                <div class="seller-chart-container">
+                    <canvas id="productsChart"></canvas>
+                </div>
+            </div>
+
+            <div id="bidding" class="seller-tab-pane">
+                <div class="seller-stats-grid">
+                    <!-- Bidding stats will be dynamically inserted here -->
+                </div>
+                <div class="seller-chart-container">
+                    <canvas id="biddingChart"></canvas>
+                </div>
+            </div>
+
+            <div id="orders" class="seller-tab-pane">
+                <div class="seller-stats-grid">
+                    <!-- Order stats will be dynamically inserted here -->
+                </div>
+                <div class="seller-charts-grid">
+                    <div class="seller-chart-container-orders">
+                        <canvas id="ordersChart"></canvas>
+                    </div>
+                    <div class="seller-chart-container-orders">
+                        <canvas id="orderStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="certification" class="seller-tab-pane">
+                <div class="seller-certification-container">
+                    <div class="seller-certification-grid" id="certificationGrid">
+                        <!-- Certification cards or no certification message will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="seller-modal-footer">
+            <button class="seller-btn seller-secondary" id="closeSellerModal">Close</button>
+        </div>
+    </div>
+</div>
+
+
+
+            <!-- <button class="seller-btn seller-primary">View Full Details</button> -->
 
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -87,5 +163,21 @@
     </div>
 </div>
 
+<script src="./js/bidding-order.js"></script>
+
+<script>
+const sellerTabButtons = document.querySelectorAll('.seller-tab-button');
+const sellerTabPanes = document.querySelectorAll('.seller-tab-pane');
+
+sellerTabButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const tab = button.dataset.tab;
+    sellerTabButtons.forEach(b => b.classList.remove('active'));
+    sellerTabPanes.forEach(pane => pane.classList.remove('active'));
+    button.classList.add('active');
+    document.getElementById(tab).classList.add('active');
+  });
+});
+</script>
 
 <?php require_once('footer.php'); ?>

@@ -27,6 +27,8 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
 	<script src="js/graph.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@selectjs/select2@4.1.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 
 	<script>
 		$(document).ready(function() {

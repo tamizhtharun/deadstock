@@ -1039,8 +1039,9 @@ foreach ($result as $row) {
                     <li><a href="#tab_2" data-toggle="tab">Favicon</a></li>
                     <li><a href="#tab_3" data-toggle="tab">Running Text</a></li>
                     <li><a href="#tab_4" data-toggle="tab">Quote Container</a></li>
-                    <li><a href="#tab_5" data-toggle="tab">User T&C</a></li>
-                    <li><a href="#tab_6" data-toggle="tab">Seller T&C</a></li>
+                    <li><a href="#tab_5" data-toggle="tab">Bid Settings</a></li>
+                    <li><a href="#tab_6" data-toggle="tab">User T&C</a></li>
+                    <li><a href="#tab_7" data-toggle="tab">Seller T&C</a></li>
 
                 </ul>
                 <div class="tab-content">
@@ -1189,15 +1190,58 @@ foreach ($result as $row) {
                             </form>
                         </div>
 
+                        <div class="tab-pane" id="tab_5">
+
+                            <form class="form-horizontal" action="" method="post">
+                            <div class="box box-info">
+                                <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="send_time">Bid Send Time (12-hour format):</label>
+                                    <input class="" type="time"  name="send_time" step="60" value="<?php echo $bid_send_time ?>" required>
+                                    <small class="form-text text-muted">HH:MM AM/PM</small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label" for="close_time">Bid Close Time (12-hour format):</label>
+                                    <input class="" type="time" name="close_time" step="60" value="<?php echo $bid_close_time ?>" required>
+                                    <small class="form-text text-muted">HH:MM AM/PM</small>
+                                </div> 
+                                <div class="form-group">
+                                        <label for="" class="col-sm-4 control-label"></label>
+                                        <div class="col-sm-6">
+                                            <button type="submit" class="btn btn-success pull-left" name="form_bid_settings">Update</button>
+                                        </div>
+                                    </div>                               
+                                </div>
+                            </div>
+                            </form>
+
+                            <form class="form-horizontal" action="" method="POST">
+                                <div class="box box-info">
+                                    <div class="box-body">
+                                    <div class="form-group">
+                                    <label for="min_bid_pct" class="col-sm-2 control-label">Min. Bid Percentage</label>
+                                            <div class="col-sm-1">
+                                                <input type="number" class="form-control" name="min_bid_pct" value="<?php echo htmlspecialchars($min_bid_percentage); ?>">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="" class="col-sm-4 control-label"></label>
+                                        <div class="col-sm-6">
+                                            <button type="submit" class="btn btn-success pull-left" name="form_min_bid">Update</button>
+                                        </div>
+                                    </div>
+                            </div>
+                                </div>
+                            </form>
+                        </div>
 
 
-
-                    <div class="tab-pane" id="tab_5">
+                    <div class="tab-pane" id="tab_6">
                         <form class="form-horizontal" action="" method="post">
                             <div class="box box-info">
                                 <div class="box-body">
                                     <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Terms and Conditions</label>
+                                        <label for="" class="col-sm-3 control-label"> User Terms and Conditions</label>
                                         <div class="col-sm-4">
                                             <textarea type="text" class="form-control"
                                                 name="user_tc"><?php echo htmlspecialchars($user_tc); ?></textarea>
@@ -1221,7 +1265,7 @@ foreach ($result as $row) {
                     </div>
 
 
-                    <div class="tab-pane" id="tab_6">
+                    <div class="tab-pane" id="tab_7">
                         <form class="form-horizontal" action="" method="post">
                             <div class="box box-info">
                                 <div class="box-body">
@@ -1252,7 +1296,7 @@ foreach ($result as $row) {
 
                    
 
-                    <div class="tab-pane" id="tab_7">
+                    <div class="tab-pane" id="#">
 
 
                         <h3>Sections On and Off</h3>
