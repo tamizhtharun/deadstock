@@ -1712,7 +1712,7 @@ select {
   overflow-y: auto;
   padding: 20px;
   scrollbar-width: thin;
-  scrollbar-color: #cbd5e0 #f7fafc;
+  scrollbar-color: #d5dade #f7fafc;
   position: relative; /* Enable absolute positioning of child elements */
 }
 
