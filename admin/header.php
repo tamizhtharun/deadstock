@@ -41,6 +41,8 @@ if(!isset($_SESSION['admin_session'])) {
 	<link rel="stylesheet" href="css/on-off-switch.css"/>
 	<link rel="stylesheet" href="css/summernote.css">
 	<link rel="stylesheet" href="style.css">
+	<link rel="preload" href="https://fonts.gstatic.com/s/roboto/v47/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2" as="font" crossorigin>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
 
@@ -194,17 +196,17 @@ if(!isset($_SESSION['admin_session'])) {
                     <!-- Icons to be displayed on Shop -->
 
 
-							<li class="treeview <?php if( ($cur_page == 'service.php') ) {echo 'active';} ?>">
+							<li class="treeview <?php if( ($cur_page == 'mail.php') || ($cur_page == 'notification.php') ) {echo 'active';} ?>">
                         <a href="#">
                             <i class="fa fa-list-ol"></i>
-                            <span>Services</span>
+                            <span>Communication</span>
                             <span class="pull-right-container">
 								<i class="fa fa-angle-left pull-right"></i>
 							</span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-circle-o"></i> Scrolling Text</a></li>
-                            <li><a href="#"><i class="fa fa-circle-o"></i> Category</a></li>
+						<li><a href="mail.php"><i class="fa fa-circle-o"></i> Mail box</a></li>
+						<li><a href="notification.php"><i class="fa fa-circle-o"></i> Notification</a></li>
                         </ul>
                     </li>
 
