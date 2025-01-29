@@ -84,8 +84,9 @@ if (isset($_GET['delete_all'])) {
                                     <div class="cart-item" data-id="<?php echo $item['id']; ?>">
                                         <!-- Remove button moved to top right -->
                                         <a href="cart.php?remove=<?php echo $item['id']; ?>" class="remove-item"
-                                            onclick="return confirm('Remove this item?')">
-                                            <i class="fas fa-times"></i>
+                                        data-cart-item-id="<?php echo $item['id']; ?>"
+                                        onclick="return confirm('Remove this item?')">
+                                        <i class="fas fa-times"></i>
                                         </a>
 
                                         <div class="row align-items-center">
@@ -155,7 +156,7 @@ if (isset($_GET['delete_all'])) {
                                     <i class="fas fa-shopping-cart fa-3x mb-3"></i>
                                     <h3>Your cart is empty</h3>
                                     <p class="text-muted">Browse our products and add items to your cart</p>
-                                    <a href="index.php" class="btn btn-primary mt-3">Continue Shopping</a>
+                                    <a href="index.php" class="btn btn-primary mt-3" style="text-decoration: none;">Continue Shopping</a>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -211,48 +212,48 @@ if (isset($_GET['delete_all'])) {
             <!-- Recently Viewed -->
             <div class="recently-viewed mt-5">
                 <h3 class="section-title mb-4">Recently Viewed</h3>
-                <div class="row row-cols-2 row-cols-md-4 g-4">
+                <div class="row row-cols-2 row-cols-md-5 g-2">
                     <!-- Add your recently viewed items here -->
                     <?php
         // Get recently viewed products from session
-        $recently_viewed = isset($_SESSION['recently_viewed']) ? $_SESSION['recently_viewed'] : array();
-        
-        if (!empty($recently_viewed)) {
-            // Get the last 4 viewed products
-            $recent_ids = array_slice(array_reverse($recently_viewed), 0, 4);
-            $ids_string = implode(',', $recent_ids);
-            
-            $recent_query = mysqli_query($conn, "
-                SELECT id, p_name, p_featured_photo, p_current_price, p_old_price 
-                FROM tbl_product 
-                WHERE id IN ($ids_string)
-                LIMIT 4
-            ");
+        $recently_viewed = isset($_SESSION['recently_viewed']) ? $_SESSION['recently_viewed'] : [];
 
-            while ($product = mysqli_fetch_assoc($recent_query)):
-        ?>
-            <div class="col">
-                <div class="recently-viewed-item">
-                    <a href="product_landing.php?id=<?php echo $product['id']; ?>" class="text-decoration-none">
-                        <div class="recently-viewed-image">
-                            <img src="assets/uploads/product-photos/<?php echo $product['p_featured_photo']; ?>"
-                                 alt="<?php echo $product['p_name']; ?>">
-                        </div>
-                        <h4 class="recently-viewed-title"><?php echo $product['p_name']; ?></h4>
-                        <div class="d-flex align-items-center">
-                            <span class="recently-viewed-price">₹<?php echo number_format($product['p_current_price'], 2); ?></span>
-                            <?php if ($product['p_old_price'] > $product['p_current_price']): ?>
-                                <span class="recently-viewed-old-price">₹<?php echo number_format($product['p_old_price'], 2); ?></span>
-                            <?php endif; ?>
-                        </div>
-                    </a>
-                </div>
+if (!empty($recently_viewed)) {
+    // The session array should always contain max 4 IDs
+    $ids_string = implode(',', $recently_viewed);
+
+    $recent_query = mysqli_query($conn, "
+        SELECT id, p_name, p_featured_photo, p_current_price, p_old_price 
+        FROM tbl_product 
+        WHERE id IN ($ids_string)
+        ORDER BY FIELD(id, $ids_string) 
+        LIMIT 5
+    ");
+
+    while ($product = mysqli_fetch_assoc($recent_query)):
+?>
+        <div class="col">
+            <div class="recently-viewed-item">
+                <a href="product_landing.php?id=<?php echo $product['id']; ?>" class="text-decoration-none">
+                    <div class="recently-viewed-image">
+                        <img src="assets/uploads/product-photos/<?php echo $product['p_featured_photo']; ?>"
+                             alt="<?php echo $product['p_name']; ?>">
+                    </div>
+                    <h4 class="recently-viewed-title"><?php echo $product['p_name']; ?></h4>
+                    <div class="d-flex align-items-center">
+                        <span class="recently-viewed-price">₹<?php echo number_format($product['p_current_price'], 2); ?></span>
+                        <?php if ($product['p_old_price'] > $product['p_current_price']): ?>
+                            <span class="recently-viewed-old-price">₹<?php echo number_format($product['p_old_price'], 2); ?></span>
+                        <?php endif; ?>
+                    </div>
+                </a>
             </div>
-        <?php 
-            endwhile;
-        } else {
-            echo '<div class="col-12 text-center text-muted">No recently viewed products</div>';
-        }
+        </div>
+<?php 
+    endwhile;
+} else {
+    echo '<div class="col-12 text-center text-muted">No recently viewed products</div>';
+}
         ?>
 
                 </div>

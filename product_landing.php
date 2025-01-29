@@ -139,6 +139,14 @@ if (isset($_POST['add_to_cart'])) {
       </script>";
   }
 }
+
+if (!isset($_SESSION['recently_viewed'])) {
+  $_SESSION['recently_viewed'] = [];
+}
+$_SESSION['recently_viewed'] = array_diff($_SESSION['recently_viewed'], [$product_id]);
+array_unshift($_SESSION['recently_viewed'], $product_id);
+$_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
+
 ?>
 
 <?php
@@ -357,7 +365,7 @@ if ($success_message1 != '') {
                 </div>
               </div>
 
-              <button class="btn btn-warning shadow-0"> Buy now </button>
+              <button class="btn btn-warning shadow-0" > Buy now </button>
 
 <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
 
@@ -690,21 +698,6 @@ if ($success_message1 != '') {
                     ?>
                   </tr>
                   <tr>
-                    <th class="py-2">Seller Email:</th>
-                    <?php
-                    $product_id = intval($_GET['id']);
-                    $sql = "SELECT sellers.seller_email 
-                          FROM tbl_product 
-                          INNER JOIN sellers ON tbl_product.seller_id = sellers.seller_id 
-                          WHERE tbl_product.id = $product_id";
-                    $result = $conn->query($sql);
-                    if ($result->num_rows > 0) {
-                      $row = $result->fetch_assoc();
-                      echo '<td class="py-2">' . htmlspecialchars($row['seller_email']) . '</td>';
-                    }
-                    ?>
-                  </tr>
-                  <tr>
                     <th class="py-2">Certification No:</th>
                     <td class="py-2">4e5r6t7yu8</td>
                   </tr>
@@ -723,14 +716,25 @@ if ($success_message1 != '') {
         </div>
 
 
-        <!-- Display Similar Products -->
         <?php
-        // Fetch similar products from the same end category
-        $statement = $pdo->prepare("SELECT * FROM tbl_product WHERE ecat_id=? AND id != ? AND p_is_featured=? ORDER BY p_total_view DESC LIMIT 4");
-        $statement->execute(array($ecat_id, $_REQUEST['id'], 1));
-        $related_products = $statement->fetchAll(PDO::FETCH_ASSOC);
+  $search_term = substr($p_name, 0, 4); // Get the first 4 letters of the current product name
+  $search_term = htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8'); // Prevent any special character issues
+  
+  $sql = "SELECT id, p_name, p_current_price, p_old_price, p_featured_photo 
+          FROM tbl_product 
+          WHERE p_name LIKE :search_term 
+          AND id != :current_id
+          LIMIT 5"; // Ensures we don’t show the same product
+  
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute([
+      ':search_term' => "%$search_term%",
+      ':current_id' => $product_id
+  ]);
+  
+  $related_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         ?>
-        <!-- Then replace the similar items card with this code -->
+        
         <div class="col-lg-4">
           <div class="border rounded-2 shadow-0">
             <div class="card">
@@ -739,7 +743,7 @@ if ($success_message1 != '') {
                 <?php foreach ($related_products as $related_product): ?>
                   <div class="d-flex mb-3">
                     <a href="product_landing.php?id=<?php echo $related_product['id']; ?>" class="me-3">
-                      <img src="payment/assets/uploads/product-photos/<?php echo $related_product['p_featured_photo']; ?>"
+                      <img src="assets/uploads/product-photos/<?php echo $related_product['p_featured_photo']; ?>"
                         style="min-width: 96px; height: 96px;" class="img-thumbnail"
                         alt="<?php echo htmlspecialchars($related_product['p_name']); ?>" />
                     </a>
