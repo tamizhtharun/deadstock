@@ -327,8 +327,8 @@ $active_tab = $_GET['tab'] ?? 'profile';
                             <input type="tel" id="phone" name="phone" value="<?php echo htmlspecialchars($_SESSION['user_session']['phone_number']); ?>" required>
                         </div>
                         <div class="form-group">
-                            <label for="user_gst">GST Number</label>
-                            <input type="text" id="user_gst" name="user_gst" value="<?php echo htmlspecialchars($_SESSION['user_session']['user_gst']); ?>" required>
+                            <label for="user_gst">GST Number (optional)</label>
+                            <input type="text" id="user_gst" name="user_gst" value="<?php echo htmlspecialchars($_SESSION['user_session']['user_gst']); ?>">
                         </div>
                         <button type="submit" class="button">Save Changes</button>
                     </form>
