@@ -197,6 +197,17 @@ try {
         'values' => $order_status_values
     ];
 
+    // Fetch certification data with brand details
+    $stmt = $pdo->prepare("
+        SELECT sb.brand_certificate, sb.valid_to, sb.created_at, 
+               b.brand_name, b.brand_description, b.brand_logo
+        FROM seller_brands sb
+        JOIN tbl_brands b ON sb.brand_id = b.brand_id
+        WHERE sb.seller_id = ?
+    ");
+    $stmt->execute([$seller_id]);
+    $certifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
     $response = [
         'seller' => $seller,
         'products' => [
@@ -218,7 +229,8 @@ try {
             'success_rate' => round($success_rate, 2),
             'chart_data' => $orders_chart,
             'status_data' => $order_status_chart
-        ]
+        ],
+        'certifications' => $certifications
     ];
 
     sendJsonResponse($response);
@@ -226,3 +238,4 @@ try {
     error_log('Database error: ' . $e->getMessage());
     sendJsonResponse(['error' => 'Database error occurred'], 500);
 }
+
