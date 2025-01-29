@@ -167,27 +167,8 @@
   .ds-icon-button:hover i {
     transform: scale(1.1);
   }
-  
-  .ds-notification-badge {
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    background-color: #ff3b30;
-    color: white;
-    border-radius: 12px;
-    padding: 0.125rem 0.375rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border: 2px solid var(--ds-color-background);
-    min-width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform-origin: center;
-    animation: badge-pulse 2s infinite;
-  }
-  
+
+
   .ds-cart-badge {
     position: absolute;
     top: -2px;
@@ -212,13 +193,7 @@
     100% { transform: scale(1); }
   }
   
-  /* .ds-icon-button.cart-button:hover {
-    color: #007aff;
-  } */
-  
-  /* .ds-icon-button.notification-button:hover {
-    color: #ff3b30;
-  } */
+ 
   
   .ds-profile-menu {
     position: relative;
@@ -362,4 +337,38 @@
     background-color: #ffffff;
     height: 60px;
     text-decoration: none !important;
+}
+
+/* Default notification container */
+.notification-trigger {
+  position: relative;
+  display: inline-block;
+}
+
+/* Common badge styling */
+.notification-badge {
+  position: absolute;
+  background: red;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Main Header: Align badge in-line with bell icon */
+.main-header .notification-badge {
+  top: 50% !important; /* Aligns with the icon */
+  right: -10px !important;
+  transform: translateY(-50%) !important;
+}
+
+/* User Header: Position the badge above the bell icon */
+.user-header .notification-badge {
+  top: -5px !important; /* Moves above the icon */
+  right: -5px !important;
 }

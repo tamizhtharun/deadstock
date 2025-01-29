@@ -42,6 +42,7 @@ unset($_SESSION['error_message']);
     <title>Dead Stock Processing</title>
     <link rel="icon" href="assets\uploads\<?php echo $favicon;?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -72,137 +73,123 @@ unset($_SESSION['error_message']);
 </style>
 <body>
 <div class="header">   
-<!-- <?php
-
-echo "<pre>";
-print_r($_SESSION); // Display all session variables
-echo "</pre>";
 
 
+<?php
+$current_page = basename($_SERVER['PHP_SELF']);
+?>
 
-
-
-
-?> -->
+<!-- Include Bootstrap CSS (if not already included) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 
 <nav class="ds-nav-container">
-            <div class="ds-logo-section">
-                <a href="index.php" class="ds-logo">
-                <img src="./assets/uploads/<?php echo $logo?>" alt="Logo" width="30" height="30">
-                    <span>Dead Stock</span>
-                </a>
-            </div>
-            <div class="ds-search-section">
-    <div class="ds-search-wrapper">
-        <form action="search-result.php" method="GET" id="search-form">
-            <i class="fas fa-search"></i>
-            <input 
-                type="text" id="search-bar" name="search_text" placeholder="Search products..." class="ds-search-input" autocomplete="off" required aria-label="Search products">
-            <button type="submit" style="display: none;">Search</button> <!-- Hidden submit button -->
-        </form>
+    <div class="ds-logo-section">
+        <a href="index.php" class="ds-logo">
+            <img src="./assets/uploads/<?php echo $logo ?>" alt="Logo" width="30" height="30">
+            <span>Dead Stock</span>
+        </a>
     </div>
-</div>
 
- <div class="ds-actions-section">
-    <?php if(isset($_SESSION['user_session'])): ?>
-      <button class="ds-btn-secondary" onclick="window.location.href='seller_registration.php';" >Sell here</button>
+    <div class="ds-search-section">
+        <div class="ds-search-wrapper">
+            <form action="search-result.php" method="GET" id="search-form">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-bar" name="search_text" placeholder="Search products..." class="ds-search-input" autocomplete="off" required aria-label="Search products">
+                <button type="submit" style="display: none;">Search</button>
+            </form>
+        </div>
+    </div>
 
-        <div class="ds-user-controls">
-            <button class="ds-icon-button cart-button" title="Shopping Cart"  onclick="window.location.href='cart.php';">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="ds-cart-badge"><?php              
-                $user_id = $_SESSION['user_session']['id'] ?? null;
-                $cart_count = 0;
-                
-                if ($user_id) {
-                    // Counting the number of items in the cart for the logged-in user
-                    $cart_query = mysqli_query($conn, "SELECT * FROM tbl_cart WHERE user_id = '$user_id'");
-                    $cart_count = mysqli_num_rows($cart_query);  // Get number of items
-                }               
-                echo $cart_count; ?></span>
-                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <div class="ds-actions-section">
+        <?php if (isset($_SESSION['user_session'])): ?>
+            <button class="ds-btn-secondary" onclick="window.location.href='seller_registration.php';">Sell here</button>
 
-<script>
-    // Function to fetch and update the cart count in real-time
-    function updateCartBadge() {
-        // Use AJAX to send a GET request to itself and get the updated cart count
-        $.ajax({
-            url: 'header.php',  // This points back to the same header.php file
-            method: 'GET',
-            dataType: 'html',
-            success: function (data) {
-                // Parse the updated cart count from the response (only the .ds-cart-badge span part)
-                var updatedCartCount = $(data).find('.ds-cart-badge').text();
-                // Update the cart badge on the page
-                $('.ds-cart-badge').text(updatedCartCount);
-            },
-            error: function () {
-                console.error('Failed to fetch cart count.');
-            }
-        });
-    }
-    updateCartBadge();
-    setInterval(updateCartBadge, 5000);
-</script>
-            </button>
-            
-            <!-- Notification -->
+            <div class="ds-user-controls">
+                <!-- Cart Icon -->
+                <button class="ds-icon-button cart-button" title="Shopping Cart" onclick="window.location.href='cart.php';">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="ds-cart-badge" id="cart-count">
+        <?php
+        $user_id = $_SESSION['user_session']['id'] ?? null;
+        $cart_count = 0;
 
-            
+        if ($user_id) {
+            $cart_query = mysqli_query($conn, "SELECT * FROM tbl_cart WHERE user_id = '$user_id'");
+            $cart_count = mysqli_num_rows($cart_query);  
+        }
+        echo $cart_count; 
+        ?>
+    </span>
+</button>
 
-            <div class="ds-profile-menu">
-                <button class="ds-profile-trigger">
-                 <div class="ds-avatar">
-                      <?php
-                      // Path to user's avatar
-                      $userAvatar = isset($_SESSION['user_session']['avatar']) ? $_SESSION['user_session']['avatar'] : '';
-                      $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"; // Default avatar from the internet
 
-                      // Check if the file exists
-                      $avatarToDisplay = (file_exists($userAvatar) && !empty($userAvatar)) ? $userAvatar : $defaultAvatar;
-                      ?>
-                      <img src="<?= $avatarToDisplay ?>" alt="Profile">
-                  </div>
+                <!-- Notification Icon (Not shown in notification.php) -->
+                <?php if ($current_page !== 'notification.php'): ?>
+                    <a href="notification.php" style="text-decoration: none; color: inherit;">
+                        <button class="ds-icon-button notification-button" title="Notifications">
+                            <i class="fas fa-bell"></i>
+                            <span class="ds-notification-badge">5</span>
+                        </button>
+                        
+    <!-- <div class="notification-trigger ds-icon-button" id="notificationTrigger">
+        <i class="fas fa-bell"></i>
+        <span class="notification-badge" id="notificationBadge">3</span>
+    </div> -->
+</a>
 
-                </button>
-                <div class="ds-menu-dropdown">
-                    <div class="ds-menu-header">
-                        <img src="<?= $avatarToDisplay ?>" alt="Profile" class="ds-menu-avatar">
-                        <div class="ds-user-info">
-                            <span class="ds-user-name"><?php echo $_SESSION['user_session']['username']?></span>
-                            <span class="ds-user-email"><?php echo $_SESSION['user_session']['email']?></span>
+<?php endif; ?>
+
+                <div class="ds-profile-menu">
+                    <button class="ds-profile-trigger">
+                        <div class="ds-avatar">
+                            <?php
+                            $userAvatar = $_SESSION['user_session']['avatar'] ?? '';
+                            $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
+                            $avatarToDisplay = (file_exists($userAvatar) && !empty($userAvatar)) ? $userAvatar : $defaultAvatar;
+                            ?>
+                            <img src="<?= $avatarToDisplay ?>" alt="Profile">
                         </div>
-                    </div>
-                    <div class="ds-menu-items">
-                        <a href="user/profile.php" class="ds-menu-item "style="text-decoration: none !important";>
-                            <i class="fas fa-user"></i>
-                            <span>Account</span>
-                        </a>
-                        <a href="user/profile.php?tab=orders" class="ds-menu-item"style="text-decoration: none !important">
-                            <i class="fas fa-shopping-bag"></i>
-                            <span>Orders</span>
-                        </a>
-                        <a href="user/profile.php?tab=bidding" class="ds-menu-item"style="text-decoration: none !important">
-                            <i class="fas fa-gavel"></i>
-                            <span>Bidding</span>
-                        </a>
-                        <div class="ds-menu-divider"></div>
-                        <a href="logout.php" class="ds-menu-item ds-logout"style="text-decoration: none !important">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Logout</span>
-                        </a>
+                    </button>
+                    <div class="ds-menu-dropdown">
+                        <div class="ds-menu-header">
+                            <img src="<?= $avatarToDisplay ?>" alt="Profile" class="ds-menu-avatar">
+                            <div class="ds-user-info">
+                                <span class="ds-user-name"><?php echo $_SESSION['user_session']['username'] ?></span>
+                                <span class="ds-user-email"><?php echo $_SESSION['user_session']['email'] ?></span>
+                            </div>
+                        </div>
+                        <div class="ds-menu-items">
+                            <a href="user/profile.php" class="ds-menu-item" style="text-decoration: none !important;">
+                                <i class="fas fa-user"></i>
+                                <span>Account</span>
+                            </a>
+                            <a href="user/profile.php?tab=orders" class="ds-menu-item" style="text-decoration: none !important;">
+                                <i class="fas fa-shopping-bag"></i>
+                                <span>Orders</span>
+                            </a>
+                            <a href="user/profile.php?tab=bidding" class="ds-menu-item" style="text-decoration: none !important;">
+                                <i class="fas fa-gavel"></i>
+                                <span>Bidding</span>
+                            </a>
+                            <div class="ds-menu-divider"></div>
+                            <a href="logout.php" class="ds-menu-item ds-logout" style="text-decoration: none !important;">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    <?php else: ?>
-        <div class="ds-auth-buttons">
-            <button class="ds-btn-secondary" onclick="window.location.href='seller_registration.php';" >Sell here</button>
-            <button class="ds-btn-primary" type="button" id="login-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Login</button>
-        </div>
-    <?php endif; ?>
-</div>
- </nav>
+        <?php else: ?>
+            <div class="ds-auth-buttons">
+                <button class="ds-btn-secondary" onclick="window.location.href='seller_registration.php';">Sell here</button>
+                <button class="ds-btn-primary" type="button" id="login-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Login</button>
+            </div>
+        <?php endif; ?>
+    </div>
+</nav>
+
 
   <!-- runningtxt -->
   <!-- runningtxt -->
@@ -384,176 +371,13 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-//     document.addEventListener('DOMContentLoaded', () => {
-//     const errorMessage = "<?php echo addslashes($error_message); ?>"; // Get error message from PHP
-
-//     // If there's an error message, open the modal
-//     if (errorMessage) {
-//         const loginModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
-//             backdrop: 'static',
-//             keyboard: false
-//         });
-//         loginModal.show(); // Show the modal
-//     }
-// });
-
-        // Script Notification Dropdown
-
-        const notifications = [
-                    // All Notifications
-                    {
-                        type: 'all',
-                        subtype: 'bid',
-                        title: 'New Bid Received',
-                        message: 'Someone placed a bid of $250 on Vintage Watch',
-                        time: '2 min ago',
-                        isRead: false,
-                        // image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=200&q=80'
-                        image: 'assets/uploads/logo.png'
-                    },
-                    {
-                        type: 'all',
-                        subtype: 'order',
-                        title: 'Order Confirmed',
-                        message: 'Your order #12345 has been confirmed',
-                        time: '15 min ago',
-                        isRead: false
-                    },
-                    // Orders Notifications
-                    {
-                        type: 'orders',
-                        title: 'Shipping Update',
-                        message: 'Your package is out for delivery',
-                        time: '30 min ago',
-                        isRead: false
-                    },
-                    {
-                        type: 'orders',
-                        title: 'Order Delivered',
-                        message: 'Your recent order has been delivered',
-                        time: '2 hours ago',
-                        isRead: true
-                    },
-                    // Bids Notifications
-                    {
-                        type: 'bids',
-                        title: 'Outbid Alert',
-                        message: 'Welcome To Deadstock',
-                        time: '1 hour ago',
-                        isRead: true,
-                        // image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=200&q=80'
-                        image: 'assets/uploads/logo.png'
-
-                    },
-                    {
-                        type: 'bids',
-                        title: 'Bid Accepted',
-                        message: 'Your bid on Luxury Watch was accepted',
-                        time: '3 hours ago',
-                        isRead: false
-                    }
-                ];
-
-        function createNotificationElement(notification) {
-            const div = document.createElement('div');
-            div.className = `notification-item ${notification.isRead ? '' : 'unread'}`;
-            
-            const icon = getNotificationIcon(notification.type);
-            
-            div.innerHTML = `
-                <div class="notification-icon">
-                    <i class="${icon}"></i>
-                </div>
-                <div class="notification-content">
-                    <div class="notification-title">${notification.title}</div>
-                    <div class="notification-message">${notification.message}</div>
-                    <div class="notification-time">${notification.time}</div>
-                </div>
-                ${notification.image ? `<img src="${notification.image}" alt="" class="notification-image">` : ''}
-            `;
-            
-            return div;
-        }
-
-        function getNotificationIcon(type) {
-            switch(type) {
-                case 'bid': return 'fas fa-gavel';
-                case 'order': return 'fas fa-shopping-bag';
-                default: return 'fas fa-bell';
-            }
-        }
-
-        function updateNotifications(filter = 'all') {
-            const notificationList = document.getElementById('notificationList');
-            notificationList.innerHTML = '';
-            
-            let filteredNotifications = notifications;
-            if (filter !== 'all') {
-                filteredNotifications = notifications.filter(n => n.type === filter.toLowerCase());
-            }
-            
-            filteredNotifications.forEach(notification => {
-                notificationList.appendChild(createNotificationElement(notification));
-            });
-            
-            updateBadgeCount();
-        }
-
-        function updateBadgeCount() {
+function updateBadgeCount() {
             const unreadCount = notifications.filter(n => !n.isRead).length;
             const badge = document.getElementById('notificationBadge');
             badge.textContent = unreadCount;
             badge.style.display = unreadCount > 0 ? 'block' : 'none';
         }
-
-        // Event Listeners
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                e.target.classList.add('active');
-                updateNotifications(e.target.dataset.tab);
-            });
-        });
-
-        document.querySelector('.mark-all-read').addEventListener('click', () => {
-            notifications.forEach(n => n.isRead = true);
-            updateNotifications();
-        });
-
-        // Initial load
-        updateNotifications();
-
-        const notificationTrigger = document.getElementById('notificationTrigger');
-        const notificationPanel = document.getElementById('notificationPanel');
-
-        // Toggle panel display
-        notificationTrigger.addEventListener('click', () => {
-            notificationPanel.classList.toggle('show');
-        });
-
-        // Close the panel when clicking outside
-        document.addEventListener('click', (event) => {
-            if (!notificationPanel.contains(event.target) && !notificationTrigger.contains(event.target)) {
-                notificationPanel.classList.remove('show');
-            }
-        });
-
-        const notificationList = document.getElementById('notificationList');
-
-notificationList.addEventListener('wheel', (event) => {
-  const isScrollingUp = event.deltaY < 0; // Negative value means scrolling up
-  const isScrollingDown = event.deltaY > 0; // Positive value means scrolling down
-
-  const atTop = notificationList.scrollTop === 0;
-  const atBottom =
-    notificationList.scrollHeight - notificationList.scrollTop === notificationList.clientHeight;
-
-  // Prevent page scroll when at top or bottom of the notification list
-  if ((isScrollingUp && atTop) || (isScrollingDown && atBottom)) {
-    event.preventDefault();
-  }
-});
-
+        
   </script>
 </body>
 </html>
