@@ -112,7 +112,7 @@ $today_direct_buys = $today_direct_buys ? $today_direct_buys : 0; // Handle null
 
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
-                    <div class="col-8">
+                <div class="col-7" style="padding-left: 20px;">
                         <h2 class="d-flex align-items-center mb-0">
                             <?php
                             $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_product WHERE p_is_approve=1 AND seller_id=?");
@@ -151,7 +151,7 @@ $today_direct_buys = $today_direct_buys ? $today_direct_buys : 0; // Handle null
                     <h5 class="card-title mb-0">Total Orders</h5>
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
-                    <div class="col-8">
+                <div class="col-7" style="padding-left: 20px;">
                         <h2 class="d-flex align-items-center mb-0">
                             <?php 
                             // Fetch total number of orders for this seller
@@ -195,7 +195,7 @@ $today_direct_buys = $today_direct_buys ? $today_direct_buys : 0; // Handle null
                     <h5 class="card-title mb-0">Today's Bids</h5>
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
-                    <div class="col-8">
+                <div class="col-7" style="padding-left: 20px;">
                         <h2 class="d-flex align-items-center mb-0">
                             <?php
                             // Calculate today's bids for the seller
@@ -261,7 +261,7 @@ $today_direct_buys = $today_direct_buys ? $today_direct_buys : 0; // Handle null
                     <h5 class="card-title mb-0">Total Revenue</h5>
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
-                    <div class="col-8">
+                <div class="col-7" style="padding-left: 20px;">
                         <h2 class="d-flex align-items-center mb-0">
                             <?php 
                             // Function to format numbers into shorter format
