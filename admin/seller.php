@@ -84,6 +84,7 @@
             <button class="seller-tab-button" data-tab="products">Products</button>
             <button class="seller-tab-button" data-tab="bidding">Bidding</button>
             <button class="seller-tab-button" data-tab="orders">Orders</button>
+            <button class="seller-tab-button" data-tab="certification">Certification</button>
         </div>
 
         <div class="seller-tab-content">
@@ -124,15 +125,25 @@
                     </div>
                 </div>
             </div>
+
+            <div id="certification" class="seller-tab-pane">
+                <div class="seller-certification-container">
+                    <div class="seller-certification-grid" id="certificationGrid">
+                        <!-- Certification cards or no certification message will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="seller-modal-footer">
             <button class="seller-btn seller-secondary" id="closeSellerModal">Close</button>
-            <!-- <button class="seller-btn seller-primary">View Full Details</button> -->
         </div>
     </div>
 </div>
 
+
+
+            <!-- <button class="seller-btn seller-primary">View Full Details</button> -->
 
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -153,5 +164,20 @@
 </div>
 
 <script src="./js/bidding-order.js"></script>
+
+<script>
+const sellerTabButtons = document.querySelectorAll('.seller-tab-button');
+const sellerTabPanes = document.querySelectorAll('.seller-tab-pane');
+
+sellerTabButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const tab = button.dataset.tab;
+    sellerTabButtons.forEach(b => b.classList.remove('active'));
+    sellerTabPanes.forEach(pane => pane.classList.remove('active'));
+    button.classList.add('active');
+    document.getElementById(tab).classList.add('active');
+  });
+});
+</script>
 
 <?php require_once('footer.php'); ?>
