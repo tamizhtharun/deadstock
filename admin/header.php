@@ -56,8 +56,8 @@ if(!isset($_SESSION['admin_session'])) {
 				<span class="logo-lg">DeadStock</span>
 			</a>
 			
-			<nav class="navbar navbar-static-top d-flex justify-content-between align-items-center">
-    <div class="d-flex align-items-center">
+			<nav class="navbar navbar-static-top d-flex justify-content-between px-3">
+			<div class="d-flex align-items-center">
         <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
         </a>

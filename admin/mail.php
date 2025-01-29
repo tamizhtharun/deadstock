@@ -121,14 +121,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_email'])) {
 
 // Fetch all sent emails
 // Change the emails query to:
-$stmt = $pdo->query("SELECT e.*, 
-    CASE 
-        WHEN e.recipient_type = 'seller' THEN s.seller_name 
-        ELSE u.username 
-    END as recipient_name 
+$stmt = $pdo->query("SELECT 
+    e.id,
+    e.subject,
+    e.message,
+    e.status,
+    e.created_at,
+    e.recipient_type,
+    COUNT(e.id) as recipient_count,
+    GROUP_CONCAT(
+        CASE 
+            WHEN e.recipient_type = 'seller' THEN s.seller_name 
+            ELSE u.username 
+        END
+    ) as all_recipients
     FROM emails e 
     LEFT JOIN sellers s ON e.recipient_id = s.seller_id AND e.recipient_type = 'seller'
     LEFT JOIN users u ON e.recipient_id = u.id AND e.recipient_type = 'user'
+    GROUP BY e.subject, e.message, DATE(e.created_at)
     ORDER BY e.created_at DESC
     LIMIT 7");
 $emails = $stmt->fetchAll();
@@ -237,29 +247,36 @@ $users = $pdo->query("SELECT id, username, email FROM users ORDER BY username")-
 
         <!-- Email History Section -->
         <div class="col-md-4">
-            <div class="email-history">
-                <h4 class="mb-4">Recent Emails</h4>
-                <?php foreach ($emails as $email): ?>
-                <div class="history-item">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h6 class="mb-0"><?php echo $email['subject']; ?></h6>
-                        <span class="status-badge <?php echo $email['status'] === 'sent' ? 'status-sent' : 'status-failed'; ?>">
-                            <?php echo ucfirst($email['status']); ?>
-                        </span>
-                    </div>
-                    <div class="text-muted small mb-2">
-                        To: <?php echo $email['recipient_name']; ?>
-                    </div>
-                    <div class="text-muted small">
-                        <?php echo date('M d, Y h:i A', strtotime($email['created_at'])); ?>
-                    </div>
-                    <button class="btn btn-link btn-sm p-0 mt-2 view-email" data-id="<?php echo $email['id']; ?>">
-                        View Details
-                    </button>
+    <div class="email-history">
+        <h4 class="mb-4">Recent Emails</h4>
+        <?php foreach ($emails as $email): ?>
+            <div class="history-item">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="mb-0"><?php echo $email['subject']; ?></h6>
+                    <span class="status-badge <?php echo $email['status'] === 'sent' ? 'status-sent' : 'status-failed'; ?>">
+                        <?php echo ucfirst($email['status']); ?>
+                    </span>
                 </div>
-                <?php endforeach; ?>
+                <div class="text-muted small mb-2">
+                    To: <?php echo $email['recipient_count']; ?> <?php echo ucfirst($email['recipient_type']); ?>(s)
+                </div>
+                <div class="text-muted small">
+                    <?php echo date('M d, Y h:i A', strtotime($email['created_at'])); ?>
+                </div>
+                <button class="btn btn-link btn-sm p-0 mt-2 view-email" 
+                        data-id="<?php echo $email['id']; ?>"
+                        data-subject="<?php echo htmlspecialchars($email['subject']); ?>"
+                        data-message="<?php echo htmlspecialchars($email['message']); ?>"
+                        data-recipients="<?php echo htmlspecialchars($email['all_recipients']); ?>"
+                        data-created="<?php echo date('M d, Y h:i A', strtotime($email['created_at'])); ?>"
+                        data-toggle="modal" 
+                        data-target="#emailViewModal">
+                    View Details
+                </button>
             </div>
-        </div>
+        <?php endforeach; ?>
+    </div>
+</div>
     </div>
 </section>
 
@@ -267,18 +284,80 @@ $users = $pdo->query("SELECT id, username, email FROM users ORDER BY username")-
 <div class="modal fade" id="emailViewModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header border-0">
                 <h5 class="modal-title">Email Details</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="modal-body" id="emailDetails">
+            <div class="modal-body">
+                <div class="email-details">
+                    <h4 class="email-subject mb-3"></h4>
+                    <div class="email-meta mb-4">
+                        <div class="meta-item">
+                            <strong>Sent:</strong> <span class="email-date"></span>
+                        </div>
+                        <!-- <div class="meta-item mt-2">
+                            <strong>Recipients:</strong>
+                            <div class="recipients-list mt-2"></div>
+                        </div> -->
+                    </div>
+                    <div class="email-content"></div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 
+<style>
+    
+    .modal-backdrop {
+    background-color:none !important;
+}
 
+.modal-backdrop.show {
+    opacity: 1 !important;
+}
+
+/* Enhance modal appearance */
+.modal-content {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 8px;
+}
+
+.modal-header {
+    padding: 1.5rem 1.5rem 0.5rem;
+    align-items: center;
+}
+
+.modal-header .btn-close {
+    padding: 0;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: #6c757d;
+    opacity: 0.75;
+    transition: opacity 0.15s;
+    margin: -1rem -1rem -1rem auto;
+}
+
+.modal-header .btn-close:hover {
+    opacity: 1;
+    color: #000;
+}
+
+/* Animation for smoother modal appearance */
+.modal.fade .modal-dialog {
+    transition: transform 0.2s ease-out;
+}
+
+.modal.fade.show .modal-dialog {
+    transform: none;
+}
+</style>
 <!-- style -->
 <style>
 .email-container {
@@ -353,6 +432,7 @@ $users = $pdo->query("SELECT id, username, email FROM users ORDER BY username")-
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0,0,0,0.05);
     padding: 20px;
+    font-size: 14px !important;
 }
 
 .history-item {
@@ -403,6 +483,8 @@ $users = $pdo->query("SELECT id, username, email FROM users ORDER BY username")-
     border: 1px solid #e9ecef;
     border-radius: 6px;
 }
+
+
 .recipient-selector {
     background: #f8f9fa;
     border-radius: 8px;
@@ -477,7 +559,15 @@ $users = $pdo->query("SELECT id, username, email FROM users ORDER BY username")-
     background: #555;
 }
 .select-all-btn{
-    border: none !important;
+    padding:10px !important;
+    outline: none;
+    border: 0px !important;
+    margin-left:50px !important;
+    decoration:none !important;
+}
+.note-editor {
+    width: 100% !important; /* Adjust width as per requirement */
+    max-width: 800px; /* Optional: Set a max width */
 }
 </style>
 
@@ -490,6 +580,33 @@ $users = $pdo->query("SELECT id, username, email FROM users ORDER BY username")-
 
 <!-- Page specific script -->
 <script>
+$(document).ready(function() {
+    $('.view-email').click(function() {
+        const subject = $(this).data('subject');
+        const message = $(this).data('message');
+        const created = $(this).data('created');
+        const recipients = $(this).data('recipients').split(',');
+        
+        // Update modal content
+        $('.email-subject').text(subject);
+        $('.email-date').text(created);
+        $('.email-content').html(message);
+        
+        // Create recipients list
+        const recipientsList = $('.recipients-list');
+        recipientsList.empty();
+        
+        recipients.forEach(recipient => {
+            recipientsList.append(`
+                <div class="recipient-chip">
+                    ${recipient.trim()}
+                </div>
+            `);
+        });
+    });
+});
+
+
 // Modified JavaScript for email management system
 $(document).ready(function() {
     // Check if email message exists before initializing Summernote
