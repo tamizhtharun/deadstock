@@ -21,6 +21,10 @@ class ComposerStaticInit19dce85914a0d40ff610e42a7553729f
             'Razorpay\\Tests\\' => 15,
             'Razorpay\\Api\\' => 13,
         ),
+        'P' => 
+        array (
+            'PHPMailer\\PHPMailer\\' => 20,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -35,6 +39,10 @@ class ComposerStaticInit19dce85914a0d40ff610e42a7553729f
         'Razorpay\\Api\\' => 
         array (
             0 => __DIR__ . '/..' . '/razorpay/razorpay/src',
+        ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
     );
 

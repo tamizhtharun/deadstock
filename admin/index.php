@@ -140,7 +140,7 @@ try {
 </head>
 <section class="content">
 <!-- <div class="container"> -->
-<div class="row ">
+<div class="row">
 <div class="col-xl-3 col-lg-3">
     <div class="card l-bg-cherry">
         <div class="card-statistic-3 p-3">
@@ -149,7 +149,7 @@ try {
                 <h5 class="card-title mb-0">Approved Products</h5>
             </div>
             <div class="row align-items-center mb-2 d-flex">
-                <div class="col-8">
+                <div class="col-7" style="padding-left: 20px;">
                     <h2 class="d-flex align-items-center mb-0">
                         <?php
                         $statement =$pdo->prepare("SELECT COUNT(*) FROM tbl_product where p_is_approve=1");
@@ -201,7 +201,7 @@ try {
                 <h5 class="card-title mb-0">Active Sellers</h5>
             </div>
             <div class="row align-items-center mb-2 d-flex">
-                <div class="col-8">
+            <div class="col-7" style="padding-left: 20px;">
                     <h2 class="d-flex align-items-center mb-0">
                         <?php 
                         $statement = $pdo->prepare("SELECT  COUNT(*) FROM sellers WHERE seller_status=1");
@@ -236,7 +236,7 @@ try {
                 <h5 class="card-title mb-0">Bids Today</h5>
             </div>
             <div class="row align-items-center mb-2 d-flex">
-                <div class="col-8">
+            <div class="col-7" style="padding-left: 20px;">
                 <h2 class="d-flex align-items-center mb-0">
                     <?php 
                         $statement = $pdo->prepare("SELECT  COUNT(*) FROM bidding WHERE DATE(bid_time) = '$today_date'");
@@ -284,7 +284,7 @@ try {
                 <h5 class="card-title mb-0">Revenue Today</h5>
             </div>
             <div class="row align-items-center mb-2 d-flex">
-                <div class="col-8">
+            <div class="col-7" style="padding-left: 20px;">
                     <h2 class="d-flex align-items-center mb-0">
                     ₹<?php 
                         $statement = $pdo->prepare("SELECT * FROM tbl_orders WHERE DATE(created_at) = :today_date AND order_status!='canceled'");
@@ -331,7 +331,7 @@ try {
                 <h5 class="card-title mb-0">Total Orders</h5>
             </div>
             <div class="row align-items-center mb-2 d-flex">
-                <div class="col-8">
+            <div class="col-7" style="padding-left: 20px;">
                     <h2 class="d-flex align-items-center mb-0">
                         <?php echo number_format($total_orders); ?>
                     </h2>
@@ -352,7 +352,7 @@ try {
                         <h5 class="card-title mb-0">Total Views</h5>
                     </div>
                     <div class="row align-items-center mb-2 d-flex">
-                        <div class="col-8">
+                    <div class="col-7" style="padding-left: 20px;">
                             <h2 class="d-flex align-items-center mb-0">
                                 <?php echo number_format($total_views); ?>
                             </h2>
@@ -371,7 +371,7 @@ try {
                         <h5 class="card-title mb-0">Today's Views</h5>
                     </div>
                     <div class="row align-items-center mb-2 d-flex">
-                        <div class="col-8">
+                    <div class="col-7" style="padding-left: 20px;">
                             <h2 class="d-flex align-items-center mb-0">
                                 <?php echo number_format($today_views); ?>
                             </h2>
@@ -388,7 +388,7 @@ try {
                 <h5 class="card-title mb-0">Total Revenue</h5>
             </div>
             <div class="row align-items-center mb-2 d-flex">
-                <div class="col-8">
+            <div class="col-7" style="padding-left: 20px;">
                     <h2 class="d-flex align-items-center mb-0">
                         <?php echo "₹" .format_number_short($total_revenue); ?>
 
