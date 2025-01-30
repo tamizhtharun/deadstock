@@ -183,7 +183,7 @@ $monthly_sales_data = $statement->fetchAll(PDO::FETCH_ASSOC);
 
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
-                    <div class="col-8">
+                <div class="col-7" style="padding-left: 20px;">
                         <h2 class="d-flex align-items-center mb-0">
                             <?php
                             $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_product WHERE p_is_approve=1 AND seller_id=?");
@@ -222,7 +222,7 @@ $monthly_sales_data = $statement->fetchAll(PDO::FETCH_ASSOC);
                     <h5 class="card-title mb-0">Total Orders</h5>
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
-                    <div class="col-8">
+                <div class="col-7" style="padding-left: 20px;">
                         <h2 class="d-flex align-items-center mb-0">
                             <?php 
                             // Fetch total number of orders for this seller
@@ -266,7 +266,7 @@ $monthly_sales_data = $statement->fetchAll(PDO::FETCH_ASSOC);
                     <h5 class="card-title mb-0">Today's Bids</h5>
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
-                    <div class="col-8">
+                <div class="col-7" style="padding-left: 20px;">
                         <h2 class="d-flex align-items-center mb-0">
                             <?php
                             // Calculate today's bids for the seller
@@ -331,7 +331,7 @@ $monthly_sales_data = $statement->fetchAll(PDO::FETCH_ASSOC);
                     <h5 class="card-title mb-0">Total Revenue</h5>
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
-                    <div class="col-8">
+                <div class="col-7" style="padding-left: 20px;">
                         <h2 class="d-flex align-items-center mb-0">
                             <?php 
                             // Function to format numbers into shorter format

@@ -7,14 +7,16 @@ use PHPMailer\PHPMailer\Exception;
 <link href="https://cdn.jsdelivr.net/npm/@selectjs/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
 <?php
-
+// Initialize message variables at the top
+$success_message = '';
+$error_message = '';
 // Email configuration
 define('SELLER_EMAIL', 'deaddstock@gmail.com');
 define('SELLER_EMAIL_PASSWORD', 'fnsdadrefmosspym');
 define('USER_EMAIL', 'nithish2325@gmail.com');
 define('USER_EMAIL_PASSWORD', 'tjfqbwebxhlsmnyh');
 
-// Function to send email with different sender emails
+// Function to send email with different sender emails and proper attachment handling
 function sendEmail($recipient_email, $subject, $message, $recipient_type, $attachment = null) {
     $mail = new PHPMailer(true);
     $success = true;
@@ -41,9 +43,23 @@ function sendEmail($recipient_email, $subject, $message, $recipient_type, $attac
         // Add recipient
         $mail->addAddress($recipient_email);
 
-        // Attachment
-        if ($attachment) {
-            $mail->addAttachment($attachment);
+        // Handle attachment with original filename
+        if ($attachment && is_array($attachment)) {
+            if (
+                isset($attachment['tmp_name']) && 
+                isset($attachment['name']) && 
+                file_exists($attachment['tmp_name'])
+            ) {
+                // Sanitize filename to prevent security issues
+                $original_filename = basename($attachment['name']); // Get base name to prevent directory traversal
+                $original_filename = preg_replace("/[^a-zA-Z0-9._-]/", "", $original_filename); // Remove special characters
+                
+                // Add attachment with original filename
+                $mail->addAttachment(
+                    $attachment['tmp_name'],     // Temporary file path
+                    $original_filename           // Original filename
+                );
+            }
         }
 
         // Content
@@ -59,7 +75,7 @@ function sendEmail($recipient_email, $subject, $message, $recipient_type, $attac
     
     return $success;
 }
-// Handle form submission
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_email'])) {
     $recipient_type = $_POST['recipient_type'];
@@ -94,16 +110,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_email'])) {
     }
     
     // Handle file upload
-    $admin_id = $_SESSION['admin_session']['id'] ?? null; 
     $attachment = null;
     if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] === UPLOAD_ERR_OK) {
-        $attachment = $_FILES['attachment']['tmp_name'];
+        $attachment = $_FILES['attachment']; // Pass the entire $_FILES array element
     }
+
     // Send emails individually
-    $all_sent = true; // Track if all emails were sent successfully
+    $all_sent = true;
     foreach ($recipient_emails as $recipient_email) {
         if (!sendEmail($recipient_email, $subject, $message, $recipient_type, $attachment)) {
-            $all_sent = false; // If any email fails, set to false
+            $all_sent = false;
         } else {
             // Store in database for each recipient
             $stmt = $pdo->prepare("INSERT INTO emails (sender_id, recipient_id, recipient_type, subject, message, status) VALUES (?, ?, ?, ?, ?, 'sent')");
@@ -118,9 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_email'])) {
     }
 }
 
-
-// Fetch all sent emails
-// Change the emails query to:
+// Fetch all sent emails with recipient details
 $stmt = $pdo->query("SELECT 
     e.id,
     e.subject,
@@ -159,62 +173,67 @@ $users = $pdo->query("SELECT id, username, email FROM users ORDER BY username")-
         <!-- Compose Email Section -->
         <div class="col-md-8">
             <div class="email-container">
-            <form method="POST" enctype="multipart/form-data" id="emailForm">
-    <input type="hidden" name="recipient_type" id="recipientTypeInput" value="seller">
-    <!-- Recipient Selection -->
-    <div class="recipient-selector">
-    <div class="type-selector">
-        <button type="button" class="type-btn active" data-type="seller">
-            <i class="fas fa-store"></i> Sellers
-        </button>
-        <button type="button" class="type-btn" data-type="user">
-            <i class="fas fa-users"></i> Users
-        </button>
-    </div>
+                <form method="POST" enctype="multipart/form-data" id="emailForm">
+                    <input type="hidden" name="recipient_type" id="recipientTypeInput" value="seller">
+                    
+                    <!-- Recipient Selection -->
+                    <div class="recipient-selector">
+                        <div class="type-selector">
+                            <button type="button" class="type-btn active" data-type="seller">
+                                <i class="fas fa-store"></i> Sellers
+                            </button>
+                            <button type="button" class="type-btn" data-type="user">
+                                <i class="fas fa-users"></i> Users
+                            </button>
+                        </div>
 
-    <div class="recipients-container">
-    <div class="search-container">
-    <input type="text" class="search-input" placeholder="Search by name or email...">
-    <button type="button" class="btn btn-link btn-sm p-0 mt-2 select-all-btn">Select All</button>
-</div>
-        
-        <!-- Seller List -->
-        <div id="sellerList" class="recipient-list">
-            <?php foreach ($sellers as $seller): ?>
-            <div class="recipient-item" data-id="<?php echo $seller['seller_id']; ?>">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong><?php echo $seller['seller_name']; ?></strong>
-                        <div class="text-muted small"><?php echo $seller['seller_email']; ?></div>
-                    </div>
-                    <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name="recipients[]" value="<?php echo $seller['seller_id']; ?>" id="seller<?php echo $seller['seller_id']; ?>">
-                        <label class="custom-control-label" for="seller<?php echo $seller['seller_id']; ?>"></label>
-                    </div>
-                </div>
-            </div>
-            <?php endforeach; ?>
-        </div>
+                        <div class="recipients-container">
+                            <div class="search-container">
+                                <input type="text" class="search-input" placeholder="Search by name or email...">
+                                <button type="button" class="btn btn-link btn-sm p-0 mt-2 select-all-btn">Select All</button>
+                            </div>
+                            
+                            <!-- Seller List -->
+                            <div id="sellerList" class="recipient-list">
+                                <?php foreach ($sellers as $seller): ?>
+                                <div class="recipient-item" data-id="<?php echo $seller['seller_id']; ?>">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong><?php echo $seller['seller_name']; ?></strong>
+                                            <div class="text-muted small"><?php echo $seller['seller_email']; ?></div>
+                                        </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" name="recipients[]" 
+                                                   value="<?php echo $seller['seller_id']; ?>" 
+                                                   id="seller<?php echo $seller['seller_id']; ?>">
+                                            <label class="custom-control-label" for="seller<?php echo $seller['seller_id']; ?>"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
 
-        <!-- User List -->
-        <div id="userList" class="recipient-list" style="display: none;">
-            <?php foreach ($users as $user): ?>
-            <div class="recipient-item" data-id="<?php echo $user['id']; ?>">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong><?php echo $user['username']; ?></strong>
-                        <div class="text-muted small"><?php echo $user['email']; ?></div>
+                            <!-- User List -->
+                            <div id="userList" class="recipient-list" style="display: none;">
+                                <?php foreach ($users as $user): ?>
+                                <div class="recipient-item" data-id="<?php echo $user['id']; ?>">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong><?php echo $user['username']; ?></strong>
+                                            <div class="text-muted small"><?php echo $user['email']; ?></div>
+                                        </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" name="recipients[]" 
+                                                   value="<?php echo $user['id']; ?>" 
+                                                   id="user<?php echo $user['id']; ?>">
+                                            <label class="custom-control-label" for="user<?php echo $user['id']; ?>"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
                     </div>
-                    <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name="recipients[]" value="<?php echo $user['id']; ?>" id="user<?php echo $user['id']; ?>">
-                        <label class="custom-control-label" for="user<?php echo $user['id']; ?>"></label>
-                    </div>
-                </div>
-            </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</div>
 
                     <!-- Compose Section -->
                     <div class="compose-section">
@@ -247,36 +266,36 @@ $users = $pdo->query("SELECT id, username, email FROM users ORDER BY username")-
 
         <!-- Email History Section -->
         <div class="col-md-4">
-    <div class="email-history">
-        <h4 class="mb-4">Recent Emails</h4>
-        <?php foreach ($emails as $email): ?>
-            <div class="history-item">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                    <h6 class="mb-0"><?php echo $email['subject']; ?></h6>
-                    <span class="status-badge <?php echo $email['status'] === 'sent' ? 'status-sent' : 'status-failed'; ?>">
-                        <?php echo ucfirst($email['status']); ?>
-                    </span>
-                </div>
-                <div class="text-muted small mb-2">
-                    To: <?php echo $email['recipient_count']; ?> <?php echo ucfirst($email['recipient_type']); ?>(s)
-                </div>
-                <div class="text-muted small">
-                    <?php echo date('M d, Y h:i A', strtotime($email['created_at'])); ?>
-                </div>
-                <button class="btn btn-link btn-sm p-0 mt-2 view-email" 
-                        data-id="<?php echo $email['id']; ?>"
-                        data-subject="<?php echo htmlspecialchars($email['subject']); ?>"
-                        data-message="<?php echo htmlspecialchars($email['message']); ?>"
-                        data-recipients="<?php echo htmlspecialchars($email['all_recipients']); ?>"
-                        data-created="<?php echo date('M d, Y h:i A', strtotime($email['created_at'])); ?>"
-                        data-toggle="modal" 
-                        data-target="#emailViewModal">
-                    View Details
-                </button>
+            <div class="email-history">
+                <h4 class="mb-4">Recent Emails</h4>
+                <?php foreach ($emails as $email): ?>
+                    <div class="history-item">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="mb-0"><?php echo $email['subject']; ?></h6>
+                            <span class="status-badge <?php echo $email['status'] === 'sent' ? 'status-sent' : 'status-failed'; ?>">
+                                <?php echo ucfirst($email['status']); ?>
+                            </span>
+                        </div>
+                        <div class="text-muted small mb-2">
+                            To: <?php echo $email['recipient_count']; ?> <?php echo ucfirst($email['recipient_type']); ?>(s)
+                        </div>
+                        <div class="text-muted small">
+                            <?php echo date('M d, Y h:i A', strtotime($email['created_at'])); ?>
+                        </div>
+                        <button class="btn btn-link btn-sm p-0 mt-2 view-email" 
+                                data-id="<?php echo $email['id']; ?>"
+                                data-subject="<?php echo htmlspecialchars($email['subject']); ?>"
+                                data-message="<?php echo htmlspecialchars($email['message']); ?>"
+                                data-recipients="<?php echo htmlspecialchars($email['all_recipients']); ?>"
+                                data-created="<?php echo date('M d, Y h:i A', strtotime($email['created_at'])); ?>"
+                                data-toggle="modal" 
+                                data-target="#emailViewModal">
+                            View Details
+                        </button>
+                    </div>
+                <?php endforeach; ?>
             </div>
-        <?php endforeach; ?>
-    </div>
-</div>
+        </div>
     </div>
 </section>
 
@@ -297,10 +316,6 @@ $users = $pdo->query("SELECT id, username, email FROM users ORDER BY username")-
                         <div class="meta-item">
                             <strong>Sent:</strong> <span class="email-date"></span>
                         </div>
-                        <!-- <div class="meta-item mt-2">
-                            <strong>Recipients:</strong>
-                            <div class="recipients-list mt-2"></div>
-                        </div> -->
                     </div>
                     <div class="email-content"></div>
                 </div>

@@ -108,7 +108,7 @@ trackPageView('HP', 'Home page');
         </a>
       </div>
       <div class="ind-brand">
-        <a href="./products.html" class="link-body-emphasis link-underline-opacity-0">
+        <a href="#" class="link-body-emphasis link-underline-opacity-0">
           <div class="img-category">
             <img src="./icons/others.png">
       </div>

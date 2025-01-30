@@ -1,5 +1,5 @@
 <?php
-// Disable error reporting to prevent HTML output
+//process_bid_order.php
 error_reporting(0);
 ini_set('display_errors', 0);
 
