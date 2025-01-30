@@ -1,4 +1,5 @@
 <?php 
+//bidding-order.php
 require_once('header.php');
 ?>
 
@@ -329,6 +330,7 @@ require_once('header.php');
 
 <script src="./js/bidding-order.js"></script>
 <script>
+
 const sellerTabButtons = document.querySelectorAll('.seller-tab-button');
 const sellerTabPanes = document.querySelectorAll('.seller-tab-pane');
 

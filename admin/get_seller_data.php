@@ -25,15 +25,33 @@ $seller_id = $_GET['seller_id'];
 
 try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    // Fetch seller data with total revenue
+    $stmt = $pdo->prepare("
+    SELECT 
+        s.*,
+        COALESCE((
+            SELECT SUM(price * quantity)
+            FROM tbl_orders 
+            WHERE seller_id = s.seller_id 
+            AND order_status != 'canceled'
+        ), 0) as total_revenue
+    FROM sellers s
+    WHERE s.seller_id = ?
+");
 
-    // Fetch seller profile
-    $stmt = $pdo->prepare("SELECT * FROM sellers WHERE seller_id = ?");
     $stmt->execute([$seller_id]);
     $seller = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$seller) {
         sendJsonResponse(['error' => 'Seller not found'], 404);
     }
+
+    // Include the formatted revenue in seller data
+    $seller['formatted_revenue'] = '₹' . number_format($seller['total_revenue'], 2); 
+
+    // Debugging: Check the contents of the $seller array
+    error_log(print_r($seller, true));
 
     // Fetch product data
     $stmt = $pdo->prepare("
@@ -238,4 +256,3 @@ try {
     error_log('Database error: ' . $e->getMessage());
     sendJsonResponse(['error' => 'Database error occurred'], 500);
 }
-
