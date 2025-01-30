@@ -54,18 +54,6 @@ session_start();
 </head>
 <body>
 <div class="header">   
-<!-- <?php
-
-echo "<pre>";
-print_r($_SESSION); // Display all session variables
-echo "</pre>";
-
-
-
-
-
-
-?> -->
 <nav class="ds-nav-container">
             <div class="ds-logo-section">
                 <a href="../index.php" class="ds-logo">
@@ -97,44 +85,21 @@ echo "</pre>";
                     $cart_count = mysqli_num_rows($cart_query);  // Get number of items
                 }               
                 echo $cart_count; ?></span>
-                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    // Function to fetch and update the cart count in real-time
-    function updateCartBadge() {
-        // Use AJAX to send a GET request to itself and get the updated cart count
-        $.ajax({
-            url: 'header.php',  // This points back to the same header.php file
-            method: 'GET',
-            dataType: 'html',
-            success: function (data) {
-                // Parse the updated cart count from the response (only the .ds-cart-badge span part)
-                var updatedCartCount = $(data).find('.ds-cart-badge').text();
-                // Update the cart badge on the page
-                $('.ds-cart-badge').text(updatedCartCount);
-            },
-            error: function () {
-                console.error('Failed to fetch cart count.');
-            }
-        });
-    }
-    updateCartBadge();
-    setInterval(updateCartBadge, 5000);
-</script>
+               
             </button>
 
-                        <!-- Notification -->
-
-                        <a href="../notification.php" style="text-decoration: none; color: inherit;">
+            <button class="ds-icon-button cart-button" title="Shopping Cart"  onclick="window.location.href='../notification.php';">
+                <i class="fas fa-bell"></i>
+                <span class="ds-cart-badge">5</span>
+               
+            </button>
+  <!-- <a href="../notification.php" style="text-decoration: none; color: inherit;">
     <div class="notification-trigger ds-icon-button" id="notificationTrigger">
         <i class="fas fa-bell"></i>
-        <span class="notification-badge" id="notificationBadge">5</span>
+        <span class="ds-cart-badge" id="cart-count">5</span>
     </div>
-</a>
-
-
-            
-        </div>
+</a> -->
+</div>
     <?php else: ?>
         <div class="ds-auth-buttons">
             <button class="ds-btn-secondary" onclick="window.location.href='seller_registration.php';" >Sell here</button>

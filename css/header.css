@@ -16,7 +16,9 @@
     box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
-  
+
+  /* Dropdown Styling */
+
   .ds-header {
     background-color: rgba(255, 255, 255, 0.8) !important;
     backdrop-filter: saturate(180%) blur(20px);
@@ -337,38 +339,4 @@
     background-color: #ffffff;
     height: 60px;
     text-decoration: none !important;
-}
-
-/* Default notification container */
-.notification-trigger {
-  position: relative;
-  display: inline-block;
-}
-
-/* Common badge styling */
-.notification-badge {
-  position: absolute;
-  background: red;
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Main Header: Align badge in-line with bell icon */
-.main-header .notification-badge {
-  top: 50% !important; /* Aligns with the icon */
-  right: -10px !important;
-  transform: translateY(-50%) !important;
-}
-
-/* User Header: Position the badge above the bell icon */
-.user-header .notification-badge {
-  top: -5px !important; /* Moves above the icon */
-  right: -5px !important;
 }
