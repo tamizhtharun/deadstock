@@ -405,10 +405,11 @@ function updateSellerModal(data) {
             </div>
         </div>
         <div class="seller-info-item"><label>Company Name</label><span>${seller.seller_cname}</span></div>
-        <div class="seller-info-item revenue-item">
-            <label>Total Revenue</label>
-            <span class="revenue-value">₹300</span>
-        </div>
+        <div class="seller-info-item">
+    <label>Total Revenue</label>
+    <span>${seller.formatted_revenue}</span>
+</div>
+
         <div class="seller-info-item"><label>Email</label><span>${seller.seller_email}</span></div>
         <div class="seller-info-item"><label>Phone</label><span>${seller.seller_phone}</span></div>
         <div class="seller-info-item"><label>GST Number</label><span>${seller.seller_gst}</span></div>

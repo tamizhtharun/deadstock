@@ -72,8 +72,7 @@ $statement = $pdo->prepare("
       AND order_status != 'canceled'
 ");
 $statement->execute([$seller_id]);
-$total_bids = $statement->fetchColumn();
-$total_bids = $total_bids ? $total_bids : 0; // Handle null values
+$total_bids = $statement->fetchColumn()?: 0;
 
 
 // Calculate today's direct buys for the seller, excluding canceled orders
@@ -86,10 +85,82 @@ $statement = $pdo->prepare("
       AND DATE(created_at) = CURDATE()
 ");
 $statement->execute([$seller_id]);
-$today_direct_buys = $statement->fetchColumn();
-$today_direct_buys = $today_direct_buys ? $today_direct_buys : 0; // Handle null values
-?>
+$today_direct_buys = $statement->fetchColumn() ?: 0;
 
+// Fetch order status distribution
+$statement = $pdo->prepare("
+    SELECT order_status, COUNT(*) as count
+    FROM tbl_orders
+    WHERE seller_id = ?
+    GROUP BY order_status
+");
+$statement->execute([$seller_id]);
+$order_status_distribution = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch top products by revenue
+$statement = $pdo->prepare("
+    SELECT p.p_name, SUM(o.price * o.quantity) as total_revenue, COUNT(DISTINCT o.id) as order_count
+    FROM tbl_product p
+    JOIN tbl_orders o ON p.id = o.product_id
+    WHERE p.seller_id = ? AND o.order_status != 'cancelled'
+    GROUP BY p.id
+    ORDER BY total_revenue DESC
+    LIMIT 10
+");
+$statement->execute([$seller_id]);
+$top_products_by_revenue = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch low stock products
+$statement = $pdo->prepare("
+    SELECT p_name, p_qty
+    FROM tbl_product
+    WHERE seller_id = ? AND p_qty <= 5
+    ORDER BY p_qty ASC
+    LIMIT 5
+");
+$statement->execute([$seller_id]);
+$low_stock_products = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch recent orders
+$statement = $pdo->prepare("
+    SELECT o.id, o.order_status, o.price * o.quantity as total_amount, o.created_at, p.p_name
+    FROM tbl_orders o
+    JOIN tbl_product p ON o.product_id = p.id
+    WHERE o.seller_id = ?
+    ORDER BY o.created_at DESC
+    LIMIT 5
+");
+$statement->execute([$seller_id]);
+$recent_orders = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch product category summary
+$statement = $pdo->prepare("
+    SELECT t.tcat_name as category_name, COUNT(p.id) as product_count
+    FROM tbl_product p
+    JOIN tbl_end_category e ON p.ecat_id = e.ecat_id
+    JOIN tbl_mid_category m ON e.mcat_id = m.mcat_id
+    JOIN tbl_top_category t ON m.tcat_id = t.tcat_id
+    WHERE p.seller_id = ?
+    GROUP BY t.tcat_id
+    ORDER BY product_count DESC
+    LIMIT 5
+");
+$statement->execute([$seller_id]);
+$category_summary = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch monthly sales data for the current year
+$statement = $pdo->prepare("
+    SELECT DATE_FORMAT(created_at, '%Y-%m') as month, SUM(price * quantity) as monthly_revenue
+    FROM tbl_orders
+    WHERE seller_id = ? AND order_status != 'cancelled' AND YEAR(created_at) = YEAR(CURDATE())
+    GROUP BY month
+    ORDER BY month
+");
+$statement->execute([$seller_id]);
+$monthly_sales_data = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
+?>
 <head>
     <!-- Include Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -250,8 +321,7 @@ $today_direct_buys = $today_direct_buys ? $today_direct_buys : 0; // Handle null
 
             </div>
         </div>
-    </div>
-    
+    </div>    
 
     <div class="col-xl-3 col-lg-3">
         <div class="card l-bg-orange-dark">
@@ -406,8 +476,6 @@ $today_direct_buys = $today_direct_buys ? $today_direct_buys : 0; // Handle null
 </div>
 
 
-
-
 </div>
 
 
@@ -527,19 +595,237 @@ if ($latestDate) {
         </div>
 
 
+
         <div class="col-lg-4 mb-4">
-                <div class="card shadow">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Revenue Distribution</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-container" style="position: relative; height:40vh; width:100%">
-                            <canvas id="pieChart"></canvas>
-                        </div>
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Order Status Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height:40vh; width:100%">
+                        <canvas id="orderStatusChart"></canvas>
                     </div>
                 </div>
             </div>
+        </div>
     </div>
+<div class="row">
+    <!-- Top Products by Revenue -->
+    <div class="col-xl-8 col-lg-8 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Top Products by Revenue</h5>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px; overflow-y: auto;">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Total Revenue</th>
+                                <th>Orders</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($top_products_by_revenue as $product): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($product['p_name']); ?></td>
+                                <td>₹<?php echo number_format($product['total_revenue'], 2); ?></td>
+                                <td><?php echo number_format($product['order_count']); ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low Stock Products -->
+    <div class="col-xl-4 col-lg-4 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Low Stock Products</h5>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px; overflow-y: auto;">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($low_stock_products as $product): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($product['p_name']); ?></td>
+                                <td><?php echo $product['p_qty']; ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Orders -->
+    <div class="col-xl-6 col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Recent Orders</h5>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px; overflow-y: auto;">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Product</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($recent_orders as $order): ?>
+                            <tr>
+                                <td><?php echo $order['id']; ?></td>
+                                <td><?php echo htmlspecialchars($order['p_name']); ?></td>
+                                <td>₹<?php echo number_format($order['total_amount'], 2); ?></td>
+                                <td><?php echo $order['order_status']; ?></td>
+                                <td><?php echo date('Y-m-d', strtotime($order['created_at'])); ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Category Summary -->
+    <div class="col-xl-6 col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Product Category Summary</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="categorySummaryChart" style="height: 300px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Status Summary -->
+<div class="row">
+    <div class="col-xl-6 col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Order Status Summary</h5>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px; overflow-y: auto;">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Count</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $total_orders = 0;
+                            foreach ($order_status_distribution as $status) {
+                                $total_orders += $status['count']; // Summing order counts properly
+                            }
+
+                            foreach ($order_status_distribution as $status) {
+                                $count = $status['count'];
+                                $status_name = ucfirst($status['order_status']);
+                                $percentage = ($total_orders > 0) ? ($count / $total_orders) * 100 : 0;
+                                echo "<tr>
+                                        <td>{$status_name}</td>
+                                        <td>{$count}</td>
+                                        <td>" . number_format($percentage, 2) . " %</td>
+                                      </tr>";
+                            }
+                            ?>
+                            <tr class="font-weight-bold">
+                                <td>Total</td>
+                                <td><?php echo $total_orders; ?></td>
+                                <td>100%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Order Status Distribution Chart
+    var orderStatusCtx = document.getElementById('orderStatusChart').getContext('2d');
+    new Chart(orderStatusCtx, {
+        type: 'pie',
+        data: {
+            labels: <?php echo json_encode(array_column($order_status_distribution, 'order_status')); ?>,
+            datasets: [{
+                data: <?php echo json_encode(array_column($order_status_distribution, 'count')); ?>,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            title: {
+                display: true,
+                text: 'Order Status Distribution'
+            }
+        }
+    })
+});
+document.addEventListener('DOMContentLoaded', function() {
+    // Existing chart code remains the same
+
+    // Product Category Summary Chart
+    var categoryCtx = document.getElementById('categorySummaryChart').getContext('2d');
+    new Chart(categoryCtx, {
+        type: 'bar',
+        data: {
+            labels: <?php echo json_encode(array_column($category_summary, 'category_name')); ?>,
+            datasets: [{
+                label: 'Number of Products',
+                data: <?php echo json_encode(array_column($category_summary, 'product_count')); ?>,
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Products'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+
 </div>
 
 <script>
