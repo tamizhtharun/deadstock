@@ -43,16 +43,16 @@ echo "</pre>";
 							<tr>
 								<th>#</th>
 								<th>Photo</th>
-								<th>Product Brand</th>
-								<th width="160">Product Name</th>
+								<th width="120">Product Brand</th>
+								<th width="120">Product Name</th>
 								<th width="40">Old Price</th>
 								<th width="40">(C) Price</th>
 								<th width="40">Quantity</th>
 								<th>Featured?</th>
 								<th>Approval Status</th>
 								<th>Category</th>
-								<th>Product Catalogue</th>
-								<th width="80">Action</th>
+								<th >Catalogue</th>
+								<th width="160">Action</th>
 							</tr>
 						</thead>
 						<tbody>

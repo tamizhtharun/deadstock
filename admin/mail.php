@@ -154,7 +154,7 @@ $stmt = $pdo->query("SELECT
     LEFT JOIN users u ON e.recipient_id = u.id AND e.recipient_type = 'user'
     GROUP BY e.subject, e.message, DATE(e.created_at)
     ORDER BY e.created_at DESC
-    LIMIT 7");
+    LIMIT 8");
 $emails = $stmt->fetchAll();
 
 // Fetch sellers and users for select options
@@ -164,7 +164,9 @@ $users = $pdo->query("SELECT id, username, email FROM users ORDER BY username")-
 
 <!-- Content Header -->
 <section class="content-header">
+<div class="content-header-left">
     <h1>Email Management</h1>
+    <div>
 </section>
 
 <!-- Main content -->
@@ -282,7 +284,7 @@ $users = $pdo->query("SELECT id, username, email FROM users ORDER BY username")-
                         <div class="text-muted small">
                             <?php echo date('M d, Y h:i A', strtotime($email['created_at'])); ?>
                         </div>
-                        <button class="btn btn-link btn-sm p-0 mt-2 view-email" 
+                        <!-- <button class="btn btn-link btn-sm p-0 mt-2 view-email" 
                                 data-id="<?php echo $email['id']; ?>"
                                 data-subject="<?php echo htmlspecialchars($email['subject']); ?>"
                                 data-message="<?php echo htmlspecialchars($email['message']); ?>"
@@ -291,7 +293,7 @@ $users = $pdo->query("SELECT id, username, email FROM users ORDER BY username")-
                                 data-toggle="modal" 
                                 data-target="#emailViewModal">
                             View Details
-                        </button>
+                        </button> -->
                     </div>
                 <?php endforeach; ?>
             </div>

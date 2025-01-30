@@ -24,11 +24,11 @@ echo "</pre>";
 								<th>Photo</th>
 								<th>Product Brand</th>
 								<th width="160">Product Name</th>
-								<th width="40">(C) Final Price</th>
 								<th width="40">Quantity</th>
-                                <th>Delivery Status</th>
-                                
+								<th width="40">Product Price</th>
 								<th>Order Time</th>
+                                <th>Order Type</th>
+                                <th>Final Price</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -41,12 +41,15 @@ echo "</pre>";
                         t1.product_brand,
                         t1.p_name,
                         t2.quantity,
-                        t2.delivery_status,
+                        t2.order_status,
                         t2.price,
-                        t2.updated_at
+                        t2.updated_at,
+                        t2.order_type,
+                        t3.brand_name
                     FROM tbl_orders t2
                     JOIN tbl_product t1 ON t2.product_id = t1.id
-                    WHERE t1.seller_id = :seller_id
+                    JOIN tbl_brands t3 ON t1.product_brand = t3.brand_id
+                    WHERE t1.seller_id = :seller_id AND order_status != 'canceled'
                     ORDER BY t2.updated_at DESC");
                     $statement->bindParam(':seller_id', $seller_id, PDO::PARAM_INT); // Bind the seller_id parameter
                     $statement->execute();
@@ -62,14 +65,18 @@ foreach ($result as $row) {
                  alt="<?php echo htmlspecialchars($row['p_name']); ?>" 
                  style="width:80px;">
         </td>
-        <td><?php echo htmlspecialchars($row['product_brand']); ?></td>
+        <td><?php echo htmlspecialchars($row['brand_name']); ?></td>
         <td><?php echo htmlspecialchars($row['p_name']); ?></td>
-        <td>₹<?php echo htmlspecialchars($row['price']); ?></td>
         <td><?php echo htmlspecialchars($row['quantity']); ?></td>
+        <td>₹<?php echo htmlspecialchars($row['price']); ?></td>
+        <td><?php echo htmlspecialchars($row['updated_at']); ?></td>
         <td>
-			<?php if($row['delivery_status'] == 1) {echo '<span class="badge badge-success" style="background-color:green;">Delivered</span>';} else {echo '<span class="badge badge-warning" style="background-color:red;">Not delivered</span>';} ?>
+            <?php if($row['order_type']== 'bid') {echo 'Bidded Order';} else {echo 'Direct Order';} ?>
+            </br>
+			<?php if($row['order_status'] == 'delivered') {echo '<span class="badge badge-success" style="background-color:green;">Delivered</span>';} else {echo '<span class="badge badge-warning" style="background-color:red;">Not delivered</span>';} ?>
 		</td>
-		<td><?php echo htmlspecialchars($row['updated_at']); ?></td>
+        <td>₹<?php echo htmlspecialchars($row['price'] * $row['quantity']); ?></td>
+		
     </tr>
     <?php
 }

@@ -117,6 +117,11 @@
   /* background-image: linear-gradient(to left, #cfd9df 0%, #e2ebf0 100%); */
   background-color: white !important;
   box-shadow: 1px 0 10px rgba(0, 0, 0, 0.05);
+  /* position: absolute !important; */
+    /* width: 150px; */
+    /* overflow-y: scroll; */
+    top: 0;
+    padding-bottom: 100px !important;
 }
 
 /* Sidebar Menu */
@@ -180,6 +185,12 @@
   color: #000000 !important;
   font-weight: 500;
 }
+.sidebar-menu li.active > a > .pull-right-container > .fa-angle-left {
+  -webkit-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
 
 /* Menu Icons */
 .sidebar-menu li a i {
@@ -219,6 +230,12 @@
     background-color: #98beff25;
     padding: 1.5rem;
     padding-top: 80px !important;
+    position: relative;
+    margin-left: 230px; /* Should match sidebar width */
+    height: calc(100vh - 50px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 15px;
   }
   .content-header > h1,
 .content-header .content-header-left h1 {
@@ -409,7 +426,7 @@
   }
   
   .btn-primary:hover:not(.modal .btn-primary:hover) {
-    background: #ff7e77; 
+    background: #587ec1; 
     opacity: 0.9;
   }
   
@@ -465,7 +482,41 @@
     font-weight: 500;
     padding: 0.75rem;
   }
+  .table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    /* margin-right: 20px 0; */
+  }
   
+  .table th {
+    background: #e8ecf1;
+    color: #2c3e50;
+    font-weight: 800;
+    /* padding: 12px; */
+    text-align: left;
+    border-bottom: 2px solid #e9ecef;
+  }
+  
+  .table td {
+    padding: 5px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+  }
+  
+  .table tbody tr:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .table img {
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+  }
+  
+  .table img:hover {
+    transform: scale(1.05);
+  }
   /* Form Controls */
   .form-control:not(.modal .form-control) {
     border-radius: 6px;
@@ -571,7 +622,7 @@
 
   .table {
       display: block;
-      overflow-x: auto;
+      overflow-x: auto !important;
   }
 
   .btn-xs {
