@@ -49,6 +49,7 @@ unset($_SESSION['error_message']);
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/header.css">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
 
         <!-- Link Disply the featured categories in home page slider  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
@@ -65,10 +66,47 @@ unset($_SESSION['error_message']);
         
 </head>
 <style>
-    
+ .suggestions-dropdown {
+    position: absolute;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    text-decoration: none;
+}
 
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+}
 
+.suggestion-item:last-child {
+    border-bottom: none;
+}
 
+.suggestion-item:hover {
+    background: #f8f8f8;
+    text-decoration: none;
+}
+
+.suggestion-item img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 5px;
+}
 
 </style>
 <body>
@@ -78,10 +116,6 @@ unset($_SESSION['error_message']);
 <?php
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
-
-<!-- Include Bootstrap CSS (if not already included) -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 
 <nav class="ds-nav-container">
     <div class="ds-logo-section">
@@ -98,8 +132,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <input type="text" id="search-bar" name="search_text" placeholder="Search products..." class="ds-search-input" autocomplete="off" required aria-label="Search products">
                 <button type="submit" style="display: none;">Search</button>
             </form>
+            <ul id="suggestions-list" class="suggestions-dropdown"></ul>
         </div>
     </div>
+    
 
     <div class="ds-actions-section">
         <?php if (isset($_SESSION['user_session'])): ?>
@@ -126,16 +162,12 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
                 <!-- Notification Icon (Not shown in notification.php) -->
                 <?php if ($current_page !== 'notification.php'): ?>
-                    <a href="notification.php" style="text-decoration: none; color: inherit;">
-                        <button class="ds-icon-button notification-button" title="Notifications">
-                            <i class="fas fa-bell"></i>
-                            <span class="ds-notification-badge">5</span>
-                        </button>
+                    
+<button class=" notification-trigger ds-icon-button" title="Notifications" onclick="window.location.href='notification.php';">
+    <i class="fas fa-bell"></i>
+    <span class="ds-cart-badge" id="cart-count">5</span>
+</button>
                         
-    <!-- <div class="notification-trigger ds-icon-button" id="notificationTrigger">
-        <i class="fas fa-bell"></i>
-        <span class="notification-badge" id="notificationBadge">3</span>
-    </div> -->
 </a>
 
 <?php endif; ?>
@@ -299,9 +331,46 @@ $current_page = basename($_SERVER['PHP_SELF']);
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script> 
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  <!-- Login Modal script -->
-  <script>
+<script>
+$(document).ready(function() {
+    $("#search-bar").on("keyup", function() {
+        let query = $(this).val();
+        if (query.length > 0) {
+            $.ajax({
+                url: "search_suggestions.php",
+                method: "GET",
+                data: { search_text: query },
+                success: function(data) {
+                    $("#suggestions-list").html(data).fadeIn();
+                }
+            });
+        } else {
+            $("#suggestions-list").fadeOut();
+        }
+    });
+
+    $(document).on("click", ".suggestion-item", function() {
+        $("#search-bar").val($(this).text());
+        $("#suggestions-list").fadeOut();
+    });
+
+    $(document).on("click", function(e) {
+        if (!$(e.target).closest(".ds-search-wrapper").length) {
+            $("#suggestions-list").fadeOut();
+        }
+    });
+});
+
+
+function updateBadgeCount() {
+            const unreadCount = notifications.filter(n => !n.isRead).length;
+            const badge = document.getElementById('notificationBadge');
+            badge.textContent = unreadCount;
+            badge.style.display = unreadCount > 0 ? 'block' : 'none';
+}
+
     document.addEventListener('DOMContentLoaded', () => {
     const modalElement = document.getElementById('staticBackdrop');
     let modal = new bootstrap.Modal(modalElement, {
@@ -370,14 +439,7 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
-
-function updateBadgeCount() {
-            const unreadCount = notifications.filter(n => !n.isRead).length;
-            const badge = document.getElementById('notificationBadge');
-            badge.textContent = unreadCount;
-            badge.style.display = unreadCount > 0 ? 'block' : 'none';
-        }
-        
+ 
   </script>
 </body>
 </html>

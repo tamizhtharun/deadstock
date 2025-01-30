@@ -491,7 +491,13 @@ if (isset($_POST['form1'])) {
 									<option value="">Select Brand</option>
 									<!-- Add options for brands here -->
 									<?php
-									$statement = $pdo->prepare("SELECT * FROM tbl_brands ORDER BY brand_name ASC");
+									$seller_id = $_SESSION['seller_session']['seller_id'];
+									$statement = $pdo->prepare("SELECT sb.brand_id,
+																b.brand_name
+																FROM seller_brands sb
+																 JOIN tbl_brands b ON sb.brand_id = b.brand_id
+																 WHERE sb.seller_id = :seller_id");
+									$statement->bindParam(':seller_id', $seller_id);
 									$statement->execute();
 									$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 									foreach ($result as $row) {

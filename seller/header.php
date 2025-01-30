@@ -191,14 +191,6 @@ if (!isset($_SESSION['seller_session'])) {
 					</li> -->
 
 
-					<!-- <li class="treeview <?php if (($cur_page == 'order.php')) {
-						echo 'active';
-					} ?>">
-						<a href="revenue.php">
-							<i class="fa fa-rupee"></i> <span>Revenue Management</span>
-						</a>
-					</li> -->
-
 
 					<li class="treeview <?php if (($cur_page == 'bidding.php')) {
 						echo 'active';
@@ -248,6 +240,16 @@ if (!isset($_SESSION['seller_session'])) {
                             <li><a href="bidding-order.php"><i class="fa fa-circle-o"></i> Bid-Based Orders </a></li>
                         </ul>
                     </li>
+
+					<li class="treeview <?php if (($cur_page == 'revenue.php')) {
+						echo 'active';
+					} ?>">
+						<a href="revenue.php">
+							<i class="fa fa-rupee"></i> <span>Revenue Details</span>
+						</a>
+					</li>
+
+
 
 <!-- 
                      <li class="treeview <?php if( ($cur_page == 'slider.php') ) {echo 'active';} ?>">

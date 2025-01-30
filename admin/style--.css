@@ -99,10 +99,10 @@ select.form-control {
 }
 
 .sidebar-menu li.active > a > .pull-right-container > .fa-angle-left {
-  -webkit-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  transform: rotate(90deg);
+  -webkit-transform: rotate(90deg) !important;
+  -ms-transform: rotate(90deg) !important;
+  -o-transform: rotate(90deg) !important;
+  transform: rotate(90deg) !important;
 }
 
 .sidebar-menu li > a > .pull-right-container > .fa-angle-left:before {
@@ -389,9 +389,10 @@ select {
   /* padding: 5px !important; */
   /* margin-left: -200px; */
 }
-.content-wrapper{
-  /* margin-top: 20px !important; */
-  /* padding-top: 70px !important; */
+.wrapper{
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
 }
 .content-header{
   margin-top: 20px !important;
@@ -514,10 +515,17 @@ select {
 /* Increase main sidebar width */
 .main-sidebar {
     width: 280px;
-    transition: width 0.3s ease-in-out;
     position: fixed;
     height: 100vh; /* Full viewport height */
-    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-y: auto !important; /* Enable vertical scrolling */
+    position: fixed;
+    top: 50px; /* Height of header */
+    left: 0;
+    height: calc(100vh - 50px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
 }
 
 /* Style the scrollbar for better visibility */
@@ -547,9 +555,14 @@ select {
 
 /* Adjust content wrapper margin to match new sidebar width */
 .content-wrapper {
-    margin-left: 280px;
+    margin-left: 280px !important;
     transition: margin-left 0.3s ease-in-out;
     min-height: 100vh;
+    position: relative;
+    height: calc(100vh - 50px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 15px;
 }
 
 /* Adjust logo width */
