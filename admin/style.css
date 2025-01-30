@@ -1616,3 +1616,21 @@
 .action-column .btn {
   min-width: 60px;
 }
+
+/* Responsive Fix for Smaller Screens */
+@media (max-width: 1130px) {
+  .seller-photo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      text-align: center;
+  }
+
+  .seller-photo {
+    width: 50px;
+    height: 50px;
+    margin-top: -10px;
+  }
+}
+
