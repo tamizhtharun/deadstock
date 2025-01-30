@@ -127,6 +127,31 @@ try {
     // You might want to set $top_products and $top_sellers to empty arrays here
     $top_products = $top_sellers = [];
 }
+// Fetch order status distribution from tbl_orders
+$statement = $pdo->prepare(" 
+    SELECT order_status, COUNT(*) as count
+    FROM tbl_orders
+    GROUP BY order_status
+");
+$statement->execute();
+$order_status_distribution = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch count of Not Sent Orders (bids with bid_status = 2 but not in tbl_orders)
+$not_sent_statement = $pdo->prepare(" 
+    SELECT COUNT(*) as count
+    FROM bidding b
+    WHERE b.bid_status = 2 
+    AND NOT EXISTS (
+        SELECT 1 FROM tbl_orders o 
+        WHERE o.bid_id = b.bid_id
+    )
+");
+$not_sent_statement->execute();
+$not_sent_orders = $not_sent_statement->fetch(PDO::FETCH_ASSOC)['count'];
+
+// Append Not Sent Orders to the distribution array
+$order_status_distribution[] = ['order_status' => 'Not Sended Orders', 'count' => $not_sent_orders];
+
 ?>
 <head>
     <!-- Include Chart.js -->
@@ -505,19 +530,20 @@ if ($latestDate) {
             </div>
         </div>
 
-        <div class="col-lg-4 mb-4">
-                <div class="card shadow">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Revenue Distribution</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-container" style="position: relative; height:40vh; width:100%">
-                            <canvas id="pieChart"></canvas>
-                        </div>
-                    </div>
-                </div>
+<!-- order status pie chart -->
+<div class="col-lg-4 mb-4">
+    <div class="card shadow">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Order Status Distribution</h5>
+        </div>
+        <div class="card-body">
+            <!-- Legend at the top -->
+            <div class="chart-container" style="position: relative; height:40vh; width:100%">
+                <canvas id="orderStatusChart"></canvas>
             </div>
+        </div>
     </div>
+</div>
 
     <div class="row">
         <!-- Top Performing Products -->
@@ -747,7 +773,37 @@ if ($latestDate) {
     </div>
 </div>
 </div>
+<script>
 
+    // order status distribution pie chart
+document.addEventListener('DOMContentLoaded', function() {
+    var orderStatusCtx = document.getElementById('orderStatusChart').getContext('2d');
+
+    var orderLabels = <?php echo json_encode(array_column($order_status_distribution, 'order_status')); ?>;
+    var orderData = <?php echo json_encode(array_column($order_status_distribution, 'count')); ?>;
+    var colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#8B0000'];
+
+    var orderChart = new Chart(orderStatusCtx, {
+        type: 'pie',
+        data: {
+            labels: orderLabels,
+            datasets: [{
+                data: orderData,
+                backgroundColor: colors
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top'  // Legend is now placed at the top
+                }
+            }
+        }
+    });
+});
+</script>
 
 <script>
 function createDynamicRevenueChart(initialLabels, initialRevenues, initialOrders) {
