@@ -1,9 +1,7 @@
 <?php require_once('header.php'); 
-
 // require_once('../track_view.php');
 // trackPageView('SRP', 'Seller Panel');
 ?>
-
 <section class="content-header">
 	<h1>Dashboard</h1>
 </section>
@@ -158,19 +156,49 @@ $statement = $pdo->prepare("
 ");
 $statement->execute([$seller_id]);
 $monthly_sales_data = $statement->fetchAll(PDO::FETCH_ASSOC);
-
+// Fetch recent bids
+$statement = $pdo->prepare("
+    SELECT b.bid_id, p.p_name, b.bid_quantity, (b.bid_price * b.bid_quantity) AS total_price, 
+           b.bid_status, DATE(b.bid_time) AS bid_date
+    FROM bidding b
+    JOIN tbl_product p ON b.product_id = p.id
+    WHERE p.seller_id = ?
+    ORDER BY b.bid_time DESC
+    LIMIT 10
+");
+$statement->execute([$seller_id]);
+$recent_bids = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <head>
     <!-- Include Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <!-- <script>
         Chart.defaults.responsive = true;
         Chart.defaults.maintainAspectRatio = false;
     </script> -->
 </head>
+<style>
+    .card-body div {
+        scrollbar-width: thin; /* For Firefox */
+    }
+
+    /* For WebKit-based browsers (Chrome, Edge, Safari) */
+    .card-body div::-webkit-scrollbar {
+        width: 6px; /* Adjust width */
+    }
+
+    .card-body div::-webkit-scrollbar-thumb {
+        background: #ccc; /* Scrollbar thumb color */
+        border-radius: 10px; /* Rounded corners */
+    }
+
+    .card-body div::-webkit-scrollbar-track {
+        background: #f1f1f1; /* Scrollbar track color */
+    }
+</style>
+
 <section class="content">
 <!-- <div class="container"> -->
 <div class="row">
@@ -766,8 +794,54 @@ if ($latestDate) {
             </div>
         </div>
     </div>
+    <div class="col-xl-6 col-lg-6 mb-4">
+    <div class="card shadow">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Recent Bids</h5>
+        </div>
+        <div class="card-body">
+            <div style="height: 300px; overflow-y: auto;">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($recent_bids as $bid): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($bid['p_name']); ?></td>
+                            <td><?php echo number_format($bid['bid_quantity']); ?></td>
+                            <td>₹<?php echo number_format($bid['total_price'], 2); ?></td>
+                            <td>
+                                <?php 
+                                    $status_text = '';
+                                    switch ($bid['bid_status']) {
+                                        case 1: $status_text = 'Pending'; break;
+                                        case 2: $status_text = 'Approved'; break;
+                                        case 3: $status_text = 'Rejected'; break;
+                                        default: $status_text = 'Unknown';
+                                    }
+                                    echo $status_text;
+                                ?>
+                            </td>
+                            <td><?php echo $bid['bid_date']; ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div>
 </div>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
