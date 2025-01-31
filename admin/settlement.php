@@ -1,7 +1,7 @@
 <?php require_once('header.php'); ?>
 <!-- <?php
 echo "<pre>";
-print_r($_SESSION['seller_session']); // Display all session variables
+print_r($_SESSION['admin_session']); // Display all session variables
 echo "</pre>";
 ?> -->
 
@@ -23,9 +23,9 @@ echo "</pre>";
 								<th>#</th>
 								<th>Photo</th>
 								<th>Product Brand</th>
-								<th>Product Name</th>
-								<th width="80">Quantity</th>
-								<th width="80">Product Price</th>
+								<th width="160">Product Name</th>
+								<th width="40">Quantity</th>
+								<th width="40">Product Price</th>
 								<th>Order Time</th>
                                 <th>Order Type</th>
                                 <th>Final Price</th>
@@ -34,7 +34,7 @@ echo "</pre>";
 						<tbody>
 						<?php
 						// Assuming the session has already been started and seller_id is set
-						$seller_id = $_SESSION['seller_session']['seller_id']; // Get the seller ID from the session
+						 // Get the seller ID from the session
                         $i = 0;
                         $statement = $pdo->prepare("SELECT 
                         t1.p_featured_photo,
@@ -45,13 +45,14 @@ echo "</pre>";
                         t2.price,
                         t2.updated_at,
                         t2.order_type,
+                        t2.seller_id,
                         t3.brand_name
                     FROM tbl_orders t2
                     JOIN tbl_product t1 ON t2.product_id = t1.id
                     JOIN tbl_brands t3 ON t1.product_brand = t3.brand_id
-                    WHERE t1.seller_id = :seller_id AND order_status != 'canceled'
+                    JOIN sellers t4 ON t2.seller_id = t4.seller_id
+                    WHERE order_status != 'canceled'
                     ORDER BY t2.updated_at DESC");
-                    $statement->bindParam(':seller_id', $seller_id, PDO::PARAM_INT); // Bind the seller_id parameter
                     $statement->execute();
                     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
