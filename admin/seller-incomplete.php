@@ -2,7 +2,7 @@
 
 <section class="content-header">
 	<div class="content-header-left">
-		<h1>View Sellers</h1>
+		<h1>Sellers - Incomplete Profiles</h1>
 	</div>
 </section>
 
