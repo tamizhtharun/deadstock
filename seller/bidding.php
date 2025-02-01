@@ -159,6 +159,7 @@ try {
                                        AND b.bid_time BETWEEN 
                                            DATE_SUB(:today_send_time, INTERVAL 1 DAY) 
                                            AND :today_send_time
+                                           AND b.bid_status !=0
                                    ) AS no_of_bids
                                FROM 
                                    tbl_product p
