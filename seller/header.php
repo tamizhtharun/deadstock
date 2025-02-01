@@ -220,7 +220,7 @@ if (!isset($_SESSION['seller_session'])) {
 						</ul>
 					</li> -->
 
-					<li class="<?php if($cur_page == 'bids_history.php') {echo 'active';} ?>">
+					<li class="treeview <?php if($cur_page == 'bids_history.php') {echo 'active';} ?>">
 						<a href="bids_history.php">
 							<i class="nav-icon fas fa-history"></i>
 							<span>All Bids History</span>
