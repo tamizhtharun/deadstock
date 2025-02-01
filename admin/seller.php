@@ -27,7 +27,25 @@
 							<?php
 							$i=0;
 							$statement = $pdo->prepare("SELECT * 
-														FROM sellers t1");
+														FROM sellers t1 WHERE seller_name IS NOT NULL
+                                                                        AND seller_cname IS NOT NULL
+                                                                        AND seller_email IS NOT NULL
+                                                                        AND seller_phone IS NOT NULL
+                                                                        AND seller_gst IS NOT NULL
+                                                                        AND seller_address IS NOT NULL
+                                                                        AND seller_state IS NOT NULL
+                                                                        AND seller_city IS NOT NULL
+                                                                        AND seller_zipcode IS NOT NULL
+                                                                        AND seller_password IS NOT NULL
+                                                                        AND account_number IS NOT NULL
+                                                                        AND ifsc_code IS NOT NULL
+                                                                        AND bank_name IS NOT NULL
+                                                                        AND bank_branch IS NOT NULL
+                                                                        AND bank_address IS NOT NULL
+                                                                        AND bank_city IS NOT NULL
+                                                                        AND bank_state IS NOT NULL
+                                                                        AND account_holder IS NOT NULL
+                                                                         ");
 							$statement->execute();
 							$result = $statement->fetchAll(PDO::FETCH_ASSOC);						
 							foreach ($result as $row) {
