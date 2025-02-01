@@ -300,16 +300,20 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <input type="text" class="input-field" placeholder="Username" name="username" autocomplete="off" required>
                     </div>
                     <div class="input-box">
-                        <input type="tel" id="phone-number" class="input-field" placeholder="Phone" name="phone_number" autocomplete="off" required pattern="[0-9]{10}">
+                        <input type="tel" id="phone-number" class="input-field" placeholder="Phone" name="phone_number" autocomplete="off" required  onkeypress="return isNumberKey(event)">
+                        <span id="phone-error-message" style="color: red;"></span>
                     </div>
                     <div class="input-box">
                         <input type="email" id="email" class="input-field" placeholder="Email" name="email" autocomplete="off" required>
+                        <span id="email-error-message" style="color: red;"></span>
                     </div>
                     <div class="input-box">
                         <input id="password" type="password" class="input-field" placeholder="Password" name="password" autocomplete="off" required>
+                        <span id="password-error" style="color: red;"></span>
                     </div>
                     <div class="input-box">
                         <input type="text" class="input-field" placeholder="GST (Optional)" name="user_gst" autocomplete="off">
+                        <span id="gst-error-message" style="color: red;"></span>
                     </div>
                     <div class="input-submit">
                         <button class="submit-btn" id="signup-btn" name="register">
@@ -325,15 +329,21 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </div>
 </div>
     
-  <script src="js/index.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script> 
-  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+function isNumberKey(evt) {
+    var charCode = (evt.which) ? evt.which : event.keyCode;
+    if ((charCode < 48 || charCode > 57))
+        return false;
+
+    return true;
+}
+
 $(document).ready(function() {
     $("#search-bar").on("keyup", function() {
         let query = $(this).val();
@@ -441,5 +451,14 @@ style.textContent = `
 document.head.appendChild(style);
  
   </script>
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script> 
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <script src="js/index.js"></script>
+  <script src="js/validation.js"></script>
+  
 </body>
 </html>
