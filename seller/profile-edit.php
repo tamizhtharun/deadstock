@@ -172,7 +172,18 @@ if(isset($_POST['form2'])) {
 
 if(isset($_POST['form3'])) {
     $valid = 1;
-
+    if(empty($_POST['current_password'])) {
+		$valid = 0;
+		$error_message .= "Current Password can not be empty<br>";
+	} else {
+		$statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_id=?");
+		$statement->execute(array($_SESSION['seller_session']['seller_id']));
+		$result = $statement->fetch(PDO::FETCH_ASSOC);
+		if(!password_verify($_POST['current_password'], $result['seller_password'])) {
+			$valid = 0;
+			$error_message .= "Current Password is incorrect<br>";
+		}
+	}
     if(empty($_POST['password']) || empty($_POST['re_password'])) {
         $valid = 0;
         $error_message .= "Password can not be empty<br>";
@@ -462,6 +473,12 @@ foreach ($result as $row) {
                         <form class="form-horizontal" action="" method="post">
                             <div class="box box-info">
                                 <div class="box-body">
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-2 control-label">Current Password </label>
+                                        <div class="col-sm-4">
+                                            <input type="password" class="form-control" name="current_password">
+                                        </div>
+                                    </div>
                                     <div class="form-group">
                                         <label for="" class="col-sm-2 control-label">Password </label>
                                         <div class="col-sm-4">

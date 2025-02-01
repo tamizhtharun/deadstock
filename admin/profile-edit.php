@@ -100,7 +100,18 @@ if(isset($_POST['form2'])) {
 
 if(isset($_POST['form3'])) {
 	$valid = 1;
-
+	if(empty($_POST['current_password'])) {
+		$valid = 0;
+		$error_message .= "Current Password can not be empty<br>";
+	} else {
+		$statement = $pdo->prepare("SELECT * FROM user_login WHERE id=?");
+		$statement->execute(array($_SESSION['admin_session']['id']));
+		$result = $statement->fetch(PDO::FETCH_ASSOC);
+		if(!password_verify($_POST['current_password'], $result['user_password'])) {
+			$valid = 0;
+			$error_message .= "Current Password is incorrect<br>";
+		}
+	}
 	if( empty($_POST['user_password']) || empty($_POST['re_password']) ) {
         $valid = 0;
         $error_message .= "Password can not be empty<br>";
@@ -112,6 +123,11 @@ if(isset($_POST['form3'])) {
 	        $error_message .= "Passwords do not match<br>";	
     	}        
     }
+	// Add password strength validation
+	if(strlen($_POST['password']) < 8) {
+		$valid = 0;
+		$error_message .= "Password must be at least 8 characters long<br>";
+	}
 
     if($valid == 1) {
 
@@ -151,6 +167,19 @@ foreach ($result as $row) {
 
 	<div class="row">
 		<div class="col-md-12">
+			<?php if($error_message): ?>
+			<div class="callout callout-danger alert-box">
+				<p>
+					<?php echo $error_message; ?>
+				</p>
+			</div>
+			<?php endif; ?>
+
+			<?php if($success_message): ?>
+			<div class="callout callout-success alert-box">
+				<p><?php echo $success_message; ?></p>
+			</div>
+			<?php endif; ?>
 				
 				<div class="nav-tabs-custom">
 					<ul class="nav nav-tabs">
@@ -255,6 +284,13 @@ foreach ($result as $row) {
 							<form class="form-horizontal" action="" method="post">
 							<div class="box box-info">
 								<div class="box-body">
+									<div class="form-group">
+										<label for="" class="col-sm-2 control-label">Current Password </label>
+										<div class="col-sm-4">
+											<input type="password" class="form-control" name="current_password">
+										</div>
+									</div>
+
 									<div class="form-group">
 										<label for="" class="col-sm-2 control-label">Password </label>
 										<div class="col-sm-4">
