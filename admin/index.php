@@ -843,13 +843,26 @@ document.addEventListener('DOMContentLoaded', function() {
     var orderData = <?php echo json_encode(array_column($order_status_distribution, 'count')); ?>;
     var colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#8B0000'];
 
+    // Filter out empty data points
+    var filteredLabels = [];
+    var filteredData = [];
+    var filteredColors = [];
+
+    orderData.forEach((value, index) => {
+        if (value > 0) { // Only include labels with data
+            filteredLabels.push(orderLabels[index]);
+            filteredData.push(value);
+            filteredColors.push(colors[index]);
+        }
+    });
+
     var orderChart = new Chart(orderStatusCtx, {
         type: 'pie',
         data: {
-            labels: orderLabels,
+            labels: filteredLabels,
             datasets: [{
-                data: orderData,
-                backgroundColor: colors
+                data: filteredData,
+                backgroundColor: filteredColors
             }]
         },
         options: {
@@ -857,12 +870,14 @@ document.addEventListener('DOMContentLoaded', function() {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'top'  // Legend is now placed at the top
+                    display: filteredLabels.length > 0, // Only show legend if there are valid labels
+                    position: 'top'
                 }
             }
         }
     });
 });
+
 </script>
 
 <script>
