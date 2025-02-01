@@ -48,6 +48,12 @@ $total_revenue = $statement->fetchColumn();
 $total_revenue = $total_revenue ? $total_revenue : 0; // Handle null values
 
 // Calculate today's total orders for the seller, excluding canceled orders
+// Initialize variables to prevent errors
+$todays_orders = 0;
+$last_week_orders = 0;
+$previous_month_orders = 0;
+
+// Fetch today's total orders for the seller (excluding canceled orders)
 $statement = $pdo->prepare("
     SELECT COUNT(*) AS total_orders 
     FROM tbl_orders 
@@ -56,9 +62,33 @@ $statement = $pdo->prepare("
       AND seller_id = ?
 ");
 $statement->execute([$seller_id]);
-$todays_orders = $statement->fetchColumn();
-$todays_orders = $todays_orders ? $todays_orders : 0; // Handle null values
+$todays_orders = $statement->fetchColumn() ?? 0;
 
+// Fetch last week's total orders for the seller
+$statement = $pdo->prepare("
+    SELECT COUNT(*) AS total_orders 
+    FROM tbl_orders 
+    WHERE order_status != 'cancelled' 
+      AND created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) 
+      AND seller_id = ?
+");
+$statement->execute([$seller_id]);
+$last_week_orders = $statement->fetchColumn() ?? 0;
+
+// Calculate the start and end date of the previous month
+$previous_month_start = date('Y-m-01', strtotime('first day of last month')); // 1st day of last month
+$previous_month_end = date('Y-m-t', strtotime('last day of last month')); // Last day of last month
+
+// Fetch previous month's total orders for the seller
+$statement = $pdo->prepare("
+    SELECT COUNT(*) AS total_orders 
+    FROM tbl_orders 
+    WHERE order_status != 'cancelled' 
+      AND created_at BETWEEN ? AND ? 
+      AND seller_id = ?
+");
+$statement->execute([$previous_month_start, $previous_month_end, $seller_id]);
+$previous_month_orders = $statement->fetchColumn() ?? 0;
 // Calculate total bids for the seller, excluding canceled orders
 $statement = $pdo->prepare("
     SELECT COUNT(*) AS total_bids 
@@ -196,6 +226,11 @@ $recent_bids = $statement->fetchAll(PDO::FETCH_ASSOC);
     .card-body div::-webkit-scrollbar-track {
         background: #f1f1f1; /* Scrollbar track color */
     }
+    .hidden-orders {
+    display: none;
+    transition: all 0.3s ease-in-out;
+}
+
 </style>
 
 <section class="content">
@@ -470,7 +505,9 @@ $recent_bids = $statement->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 <div class="col-xl-3 col-lg-3">
- <div class="card l-bg-orange-dark">
+    <div class="card l-bg-orange-dark" data-bs-toggle="tooltip" 
+         data-bs-html="true"
+         title="Last Week Orders: <?php echo $last_week_orders; ?><br>Previous Month Orders: <?php echo $previous_month_orders; ?>">
         <div class="card-statistic-3 p-4">
             <div class="card-icon card-icon-large">
                 <i class="fas fa-box"></i>
@@ -488,6 +525,17 @@ $recent_bids = $statement->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
+<!-- Include Bootstrap JS to Activate Tooltips -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+
+
 <div class="col-xl-3 col-lg-3">
 <div class="card l-bg-cherry">
 <div class="card-statistic-3 p-4">
