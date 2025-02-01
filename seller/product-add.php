@@ -156,9 +156,9 @@ if (isset($_POST['form1'])) {
 			p_qty,
 			p_featured_photo,
 			p_description,
-			p_feature,
-			p_condition,
-			p_return_policy,
+			p_short_description,
+			-- p_condition,
+			-- p_return_policy,
 			p_total_view,
 			tcat_id,
 			mcat_id,
@@ -166,7 +166,7 @@ if (isset($_POST['form1'])) {
 			product_catalogue,
 			product_brand,
 			p_date
-		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		$statement->execute(array(
 			$seller_id,
@@ -176,9 +176,9 @@ if (isset($_POST['form1'])) {
 			$_POST['p_qty'],
 			$final_name,
 			$_POST['p_description'],
-			$_POST['p_feature'],
-			$_POST['p_condition'],
-			$_POST['p_return_policy'],
+			$_POST['p_short_description'],
+			// $_POST['p_condition'],
+			// $_POST['p_return_policy'],
 			0, // Assuming total view is 0 initially
 			$_POST['tcat_id'],
 			$_POST['mcat_id'],
@@ -194,36 +194,32 @@ if (isset($_POST['form1'])) {
 
 
 	$selected_values = [];
-	$keys = ['P', 'M', 'K', 'N', 'S', 'H', 'O']; // Define the keys (radio groups)
+$keys = ['P', 'M', 'K', 'N', 'S', 'H', 'O']; // Define the keys (radio groups)
 
-	foreach ($keys as $key) {
-		if (isset($_POST[$key])) {
-			$selected_values[$key] = $_POST[$key]; // Save the selected radio value
-		} else {
-			// Optionally set a default if needed
-			$selected_values[$key] = null;
-		}
-	}
+foreach ($keys as $key) {
+    if (isset($_POST[$key]) && !empty($_POST[$key])) {
+        $selected_values[$key] = $_POST[$key]; // Save the selected radio value
+    } else {
+        $selected_values[$key] = ''; // Provide a default empty string instead of NULL
+    }
+}
 
-	// If validation is successful
+// If validation is successful
+$statement = $pdo->prepare("INSERT INTO tbl_key (
+    id, P, M, K, N, S, H, O
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
-	// Here you can insert or update data to your database. Below is an example.
+$statement->execute([
+    $ai_id,                  // Use the correct product ID
+    $selected_values['P'],   // Value selected for P
+    $selected_values['M'],   // Value selected for M
+    $selected_values['K'],   // Value selected for K
+    $selected_values['N'],   // Ensure N is never NULL
+    $selected_values['S'],   // Value selected for S
+    $selected_values['H'],   // Value selected for H
+    $selected_values['O'],   // Value selected for O
+]);
 
-	$statement = $pdo->prepare("INSERT INTO tbl_key (
-		id,  -- Foreign key referencing tbl_product.id
-		P, M, K, N, S, H, O
-	) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-
-	$statement->execute([
-		$ai_id,                  // Use the correct product ID
-		$selected_values['P'],   // Value selected for P
-		$selected_values['M'],   // Value selected for M
-		$selected_values['K'],   // Value selected for K
-		$selected_values['N'],   // Value selected for N
-		$selected_values['S'],   // Value selected for S
-		$selected_values['H'],   // Value selected for H
-		$selected_values['O'],   // Value selected for O
-	]);
 }
 
 
@@ -662,12 +658,12 @@ if (isset($_POST['form1'])) {
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">Features</label>
+								<label for="" class="col-sm-3 control-label">Short Description</label>
 								<div class="col-sm-8">
-									<textarea type="text" name="p_feature" class="form-control"></textarea>
+									<textarea type="text" name="p_short_description" class="form-control"></textarea>
 								</div>
 							</div>
-							<div class="form-group">
+							<!-- <div class="form-group">
 								<label for="" class="col-sm-3 control-label">Conditions</label>
 								<div class="col-sm-8">
 									<textarea type="text" name="p_condition" class="form-control"></textarea>
@@ -678,7 +674,7 @@ if (isset($_POST['form1'])) {
 								<div class="col-sm-8">
 									<textarea type="text" name="p_return_policy" class="form-control"></textarea>
 								</div>
-							</div>
+							</div> -->
 							<!-- <div class="form-group">
 							<label for="" class="col-sm-3 control-label">Is Featured?</label>
 							<div class="col-sm-8">
