@@ -35,19 +35,18 @@ $total_revenue = 0;
 if ($result && $row = $result->fetch_assoc()) {
     $total_revenue = $row['total_revenue'];
 }
-// Calculate today's revenue for the seller
+
+// Calculate total revenue for the seller excluding canceled orders
 $statement = $pdo->prepare("
     SELECT SUM(price * quantity) AS total_revenue 
     FROM tbl_orders 
     WHERE order_status != 'cancelled' 
-      AND DATE(created_at) = CURDATE() 
       AND seller_id = ?
 ");
 $statement->execute([$seller_id]);
-$today_revenue = $statement->fetchColumn();
-$today_revenue = $today_revenue ? $today_revenue : 0; // Handle null values
+$total_revenue = $statement->fetchColumn();
+$total_revenue = $total_revenue ? $total_revenue : 0; // Handle null values
 
-// echo "₹" . format_number_short($today_revenue);
 // Calculate today's total orders for the seller, excluding canceled orders
 $statement = $pdo->prepare("
     SELECT COUNT(*) AS total_orders 
@@ -202,89 +201,115 @@ $recent_bids = $statement->fetchAll(PDO::FETCH_ASSOC);
 <section class="content">
 <!-- <div class="container"> -->
 <div class="row">
-    <div class="col-xl-3 col-lg-3">
-        <div class="card l-bg-cherry">
-            <div class="card-statistic-3 p-3">
-                <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
-                <div class="mb-0">
-                    <h5 class="card-title mb-0">Approved Products</h5>
-
-                </div>
-                <div class="row align-items-center mb-2 d-flex">
-                <div class="col-7" style="padding-left: 20px;">
-                        <h2 class="d-flex align-items-center mb-0">
-                            <?php
-                            $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_product WHERE p_is_approve=1 AND seller_id=?");
-                            $statement->execute([$seller_id]);
-                            $total_approved_product = $statement->fetchColumn();
-                            echo $total_approved_product;
-                            ?>
-                        </h2>Products
-                    </div>
-                    <?php
-                    $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_product WHERE seller_id=?");
-                    $statement->execute([$seller_id]);
-                    $total_product = $statement->fetchColumn();
-                    if ($total_product != 0) {
-                        $percentage_of_approved_products = ($total_approved_product / $total_product) * 100;
-                    } else {
-                        $percentage_of_approved_products = 0;
-                    }
-                    ?>
-                    <div class="col-4 text-right">
-                        <span><?php echo number_format($percentage_of_approved_products, 1); ?>% <i class="fa fa-check"></i></span>
-                    </div>
-                </div>
-                <div class="progress mt-1" data-height="8" style="height: 8px;">
-                    <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percentage_of_approved_products; ?>%;"></div>
-                </div>
+<div class="col-xl-3 col-lg-3">
+    <div class="card l-bg-cherry">
+        <div class="card-statistic-3 p-3">
+            <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
+            <div class="mb-0">
+                <h5 class="card-title mb-0">Approved Products</h5>
             </div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-lg-3">
-        <div class="card l-bg-blue-dark">
-            <div class="card-statistic-3 p-3">
-                <div class="card-icon card-icon-large"><i class="fas fa-box"></i></div>
-                <div class="mb-6">
-                    <h5 class="card-title mb-0">Total Orders</h5>
-                </div>
-                <div class="row align-items-center mb-2 d-flex">
+            <div class="row align-items-center mb-2 d-flex">
                 <div class="col-7" style="padding-left: 20px;">
-                        <h2 class="d-flex align-items-center mb-0">
-                            <?php 
-                            // Fetch total number of orders for this seller
-                            $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_orders WHERE seller_id = ?");
-                            $statement->execute([$seller_id]);
-                            $total_orders = $statement->fetchColumn();
-
-                            // Fetch non-canceled orders for this seller
-                            $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_orders WHERE seller_id = ? AND order_status != 'cancelled'");
-                            $statement->execute([$seller_id]);
-                            $total_non_cancelled_orders = $statement->fetchColumn();
-
-                            echo $total_non_cancelled_orders;
-                            ?>
-                        </h2>Orders
-                    </div>
-                    <div class="col-4 text-right">
+                    <h2 class="d-flex align-items-center mb-0">
                         <?php
-                        // Calculate the percentage of non-canceled orders
-                        if ($total_orders != 0) {
-                            $percentage_of_non_cancelled_orders = ($total_non_cancelled_orders / $total_orders) * 100;
-                        } else {
-                            $percentage_of_non_cancelled_orders = 0;
-                        }
+                        $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_product WHERE p_is_approve=1 AND seller_id=?");
+                        $statement->execute([$seller_id]);
+                        $total_approved_product = $statement->fetchColumn();
+                        echo $total_approved_product;
                         ?>
-                        <span><?php echo number_format($percentage_of_non_cancelled_orders, 1); ?>% <i class="fa fa-check"></i></span>
-                    </div>
+                    </h2> Products
                 </div>
-                <div class="progress mt-1" data-height="8" style="height: 8px;">
-                    <div class="progress-bar l-bg-green" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percentage_of_non_cancelled_orders; ?>%;"></div>
-                    </div>
+                <?php
+                $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_product WHERE seller_id=?");
+                $statement->execute([$seller_id]);
+                $total_product = $statement->fetchColumn();
+
+                // Calculate uploaded products
+                $total_uploaded_product = $total_product - $total_approved_product;
+
+                // Calculate progress percentages
+                $percentage_approved = ($total_product != 0) ? ($total_approved_product / $total_product) * 100 : 0;
+                $percentage_uploaded = ($total_product != 0) ? ($total_uploaded_product / $total_product) * 100 : 0;
+                ?>
+                <div class="col-4 text-right">
+                    <span><?php echo number_format($percentage_approved, 1); ?>% <i class="fa fa-check"></i></span>
+                </div>
+            </div>
+            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                <!-- Uploaded Products Progress (Red) with Tooltip -->
+                <div class="progress-bar bg-danger" role="progressbar"
+                    style="width: <?php echo $percentage_uploaded; ?>%;" 
+                    aria-valuenow="<?php echo $percentage_uploaded; ?>" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Uploaded Products: <?php echo $total_uploaded_product; ?>">
+                </div>
+                <!-- Approved Products Progress (Cyan) -->
+                <div class="progress-bar l-bg-cyan" role="progressbar"
+                    style="width: <?php echo $percentage_approved; ?>%;" 
+                    aria-valuenow="<?php echo $percentage_approved; ?>" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100">
+                </div>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Enable Bootstrap Tooltip -->
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip(); 
+    });
+</script>
+
+
+<div class="col-xl-3 col-lg-3">
+    <div class="card l-bg-blue-dark">
+        <div class="card-statistic-3 p-3">
+            <div class="card-icon card-icon-large"><i class="fas fa-box"></i></div>
+            <div class="mb-6">
+                <h5 class="card-title mb-0">Total Orders</h5>
+            </div>
+            <div class="row align-items-center mb-2 d-flex">
+                <div class="col-7" style="padding-left: 20px;">
+                    <h2 class="d-flex align-items-center mb-0">
+                        <?php 
+                        // Fetch total orders
+                        $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_orders WHERE seller_id = ?");
+                        $statement->execute([$seller_id]);
+                        $total_orders = $statement->fetchColumn();
+
+                        echo $total_orders; // Display total orders
+                        ?>
+                    </h2> Orders
+                </div>
+                <div class="col-4 text-right">
+                    <span>100% <i class="fa fa-check"></i></span>
+                </div>
+            </div>
+            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                <?php
+                // Define max expected orders for scaling (adjust as needed)
+                $max_orders = 100;
+
+                // Ensure progress bar is 0% if no orders exist
+                $progress_width = ($total_orders > 0) ? min(100, ($total_orders / $max_orders) * 100) : 0;
+                ?>
+                <div class="progress-bar l-bg-green" role="progressbar" 
+                    aria-valuenow="<?php echo $progress_width; ?>" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100"
+                    style="width: <?php echo $progress_width; ?>%;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
     <div class="col-xl-3 col-lg-3">
         <div class="card l-bg-green-dark">
@@ -356,7 +381,7 @@ $recent_bids = $statement->fetchAll(PDO::FETCH_ASSOC);
             <div class="card-statistic-3 p-4">
                 <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i></div>
                 <div class="mb-4">
-                    <h5 class="card-title mb-0">Total Revenue</h5>
+                    <h5 class="card-title mb-0">Today's Revenue</h5>
                 </div>
                 <div class="row align-items-center mb-2 d-flex">
                 <div class="col-7" style="padding-left: 20px;">
@@ -430,15 +455,14 @@ $recent_bids = $statement->fetchAll(PDO::FETCH_ASSOC);
     <div class="col-xl-3 col-lg-3">
     <div class="card l-bg-blue-dark">
         <div class="card-statistic-3 p-4">
-            <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i>
-            </div>
+            <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i></div>
             <div class="mb-4">
-                <h5 class="card-title mb-0">Today's Revenue</h5>
+                <h5 class="card-title mb-0">Total Revenue</h5>
             </div>
             <div class="row align-items-center mb-2 d-flex">
                 <div class="col-8">
                     <h2 class="d-flex align-items-center mb-0">
-                        <?php echo "₹" . format_number_short($today_revenue); ?>
+                        <?php echo "₹" . format_number_short($total_revenue, 2); ?>
                     </h2>
                 </div>
             </div>
