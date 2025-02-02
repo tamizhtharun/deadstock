@@ -271,37 +271,40 @@ $order_status_distribution[] = ['order_status' => 'Not Sended Orders', 'count' =
                 </div>
             </div>
             <div class="progress mt-1" data-height="8" style="height: 8px;">
-                <!-- Inactive Sellers Progress (Red) -->
+                <!-- Inactive Sellers Progress (Red) with Always Visible Tooltip -->
                 <div class="progress-bar bg-danger" role="progressbar"
                     style="width: <?php echo max($percentage_of_inactive_sellers, 1); ?>%;" 
                     aria-valuenow="<?php echo $percentage_of_inactive_sellers; ?>" 
                     aria-valuemin="0" 
                     aria-valuemax="100"
-                    data-toggle="tooltip"
-                    data-placement="top"
-                    title="Inactive Sellers: <?php echo $total_seller_inactive; ?>">
+                    id="inactive-sellers-bar">
                 </div>
-                <!-- Active Sellers Progress (Green) -->
+                <!-- Active Sellers Progress (Green) (Tooltip Removed) -->
                 <div class="progress-bar l-bg-green" role="progressbar"
                     style="width: <?php echo $percentage_of_active_sellers; ?>%;" 
                     aria-valuenow="<?php echo $percentage_of_active_sellers; ?>" 
                     aria-valuemin="0" 
-                    aria-valuemax="100"
-                    data-toggle="tooltip"
-                    data-placement="top"
-                    title="Active Sellers: <?php echo $total_seller_active; ?>">
+                    aria-valuemax="100">
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Enable Bootstrap Tooltip -->
+<!-- Enable Bootstrap Tooltip with Full Hover Effect -->
 <script>
-    $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip(); 
+document.addEventListener("DOMContentLoaded", function () {
+    var inactiveSellersBar = document.getElementById("inactive-sellers-bar");
+    
+    // Create Tooltip for Inactive Sellers
+    var tooltip = new bootstrap.Tooltip(inactiveSellersBar, {
+        title: "Inactive Sellers: <?php echo $total_seller_inactive; ?>",
+        placement: "top",
+        trigger: "hover"
     });
+});
 </script>
+
 
 <div class="col-xl-3 col-lg-3">
     <div class="card l-bg-green-dark">
@@ -365,46 +368,90 @@ $order_status_distribution[] = ['order_status' => 'Not Sended Orders', 'count' =
         <div class="card-statistic-3 p-4">
             <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i></div>
             <div class="mb-4">
-                <h5 class="card-title mb-0">Revenue Today</h5>
+                <h5 class="card-title mb-0">Today's Revenue</h5>
             </div>
             <div class="row align-items-center mb-2 d-flex">
-            <div class="col-7" style="padding-left: 20px;">
+                <div class="col-7" style="padding-left: 20px;">
                     <h2 class="d-flex align-items-center mb-0">
                     ₹<?php 
-                        $statement = $pdo->prepare("SELECT * FROM tbl_orders WHERE DATE(created_at) = :today_date AND order_status!='canceled'");
+                        // Get today's date
+                        $today_date = date('Y-m-d');
+
+                        // Fetch today's revenue
+                        $statement = $pdo->prepare("
+                            SELECT SUM(price * quantity) AS total_revenue 
+                            FROM tbl_orders 
+                            WHERE DATE(created_at) = :today_date 
+                              AND order_status != 'canceled'
+                        ");
                         $statement->bindParam(':today_date', $today_date, PDO::PARAM_STR);
                         $statement->execute();
-                        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                        $total_revenue_today = $statement->fetchColumn() ?? 0;
 
-                        $total_revenue_today = 0;
-
-                        if ($result) {
-                            foreach ($result as $row) {
-                                 $total_revenue_today += $row['quantity'] * $row['price'];
-                            }
-                        }
-
-                        // Format revenue: if >= 1000, convert to 'K' notation
-                        if ($total_revenue_today >= 1000) {
-                             $formatted_revenue = number_format($total_revenue_today / 1000, 1) . 'K';
-                        } else {
-                            $formatted_revenue = $total_revenue_today;
-                        }
+                        // Format revenue: 'K' notation if >= 1000
+                        $formatted_revenue = ($total_revenue_today >= 1000) 
+                            ? number_format($total_revenue_today / 1000, 1) . 'K' 
+                            : $total_revenue_today;
 
                         echo $formatted_revenue;
                         ?>
                     </h2>
                 </div>
                 <div class="col-4 text-right">
-                    <span>2.5% <i class="fa fa-arrow-up"></i></span>
+                    <?php
+                    // Fetch yesterday's revenue for comparison
+                    $yesterday_date = date('Y-m-d', strtotime('-1 day'));
+                    $statement = $pdo->prepare("
+                        SELECT SUM(price * quantity) AS total_revenue 
+                        FROM tbl_orders 
+                        WHERE DATE(created_at) = :yesterday_date 
+                          AND order_status != 'canceled'
+                    ");
+                    $statement->bindParam(':yesterday_date', $yesterday_date, PDO::PARAM_STR);
+                    $statement->execute();
+                    $yesterday_revenue = $statement->fetchColumn() ?? 0;
+
+                    // Calculate percentage change but restrict it within -100% to +100%
+                    if ($yesterday_revenue > 0) {
+                        $percentage_change = (($total_revenue_today - $yesterday_revenue) / $yesterday_revenue) * 100;
+                    } else {
+                        $percentage_change = ($total_revenue_today > 0) ? 100 : 0;
+                    }
+
+                    // Ensure percentage change stays within -100% to +100%
+                    $percentage_change = max(-100, min(100, $percentage_change));
+
+                    // Display percentage change with color-coded arrow
+                    if ($percentage_change > 0) {
+                        echo '<span style="color: green;">' . number_format($percentage_change, 1) . '% <i class="fa fa-arrow-up"></i></span>';
+                    } elseif ($percentage_change < 0) {
+                        echo '<span style="color: red;">' . number_format(abs($percentage_change), 1) . '% <i class="fa fa-arrow-down"></i></span>';
+                    } else {
+                        echo '<span>0% <i class="fa fa-minus"></i></span>';
+                    }
+                    ?>
                 </div>
             </div>
-            <div class="progress mt-1 " data-height="8" style="height: 8px;">
-                <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;"></div>
+
+            <!-- Progress Bar -->
+            <?php
+            // Define a max revenue threshold for scaling (Adjust as needed)
+            $max_revenue = 100000; // Example: ₹100,000
+
+            // Calculate dynamic progress width (Prevent increase if revenue is 0)
+            $progress_width = ($total_revenue_today > 0) ? min(100, ($total_revenue_today / $max_revenue) * 100) : 0;
+            ?>
+            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                <div class="progress-bar l-bg-cyan" role="progressbar" 
+                    aria-valuenow="<?php echo $progress_width; ?>" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100"
+                    style="width: <?php echo $progress_width; ?>%;"></div>
             </div>
         </div>
     </div>
-  </div>
+</div>
+
 
 
   <!-- Orders card -->
