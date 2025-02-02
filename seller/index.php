@@ -64,31 +64,34 @@ $statement = $pdo->prepare("
 $statement->execute([$seller_id]);
 $todays_orders = $statement->fetchColumn() ?? 0;
 
-// Fetch last week's total orders for the seller
+// Fetch last 7 days' total orders (excluding today)
+$last_7_days_start = date('Y-m-d', strtotime('-7 days')); // 7 days ago from today
+$last_7_days_end = date('Y-m-d', strtotime('-1 day')); // Yesterday
+
 $statement = $pdo->prepare("
     SELECT COUNT(*) AS total_orders 
     FROM tbl_orders 
     WHERE order_status != 'cancelled' 
-      AND created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) 
+      AND DATE(created_at) BETWEEN ? AND ? 
       AND seller_id = ?
 ");
-$statement->execute([$seller_id]);
+$statement->execute([$last_7_days_start, $last_7_days_end, $seller_id]);
 $last_week_orders = $statement->fetchColumn() ?? 0;
 
-// Calculate the start and end date of the previous month
+// Fetch previous month's total orders (handle 28, 29, 30, 31 days correctly)
 $previous_month_start = date('Y-m-01', strtotime('first day of last month')); // 1st day of last month
 $previous_month_end = date('Y-m-t', strtotime('last day of last month')); // Last day of last month
 
-// Fetch previous month's total orders for the seller
 $statement = $pdo->prepare("
     SELECT COUNT(*) AS total_orders 
     FROM tbl_orders 
     WHERE order_status != 'cancelled' 
-      AND created_at BETWEEN ? AND ? 
+      AND DATE(created_at) BETWEEN ? AND ? 
       AND seller_id = ?
 ");
 $statement->execute([$previous_month_start, $previous_month_end, $seller_id]);
 $previous_month_orders = $statement->fetchColumn() ?? 0;
+
 // Calculate total bids for the seller, excluding canceled orders
 $statement = $pdo->prepare("
     SELECT COUNT(*) AS total_bids 
@@ -270,15 +273,14 @@ $recent_bids = $statement->fetchAll(PDO::FETCH_ASSOC);
                     <span><?php echo number_format($percentage_approved, 1); ?>% <i class="fa fa-check"></i></span>
                 </div>
             </div>
-            <div class="progress mt-1" data-height="8" style="height: 8px;">
+            <div class="progress mt-1" data-height="8" style="height: 8px; position: relative;">
                 <!-- Uploaded Products Progress (Red) with Tooltip -->
-                <div class="progress-bar bg-danger" role="progressbar"
+                <div class="progress-bar bg-danger uploaded-bar" role="progressbar"
                     style="width: <?php echo $percentage_uploaded; ?>%;" 
                     aria-valuenow="<?php echo $percentage_uploaded; ?>" 
                     aria-valuemin="0" 
                     aria-valuemax="100"
                     data-toggle="tooltip"
-                    data-placement="top"
                     title="Uploaded Products: <?php echo $total_uploaded_product; ?>">
                 </div>
                 <!-- Approved Products Progress (Cyan) -->
@@ -293,12 +295,17 @@ $recent_bids = $statement->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
-<!-- Enable Bootstrap Tooltip -->
+<!-- Enable Bootstrap Tooltip with Proper Hover Handling -->
 <script>
     $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip(); 
+        $('.uploaded-bar').tooltip({
+            trigger: 'hover',
+            placement: 'top',
+            container: 'body'
+        });
     });
 </script>
+
 
 
 <div class="col-xl-3 col-lg-3">
@@ -412,82 +419,111 @@ $recent_bids = $statement->fetchAll(PDO::FETCH_ASSOC);
     </div>    
 
     <div class="col-xl-3 col-lg-3">
-        <div class="card l-bg-orange-dark">
-            <div class="card-statistic-3 p-4">
-                <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i></div>
-                <div class="mb-4">
-                    <h5 class="card-title mb-0">Today's Revenue</h5>
-                </div>
-                <div class="row align-items-center mb-2 d-flex">
+    <div class="card l-bg-orange-dark">
+        <div class="card-statistic-3 p-4">
+            <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i></div>
+            <div class="mb-4">
+                <h5 class="card-title mb-0">Today's Revenue</h5>
+            </div>
+            <div class="row align-items-center mb-2 d-flex">
                 <div class="col-7" style="padding-left: 20px;">
-                        <h2 class="d-flex align-items-center mb-0">
-                            <?php 
-                            // Function to format numbers into shorter format
-                            function format_number_short($n) {
-                                if ($n >= 1000000) {
-                                    return round($n / 1000000, 1) . 'M'; // Millions
-                                } elseif ($n >= 1000) {
-                                    return round($n / 1000, 1) . 'k'; // Thousands
-                                }
-                                return $n; // Less than 1k
+                    <h2 class="d-flex align-items-center mb-0">
+                        <?php 
+                        // Function to format numbers into shorter format
+                        function format_number_short($n) {
+                            if ($n >= 1000000) {
+                                return round($n / 1000000, 1) . 'M'; // Millions
+                            } elseif ($n >= 1000) {
+                                return round($n / 1000, 1) . 'K'; // Thousands
                             }
-
-                            // Calculate current total revenue for the seller
-                            $statement = $pdo->prepare("
-                                SELECT SUM(price * quantity) AS total_revenue 
-                                FROM tbl_orders 
-                                WHERE order_status != 'cancelled' 
-                                  AND MONTH(created_at) = MONTH(CURRENT_DATE()) 
-                                  AND YEAR(created_at) = YEAR(CURRENT_DATE()) 
-                                  AND seller_id = ?
-                            ");
-                            $statement->execute([$seller_id]);
-                            $current_revenue = $statement->fetchColumn();
-                            $current_revenue = $current_revenue ? $current_revenue : 0; // Handle null values
-
-                            // Calculate previous month's revenue for the seller
-                            $statement = $pdo->prepare("
-                                SELECT SUM(price * quantity) AS total_revenue 
-                                FROM tbl_orders 
-                                WHERE order_status != 'cancelled' 
-                                  AND MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) 
-                                  AND YEAR(created_at) = YEAR(CURRENT_DATE()) 
-                                  AND seller_id = ?
-                            ");
-                            $statement->execute([$seller_id]);
-                            $previous_revenue = $statement->fetchColumn();
-                            $previous_revenue = $previous_revenue ? $previous_revenue : 0; // Handle null values
-
-                            echo "₹" . format_number_short($current_revenue);
-                            ?>
-                        </h2>
-                    </div>
-                    <div class="col-4 text-right">
-                        <?php
-                        // Calculate percentage change
-                        if ($previous_revenue > 0) {
-                            $percentage_change = (($current_revenue - $previous_revenue) / $previous_revenue) * 100;
-                        } else {
-                            $percentage_change = $current_revenue > 0 ? 100 : 0; // If no revenue last month, assume 100% increase
+                            return $n; // Less than 1K
                         }
+
+                        // Get today's and yesterday's date
+                        $today_date = date('Y-m-d');
+                        $yesterday_date = date('Y-m-d', strtotime('-1 day'));
+
+                        // Fetch today's total revenue for the seller
+                        $statement = $pdo->prepare("
+                            SELECT SUM(price * quantity) AS total_revenue 
+                            FROM tbl_orders 
+                            WHERE order_status != 'cancelled' 
+                              AND DATE(created_at) = :today_date
+                              AND seller_id = :seller_id
+                        ");
+                        $statement->bindParam(':today_date', $today_date, PDO::PARAM_STR);
+                        $statement->bindParam(':seller_id', $seller_id, PDO::PARAM_INT);
+                        $statement->execute();
+                        $current_revenue = $statement->fetchColumn() ?? 0; // Handle null values
+
+                        // Fetch yesterday's total revenue for the seller
+                        $statement = $pdo->prepare("
+                            SELECT SUM(price * quantity) AS total_revenue 
+                            FROM tbl_orders 
+                            WHERE order_status != 'cancelled' 
+                              AND DATE(created_at) = :yesterday_date
+                              AND seller_id = :seller_id
+                        ");
+                        $statement->bindParam(':yesterday_date', $yesterday_date, PDO::PARAM_STR);
+                        $statement->bindParam(':seller_id', $seller_id, PDO::PARAM_INT);
+                        $statement->execute();
+                        $previous_revenue = $statement->fetchColumn() ?? 0; // Handle null values
+
+                        echo "₹" . format_number_short($current_revenue);
                         ?>
-                        <span><?php echo number_format($percentage_change, 1); ?>% 
-                            <?php echo $percentage_change >= 0 ? '<i class="fa fa-arrow-up"></i>' : '<i class="fa fa-arrow-down"></i>'; ?>
-                        </span>
-                    </div>
+                    </h2>
                 </div>
-                <div class="progress mt-1 " data-height="8" style="height: 8px;">
+                <div class="col-4 text-right">
                     <?php
-                    // Set target revenue (for example, ₹50,000)
-                    $target_revenue = 50000;
-                    $progress_percentage = $current_revenue > 0 ? min(($current_revenue / $target_revenue) * 100, 100) : 0;
+                    // Calculate percentage change but restrict it within -100% to +100%
+                    if ($previous_revenue > 0) {
+                        $percentage_change = (($current_revenue - $previous_revenue) / $previous_revenue) * 100;
+                    } else {
+                        $percentage_change = ($current_revenue > 0) ? 100 : 0; // Assume 100% if no revenue yesterday
+                    }
+
+                    // Restrict the percentage strictly within -100% to 100%
+                    if ($percentage_change > 100) {
+                        $percentage_change = 100;
+                    } elseif ($percentage_change < -100) {
+                        $percentage_change = -100;
+                    }
+
+                    // Display percentage change with color-coded arrow
+                    if ($percentage_change > 0) {
+                        echo '<span style="color: green;">' . number_format($percentage_change, 1) . '% <i class="fa fa-arrow-up"></i></span>';
+                    } elseif ($percentage_change < 0) {
+                        echo '<span style="color: red;">' . number_format(abs($percentage_change), 1) . '% <i class="fa fa-arrow-down"></i></span>';
+                    } else {
+                        echo '<span>0% <i class="fa fa-minus"></i></span>';
+                    }
                     ?>
-                    <div class="progress-bar l-bg-yellow" role="progressbar" aria-valuenow="<?php echo $progress_percentage; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $progress_percentage; ?>%;"></div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <?php
+            // Set max revenue target (e.g., ₹100,000)
+            $max_revenue = 100000;
+
+            // Calculate progress percentage (ensure no increase if revenue is 0)
+            $progress_percentage = ($current_revenue > 0) ? min(100, ($current_revenue / $max_revenue) * 100) : 0;
+            ?>
+            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                <div class="progress-bar l-bg-yellow" role="progressbar" 
+                    aria-valuenow="<?php echo $progress_percentage; ?>" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100"
+                    style="width: <?php echo $progress_percentage; ?>%;">
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-lg-3">
+</div>
+
+
+
+  <div class="col-xl-3 col-lg-3">
     <div class="card l-bg-blue-dark">
         <div class="card-statistic-3 p-4">
             <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i></div>
