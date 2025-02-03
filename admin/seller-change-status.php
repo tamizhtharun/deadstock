@@ -70,6 +70,7 @@ if ($final == 1) {
 }
 
 // Redirect to the seller page after status update
-header('location: seller.php');
-exit;
+$referrer = $_SERVER['HTTP_REFERER'];
+                   header("Location: $referrer");
+                   exit();
 ?>

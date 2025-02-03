@@ -70,6 +70,8 @@ if (!isset($_SESSION['seller_session'])) {
 	<link rel="stylesheet" href="css/on-off-switch.css" />
 	<link rel="stylesheet" href="css/summernote.css">
 	<link rel="stylesheet" href="style.css">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 </head>
 
