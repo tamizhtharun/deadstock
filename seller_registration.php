@@ -666,21 +666,21 @@ body {
             <span class="icon">
                 <i class="fa-sharp-duotone fa-solid fa-user"></i>
             </span>  
-                <input type="text" id="seller_name" name="seller_name" placeholder="    Full Name" value="<?= htmlspecialchars($seller_name) ?>" required>
+                <input type="text" id="seller_name" name="seller_name" placeholder="Full Name" value="<?= htmlspecialchars($seller_name) ?>" required>
             </div>
 
             <div class="input-group">
             <span class="icon">
             <i class="fa-regular fa-building"></i>
             </span> 
-                <input type="text" id="seller_cname" name="seller_cname" placeholder="    Company Name" value="<?= htmlspecialchars($seller_cname) ?>" required>
+                <input type="text" id="seller_cname" name="seller_cname" placeholder="Company Name" value="<?= htmlspecialchars($seller_cname) ?>" required>
             </div>
 
             <div class="input-group">
             <span class="icon">
                 <i class="fa-sharp-duotone fa-solid fa-envelope"></i>
             </span> 
-                <input type="email" id="seller_email" name="seller_email" placeholder="    Email Address" value="<?= htmlspecialchars($seller_email) ?>" required>
+                <input type="email" id="seller_email" name="seller_email" placeholder="Email Address" value="<?= htmlspecialchars($seller_email) ?>" required>
             </div>
 
             <div class="input-group">
@@ -688,49 +688,49 @@ body {
                     <i class="fa-sharp-duotone fa-solid fa-phone"></i>
                 </span>
 
-                <input type="text" id="seller_phone" name="seller_phone" placeholder="    Phone Number" value="<?= htmlspecialchars($seller_phone) ?>" required>
+                <input type="text" id="seller_phone" name="seller_phone" placeholder="Phone Number" value="<?= htmlspecialchars($seller_phone) ?>" required>
             </div>
 
             <div class="input-group">
             <span class="icon">
                 <i class="fa-solid fa-scale-balanced"></i>
             </span> 
-                <input type="text" id="seller_gst" name="seller_gst" placeholder="    GST Number" value="<?= htmlspecialchars($seller_gst) ?>" required>
+                <input type="text" id="seller_gst" name="seller_gst" placeholder="GST Number" value="<?= htmlspecialchars($seller_gst) ?>" required>
             </div>
 
             <div class="input-group">
             <span class="icon">
                 <i class="fa-solid fa-lock"></i>
             </span>
-                <input type="password" id="seller_password" name="seller_password" placeholder="    Password" required>
+                <input type="password" id="seller_password" name="seller_password" placeholder="Password" required>
             </div>
 
             <div class="input-group full-width">
             <span class="icon-address">
                 <i class="fa-sharp-duotone fa-solid fa-location-dot"></i>
             </span>
-                <textarea id="seller_address" name="seller_address" placeholder="    Address" required>    <?= htmlspecialchars($seller_address) ?></textarea>
+                <textarea id="seller_address" name="seller_address" placeholder="Address" required>    <?= htmlspecialchars($seller_address) ?></textarea>
             </div>
 
             <div class="input-group">
             <span class="icon">
             <i class="fa-solid fa-globe"></i>
             </span>
-                <input type="text" id="seller_state" name="seller_state" placeholder="    State" value="<?= htmlspecialchars($seller_state) ?>" required>
+                <input type="text" id="seller_state" name="seller_state" placeholder="State" value="<?= htmlspecialchars($seller_state) ?>" required>
             </div>
 
             <div class="input-group">
             <span class="icon">
                 <i class="fa-solid fa-city"></i>
             </span>
-                <input type="text" id="seller_city" name="seller_city" placeholder="     City" value="<?= htmlspecialchars($seller_city) ?>" required>
+                <input type="text" id="seller_city" name="seller_city" placeholder="City" value="<?= htmlspecialchars($seller_city) ?>" required>
             </div>
 
             <div class="input-group">
             <span class="icon">
                 <i class="fa-solid fa-truck"></i>
             </span>
-                <input type="text" id="seller_zipcode" name="seller_zipcode" placeholder="    ZIP Code" value="<?= htmlspecialchars($seller_zipcode) ?>" required maxlength="6">
+                <input type="text" id="seller_zipcode" name="seller_zipcode" placeholder="ZIP Code" value="<?= htmlspecialchars($seller_zipcode) ?>" required maxlength="6">
             </div>
         </div>
 

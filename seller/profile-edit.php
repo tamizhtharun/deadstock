@@ -172,7 +172,18 @@ if(isset($_POST['form2'])) {
 
 if(isset($_POST['form3'])) {
     $valid = 1;
-
+    if(empty($_POST['current_password'])) {
+		$valid = 0;
+		$error_message .= "Current Password can not be empty<br>";
+	} else {
+		$statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_id=?");
+		$statement->execute(array($_SESSION['seller_session']['seller_id']));
+		$result = $statement->fetch(PDO::FETCH_ASSOC);
+		if(!password_verify($_POST['current_password'], $result['seller_password'])) {
+			$valid = 0;
+			$error_message .= "Current Password is incorrect<br>";
+		}
+	}
     if(empty($_POST['password']) || empty($_POST['re_password'])) {
         $valid = 0;
         $error_message .= "Password can not be empty<br>";
@@ -288,6 +299,66 @@ if(isset($_POST['form4'])) {
     }
 }
 
+if (isset($_POST['form5'])) {
+    $valid = 1;
+    $error_message = '';
+
+    // Validate account number
+    if (empty($_POST['account_number'])) {
+        $valid = 0;
+        $error_message .= "Account number cannot be empty<br>";
+    } elseif ($_POST['account_number'] !== $_POST['re_account_number']) {
+        $valid = 0;
+        $error_message .= "Account numbers do not match<br>";
+    }
+
+    // Validate IFSC code
+    if (empty($_POST['ifsc_code'])) {
+        $valid = 0;
+        $error_message .= "IFSC code cannot be empty<br>";
+    } elseif (!preg_match('/^[A-Za-z]{4}[0]{1}[A-Za-z0-9]{6}$/', $_POST['ifsc_code'])) {
+        $valid = 0;
+        $error_message .= "Invalid IFSC code format<br>";
+    }
+
+    // Validate account holder name
+    if (empty($_POST['account_holder'])) {
+        $valid = 0;
+        $error_message .= "Account holder name cannot be empty<br>";
+    }
+
+    if ($valid == 1) {
+        try {
+            // Update database with bank details
+            $statement = $pdo->prepare("UPDATE sellers SET 
+                account_number = ?, 
+                ifsc_code = ?, 
+                bank_name = ?, 
+                bank_branch = ?, 
+                bank_address = ?, 
+                bank_city = ?, 
+                bank_state = ?, 
+                account_holder = ? 
+                WHERE seller_id = ?");
+            $statement->execute(array(
+                $_POST['account_number'],
+                $_POST['ifsc_code'],
+                $_POST['bank_name'],
+                $_POST['bank_branch'],
+                $_POST['bank_address'],
+                $_POST['bank_city'],
+                $_POST['bank_state'],
+                $_POST['account_holder'],
+                $_SESSION['seller_session']['seller_id']
+            ));
+
+            $success_message = 'Bank details have been updated successfully.';
+        } catch (PDOException $e) {
+            $error_message = 'Database error: ' . $e->getMessage();
+        }
+    }
+}
+
 // Fetch existing seller brands
 $statement = $pdo->prepare("SELECT sb.*, b.brand_name 
                           FROM seller_brands sb 
@@ -313,6 +384,9 @@ foreach ($result as $row) {
     $cname    = $row['seller_cname'];
     $status    = $row['seller_status'];
     $role      = 'Seller';
+    $account_number = $row['account_number'];
+    $account_holder = $row['account_holder'];
+    $ifsc_code = $row['ifsc_code'];
 }
 ?>
 
@@ -354,6 +428,9 @@ foreach ($result as $row) {
                     </li>
                     <li class="<?php echo ($active_tab == 'tab_4') ? 'active' : ''; ?>">
                         <a href="#tab_4" data-toggle="tab">Brands</a>
+                    </li>
+                    <li class="<?php echo ($active_tab == 'tab_5') ? 'active' : ''; ?>">
+                        <a href="#tab_5" data-toggle="tab">Bank Details</a>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -463,6 +540,12 @@ foreach ($result as $row) {
                             <div class="box box-info">
                                 <div class="box-body">
                                     <div class="form-group">
+                                        <label for="" class="col-sm-2 control-label">Current Password </label>
+                                        <div class="col-sm-4">
+                                            <input type="password" class="form-control" name="current_password">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="" class="col-sm-2 control-label">Password </label>
                                         <div class="col-sm-4">
                                             <input type="password" class="form-control" name="password">
@@ -562,10 +645,172 @@ foreach ($result as $row) {
                             </div>
                         </div>
                     </div>
+                    <div class="tab-pane <?php echo ($active_tab == 'tab_5') ? 'active' : ''; ?>" id="tab_5">
+                    <form class="form-horizontal" action="" method="post">
+                            <div class="box box-info">
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Account Number <span>*</span></label>
+                                        <div class="col-sm-4">
+                                            <input type="password" name="account_number" class="form-control" value="<?php echo isset($account_number) ? $account_number : ''; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Re-Enter Account Number <span>*</span></label>
+                                        <div class="col-sm-4">
+                                            <input type="text" name="re_account_number" class="form-control" value="<?php echo isset($account_number) ? $account_number : ''; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+    <label class="col-sm-3 control-label">IFSC Code <span>*</span></label>
+    <div class="col-sm-4">
+        <input type="text" 
+               id="ifsc_code" 
+               name="ifsc_code" 
+               class="form-control" 
+               value="<?php echo isset($ifsc_code) ? $ifsc_code : ''; ?>"
+               onkeyup="debouncedFetchBankDetails()" 
+               maxlength="11"
+               pattern="^[A-Za-z]{4}[0]{1}[A-Za-z0-9]{6}$"
+               title="Please enter a valid IFSC code (e.g., SBIN0123456)"
+               style="text-transform: uppercase;">
+        <small class="text-muted">Enter 11-character IFSC code (e.g., SBIN0123456)</small>
+        <div id="bank_details_loading" style="display: none; margin-top: 10px;">
+            <i class="fa fa-spinner fa-spin"></i> Fetching bank details...
+        </div>
+        <div id="bank_details_error" class="text-danger" style="display: none; margin-top: 10px;"></div>
+    </div>
+</div>
+
+                                    <div id="bank_details_container" style="display: none;">
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Bank Name</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" id="bank_name" name="bank_name" class="form-control" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Branch</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" id="bank_branch" name="bank_branch" class="form-control" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Address</label>
+                                            <div class="col-sm-4">
+                                                <textarea id="bank_address" name="bank_address" class="form-control" readonly></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">City</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" id="bank_city" name="bank_city" class="form-control" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">State</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" id="bank_state" name="bank_state" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Account Holder Name <span>*</span></label>
+                                        <div class="col-sm-4">
+                                            <input type="text" name="account_holder" class="form-control" value="<?php echo isset($account_holder) ? $account_holder : ''; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-3 control-label"></label>
+                                        <div class="col-sm-4">
+                                            <button type="submit" class="btn btn-success pull-left" name="form5">Update Bank Details</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    
+    
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 </section>
+<script>
+async function fetchBankDetails() {
+    const ifscCode = document.getElementById('ifsc_code').value.toUpperCase();
+    const loadingIndicator = document.getElementById('bank_details_loading');
+    const errorDisplay = document.getElementById('bank_details_error');
+    const detailsContainer = document.getElementById('bank_details_container');
 
+    // Clear previous results
+    errorDisplay.style.display = 'none';
+    detailsContainer.style.display = 'none';
+
+    if(ifscCode.length !== 11) {
+        return;
+    }
+
+    // Show loading
+    loadingIndicator.style.display = 'inline-block';
+
+    try {
+        // Using our PHP proxy
+        const response = await fetch(`fetch-bank-details.php?ifsc=${ifscCode}`);
+        const data = await response.json();
+        
+        // console.log('API Response:', data); // For debugging
+
+        if (data.status === 'ERROR' || data.error) {
+            throw new Error(data.error || 'Failed to fetch bank details');
+        }
+
+        if (data.data && data.data.BANK) {
+            // Update form fields
+            document.getElementById('bank_name').value = data.data.BANK || '';
+            document.getElementById('bank_branch').value = data.data.BRANCH || '';
+            document.getElementById('bank_address').value = data.data.ADDRESS || '';
+            document.getElementById('bank_city').value = data.data.CITY || '';
+            document.getElementById('bank_state').value = data.data.STATE || '';
+            
+            detailsContainer.style.display = 'block';
+            errorDisplay.style.display = 'none';
+        } else {
+            throw new Error('Invalid bank details received');
+        }
+    } catch (error) {
+        console.error('Error details:', error);
+        
+        errorDisplay.textContent = error.message || 'Unable to fetch bank details. Please verify the IFSC code and try again.';
+        errorDisplay.style.display = 'block';
+        detailsContainer.style.display = 'none';
+        
+        // Clear the bank details
+        document.getElementById('bank_name').value = '';
+        document.getElementById('bank_branch').value = '';
+        document.getElementById('bank_address').value = '';
+        document.getElementById('bank_city').value = '';
+        document.getElementById('bank_state').value = '';
+    } finally {
+        loadingIndicator.style.display = 'none';
+    }
+}
+
+// Debounce function
+const debounce = (func, wait) => {
+    let timeout;
+    return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+};
+
+const debouncedFetchBankDetails = debounce(fetchBankDetails, 500);
+</script>
 <?php require_once('footer.php'); ?>

@@ -127,6 +127,31 @@ try {
     // You might want to set $top_products and $top_sellers to empty arrays here
     $top_products = $top_sellers = [];
 }
+// Fetch order status distribution from tbl_orders
+$statement = $pdo->prepare(" 
+    SELECT order_status, COUNT(*) as count
+    FROM tbl_orders
+    GROUP BY order_status
+");
+$statement->execute();
+$order_status_distribution = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch count of Not Sent Orders (bids with bid_status = 2 but not in tbl_orders)
+$not_sent_statement = $pdo->prepare(" 
+    SELECT COUNT(*) as count
+    FROM bidding b
+    WHERE b.bid_status = 2 
+    AND NOT EXISTS (
+        SELECT 1 FROM tbl_orders o 
+        WHERE o.bid_id = b.bid_id
+    )
+");
+$not_sent_statement->execute();
+$not_sent_orders = $not_sent_statement->fetch(PDO::FETCH_ASSOC)['count'];
+
+// Append Not Sent Orders to the distribution array
+$order_status_distribution[] = ['order_status' => 'Not Sended Orders', 'count' => $not_sent_orders];
+
 ?>
 <head>
     <!-- Include Chart.js -->
@@ -141,6 +166,7 @@ try {
 <section class="content">
 <!-- <div class="container"> -->
 <div class="row">
+<!-- Approved products card -->
 <div class="col-xl-3 col-lg-3">
     <div class="card l-bg-cherry">
         <div class="card-statistic-3 p-3">
@@ -152,47 +178,62 @@ try {
                 <div class="col-7" style="padding-left: 20px;">
                     <h2 class="d-flex align-items-center mb-0">
                         <?php
-                        $statement =$pdo->prepare("SELECT COUNT(*) FROM tbl_product where p_is_approve=1");
+                        // Fetch total approved products across all sellers
+                        $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_product WHERE p_is_approve=1");
                         $statement->execute();
                         $total_approved_product = $statement->fetchColumn();
-                        echo $total_approved_product
+                        echo $total_approved_product;
                         ?> 
-                        
-                    </h2>Products
+                    </h2> Products
                 </div>
                 <?php
-            $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_product");
-            $statement->execute();
-            $total_product = $statement->fetchColumn();
-            if($total_product!=0){
-            $percentage_of_approved_products = ($total_approved_product / $total_product) * 100;
-            }else{
-                $percentage_of_approved_products = 0;
-            }
-            ?>
+                // Fetch total products (uploaded + approved)
+                $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_product");
+                $statement->execute();
+                $total_product = $statement->fetchColumn();
+
+                // Calculate uploaded products
+                $total_uploaded_product = $total_product - $total_approved_product;
+
+                // Calculate progress percentages
+                $percentage_approved = ($total_product != 0) ? ($total_approved_product / $total_product) * 100 : 0;
+                $percentage_uploaded = ($total_product != 0) ? ($total_uploaded_product / $total_product) * 100 : 0;
+                ?>
                 <div class="col-4 text-right">
-                    <span><?php echo number_format($percentage_of_approved_products,1)?>% <i class="fa fa-check"></i></span>
+                    <span><?php echo number_format($percentage_approved, 1); ?>% <i class="fa fa-check"></i></span>
                 </div>
             </div>
-            <div class="progress mt-1 " data-height="8" style="height: 8px;">
-
-            <?php
-            $statement = $pdo->prepare("SELECT COUNT(*) FROM tbl_product");
-            $statement->execute();
-            $total_product = $statement->fetchColumn();
-            if($total_product!=0){
-            $percentage_of_approved_products = ($total_approved_product / $total_product) * 100;
-            }else{
-                $percentage_of_approved_products = 0;
-            }
-            ?>
-
-
-                <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percentage_of_approved_products?>%;"></div>
+            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                <!-- Uploaded Products Progress (Red) with Tooltip -->
+                <div class="progress-bar bg-danger" role="progressbar"
+                    style="width: <?php echo $percentage_uploaded; ?>%;" 
+                    aria-valuenow="<?php echo $percentage_uploaded; ?>" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Uploaded Products: <?php echo $total_uploaded_product; ?>">
+                </div>
+                <!-- Approved Products Progress (Cyan) -->
+                <div class="progress-bar l-bg-cyan" role="progressbar"
+                    style="width: <?php echo $percentage_approved; ?>%;" 
+                    aria-valuenow="<?php echo $percentage_approved; ?>" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100">
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Enable Bootstrap Tooltip -->
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip(); 
+    });
+</script>
+
+<!-- Active sellers card -->
 <div class="col-xl-3 col-lg-3">
     <div class="card l-bg-blue-dark">
         <div class="card-statistic-3 p-3">
@@ -201,126 +242,217 @@ try {
                 <h5 class="card-title mb-0">Active Sellers</h5>
             </div>
             <div class="row align-items-center mb-2 d-flex">
-            <div class="col-7" style="padding-left: 20px;">
+                <div class="col-7" style="padding-left: 20px;">
                     <h2 class="d-flex align-items-center mb-0">
                         <?php 
-                        $statement = $pdo->prepare("SELECT  COUNT(*) FROM sellers WHERE seller_status=1");
+                        // Get Active Sellers
+                        $statement = $pdo->prepare("SELECT COUNT(*) FROM sellers WHERE seller_status=1");
                         $statement->execute();
                         $total_seller_active = $statement->fetchColumn();
-                        echo $total_seller_active
-                        ?><?php ?> 
-                    </h2>Sellers
+                        echo $total_seller_active;
+                        ?>
+                    </h2> Sellers
                 </div>
                 <div class="col-4 text-right">
-                <?php
-               $statement = $pdo->prepare("SELECT  COUNT(*) FROM sellers");
-               $statement->execute();
-              $total_sellers= $statement->fetchColumn();
-              $percentage_of_active_sellers= ($total_seller_active/$total_sellers) * 100;
-              ?>
-                    <span><?php echo number_format($percentage_of_active_sellers,1)?>% <i class="fa fa-check"></i></span>
+                    <?php
+                    // Get Total Sellers
+                    $statement = $pdo->prepare("SELECT COUNT(*) FROM sellers");
+                    $statement->execute();
+                    $total_sellers = $statement->fetchColumn();
+
+                    // Get Inactive Sellers
+                    $total_seller_inactive = $total_sellers - $total_seller_active;
+
+                    // Calculate Percentage
+                    $percentage_of_active_sellers = ($total_sellers != 0) ? ($total_seller_active / $total_sellers) * 100 : 0;
+                    $percentage_of_inactive_sellers = ($total_sellers != 0) ? ($total_seller_inactive / $total_sellers) * 100 : 0;
+                    ?>
+                    <span><?php echo number_format($percentage_of_active_sellers, 1); ?>% <i class="fa fa-check"></i></span>
                 </div>
             </div>
-            <div class="progress mt-1 " data-height="8" style="height: 8px;">
-              
-                <div class="progress-bar l-bg-green" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo$percentage_of_active_sellers?>%;"></div>
+            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                <!-- Inactive Sellers Progress (Red) with Always Visible Tooltip -->
+                <div class="progress-bar bg-danger" role="progressbar"
+                    style="width: <?php echo max($percentage_of_inactive_sellers, 1); ?>%;" 
+                    aria-valuenow="<?php echo $percentage_of_inactive_sellers; ?>" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100"
+                    id="inactive-sellers-bar">
+                </div>
+                <!-- Active Sellers Progress (Green) (Tooltip Removed) -->
+                <div class="progress-bar l-bg-green" role="progressbar"
+                    style="width: <?php echo $percentage_of_active_sellers; ?>%;" 
+                    aria-valuenow="<?php echo $percentage_of_active_sellers; ?>" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100">
+                </div>
             </div>
         </div>
     </div>
 </div>
- <div class="col-xl-3 col-lg-3">
+
+<!-- Enable Bootstrap Tooltip with Full Hover Effect -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var inactiveSellersBar = document.getElementById("inactive-sellers-bar");
+    
+    // Create Tooltip for Inactive Sellers
+    var tooltip = new bootstrap.Tooltip(inactiveSellersBar, {
+        title: "Inactive Sellers: <?php echo $total_seller_inactive; ?>",
+        placement: "top",
+        trigger: "hover"
+    });
+});
+</script>
+
+
+<div class="col-xl-3 col-lg-3">
     <div class="card l-bg-green-dark">
-        <div class="card-statistic-3 p-3">
-            <div class="card-icon card-icon-large"><i class="fas fa fa-gavel"></i></div>
-            <div class="mb-2">
-                <h5 class="card-title mb-0">Bids Today</h5>
+        <div class="card-statistic-3 p-4">
+            <div class="card-icon card-icon-large"><i class="fas fa-gavel"></i></div>
+            <div class="mb-4">
+                <h5 class="card-title mb-0">Today's Bids</h5>
             </div>
             <div class="row align-items-center mb-2 d-flex">
-            <div class="col-7" style="padding-left: 20px;">
-                <h2 class="d-flex align-items-center mb-0">
-                    <?php 
-                        $statement = $pdo->prepare("SELECT  COUNT(*) FROM bidding WHERE DATE(bid_time) = '$today_date'");
+                <div class="col-7" style="padding-left: 20px;">
+                    <h2 class="d-flex align-items-center mb-0">
+                        <?php
+                        // Get today's total bids
+                        $statement = $pdo->prepare("SELECT COUNT(*) FROM bidding WHERE DATE(bid_time) = CURDATE()");
                         $statement->execute();
-                        $total_bids_today = $statement->fetchColumn();
-                        echo $total_bids_today
-                        ?> 
-                    </h2>Bids
+                        $today_bids = $statement->fetchColumn();
+                        echo $today_bids ? $today_bids : 0;
+                        ?>
+                    </h2>
                 </div>
                 <div class="col-4 text-right">
-                    <span>
-                        <?php
-                    $sql_yesterday = "SELECT COUNT(*) AS total_yesterday FROM bidding WHERE DATE(bid_time) = '$yesterday'";
-                    $result_yesterday = $conn->query($sql_yesterday);
-                    $row_yesterday = $result_yesterday->fetch_assoc();
-                    $total_yesterday = $row_yesterday['total_yesterday'];
+                    <?php
+                    // Get yesterday's total bids
+                    $statement = $pdo->prepare("SELECT COUNT(*) FROM bidding WHERE DATE(bid_time) = CURDATE() - INTERVAL 1 DAY");
+                    $statement->execute();
+                    $yesterday_bids = $statement->fetchColumn();
+                    $yesterday_bids = $yesterday_bids ? $yesterday_bids : 0;
 
-                    if ($total_yesterday > 0) {
-                        $change = $total_bids_today - $total_yesterday;
-                        $percentage_change = ($change / $total_yesterday) * 100;
+                    // Calculate percentage change
+                    if ($yesterday_bids > 0) {
+                        $percentage_change = (($today_bids - $yesterday_bids) / $yesterday_bids) * 100;
                     } else {
-                        $percentage_change = $total_bids_today > 0 ? 100 : 0;
-                    }
-                    if ($percentage_change > 0) {
-                        echo $percentage_change . '% <i class="fa fa-arrow-up"></i>';
-                    } else if ($percentage_change < 0) {
-                        echo $percentage_change. '%<i class="fa fa-arrow-down"></i>';
-                    }  else {
-                        echo $percentage_change . '% <i class="fa fa-arrow-up"></i>';
+                        $percentage_change = $today_bids > 0 ? 100 : 0;
                     }
                     ?>
+                    <span><?php echo number_format($percentage_change, 1); ?>% 
+                        <?php echo $percentage_change >= 0 ? '<i class="fa fa-arrow-up"></i>' : '<i class="fa fa-arrow-down"></i>'; ?>
+                    </span>
                 </div>
             </div>
-            <div class="progress mt-1 " data-height="8" style="height: 8px;">
-                <div class="progress-bar l-bg-orange" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div>
+
+            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                <?php
+                // Define a target value (adjust as needed)
+                $target_bids = 100; 
+                $progress_percentage = $today_bids > 0 ? min(($today_bids / $target_bids) * 100, 100) : 0;
+                ?>
+                <div class="progress-bar l-bg-orange" role="progressbar" 
+                     aria-valuenow="<?php echo $progress_percentage; ?>" 
+                     aria-valuemin="0" aria-valuemax="100" 
+                     style="width: <?php echo $progress_percentage; ?>%;">
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+
 <div class="col-xl-3 col-lg-3">
     <div class="card l-bg-orange-dark">
         <div class="card-statistic-3 p-4">
             <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i></div>
             <div class="mb-4">
-                <h5 class="card-title mb-0">Revenue Today</h5>
+                <h5 class="card-title mb-0">Today's Revenue</h5>
             </div>
             <div class="row align-items-center mb-2 d-flex">
-            <div class="col-7" style="padding-left: 20px;">
+                <div class="col-7" style="padding-left: 20px;">
                     <h2 class="d-flex align-items-center mb-0">
                     ₹<?php 
-                        $statement = $pdo->prepare("SELECT * FROM tbl_orders WHERE DATE(created_at) = :today_date AND order_status!='canceled'");
+                        // Get today's date
+                        $today_date = date('Y-m-d');
+
+                        // Fetch today's revenue
+                        $statement = $pdo->prepare("
+                            SELECT SUM(price * quantity) AS total_revenue 
+                            FROM tbl_orders 
+                            WHERE DATE(created_at) = :today_date 
+                              AND order_status != 'canceled'
+                        ");
                         $statement->bindParam(':today_date', $today_date, PDO::PARAM_STR);
                         $statement->execute();
-                        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                        $total_revenue_today = $statement->fetchColumn() ?? 0;
 
-                        $total_revenue_today = 0;
-
-                        if ($result) {
-                            foreach ($result as $row) {
-                                 $total_revenue_today += $row['quantity'] * $row['price'];
-                            }
-                        }
-
-                        // Format revenue: if >= 1000, convert to 'K' notation
-                        if ($total_revenue_today >= 1000) {
-                             $formatted_revenue = number_format($total_revenue_today / 1000, 1) . 'K';
-                        } else {
-                            $formatted_revenue = $total_revenue_today;
-                        }
+                        // Format revenue: 'K' notation if >= 1000
+                        $formatted_revenue = ($total_revenue_today >= 1000) 
+                            ? number_format($total_revenue_today / 1000, 1) . 'K' 
+                            : $total_revenue_today;
 
                         echo $formatted_revenue;
                         ?>
                     </h2>
                 </div>
                 <div class="col-4 text-right">
-                    <span>2.5% <i class="fa fa-arrow-up"></i></span>
+                    <?php
+                    // Fetch yesterday's revenue for comparison
+                    $yesterday_date = date('Y-m-d', strtotime('-1 day'));
+                    $statement = $pdo->prepare("
+                        SELECT SUM(price * quantity) AS total_revenue 
+                        FROM tbl_orders 
+                        WHERE DATE(created_at) = :yesterday_date 
+                          AND order_status != 'canceled'
+                    ");
+                    $statement->bindParam(':yesterday_date', $yesterday_date, PDO::PARAM_STR);
+                    $statement->execute();
+                    $yesterday_revenue = $statement->fetchColumn() ?? 0;
+
+                    // Calculate percentage change but restrict it within -100% to +100%
+                    if ($yesterday_revenue > 0) {
+                        $percentage_change = (($total_revenue_today - $yesterday_revenue) / $yesterday_revenue) * 100;
+                    } else {
+                        $percentage_change = ($total_revenue_today > 0) ? 100 : 0;
+                    }
+
+                    // Ensure percentage change stays within -100% to +100%
+                    $percentage_change = max(-100, min(100, $percentage_change));
+
+                    // Display percentage change with color-coded arrow
+                    if ($percentage_change > 0) {
+                        echo '<span style="color: green;">' . number_format($percentage_change, 1) . '% <i class="fa fa-arrow-up"></i></span>';
+                    } elseif ($percentage_change < 0) {
+                        echo '<span style="color: red;">' . number_format(abs($percentage_change), 1) . '% <i class="fa fa-arrow-down"></i></span>';
+                    } else {
+                        echo '<span>0% <i class="fa fa-minus"></i></span>';
+                    }
+                    ?>
                 </div>
             </div>
-            <div class="progress mt-1 " data-height="8" style="height: 8px;">
-                <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;"></div>
+
+            <!-- Progress Bar -->
+            <?php
+            // Define a max revenue threshold for scaling (Adjust as needed)
+            $max_revenue = 100000; // Example: ₹100,000
+
+            // Calculate dynamic progress width (Prevent increase if revenue is 0)
+            $progress_width = ($total_revenue_today > 0) ? min(100, ($total_revenue_today / $max_revenue) * 100) : 0;
+            ?>
+            <div class="progress mt-1" data-height="8" style="height: 8px;">
+                <div class="progress-bar l-bg-cyan" role="progressbar" 
+                    aria-valuenow="<?php echo $progress_width; ?>" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100"
+                    style="width: <?php echo $progress_width; ?>%;"></div>
             </div>
         </div>
     </div>
-  </div>
+</div>
+
+
 
   <!-- Orders card -->
   <div class="col-xl-3 col-lg-3">
@@ -505,19 +637,20 @@ if ($latestDate) {
             </div>
         </div>
 
-        <div class="col-lg-4 mb-4">
-                <div class="card shadow">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Revenue Distribution</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-container" style="position: relative; height:40vh; width:100%">
-                            <canvas id="pieChart"></canvas>
-                        </div>
-                    </div>
-                </div>
+<!-- order status pie chart -->
+<div class="col-lg-4 mb-4">
+    <div class="card shadow">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Order Status Distribution</h5>
+        </div>
+        <div class="card-body">
+            <!-- Legend at the top -->
+            <div class="chart-container" style="position: relative; height:40vh; width:100%">
+                <canvas id="orderStatusChart"></canvas>
             </div>
+        </div>
     </div>
+</div>
 
     <div class="row">
         <!-- Top Performing Products -->
@@ -747,7 +880,52 @@ if ($latestDate) {
     </div>
 </div>
 </div>
+<script>
 
+    // order status distribution pie chart
+document.addEventListener('DOMContentLoaded', function() {
+    var orderStatusCtx = document.getElementById('orderStatusChart').getContext('2d');
+
+    var orderLabels = <?php echo json_encode(array_column($order_status_distribution, 'order_status')); ?>;
+    var orderData = <?php echo json_encode(array_column($order_status_distribution, 'count')); ?>;
+    var colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#8B0000'];
+
+    // Filter out empty data points
+    var filteredLabels = [];
+    var filteredData = [];
+    var filteredColors = [];
+
+    orderData.forEach((value, index) => {
+        if (value > 0) { // Only include labels with data
+            filteredLabels.push(orderLabels[index]);
+            filteredData.push(value);
+            filteredColors.push(colors[index]);
+        }
+    });
+
+    var orderChart = new Chart(orderStatusCtx, {
+        type: 'pie',
+        data: {
+            labels: filteredLabels,
+            datasets: [{
+                data: filteredData,
+                backgroundColor: filteredColors
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: filteredLabels.length > 0, // Only show legend if there are valid labels
+                    position: 'top'
+                }
+            }
+        }
+    });
+});
+
+</script>
 
 <script>
 function createDynamicRevenueChart(initialLabels, initialRevenues, initialOrders) {

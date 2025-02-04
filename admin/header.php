@@ -156,10 +156,18 @@ if(!isset($_SESSION['admin_session'])) {
                         
                     </li>
 
-					<li class="treeview <?php if( ($cur_page == 'seller.php') || ($cur_page == 'seller-add.php') || ($cur_page == 'seller-edit.php') ) {echo 'active';} ?>">
-									<a href="seller.php">
-										<i class="fa fa-user-plus"></i> <span>Registered Seller</span>
+					<li class="treeview <?php if( ($cur_page == 'seller.php') || ($cur_page == 'seller-incomplete.php') ) {echo 'active';} ?>">
+									<a href="#">
+										<i class="fa fa-user-plus"></i> <span>Registered Sellers</span>
+										<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i>
+										</span>
 									</a>
+									<ul class="treeview-menu">
+                            <li><a href="seller.php"><i class="fa fa-circle-o"></i> Completed Profiles</a></li>
+                            <li><a href="seller-incomplete.php"><i class="fa fa-circle-o"></i> Incomplete Profiles</a></li>
+                            
+                            
+                        </ul>
 							</li>
 							<li class="treeview <?php if( ($cur_page == 'customer.php') || ($cur_page == 'customer-add.php') || ($cur_page == 'customer-edit.php') ) {echo 'active';} ?>">
 									<a href="customer.php">
@@ -210,11 +218,16 @@ if(!isset($_SESSION['admin_session'])) {
                         </ul>
                     </li>
 
-			      	 <li class="treeview <?php if( ($cur_page == 'faq.php') ) {echo 'active';} ?>">
+			      	 <li class="treeview <?php if( ($cur_page == 'settlement.php') ) {echo 'active';} ?>">
+			          <a href="settlement.php">
+			            <i class="fa fa-money"></i> <span>Settlements</span>
+			          </a>
+			        </li>
+			      	 <!-- <li class="treeview <?php if( ($cur_page == 'faq.php') ) {echo 'active';} ?>">
 			          <a href="faq.php">
 			            <i class="fa fa-question-circle"></i> <span>FAQ</span>
 			          </a>
-			        </li>
+			        </li> -->
 
 							
 							
@@ -225,17 +238,17 @@ if(!isset($_SESSION['admin_session'])) {
 			          </a>
 			        </li> -->
 
-			        <li class="treeview <?php if( ($cur_page == 'social-media.php') ) {echo 'active';} ?>">
+			        <!-- <li class="treeview <?php if( ($cur_page == 'social-media.php') ) {echo 'active';} ?>">
 			          <a href="#">
 			            <i class="fa fa-globe"></i> <span>Social Media</span>
 			          </a>
-			        </li>
+			        </li> -->
 
-			        <li class="treeview <?php if( ($cur_page == 'subscriber.php')||($cur_page == 'subscriber.php') ) {echo 'active';} ?>">
+			        <!-- <li class="treeview <?php if( ($cur_page == 'subscriber.php')||($cur_page == 'subscriber.php') ) {echo 'active';} ?>">
 			          <a href="#">
 			            <i class="fa fa-hand-o-right"></i> <span>Subscriber</span>
 			          </a>
-			        </li>
+			        </li> -->
 
       			</ul>
     		</section>

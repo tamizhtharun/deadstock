@@ -23,9 +23,9 @@ echo "</pre>";
 								<th>#</th>
 								<th>Photo</th>
 								<th>Product Brand</th>
-								<th width="160">Product Name</th>
-								<th width="40">Quantity</th>
-								<th width="40">Product Price</th>
+								<th>Product Name</th>
+								<th width="80">Quantity</th>
+								<th width="80">Product Price</th>
 								<th>Order Time</th>
                                 <th>Order Type</th>
                                 <th>Final Price</th>

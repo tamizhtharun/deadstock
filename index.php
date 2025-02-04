@@ -3,6 +3,7 @@ require_once('track_view.php');
 trackPageView('HP', 'Home page');
 ?>
 <link rel="stylesheet" href="./css/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 <div class="category-pad">
     <div class="category-box">
         <ul class="categories">
@@ -157,27 +158,27 @@ trackPageView('HP', 'Home page');
 
 <!-- Live Bidding -->
  
-<?php require_once( 'live-bidding-card.php');?>
+<?php //require_once( 'live-bidding-card.php');?>
 
 <!-- Live Bidding -->
 
 <!-- Display the product -->
 <?php
 $topCategories = []; // Initialize as an empty array
-$statement = $pdo->prepare("SELECT * FROM tbl_top_category");
+$statement = $pdo->prepare("SELECT * FROM tbl_mid_category");
 $statement->execute();
 $topCategories = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 if (!empty($topCategories)) {
     foreach ($topCategories as $topCategory) {
-        $tcat_id = $topCategory['tcat_id'];
+        $tcat_id = $topCategory['mcat_id'];
 
         $statement = $pdo->prepare("
             SELECT p.*, m.mcat_name, e.ecat_name 
             FROM tbl_product p
-            JOIN tbl_end_category e ON p.ecat_id = e.ecat_id
-            JOIN tbl_mid_category m ON e.mcat_id = m.mcat_id
-            WHERE m.tcat_id = ?
+            LEFT JOIN tbl_end_category e ON p.ecat_id = e.ecat_id
+            LEFT JOIN tbl_mid_category m ON p.mcat_id = m.mcat_id
+            WHERE p.mcat_id = ?
         ");
 
         if ($statement->execute([$tcat_id])) {
@@ -197,10 +198,10 @@ if (!empty($topCategories)) {
                 ?>
                 <section id="featured-products-<?php echo $tcat_id; ?>" class="products-carousel my-10">
                     <div class="container-lg overflow-hidden py-5">
-                        <div class="section-header d-flex flex-wrap justify-content-between my-4">
-                            <h2 class="section-title"><?php echo htmlspecialchars($topCategory['tcat_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
+                        <div class="section-header d-flex flex-wrap justify-content-between my-1">
+                            <h2 class="section-title"><?php echo htmlspecialchars($topCategory['mcat_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
                             <div class="d-flex align-items-center">
-                            <a href="#" class="btn-link text-decoration-none" style="margin-right:20px">View All <?php echo htmlspecialchars($topCategory['tcat_name']) ?> →</a>
+                            <a href="search-result.php?type=mid-category&id=<?php echo $topCategory['mcat_id'] ?>" class="btn-link text-decoration-none" style="margin-right:20px">View All <?php echo htmlspecialchars($topCategory['mcat_name']) ?> →</a>
                                 <div class="swiper-buttons">
                                     <button class="swiper-prev btn btn-primary" id="<?php echo $swiperId; ?>-prev">❮</button>
                                     <button class="swiper-next btn btn-primary" id="<?php echo $swiperId; ?>-next">❯</button>
@@ -215,15 +216,15 @@ if (!empty($topCategories)) {
                                     <?php if ($product['p_is_featured'] == 1): ?>
                                     <div class="product-item swiper-slide">
                                         <figure>
-                                            <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" title="Product Title">
+                                            <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>">
                                                 <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>" class="tab-image">
                                             </a>
                                         </figure>
-                                        <div class="d-flex flex-column text-center">
+                                        <div class="d-flex flex-column text-left">
                                         <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration:none !important" title="Product Title">
                                           <h3 class="fs-6 fw-normal"><?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?></h3>
-                                        </a>
-                                            <div>
+                                        
+                                            <!-- <div>
                                                 <span class="rating">
                                                     <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
                                                     <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
@@ -232,11 +233,13 @@ if (!empty($topCategories)) {
                                                     <svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>
                                                 </span>
                                                 <span><?php echo $product['p_current_price']?></span>
+                                            </div> -->
+                                            <div class="d-flex justify-content-left align-items-left gap-1">
+                                            <span class="text-dark fw-semibold h6" style="margin-bottom:0px">₹<?php echo number_format($product['p_current_price'], 2); ?></span>
                                             </div>
-                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                            <div class="d-flex justify-content-left align-items-left gap-1">
                                                 <?php if (!empty($product['p_old_price'])): ?>
                                                     <del>₹<?php echo number_format($product['p_old_price'], 2); ?></del>
-                                                    <span class="text-dark fw-semibold">₹<?php echo number_format($product['p_current_price'], 2); ?></span>
                                                     <div class="cat-product-discount">
                                                         <?php
                                                         $discount = (($product['p_old_price'] - $product['p_current_price']) / $product['p_old_price']) * 100;
@@ -245,15 +248,16 @@ if (!empty($topCategories)) {
                                                     </div>
                                                 <?php endif; ?>
                                             </div>
-                                            <div class="button-area p-3 pt-0">
+                                            <!-- <div class="button-area p-3 pt-0">
                                                 <div class="row g-1 mt-2">
                                                     <div class="col-3"></div>
                                                     <div class="col-7" style="margin-left:-12px"><a href="cart.php" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart" style="text-decoration:none !important"><svg width="18" height="18"><use xlink:href="#cart"></use></svg> Add to Cart</a></div>
                                                     <div class="col-2"></div>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </div>
+                                    </a>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             </div>
@@ -299,11 +303,11 @@ if (!empty($topCategories)) {
 <!-- End Display the Best selling Product -->
 
 <!-- Display All Brands  -->
-<?php require_once('brands-homepage.php') ?>
+<?php //require_once('brands-homepage.php') ?>
 <!-- End Display All Brands -->
 
 <!-- Display the Featured Products -->
-<?php require_once('featured-product.php') ?>
+<?php //require_once('featured-product.php') ?>
 <!-- End Display the Featured Products -->
 
   <script src="js/jquery-1.11.0.min.js"></script>

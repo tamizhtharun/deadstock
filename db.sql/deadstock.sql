@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 28, 2025 at 05:57 AM
+-- Generation Time: Jan 30, 2025 at 10:44 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -79,6 +79,142 @@ INSERT INTO `bid_settings` (`id`, `send_time`, `close_time`, `created_at`, `upda
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `emails`
+--
+
+CREATE TABLE `emails` (
+  `id` int(11) NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `recipient_id` int(11) NOT NULL,
+  `recipient_type` enum('seller','user') NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `attachment_path` varchar(255) DEFAULT NULL,
+  `status` enum('sent','failed') NOT NULL DEFAULT 'sent',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `emails`
+--
+
+INSERT INTO `emails` (`id`, `sender_id`, `recipient_id`, `recipient_type`, `subject`, `message`, `attachment_path`, `status`, `created_at`, `updated_at`) VALUES
+(1, 0, 9, 'seller', 'Testmail', '123', NULL, 'sent', '2025-01-29 04:38:46', '2025-01-29 04:38:46'),
+(2, 0, 10, 'seller', 'Tharun', '1312', NULL, 'sent', '2025-01-29 04:39:54', '2025-01-29 04:39:54'),
+(3, 0, 10, 'seller', 'Tharun', '1312', NULL, 'sent', '2025-01-29 04:44:33', '2025-01-29 04:44:33'),
+(4, 0, 12, 'seller', 'Test main', '<p>Test mail</p>', NULL, 'sent', '2025-01-29 05:03:31', '2025-01-29 05:03:31'),
+(5, 0, 9, 'seller', 'Test main', '<p>Test mail</p>', NULL, 'sent', '2025-01-29 05:03:31', '2025-01-29 05:03:31'),
+(6, 0, 10, 'seller', 'Test main', '<p>Test mail</p>', NULL, 'sent', '2025-01-29 05:03:31', '2025-01-29 05:03:31'),
+(7, 0, 11, 'seller', 'Test main', '<p>Test mail</p>', NULL, 'sent', '2025-01-29 05:03:31', '2025-01-29 05:03:31'),
+(8, 0, 10, 'seller', 'Test main', '<p>Test mail</p>', NULL, 'sent', '2025-01-29 05:03:31', '2025-01-29 05:03:31'),
+(9, 0, 11, 'seller', 'Test main', '<p>Test mail</p>', NULL, 'sent', '2025-01-29 05:03:31', '2025-01-29 05:03:31'),
+(10, 0, 12, 'seller', 'Test main', '<p>Test mail</p>', NULL, 'sent', '2025-01-29 05:04:35', '2025-01-29 05:04:35'),
+(11, 0, 9, 'seller', 'Test main', '<p>Test mail</p>', NULL, 'sent', '2025-01-29 05:04:35', '2025-01-29 05:04:35'),
+(12, 0, 10, 'seller', 'Test main', '<p>Test mail</p>', NULL, 'sent', '2025-01-29 05:04:35', '2025-01-29 05:04:35'),
+(13, 0, 11, 'seller', 'Test main', '<p>Test mail</p>', NULL, 'sent', '2025-01-29 05:04:35', '2025-01-29 05:04:35'),
+(14, 0, 10, 'seller', 'Test main', '<p>Test mail</p>', NULL, 'sent', '2025-01-29 05:04:35', '2025-01-29 05:04:35'),
+(15, 0, 11, 'seller', 'Test main', '<p>Test mail</p>', NULL, 'sent', '2025-01-29 05:04:35', '2025-01-29 05:04:35'),
+(16, 0, 13, 'seller', 'mailtotharun23@gmail.com', '<p>123</p>', NULL, 'sent', '2025-01-29 06:23:15', '2025-01-29 06:23:15'),
+(17, 0, 12, 'seller', 'mailtotharun23@gmail.com', '<p>123</p>', NULL, 'sent', '2025-01-29 06:23:15', '2025-01-29 06:23:15'),
+(18, 0, 9, 'seller', 'mailtotharun23@gmail.com', '<p>123</p>', NULL, 'sent', '2025-01-29 06:23:15', '2025-01-29 06:23:15'),
+(19, 0, 10, 'seller', 'mailtotharun23@gmail.com', '<p>123</p>', NULL, 'sent', '2025-01-29 06:23:15', '2025-01-29 06:23:15'),
+(20, 0, 11, 'seller', 'mailtotharun23@gmail.com', '<p>123</p>', NULL, 'sent', '2025-01-29 06:23:15', '2025-01-29 06:23:15'),
+(21, 0, 13, 'seller', 'Lokesh Group of companies', '<p>123</p>', NULL, 'sent', '2025-01-29 06:26:52', '2025-01-29 06:26:52'),
+(22, 0, 9, 'seller', 'Nithish Kumar', '<p>123</p>', NULL, 'sent', '2025-01-29 06:28:45', '2025-01-29 06:28:45'),
+(23, 0, 13, 'seller', '123', '<p>1233</p>', NULL, 'sent', '2025-01-29 06:31:21', '2025-01-29 06:31:21'),
+(24, 0, 12, 'seller', '123', '<p>1233</p>', NULL, 'sent', '2025-01-29 06:31:21', '2025-01-29 06:31:21'),
+(25, 0, 9, 'seller', '123', '<p>1233</p>', NULL, 'sent', '2025-01-29 06:31:21', '2025-01-29 06:31:21'),
+(26, 0, 10, 'seller', '123', '<p>1233</p>', NULL, 'sent', '2025-01-29 06:31:21', '2025-01-29 06:31:21'),
+(27, 0, 11, 'seller', '123', '<p>1233</p>', NULL, 'sent', '2025-01-29 06:31:21', '2025-01-29 06:31:21'),
+(28, 3, 13, 'seller', '123', '<p>1233</p>', NULL, 'sent', '2025-01-29 06:33:11', '2025-01-29 06:33:11'),
+(29, 3, 12, 'seller', '123', '<p>1233</p>', NULL, 'sent', '2025-01-29 06:33:11', '2025-01-29 06:33:11'),
+(30, 3, 9, 'seller', '123', '<p>1233</p>', NULL, 'sent', '2025-01-29 06:33:11', '2025-01-29 06:33:11'),
+(31, 3, 10, 'seller', '123', '<p>1233</p>', NULL, 'sent', '2025-01-29 06:33:11', '2025-01-29 06:33:11'),
+(32, 3, 11, 'seller', '123', '<p>1233</p>', NULL, 'sent', '2025-01-29 06:33:11', '2025-01-29 06:33:11'),
+(33, 3, 13, 'seller', 'Lokesh Group of Companies pvt. Ltd.', '<p>Dear Lokesh,</p><p>Complete your tasks for deadstock soon.</p>', NULL, 'sent', '2025-01-29 06:34:18', '2025-01-29 06:34:18'),
+(34, 3, 12, 'seller', 'Lokesh Group of Companies pvt. Ltd.', '<p>Dear Lokesh,</p><p>Complete your tasks for deadstock soon.</p>', NULL, 'sent', '2025-01-29 06:34:18', '2025-01-29 06:34:18'),
+(35, 3, 9, 'seller', 'Lokesh Group of Companies pvt. Ltd.', '<p>Dear Lokesh,</p><p>Complete your tasks for deadstock soon.</p>', NULL, 'sent', '2025-01-29 06:34:18', '2025-01-29 06:34:18'),
+(36, 3, 10, 'seller', 'Lokesh Group of Companies pvt. Ltd.', '<p>Dear Lokesh,</p><p>Complete your tasks for deadstock soon.</p>', NULL, 'sent', '2025-01-29 06:34:18', '2025-01-29 06:34:18'),
+(37, 3, 11, 'seller', 'Lokesh Group of Companies pvt. Ltd.', '<p>Dear Lokesh,</p><p>Complete your tasks for deadstock soon.</p>', NULL, 'sent', '2025-01-29 06:34:18', '2025-01-29 06:34:18'),
+(38, 3, 13, 'user', 'Lokesh The GOAT 🐐', '<p>GOAT LOKESH 🐐</p>', NULL, 'sent', '2025-01-29 06:44:23', '2025-01-29 06:44:23'),
+(39, 3, 12, 'user', 'Lokesh The GOAT 🐐', '<p>GOAT LOKESH 🐐</p>', NULL, 'sent', '2025-01-29 06:44:23', '2025-01-29 06:44:23'),
+(40, 3, 10, 'user', 'Lokesh The GOAT 🐐', '<p>GOAT LOKESH 🐐</p>', NULL, 'sent', '2025-01-29 06:44:23', '2025-01-29 06:44:23'),
+(41, 3, 11, 'user', 'Lokesh The GOAT 🐐', '<p>GOAT LOKESH 🐐</p>', NULL, 'sent', '2025-01-29 06:44:23', '2025-01-29 06:44:23'),
+(42, 3, 927622, 'seller', 'Lokesh Football Club', '<p>Lokesh is always a Lokesh</p>', NULL, 'sent', '2025-01-29 07:06:58', '2025-01-29 07:06:58'),
+(43, 3, 0, 'seller', 'Lokesh Football Club', '<p>Lokesh is always a Lokesh</p>', NULL, 'sent', '2025-01-29 07:07:03', '2025-01-29 07:07:03'),
+(44, 3, 0, 'seller', 'Lokesh Football Club', '<p>Lokesh is always a Lokesh</p>', NULL, 'sent', '2025-01-29 07:07:07', '2025-01-29 07:07:07'),
+(45, 3, 0, 'seller', 'Lokesh Football Club', '<p>Lokesh is always a Lokesh</p>', NULL, 'sent', '2025-01-29 07:07:12', '2025-01-29 07:07:12'),
+(46, 3, 0, 'seller', 'Lokesh Football Club', '<p>Lokesh is always a Lokesh</p>', NULL, 'sent', '2025-01-29 07:07:17', '2025-01-29 07:07:17'),
+(47, 3, 927622, 'seller', 'Testing mail', '<p>..............</p>', NULL, 'sent', '2025-01-29 13:05:47', '2025-01-29 13:05:47'),
+(48, 3, 0, 'seller', 'Testing mail', '<p>..............</p>', NULL, 'sent', '2025-01-29 13:05:52', '2025-01-29 13:05:52'),
+(49, 3, 0, 'seller', 'Testing mail', '<p>..............</p>', NULL, 'sent', '2025-01-29 13:05:57', '2025-01-29 13:05:57'),
+(50, 3, 0, 'seller', 'Testing mail', '<p>..............</p>', NULL, 'sent', '2025-01-29 13:06:02', '2025-01-29 13:06:02'),
+(51, 3, 0, 'seller', 'Testing mail', '<p>..............</p>', NULL, 'sent', '2025-01-29 13:06:06', '2025-01-29 13:06:06'),
+(52, 3, 927622, 'seller', 'Testing mail', '<p>..............</p>', NULL, 'sent', '2025-01-29 13:06:48', '2025-01-29 13:06:48'),
+(53, 3, 0, 'seller', 'Testing mail', '<p>..............</p>', NULL, 'sent', '2025-01-29 13:06:53', '2025-01-29 13:06:53'),
+(54, 3, 0, 'seller', 'Testing mail', '<p>..............</p>', NULL, 'sent', '2025-01-29 13:06:58', '2025-01-29 13:06:58'),
+(55, 3, 0, 'seller', 'Testing mail', '<p>..............</p>', NULL, 'sent', '2025-01-29 13:07:03', '2025-01-29 13:07:03'),
+(56, 3, 0, 'seller', 'Testing mail', '<p>..............</p>', NULL, 'sent', '2025-01-29 13:07:11', '2025-01-29 13:07:11'),
+(57, 3, 927622, 'seller', 'Mail with Attachement', '<p>Attachement</p>', NULL, 'sent', '2025-01-29 14:47:40', '2025-01-29 14:47:40'),
+(58, 3, 0, 'seller', 'Mail with Attachement', '<p>Attachement</p>', NULL, 'sent', '2025-01-29 14:47:48', '2025-01-29 14:47:48'),
+(59, 3, 0, 'seller', 'Mail with Attachement', '<p>Attachement</p>', NULL, 'sent', '2025-01-29 14:47:56', '2025-01-29 14:47:56'),
+(60, 3, 0, 'seller', 'Mail with Attachement', '<p>Attachement</p>', NULL, 'sent', '2025-01-29 14:48:04', '2025-01-29 14:48:04'),
+(61, 3, 0, 'seller', 'Mail with Attachement', '<p>Attachement</p>', NULL, 'sent', '2025-01-29 14:48:18', '2025-01-29 14:48:18'),
+(62, 3, 927622, 'seller', 'Test mail 2 with attachement', '<p>attachment</p>', NULL, 'sent', '2025-01-29 15:07:53', '2025-01-29 15:07:53'),
+(63, 3, 0, 'seller', 'Test mail 2 with attachement', '<p>attachment</p>', NULL, 'sent', '2025-01-29 15:08:32', '2025-01-29 15:08:32'),
+(64, 3, 927622, 'seller', 'MAIL', '<p>Tharun</p>', NULL, 'sent', '2025-01-29 15:17:18', '2025-01-29 15:17:18'),
+(65, 3, 0, 'seller', 'MAIL', '<p>Tharun</p>', NULL, 'sent', '2025-01-29 15:17:31', '2025-01-29 15:17:31'),
+(66, 3, 0, 'seller', 'MAIL', '<p>Tharun</p>', NULL, 'sent', '2025-01-29 15:17:45', '2025-01-29 15:17:45'),
+(67, 3, 0, 'seller', 'MAIL', '<p>Tharun</p>', NULL, 'sent', '2025-01-29 15:17:59', '2025-01-29 15:17:59'),
+(68, 3, 0, 'seller', 'MAIL', '<p>Tharun</p>', NULL, 'sent', '2025-01-29 15:18:13', '2025-01-29 15:18:13');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `recipient_id` int(11) NOT NULL,
+  `recipient_type` enum('seller','user') NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `type` enum('info','success','warning','error') NOT NULL DEFAULT 'info',
+  `is_read` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `recipient_id`, `recipient_type`, `title`, `message`, `type`, `is_read`, `created_at`) VALUES
+(1, 13, 'seller', 'Offer Alert', 'dear sellers', 'info', 0, '2025-01-30 05:56:47'),
+(2, 12, 'seller', 'Offer Alert', 'dear sellers', 'info', 0, '2025-01-30 05:56:47'),
+(3, 9, 'seller', 'Offer Alert', 'dear sellers', 'info', 0, '2025-01-30 05:56:47'),
+(4, 10, 'seller', 'Offer Alert', 'dear sellers', 'info', 0, '2025-01-30 05:56:47'),
+(5, 11, 'seller', 'Offer Alert', 'dear sellers', 'info', 0, '2025-01-30 05:56:47'),
+(6, 13, 'user', 'Dear Customers', 'By deadstock', 'success', 0, '2025-01-30 06:14:55'),
+(7, 12, 'user', 'Dear Customers', 'By deadstock', 'success', 0, '2025-01-30 06:14:55'),
+(8, 10, 'user', 'Dear Customers', 'By deadstock', 'success', 0, '2025-01-30 06:14:55'),
+(37, 11, 'user', 'What is deadstock ?', 'Dead stock is inventory that is no longer sellable and will likely never sell in the future, oftentimes because it\'s expired, obsolete, low quality, or out of season. Dead stock, usually stored in the warehouse, only refers to inventory that has never been sold, which excludes returns.', 'error', 1, '2025-01-30 07:06:37'),
+(38, 11, 'user', 'What is deadstock ?', 'Dead stock is inventory that is no longer sellable and will likely never sell in the future, oftentimes because it\'s expired, obsolete, low quality, or out of season. Dead stock, usually stored in the warehouse, only refers to inventory that has never been sold, which excludes returns.', 'error', 1, '2025-01-30 07:06:38'),
+(39, 11, 'user', 'What is deadstock ?', 'Dead stock is inventory that is no longer sellable and will likely never sell in the future, oftentimes because it\'s expired, obsolete, low quality, or out of season. Dead stock, usually stored in the warehouse, only refers to inventory that has never been sold, which excludes returns.', 'error', 1, '2025-01-30 07:06:39'),
+(40, 11, 'user', 'What is deadstock ?', 'Dead stock is inventory that is no longer sellable and will likely never sell in the future, oftentimes because it\'s expired, obsolete, low quality, or out of season. Dead stock, usually stored in the warehouse, only refers to inventory that has never been sold, which excludes returns.', 'error', 1, '2025-01-30 07:06:39'),
+(41, 11, 'user', 'What is deadstock ?', 'Dead stock is inventory that is no longer sellable and will likely never sell in the future, oftentimes because it\'s expired, obsolete, low quality, or out of season. Dead stock, usually stored in the warehouse, only refers to inventory that has never been sold, which excludes returns.', 'error', 1, '2025-01-30 07:06:39'),
+(42, 11, 'user', 'What is deadstock ?', 'Dead stock is inventory that is no longer sellable and will likely never sell in the future, oftentimes because it\'s expired, obsolete, low quality, or out of season. Dead stock, usually stored in the warehouse, only refers to inventory that has never been sold, which excludes returns.', 'error', 1, '2025-01-30 07:06:40'),
+(43, 11, 'user', 'What is deadstock ?', 'Dead stock is inventory that is no longer sellable and will likely never sell in the future, oftentimes because it\'s expired, obsolete, low quality, or out of season. Dead stock, usually stored in the warehouse, only refers to inventory that has never been sold, which excludes returns.', 'error', 1, '2025-01-30 07:06:41'),
+(44, 11, 'user', 'What is deadstock ?', 'Dead stock is inventory that is no longer sellable and will likely never sell in the future, oftentimes because it\'s expired, obsolete, low quality, or out of season. Dead stock, usually stored in the warehouse, only refers to inventory that has never been sold, which excludes returns.', 'error', 1, '2025-01-30 07:15:41'),
+(45, 11, 'user', 'What is deadstock ?', 'Dead stock is inventory that is no longer sellable and will likely never sell in the future, oftentimes because it\'s expired, obsolete, low quality, or out of season. Dead stock, usually stored in the warehouse, only refers to inventory that has never been sold, which excludes returns.', 'error', 1, '2025-01-30 07:15:42'),
+(46, 11, 'user', 'What is deadstock ?', 'Dead stock is inventory that is no longer sellable and will likely never sell in the future, oftentimes because it\'s expired, obsolete, low quality, or out of season. Dead stock, usually stored in the warehouse, only refers to inventory that has never been sold, which excludes returns.', 'error', 1, '2025-01-30 07:21:19'),
+(47, 11, 'user', 'TEST', 'SEND', 'info', 1, '2025-01-30 08:53:38'),
+(48, 11, 'user', '123456', '123456', 'info', 1, '2025-01-30 08:55:15');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `page_views`
 --
 
@@ -109,7 +245,38 @@ INSERT INTO `page_views` (`id`, `page_id`, `page_title`, `view_count`, `view_dat
 (0, 'HP', 'Home page', 1, '2025-01-28'),
 (0, 'dashboard', 'Admin Dashboard', 1, '2025-01-28'),
 (0, 'SRF', 'Seller Registration Form', 1, '2025-01-28'),
-(0, 'SRP', 'Seller Panel', 1, '2025-01-28');
+(0, 'SRP', 'Seller Panel', 1, '2025-01-28'),
+(0, 'HP', 'Home page', 1, '2025-01-28'),
+(0, 'SRF', 'Seller Registration Form', 1, '2025-01-28'),
+(0, 'HP', 'Home page', 1, '2025-01-28'),
+(0, 'HP', 'Home page', 1, '2025-01-28'),
+(0, 'SRP', 'Seller Panel', 1, '2025-01-28'),
+(0, 'HP', 'Home page', 1, '2025-01-28'),
+(0, 'HP', 'Home page', 1, '2025-01-28'),
+(0, 'SRF', 'Seller Registration Form', 1, '2025-01-28'),
+(0, 'HP', 'Home page', 1, '2025-01-28'),
+(0, 'HP', 'Home page', 1, '2025-01-29'),
+(0, 'HP', 'Home page', 1, '2025-01-29'),
+(0, 'SRF', 'Seller Registration Form', 1, '2025-01-29'),
+(0, 'SRF', 'Seller Registration Form', 1, '2025-01-29'),
+(0, 'HP', 'Home page', 1, '2025-01-29'),
+(0, 'HP', 'Home page', 1, '2025-01-29'),
+(0, 'HP', 'Home page', 1, '2025-01-29'),
+(0, 'HP', 'Home page', 1, '2025-01-29'),
+(0, 'HP', 'Home page', 1, '2025-01-29'),
+(0, 'HP', 'Home page', 1, '2025-01-29'),
+(0, 'HP', 'Home page', 1, '2025-01-29'),
+(0, 'HP', 'Home page', 1, '2025-01-30'),
+(0, 'HP', 'Home page', 1, '2025-01-30'),
+(0, 'HP', 'Home page', 1, '2025-01-30'),
+(0, 'HP', 'Home page', 1, '2025-01-30'),
+(0, 'HP', 'Home page', 1, '2025-01-30'),
+(0, 'HP', 'Home page', 1, '2025-01-30'),
+(0, 'HP', 'Home page', 1, '2025-01-30'),
+(0, 'HP', 'Home page', 1, '2025-01-30'),
+(0, 'HP', 'Home page', 1, '2025-01-30'),
+(0, 'HP', 'Home page', 1, '2025-01-30'),
+(0, 'HP', 'Home page', 1, '2025-01-30');
 
 -- --------------------------------------------------------
 
@@ -139,10 +306,11 @@ CREATE TABLE `sellers` (
 --
 
 INSERT INTO `sellers` (`seller_id`, `seller_name`, `seller_cname`, `seller_email`, `seller_phone`, `seller_gst`, `seller_address`, `seller_state`, `seller_city`, `seller_zipcode`, `seller_password`, `created_at`, `seller_status`, `seller_photo`) VALUES
-(9, 'TAMIL SELVAN V', 'Deadstock Tooling', 'mailtotharun23@gmail.com', '9865969799', '22AAAAA0000A1Z5', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$bMO/LgY/F2pMyocMrUaeRudf5xMYmkkkZecWFeQjhQ/X16T63btKm', '2025-01-09 04:34:52', 1, ''),
+(9, 'TAMIL SELVAN V', 'Deadstock Tooling', 'mailtotharun23@gmail.com', '9865969799', '22AAAAA0000A1Z5', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$bMO/LgY/F2pMyocMrUaeRudf5xMYmkkkZecWFeQjhQ/X16T63btKm', '2025-01-09 04:34:52', 1, 'seller-9.png'),
 (10, 'TAMIL SELVAN V', 'IMET', '927622bal049@mkce.ac.in', '9597049879', '22AAAAA0000A1Z5', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', '2025-01-26 11:23:02', 1, ''),
-(11, 'Test Seller', 'IMET TOOLING', 'seller@deadstock.in', '9865969799', '22AAAAA0000A1Z5', '1/20, Matha kovil street, Karai- po, Alathur- tk, Perambalur.', 'Tamil Nadu', 'Perambalur', '621109', '$2y$10$qzRaXi.d9lgOEqFGDAKG4uNHfJ95sptoMLJXEXfI68wfanQ7bwGNC', '2025-01-27 14:25:15', 1, 'seller-11.jpg'),
-(12, 'Seller 1', 'Company 11', 'company@deadstock.in', '9876543213', '22AAAAA0000A1Z5', 'Sullerumbu', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$qzRaXi.d9lgOEqFGDAKG4uNHfJ95sptoMLJXEXfI68wfanQ7bwGNC', '2025-01-27 16:29:00', 1, 'seller-12.png');
+(11, 'Test Seller', 'IMET TOOLING', 'seller@deadstock.in', '9865969799', '22AAAAA0000A1Z5', '1/20, Matha kovil street, Karai- po, Alathur- tk, Perambalur.', 'Tamil Nadu', 'Perambalur', '639133', '$2y$10$qzRaXi.d9lgOEqFGDAKG4uNHfJ95sptoMLJXEXfI68wfanQ7bwGNC', '2025-01-27 14:25:15', 1, 'seller-11.jpg'),
+(12, 'Seller 1', 'Company 11', 'company@deadstock.in', '9876543213', '22AAAAA0000A1Z5', 'Sullerumbu', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$qzRaXi.d9lgOEqFGDAKG4uNHfJ95sptoMLJXEXfI68wfanQ7bwGNC', '2025-01-27 16:29:00', 1, 'seller-12.png'),
+(13, 'Lokesh TL', 'LOKESH GROUP OF COMPANIES', 'lokeshlokesh93662@gmail.com', '9876543215', '22AAAAA0000A1Z5', 'Mecheri, Mettur Dam', 'Tamil Nadu', 'Salem', '636402', '$2y$10$UVc0YZPHVjEAa3XgBKjdLOynIUbPe.fDv.3j4XfaxjHeHAvYWLCYi', '2025-01-29 05:49:57', 1, '');
 
 -- --------------------------------------------------------
 
@@ -163,7 +331,7 @@ CREATE TABLE `seller_brands` (
 --
 
 INSERT INTO `seller_brands` (`seller_id`, `brand_id`, `brand_certificate`, `valid_to`, `created_at`) VALUES
-(9, 45, 'certificate-9-45-1737980452.pdf', '2025-01-31', '2025-01-27'),
+(9, 41, 'certificate-9-41-1738209827.pdf', '2025-01-31', '2025-01-30'),
 (11, 44, 'certificate-11-44-1738038507.pdf', '2025-01-28', '2025-01-28'),
 (11, 49, 'certificate-11-49-1738039496.pdf', '2025-05-29', '2025-01-28'),
 (12, 42, 'certificate-12-42-1737997120.pdf', '2025-01-28', '2025-01-27'),
@@ -211,8 +379,7 @@ INSERT INTO `tbl_brands` (`brand_id`, `tcat_id`, `brand_name`, `brand_descriptio
 (62, 10, 'Tungaloy', '', 'brand-logo-62.png'),
 (63, 10, 'Walter Tools', '', 'brand-logo-63.png'),
 (64, 10, 'Widia', '', 'brand-logo-64.png'),
-(65, 10, 'YG1', '', 'brand-logo-65.png'),
-(66, 10, 'Dormar', '', 'brand-logo-66.png');
+(65, 10, 'YG1', '', 'brand-logo-65.png');
 
 -- --------------------------------------------------------
 
@@ -344,7 +511,6 @@ CREATE TABLE `tbl_faq` (
 --
 
 INSERT INTO `tbl_faq` (`faq_id`, `faq_title`, `faq_content`) VALUES
-(1, 'How to find an item?', '<h3 class=\"checkout-complete-box font-bold txt16\" style=\"box-sizing: inherit; text-rendering: optimizeLegibility; margin: 0.2rem 0px 0.5rem; padding: 0px; line-height: 1.4; background-color: rgb(250, 250, 250);\"><font color=\"#222222\" face=\"opensans, Helvetica Neue, Helvetica, Helvetica, Arial, sans-serif\"><span style=\"font-size: 15.7143px;\">We have a wide range of fabulous products to choose from.</span></font></h3><h3 class=\"checkout-complete-box font-bold txt16\" style=\"box-sizing: inherit; text-rendering: optimizeLegibility; margin: 0.2rem 0px 0.5rem; padding: 0px; line-height: 1.4; background-color: rgb(250, 250, 250);\"><span style=\"font-size: 15.7143px; color: rgb(34, 34, 34); font-family: opensans, \"Helvetica Neue\", Helvetica, Helvetica, Arial, sans-serif;\">Tip 1: If you\'re looking for a specific product, use the keyword search box located at the top of the site. Simply type what you are looking for, and prepare to be amazed!</span></h3><h3 class=\"checkout-complete-box font-bold txt16\" style=\"box-sizing: inherit; text-rendering: optimizeLegibility; margin: 0.2rem 0px 0.5rem; padding: 0px; line-height: 1.4; background-color: rgb(250, 250, 250);\"><font color=\"#222222\" face=\"opensans, Helvetica Neue, Helvetica, Helvetica, Arial, sans-serif\"><span style=\"font-size: 15.7143px;\">Tip 2: If you want to explore a category of products, use the Shop Categories in the upper menu, and navigate through your favorite categories where we\'ll feature the best products in each.</span></font><br><br></h3>\r\n'),
 (2, 'What is your return policy?', '<p><span style=\"color: rgb(10, 10, 10); font-family: opensans, &quot;Helvetica Neue&quot;, Helvetica, Helvetica, Arial, sans-serif; font-size: 14px; text-align: center;\">You have 15 days to make a refund request after your order has been delivered.</span><br></p>\r\n'),
 (3, ' I received a defective/damaged item, can I get a refund?', '<p>In case the item you received is damaged or defective, you could return an item in the same condition as you received it with the original box and/or packaging intact. Once we receive the returned item, we will inspect it and if the item is found to be defective or damaged, we will process the refund along with any shipping fees incurred.<br></p>\r\n'),
 (4, 'When are ‘Returns’ not possible?', '<p class=\"a  \" style=\"box-sizing: inherit; text-rendering: optimizeLegibility; line-height: 1.6; margin-bottom: 0.714286rem; padding: 0px; font-size: 14px; color: rgb(10, 10, 10); font-family: opensans, &quot;Helvetica Neue&quot;, Helvetica, Helvetica, Arial, sans-serif; background-color: rgb(250, 250, 250);\">There are a few certain scenarios where it is difficult for us to support returns:</p><ol style=\"box-sizing: inherit; line-height: 1.6; margin-right: 0px; margin-bottom: 0px; margin-left: 1.25rem; padding: 0px; list-style-position: outside; color: rgb(10, 10, 10); font-family: opensans, &quot;Helvetica Neue&quot;, Helvetica, Helvetica, Arial, sans-serif; font-size: 14px; background-color: rgb(250, 250, 250);\"><li style=\"box-sizing: inherit; margin: 0px; padding: 0px; font-size: inherit;\">Return request is made outside the specified time frame, of 15 days from delivery.</li><li style=\"box-sizing: inherit; margin: 0px; padding: 0px; font-size: inherit;\">Product is used, damaged, or is not in the same condition as you received it.</li><li style=\"box-sizing: inherit; margin: 0px; padding: 0px; font-size: inherit;\">Specific categories like innerwear, lingerie, socks and clothing freebies etc.</li><li style=\"box-sizing: inherit; margin: 0px; padding: 0px; font-size: inherit;\">Defective products which are covered under the manufacturer\'s warranty.</li><li style=\"box-sizing: inherit; margin: 0px; padding: 0px; font-size: inherit;\">Any consumable item which has been used or installed.</li><li style=\"box-sizing: inherit; margin: 0px; padding: 0px; font-size: inherit;\">Products with tampered or missing serial numbers.</li><li style=\"box-sizing: inherit; margin: 0px; padding: 0px; font-size: inherit;\">Anything missing from the package you\'ve received including price tags, labels, original packing, freebies and accessories.</li><li style=\"box-sizing: inherit; margin: 0px; padding: 0px; font-size: inherit;\">Fragile items, hygiene related items.</li></ol>\r\n'),
@@ -375,7 +541,8 @@ INSERT INTO `tbl_key` (`id`, `P`, `M`, `K`, `N`, `S`, `H`, `O`) VALUES
 (0, '0', '1', '2', '1', '0', '1', '2'),
 (168, '0', '1', '2', '1', '0', '1', '2'),
 (169, '0', '1', '2', '1', '0', '1', '2'),
-(170, '0', '0', '1', '2', '2', '1', '0');
+(170, '0', '0', '1', '2', '2', '1', '0'),
+(0, '0', '1', '2', '1', '0', '1', '1');
 
 -- --------------------------------------------------------
 
@@ -460,9 +627,9 @@ CREATE TABLE `tbl_orders` (
 --
 
 INSERT INTO `tbl_orders` (`id`, `order_id`, `product_id`, `user_id`, `seller_id`, `quantity`, `price`, `order_status`, `tracking_id`, `bid_id`, `payment_id`, `created_at`, `updated_at`, `order_type`, `processing_time`) VALUES
-(3, 'order_PnCOIZeJbQLF5n', 164, 11, 9, 20, 1000.00, 'pending', NULL, 27, 'pay_PnCQQCMZ9TQs5c', '2025-01-25 16:18:38', '2025-01-25 16:18:38', 'bid', NULL),
+(3, 'order_PnCOIZeJbQLF5n', 164, 11, 9, 20, 1000.00, 'processing', NULL, 27, 'pay_PnCQQCMZ9TQs5c', '2025-01-25 16:18:38', '2025-01-29 17:22:57', 'bid', '2025-01-29 22:52:57'),
 (4, 'order_PldXXwTCszKoxZ', 163, 11, 9, 10, 50.00, 'delivered', 'TRACKING 123 ID', 26, 'pay_PldYUj8aIIpb9J', '2025-01-25 16:18:42', '2025-01-25 16:19:37', 'bid', '2025-01-25 21:49:01'),
-(5, 'order_PnxttQVoBYxND6', 162, 11, 9, 60, 50.00, 'shipped', NULL, 29, 'pay_PnxuG8019DtDQU', '2025-01-26 11:56:49', '2025-01-27 05:29:09', 'bid', NULL),
+(5, 'order_PnxttQVoBYxND6', 162, 11, 9, 60, 50.00, 'delivered', NULL, 29, 'pay_PnxuG8019DtDQU', '2025-01-26 11:56:49', '2025-01-30 03:38:26', 'bid', NULL),
 (6, 'order_PoNOVr5Bm3BzTa', 164, 11, 9, 60, 50.00, 'delivered', 'TRACKING ID 132', 11124, 'pay_PoNOz6fP47So8l', '2025-01-27 07:00:28', '2025-01-27 07:01:53', 'bid', '2025-01-27 12:31:04');
 
 -- --------------------------------------------------------
@@ -500,13 +667,13 @@ CREATE TABLE `tbl_product` (
 --
 
 INSERT INTO `tbl_product` (`id`, `seller_id`, `p_name`, `p_old_price`, `p_current_price`, `p_qty`, `p_featured_photo`, `p_description`, `p_feature`, `p_condition`, `p_return_policy`, `p_total_view`, `p_is_featured`, `p_is_active`, `p_is_approve`, `tcat_id`, `mcat_id`, `ecat_id`, `product_catalogue`, `product_brand`, `p_date`) VALUES
-(162, 9, 'Shank tool – Rigid clamping', '1329', '400', 222, 'product-featured-162.jpg', '', '', '', '', 196, 1, 1, 1, 0, 0, 97, 'product-catalogue-162.pdf', '41', NULL),
+(162, 9, 'Shank tool – Rigid clamping', '1329', '400', 222, 'product-featured-162.jpg', '', '', '', '', 199, 1, 1, 1, 0, 0, 97, 'product-catalogue-162.pdf', '41', NULL),
 (163, 9, 'Turning Insert – Positive rhombic 80°', '986', '439', 122, 'product-featured-163.png', '', '', '', '', 127, 1, 1, 1, 0, 0, 112, 'product-catalogue-163.pdf', '42', NULL),
-(164, 9, 'CNMG120404-NF WPP20S', '599', '299', 1500, 'product-featured-164.png', 'Description provided by the seller', '', '', '', 123, 1, 1, 1, 0, 0, 99, 'product-catalogue-164.pdf', '63', NULL),
+(164, 9, 'CNMG120404-NF WPP20S', '599', '299', 1500, 'product-featured-164.png', 'Description provided by the seller', '', '', '', 129, 1, 1, 1, 0, 0, 99, 'product-catalogue-164.pdf', '63', NULL),
 (166, 9, 'M5008-016-T14-02-01', '580', '259', 222, 'product-featured-166.png', '', '', '', '', 7, 0, 0, 1, 0, 0, 101, 'product-catalogue-166.pdf', '63', NULL),
 (168, 10, 'TS5008-016-T14-02-01', '1429', '400', 1500, 'product-featured-168.png', '', '', '', '', 2, 0, 0, 1, 0, 0, 0, 'product-catalogue-168.pdf', '43', '2025-01-26 12:36:26'),
-(169, 10, '111008-016-T14-02-01', '1329', '400', 100, 'product-featured-169.png', '', '', '', '', 22, 1, 1, 1, 0, 0, 99, 'product-catalogue-169.pdf', '41', '2025-01-26 12:48:53'),
-(170, 11, 'M5008-016-T14-02-01', '299', '111', 4800, 'product-featured-170.png', 'Tamilselvan', '', '', '', 28, 0, 0, 1, 13, 78, NULL, 'product-catalogue-170.pdf', '43', '2025-01-27 18:23:06');
+(169, 10, '111008-016-T14-02-01', '1329', '400', 100, 'product-featured-169.png', '', '', '', '', 23, 0, 0, 1, 0, 0, 99, 'product-catalogue-169.pdf', '41', '2025-01-26 12:48:53'),
+(170, 11, 'M5008-016-T14-02-01', '299', '111', 4800, 'product-featured-170.png', 'Tamilselvan', '', '', '', 29, 0, 0, 1, 13, 78, NULL, 'product-catalogue-170.pdf', '43', '2025-01-27 18:23:06');
 
 -- --------------------------------------------------------
 
@@ -715,7 +882,9 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `phone_number`, `email`, `password`, `user_gst`, `created_at`, `profile_image`) VALUES
 (10, 'TAMIL SELVAN V', '9597049879', 'user@mail.com', '$2y$10$UfjZWLicsEiA.dMhXThReuWkDeWMRmZw5xZ/6M24AYesX/XTDGmtG', '', '2025-01-10 15:32:06', NULL),
-(11, 'TAMIL SELVAN V', '9597049879', 'visva@gmail.com', '$2y$10$0Mbk8unYwk6MdOzHl8q8veV3ujQ5.q1REfM/gV36hHodyerqlwNfq', '', '2025-01-11 04:17:31', 'profile-11.png');
+(11, 'THARUN', '9597049879', 'visva@gmail.com', '$2y$10$0Mbk8unYwk6MdOzHl8q8veV3ujQ5.q1REfM/gV36hHodyerqlwNfq', '', '2025-01-11 04:17:31', 'profile-11.jpg'),
+(12, 'Lokesh Gethu', '8529637419', 'mailtotharun23@gmail.com', '$2y$10$Uv2.CGwjR8QR8XMH6TSNAO0SgVZWp3aPjftxPAHooPruGlwBA2sPW', '', '2025-01-29 06:37:04', NULL),
+(13, 'Lokeee', '7418529637', 'nithiishhh@gmail.com', '$2y$10$M7iCaKWmuuvN1vdZt1tHoeJvfB13sTHlgTn16W6RsKcsV4Woxg.oG', '', '2025-01-29 06:43:28', NULL);
 
 -- --------------------------------------------------------
 
@@ -755,9 +924,9 @@ INSERT INTO `users_addresses` (`id`, `user_id`, `full_name`, `phone_number`, `ad
 CREATE TABLE `user_login` (
   `id` int(11) NOT NULL,
   `user_name` varchar(100) NOT NULL,
-  `user_email` varchar(100) NOT NULL,
-  `user_phone` varchar(13) NOT NULL,
-  `user_photo` varchar(250) NOT NULL,
+  `user_email` varchar(100) DEFAULT NULL,
+  `user_phone` varchar(13) DEFAULT NULL,
+  `user_photo` varchar(250) DEFAULT NULL,
   `user_password` varchar(100) NOT NULL,
   `user_role` enum('admin','seller','user','') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -775,7 +944,10 @@ INSERT INTO `user_login` (`id`, `user_name`, `user_email`, `user_phone`, `user_p
 (20, 'visva', 'visva@gmail.com', '', '', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', 'user'),
 (21, 'TAMIL SELVAN V', '927622bal049@mkce.ac.in', '', '', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', 'seller'),
 (22, 'Test Seller', 'seller@deadstock.in', '', '', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5...', 'seller'),
-(23, 'Seller 1', 'company@deadstock.in', '', '', '$2y$10$A.gx7L08.unOG1kxmZXGYu33IcQ7yM/tO3aQk7zwXzx7u9fVji6lG1', 'seller');
+(23, 'Seller 1', 'company@deadstock.in', '', '', '$2y$10$A.gx7L08.unOG1kxmZXGYu33IcQ7yM/tO3aQk7zwXzx7u9fVji6lG1', 'seller'),
+(24, 'Lokesh TL', 'lokeshlokesh93662@gmail.com', NULL, NULL, '$2y$10$UVc0YZPHVjEAa3XgBKjdLOynIUbPe.fDv.3j4XfaxjHeHAvYWLCYi', 'seller'),
+(25, 'Lokesh Gethu', 'mailtotharun23@gmail.com', NULL, NULL, '$2y$10$Uv2.CGwjR8QR8XMH6TSNAO0SgVZWp3aPjftxPAHooPruGlwBA2sPW', 'user'),
+(26, 'Lokeee', 'nithiishhh@gmail.com', NULL, NULL, '$2y$10$M7iCaKWmuuvN1vdZt1tHoeJvfB13sTHlgTn16W6RsKcsV4Woxg.oG', 'user');
 
 --
 -- Indexes for dumped tables
@@ -793,6 +965,18 @@ ALTER TABLE `bidding`
 -- Indexes for table `bid_settings`
 --
 ALTER TABLE `bid_settings`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `emails`
+--
+ALTER TABLE `emails`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `notifications`
+--
+ALTER TABLE `notifications`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -911,10 +1095,22 @@ ALTER TABLE `bid_settings`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `emails`
+--
+ALTER TABLE `emails`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+
+--
+-- AUTO_INCREMENT for table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+
+--
 -- AUTO_INCREMENT for table `sellers`
 --
 ALTER TABLE `sellers`
-  MODIFY `seller_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `seller_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `tbl_brands`
@@ -974,7 +1170,7 @@ ALTER TABLE `tbl_top_category`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `users_addresses`
@@ -986,7 +1182,7 @@ ALTER TABLE `users_addresses`
 -- AUTO_INCREMENT for table `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Constraints for dumped tables

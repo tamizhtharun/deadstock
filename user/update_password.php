@@ -35,8 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch();
 
         // Debug statement (remove in production)
-        error_log("Stored hash: " . $user['password']);
-        error_log("Current password: " . $currentPassword);
+        // error_log("Stored hash: " . $user['password']);
+        // error_log("Current password: " . $currentPassword);
         
         // Try both MD5 and password_verify for compatibility
         if (!$user || (!password_verify($currentPassword, $user['password']) && password_hash($currentPassword, PASSWORD_DEFAULT) !== $user['password'])) {
