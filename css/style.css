@@ -260,6 +260,10 @@ h1,h2,h3,h4,h5,h6 {
   .block-3 { grid-area: 4 / 1 / 5 / 2; }
   
 }
+.section-header{
+  padding-right:20px;
+  padding-left:20px;
+}
 
 /* Swiper carousel */
 .swiper-prev,
@@ -273,7 +277,7 @@ h1,h2,h3,h4,h5,h6 {
   text-align: center;
   border-radius: 10px;
   --bs-btn-border-color: transparent;
-  --bs-btn-active-bg: #ec9b22;
+  --bs-btn-active-bg: #b1b1b1;
   --bs-btn-active-border-color: transparent;
   --bs-btn-hover-bg: var(--bs-primary);
   --bs-btn-hover-border-color: transparent;
@@ -283,13 +287,28 @@ h1,h2,h3,h4,h5,h6 {
 }
 .swiper-prev:hover,
 .swiper-next:hover {
-  background: var(--bs-primary);
+  background: #ebebeb;
+}
+.swiper{
+  /* border-radius: 20px; */
+  position:fixed;
+  width: 100% !important;
+  margin:0px !important;
+}
+.swiper-wrapper{
+  top: 0;
+  padding: 10px !important;
+   background-color: #f3f3f3 !important;
+}
+.container-lg{
+  margin: 0px !important;
+  padding: 0px;
 }
 
 /* category carousel */
 .category-carousel .category-item {
   background: #FFFFFF;
-  border: 1px solid #FBFBFB;
+  border: 1px solid #d4d4d4;
   box-shadow: 0px 5px 22px rgba(0, 0, 0, 0.04);
   border-radius: 16px;
   text-align: center;
@@ -351,9 +370,15 @@ h1,h2,h3,h4,h5,h6 {
 .products-carousel .product-item {
   display: flex;
   flex-direction: column;
-  height: 100%; /* Ensure consistent height for all cards */
-  align-items: center;
+  width: 200px !important;
+  height: 250px !important;
+  align-items: left;
   justify-content: space-between;
+  background-color: #ffffff;
+  padding: 10px !important;
+}
+.product-item{
+  margin:5px !important ;
 }
 
 .products-carousel .product-item figure {
@@ -418,10 +443,12 @@ input[type=number]::-webkit-outer-spin-button {
   border-radius: 16px;
   margin-bottom: 30px;
   box-shadow: 0px 0px 22px rgba(0, 0, 0, 0);
-  /* transition: box-shadow 0.3s ease-out, margin 0.3s ease-out; */
+  transition: 0.3s !important;
 }
-.product-item:hover .button-area {
-  display: block;
+.product-item:hover {
+  scale: 1.05;
+  transition: 0.3s;
+  box-shadow: 0px 0px 22px rgba(0, 0, 0, 0.8);
 }
 .product-item:hover {
   /* z-index: 1; */
@@ -636,3 +663,8 @@ a.btn-link.text-light:after {
 /* ============ mobile view .end// ============ */
 
 
+.select2-container--default.select2-container--disabled .select2-selection--single {
+  /* background-color: #f4f4f4; */
+  cursor: not-allowed;
+  opacity: 0.6;
+}

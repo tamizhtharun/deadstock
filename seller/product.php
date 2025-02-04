@@ -128,24 +128,30 @@ echo "</pre>";
 <?php } ?>
 
 
-<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Delete Confirmation</h4>
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content shadow-lg rounded-lg">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title">Confirm Deletion</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="modal-body">
-                <p>Are you sure want to delete this item?</p>
-                <p style="color:red;">Be careful! This product will be deleted from the list it cannot be retrieved</p>
+            <div class="modal-body text-center">
+                <div class="mb-4">
+                    <i class="fa fa-exclamation-circle text-warning" style="font-size: 72px;"></i>
+                </div>
+                <h4>Are you sure?</h4>
+                <p class="text-muted">This product will be permanently deleted and cannot be recovered.</p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-danger btn-ok">Delete</a>
+            <div class="modal-footer border-top-0 justify-content-center">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <a href="#" class="btn btn-danger btn-ok">Delete</a>
             </div>
         </div>
     </div>
 </div>
+
 
 <style>
         .alert {
