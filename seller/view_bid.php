@@ -40,6 +40,7 @@ $statement = $pdo->prepare("
     WHERE
         b.product_id = :product_id 
         AND DATE(b.bid_time) = CURRENT_DATE()
+        AND b.bid_status !=0
     ORDER BY 
         b.bid_time DESC
 ");

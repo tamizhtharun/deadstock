@@ -9,5 +9,4 @@ return array(
     'WpOrg\\Requests\\' => array($vendorDir . '/rmccue/requests/src'),
     'Razorpay\\Tests\\' => array($vendorDir . '/razorpay/razorpay/tests'),
     'Razorpay\\Api\\' => array($vendorDir . '/razorpay/razorpay/src'),
-    'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
 );

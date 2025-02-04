@@ -117,7 +117,7 @@
   /* background-image: linear-gradient(to left, #cfd9df 0%, #e2ebf0 100%); */
   background-color: white !important;
   box-shadow: 1px 0 10px rgba(0, 0, 0, 0.05);
-  /* position: absolute !important; */
+  /* position: fixed !important; */
     /* width: 150px; */
     /* overflow-y: scroll; */
     top: 0;
@@ -230,7 +230,7 @@
     background-color: #98beff25;
     padding: 1.5rem;
     padding-top: 80px !important;
-    position: relative;
+    /* position: relative; */
     margin-left: 230px; /* Should match sidebar width */
     height: calc(100vh - 50px);
     overflow-y: auto;
@@ -677,7 +677,7 @@
   width: 100%;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 10000;
+  z-index: 10000 !important;
   padding: 0;
 }
 

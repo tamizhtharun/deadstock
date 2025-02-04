@@ -728,11 +728,49 @@ if (isset($_POST['form1'])) {
 
 	<script>
 		$(document).ready(function () {
-			$('.select2').select2({
-				dropdownParent: $('.form-group'), // Attach dropdown to its container
-				dropdownPosition: 'below',        // Force dropdown to appear below
-			});
-		});
+    // Initial Select2 initialization
+    $('.select2').select2({
+        width: '100%',
+        closeOnSelect: true
+    });
+
+    // When mid-category changes
+    $(document).on('change', '.mid-cat', function(e) {
+        var mid_cat_id = $(this).val();
+        var $endCat = $('.end-cat');
+        
+        $.ajax({
+            url: "get_end_category.php",
+            type: "POST",
+            data: {id: mid_cat_id},
+            success: function(response) {
+                // Destroy existing select2 instance
+                $endCat.select2('destroy');
+                
+                // Update the HTML
+                $endCat.html(response);
+                
+                // Check for real options (excluding the default option)
+                var hasOptions = $endCat.find('option[value!=""]').length > 0;
+                
+                // Set disabled state based on options
+                $endCat.prop('disabled', !hasOptions);
+                
+                // Reinitialize select2
+                $endCat.select2({
+                    width: '100%'
+                });
+            }
+        });
+    });
+
+    // Document click handler for closing dropdowns
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.select2-container').length) {
+            $('.select2').select2('close');
+        }
+    });
+});
 	</script>
 </body>
 
