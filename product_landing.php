@@ -697,14 +697,9 @@ function validateCheckboxAndPay() {
                   ?>
                 </p>
                 <div class="row mb-2">
-
-
-
                   <div class="col-12 col-md-6 mb-0">
-
                   </div>
                 </div>
-
               </div>
               <?php
               $product_id = intval($_GET['id']);
