@@ -24,7 +24,7 @@ try {
                 // Check if the product was rejected
                 if ($new_status == 0) { // If the product is rejected
                     // Update the product to set featured and active to 0
-                    $updateFeaturedActiveStatement = $pdo->prepare("UPDATE tbl_product SET p_is_featured = 0, p_is_active = 0 WHERE id = :id");
+                    $updateFeaturedActiveStatement = $pdo->prepare("UPDATE tbl_product SET p_is_featured = 0 WHERE id = :id");
                     $updateFeaturedActiveStatement->bindParam(':id', $product_id, PDO::PARAM_INT);
                     $updateFeaturedActiveStatement->execute();
                 }

@@ -257,7 +257,7 @@ foreach ($result as $row) {
 	// $p_condition = $row['p_condition'];
 	// $p_return_policy = $row['p_return_policy'];
 	$p_is_featured = $row['p_is_featured'];
-	$p_is_active = $row['p_is_active'];
+	// $p_is_active = $row['p_is_active'];
 	$ecat_id = $row['ecat_id'];
 }
 

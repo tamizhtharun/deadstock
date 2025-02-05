@@ -84,7 +84,6 @@ if (isset($_POST['reject_all'])) {
                                 <th >(C) Price</th>
                                 <th >Quantity</th>
                                 <th>Featured?</th>
-                                <th>Active?</th>
                                 <th>Category</th>
                                 <th>Product Catalogue</th>
                                 <th >Approval Status</th>
@@ -104,7 +103,7 @@ if (isset($_POST['reject_all'])) {
                                                         t1.p_qty,
                                                         t1.p_featured_photo,
                                                         t1.p_is_featured,
-                                                        t1.p_is_active,
+                                                        -- t1.p_is_active,
                                                         t1.p_is_approve,
                                                         t1.product_catalogue,
                                                         t1.product_brand,
@@ -144,15 +143,6 @@ if (isset($_POST['reject_all'])) {
                                         <option value="1" <?php echo $row['p_is_featured'] == 1 ? 'selected' : ''; ?>>Yes</option>
                                     </select>
                                 </td>
-                                
-                                <!-- Update the Active column -->
-                                <td>
-                                <select class="form-control" style="width:auto;" onchange="updateActive(<?php echo $row['id']; ?>, this.value)">
-                                    <option value="0" <?php echo $row['p_is_active'] == 0 ? 'selected' : ''; ?>>No</option>
-                                    <option value="1" <?php echo $row['p_is_active'] == 1 ? 'selected' : ''; ?>>Yes</option>
-                                </select>
-                                </td>
-
                                 <td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?></td>
                                 <td><a href="../assets/uploads/product-catalogues/<?php echo $row['product_catalogue']?>">View catalogue</a> </td>
                                 <td><?php echo $row['p_is_approve'] == 1 ? '<span class="badge badge-success" style="background-color:green;">Approved</span>' : '<span class="badge badge-danger" style="background-color:red;">Rejected</span>'; ?></td>
@@ -185,18 +175,6 @@ function updateFeatured(productId, value) {
         }
     };
     xhr.send("id=" + productId + "&p_is_featured=" + value);
-}
-
-function updateActive(productId, value) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "update_product_status.php", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            console.log(xhr.responseText); // Optional: handle response
-        }
-    };
-    xhr.send("id=" + productId + "&p_is_active=" + value);
 }
 </script>
 
