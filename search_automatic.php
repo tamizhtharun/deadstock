@@ -10,7 +10,7 @@ if (isset($_GET['search_text'])) {
         $stmt = $conn->prepare("
             SELECT p.id, p.p_name 
             FROM tbl_product p 
-            WHERE p.p_is_active = 1
+            WHERE p.p_is_approve = 1
             ORDER BY p.p_total_view DESC
             LIMIT 5
         ");

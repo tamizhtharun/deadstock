@@ -1,6 +1,7 @@
 <?php
 ob_start();
 session_start();
+require_once 'messages.php';
 include 'db_connection.php';
 $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
 $statement->execute();
@@ -24,10 +25,7 @@ if (isset($_GET['showLoginModal']) && $_GET['showLoginModal'] == 'true') {
 if (isset($_GET['showLoginModal']) && $_GET['showLoginModal'] == 'true') {
     echo "<script>window.addEventListener('DOMContentLoaded', function() { $('#staticBackdrop').modal('show'); });</script>";
 }
-?>
-<?php
 $error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : null;
-
 unset($_SESSION['error_message']);
 ?>
 
@@ -50,14 +48,13 @@ unset($_SESSION['error_message']);
     <link rel="stylesheet" href="./css/header.css">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-
-    <!-- Link Disply the featured categories in home page slider  -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="css/vendor.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <!-- Link Disply the featured categories in home page slider  -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="css/vendor.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="stylesheet" type="text/css" href="css/messages.css">
+        <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
         <defs>
             <symbol xmlns="http://www.w3.org/2000/svg" id="cart" viewBox="0 0 24 24">
                 <path fill="currentColor"
@@ -72,94 +69,13 @@ unset($_SESSION['error_message']);
                     d="m3.1 11.3l3.6 3.3l-1 4.6c-.1.6.1 1.2.6 1.5c.2.2.5.3.8.3c.2 0 .4 0 .6-.1c0 0 .1 0 .1-.1l4.1-2.3l4.1 2.3s.1 0 .1.1c.5.2 1.1.2 1.5-.1c.5-.3.7-.9.6-1.5l-1-4.6c.4-.3 1-.9 1.6-1.5l1.9-1.7l.1-.1c.4-.4.5-1 .3-1.5s-.6-.9-1.2-1h-.1l-4.7-.5l-1.9-4.3s0-.1-.1-.1c-.1-.7-.6-1-1.1-1c-.5 0-1 .3-1.3.8c0 0 0 .1-.1.1L8.7 8.2L4 8.7h-.1c-.5.1-1 .5-1.2 1c-.1.6 0 1.2.4 1.6m8.9 5V5.8l1.7 3.8c.1.3.5.5.8.6l4.2.5l-3.1 2.8c-.3.2-.4.6-.3 1c0 .2.5 2.2.8 4.1l-3.6-2.1c-.2-.2-.3-.2-.5-.2" />
             </symbol>
         </defs>
-    </svg>
-
+        </svg>
+        <!-- Message Container (Fixed Position) -->
+        <div class="message-wrapper ">
+            <div id="message-container"></div>
+        </div>
+        
 </head>
-<style>
-    .suggestions-dropdown {
-        position: absolute;
-        width: 100%;
-        background: #fff;
-        border: 1px solid #ddd;
-        border-top: none;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        max-height: 550px;
-        overflow-y: auto;
-        z-index: 1000;
-        display: none;
-        border-radius: 8px;
-    }
-
-    .suggestions-dropdown::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .suggestions-dropdown::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 8px;
-    }
-
-    .suggestions-dropdown::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 8px;
-    }
-
-    .suggestions-dropdown::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-
-
-    .suggestion-item {
-        padding: 10px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        border-bottom: 1px solid #eee;
-        text-decoration: none;
-        transition: background 0.2s ease-in-out;
-    }
-
-    .suggestion-item:last-child {
-        border-bottom: none;
-    }
-
-    .suggestion-item:hover {
-        background: #f8f8f8;
-        text-decoration: none;
-    }
-
-    .search-icon {
-        width: 10px;
-        height: 10px;
-        border: 2px solid #555;
-        border-radius: 50%;
-        position: relative;
-        margin-right: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .search-icon::before {
-        content: "";
-        position: absolute;
-        width: 6px;
-        height: 2px;
-        background: #555;
-        border-radius: 2px;
-        transform: rotate(45deg);
-        top: 7px;
-        left: 7px;
-    }
-
-    .recent-icon {
-        margin-right: 10px;
-        color: #666;
-    }
-</style>
 
 <body>
     <div class="header">
@@ -301,6 +217,10 @@ unset($_SESSION['error_message']);
             </div>
         </div>
     </div>
+</div>
+    
+  <script src="js/messages.js"></script>
+  <?php MessageSystem::display(); ?>
 
     <!-- Login Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="true" tabindex="-1"

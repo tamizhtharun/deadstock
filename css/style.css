@@ -668,3 +668,65 @@ a.btn-link.text-light:after {
   cursor: not-allowed;
   opacity: 0.6;
 }
+
+ .suggestions-dropdown {
+    position: absolute;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    text-decoration: none;
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #888 #f1f1f1; /* Scroll thumb and track */
+}
+
+/* WebKit (Chrome, Edge, Safari) */
+suggestions-dropdown::-webkit-scrollbar {
+    width: 6px; /* Thin scrollbar */
+}
+
+suggestions-dropdown::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Light grey background */
+    border-radius: 5px;
+}
+
+suggestions-dropdown::-webkit-scrollbar-thumb {
+    background: #888; /* Darker grey thumb */
+    border-radius: 5px;
+}
+
+suggestions-dropdown::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Darker thumb on hover */
+}
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background: #f8f8f8;
+    text-decoration: none;
+}
+
+.suggestion-item img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 5px;
+}

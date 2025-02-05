@@ -177,6 +177,13 @@ require_once('header.php');
                             <?php echo !empty($row['tracking_id']) ? $row['tracking_id'] : '-'; ?>
                         </td>
                         <td class="action-column">
+                        <?php if(!empty($row['order_status'])): ?>
+        <a href="generate_invoice.php?order_id=<?php echo $row['order_table_id']; ?>" 
+           class="btn btn-info btn-sm" 
+           target="_blank">
+            <i class="fa fa-file-pdf-o"></i> Generate Invoice
+        </a>
+    <?php endif; ?>
                             <?php if(empty($row['order_status'])): ?>
                                 <button 
                                     class="btn btn-primary btn-sm send-order-btn" 
