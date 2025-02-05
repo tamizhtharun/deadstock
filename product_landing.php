@@ -77,23 +77,7 @@ $p_total_view = $p_total_view + 1;
 
 $statement = $pdo->prepare("UPDATE tbl_product SET p_total_view=? WHERE id=?");
 $statement->execute(array($p_total_view, $_REQUEST['id']));
-
-
-
 ?>
-
-<!-- for terms and conditions -->
-<?php
-$statement = $pdo->prepare("SELECT user_tc FROM tbl_settings");
-$statement->execute();
-$result = $statement->fetch(PDO::FETCH_ASSOC);
-
-if ($result) {
-  $user_tc = $result['user_tc'];
-} else {
-  $user_tc = "No terms and conditions available.";
-} ?>
-
 <?php
 $error_message1 = '';
 $success_message1 = '';
@@ -305,9 +289,9 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
             <span class="text-muted"><i class="bi bi-basket mx-1"></i>
               <?php if ($p_qty > 10): ?>
                 <span class="text-success ms-2">In stock</span>
-                <?php elseif ($p_qty >= 1 && $p_qty <= 10): ?>
+              <?php elseif ($p_qty >= 1 && $p_qty <= 10): ?>
                 <span class="text-warning ms-2">Only Few left</span>
-              <?php
+                <?php
               elseif ($p_qty == 0):
                 // Ensure $product_id is set
                 if (!isset($product_id) || empty($product_id)) {
@@ -505,8 +489,9 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
       <label>
         <input type="checkbox" id="terms-checkbox" name="terms_accepted" required>
         <span>
-          I agree to the <span class="terms-link" id="terms-btn" style="text-decoration: underline; cursor: pointer;"
-            onclick="showTermsModal(event)">Terms and Conditions</span>
+          I agree to the <span class="terms-link" id="terms-btn"
+            style="text-decoration:none; cursor: pointer; color:rgb(59, 98, 139);" onclick="openTermsPage(event)">Terms
+            and Conditions</span>
         </span>
       </label>
 
@@ -529,25 +514,6 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
     event.preventDefault();
   }
 </script>
-
-<!-- Terms and Conditions Modal -->
-<div class="modal-overlay" id="termsModalOverlay" style="display: none;">
-  <div id="termsModal">
-    <button class="close-button-rp" id="closeTermsModal">&times;</button>
-    <div class="terms-modal-header-rp">
-      <h3>Terms and Conditions</h3>
-    </div>
-    <div class="terms-content">
-      <p>
-        <?php echo $user_tc; ?>
-      </p>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" id="closeTermsBtn"
-        style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: 1rem; --bs-btn-font-size: .85rem;"> Close </button>
-    </div>
-  </div>
-</div>
 <script>
   function checkExistingBid(productId) {
     return fetch('check_bid_status.php', {
@@ -566,7 +532,12 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
 <!-- Razorpay Script -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-
+  // Terms and Conditions new page
+  function openTermsPage(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    window.open('terms.php?source=user', '_blank');
+  }
 
   function showNotification(message) {
     const notification = document.getElementById('errorNotification');
@@ -853,8 +824,7 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
   const form = document.getElementById("priceRequestForm");
   const termsModalOverlay = document.getElementById("termsModalOverlay");
   const closeTermsModal = document.getElementById("closeTermsModal");
-  const closeTermsBtn = document.getElementById("closeTermsBtn");
-  const termsBtn = document.getElementById("terms-btn");
+
 
   // Open the modal
   function openModal() {
@@ -868,16 +838,6 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
     document.body.style.overflow = "auto";
     form.reset();
   }
-
-  // Show terms modal
-  termsBtn.addEventListener("click", function () {
-    termsModalOverlay.style.display = "flex";
-    document.body.style.overflow = "hidden";
-  });
-
-  // Close terms modal
-  closeTermsModal.addEventListener("click", closeTerms);
-  closeTermsBtn.addEventListener("click", closeTerms);
 
   function closeTerms() {
     termsModalOverlay.style.display = "none";
