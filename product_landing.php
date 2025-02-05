@@ -1,9 +1,9 @@
 <?php include 'header.php';
-require_once 'messages.php';
-
 include 'db_connection.php';
+require_once 'messages.php';
 require_once('vendor/autoload.php');
 require_once('config.php');
+//product_landing.php
 ?>
 
 
@@ -124,18 +124,17 @@ if (isset($_POST['add_to_cart'])) {
         MessageSystem::set('Failed to add product to cart.', 'error');
       }
     }
-
   } else {
     // User is not logged in, show login modal
     echo "<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var loginModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
-            backdrop: 'static'
-        });
-        loginModal.show();
-        showMessage('Please login to add items to your cart', 'error');
-    });
-  </script>";
+          document.addEventListener('DOMContentLoaded', function() {
+              var loginModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+                  backdrop: 'static'
+              });
+              loginModal.show();
+              showMessage('Please login to add items to your cart', 'error');
+          });
+      </script>";
   }
 }
 
@@ -165,8 +164,8 @@ if ($success_message1 != '') {
   MessageSystem::set($success_message1, 'success');
   header('location: product.php?id=' . $_REQUEST['id']);
   exit;
-}
 
+}
 
 // Get product details first
 $statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
@@ -381,8 +380,10 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct/100));
               class="material-suitability-icon Rec o <?php echo ($dot_values['O'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['O']); ?>">
             </div>
           </div>
-          <!-- Key Explanation -->
-          <div class="key-button-container">
+    
+
+            <!-- Key Explanation -->
+            <div class="key-button-container">
           <button class="material-info-btn">
             Key (explanation of symbols)
             <span class="info-icon">ⓘ</span>
@@ -449,8 +450,6 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct/100));
 </div>
     </div>
 </section>
-    
-
 
 <!-- Modal Overlay For Request Price -->
 <div class="modal-overlay" id="modalOverlay" style="display: none;">
@@ -460,8 +459,6 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct/100));
     <div class="terms-modal-header-rp">
       <h3>Request a Price</h3>
     </div>
-
-
     <!-- Form -->
     <form id="priceRequestForm" method="POST" action="submit_bid.php">
       <input type="hidden" name="product_id"
@@ -543,36 +540,14 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct/100));
     })
     .then(response => response.json());
 }
+document.getElementById('quantity-input').addEventListener('change', function() {
+  document.getElementById('buy-now-quantity').value = this.value;
+});
 </script>
 
 <!-- Razorpay Script -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-
-
-function showNotification(message) {
-  const notification = document.getElementById('errorNotification');
-  const messageElement = document.getElementById('errorMessage');
-  
-  messageElement.textContent = message;
-  notification.style.display = 'block';
-  notification.classList.add('show');
-  
-  // Auto-dismiss after 3 seconds
-  setTimeout(() => {
-    closeNotification();
-  }, 3000);
-}
-
-function closeNotification() {
-  const notification = document.getElementById('errorNotification');
-  notification.classList.remove('show');
-  
-  setTimeout(() => {
-    notification.style.display = 'none';
-  }, 400);
-}
-
 function validateCheckboxAndPay() {
   const termsCheckbox = document.getElementById('terms-checkbox');
   const quantityField = document.getElementById('quantity');
@@ -606,7 +581,7 @@ function validateCheckboxAndPay() {
       checkExistingBid(productId)
           .then(response => {
               if (response.has_bid) {
-                showMessage('You have already submitted a bid for this product', 'error');
+                  showMessage('You have already submitted a bid for this product', 'error');
                   closeModal();
                   return;
               }})
@@ -647,10 +622,10 @@ function validateCheckboxAndPay() {
                   .then(res => res.json())
                   .then(result => {
                     if (result.status === 'success') {
-                        showMessage('Bid submitted successfully!', 'success');
-                        closeModal();
+                      showMessage('Bid submitted successfully!', 'success');
+                      closeModal();
                     } else {
-                        showMessage('Error: ' + result.message, 'error');
+                      showMessage('Error: ' + result.message, 'error');
                     }
                   })
                   .catch(error => {
