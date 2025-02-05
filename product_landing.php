@@ -1,13 +1,12 @@
 <?php include 'header.php';
 include 'db_connection.php';
+require_once 'messages.php';
 require_once('vendor/autoload.php');
 require_once('config.php');
 ?>
 
 
 <?php
-
-
 if (isset($_SESSION['user_session']['id'])) {
   $user_id = $_SESSION['user_session']['id'];
 }
@@ -114,17 +113,16 @@ if (isset($_POST['add_to_cart'])) {
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-      echo "<script>alert('Product already added to cart!');</script>";
+      MessageSystem::set('Product already added to cart!', 'error');
     } else {
       $stmt = $conn->prepare("INSERT INTO `tbl_cart` (id, user_id, quantity) VALUES (?, ?, ?)");
       $stmt->bind_param("iii", $product_id, $user_id, $product_quantity);
       if ($stmt->execute()) {
-        echo "<script>alert('Product added to cart!');</script>";
+        MessageSystem::set('Product added to cart!', 'success');
       } else {
-        echo "<script>alert('Failed to add product to cart.');</script>";
+        MessageSystem::set('Failed to add product to cart.', 'error');
       }
     }
-
   } else {
     // User is not logged in, show login modal
     echo "<script>
@@ -133,6 +131,7 @@ if (isset($_POST['add_to_cart'])) {
                   backdrop: 'static'
               });
               loginModal.show();
+              showMessage('Please login to add items to your cart', 'error');
           });
       </script>";
   }
@@ -158,11 +157,13 @@ if (mysqli_num_rows($select_product) > 0) {
 
 <?php
 if ($error_message1 != '') {
-  echo "<script>alert('" . $error_message1 . "')</script>";
+  MessageSystem::set($error_message1, 'error');
 }
 if ($success_message1 != '') {
-  echo "<script>alert('" . $success_message1 . "')</script>";
+  MessageSystem::set($success_message1, 'success');
   header('location: product.php?id=' . $_REQUEST['id']);
+  exit;
+
 }
 
 // Get product details first
@@ -455,13 +456,6 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct/100));
     <div class="terms-modal-header-rp">
       <h3>Request a Price</h3>
     </div>
-
-    <!-- Error Notification -->
-    <div class="premium-alert error" id="errorNotification" style="display: none;">
-      <span class="message" id="errorMessage"></span>
-      <button class="close-btn" onclick="closeNotification()">×</button>
-    </div>
-
     <!-- Form -->
     <form id="priceRequestForm" method="POST" action="submit_bid.php">
       <input type="hidden" name="product_id"
@@ -548,31 +542,6 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct/100));
 <!-- Razorpay Script -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-
-
-function showNotification(message) {
-  const notification = document.getElementById('errorNotification');
-  const messageElement = document.getElementById('errorMessage');
-  
-  messageElement.textContent = message;
-  notification.style.display = 'block';
-  notification.classList.add('show');
-  
-  // Auto-dismiss after 3 seconds
-  setTimeout(() => {
-    closeNotification();
-  }, 3000);
-}
-
-function closeNotification() {
-  const notification = document.getElementById('errorNotification');
-  notification.classList.remove('show');
-  
-  setTimeout(() => {
-    notification.style.display = 'none';
-  }, 400);
-}
-
 function validateCheckboxAndPay() {
   const termsCheckbox = document.getElementById('terms-checkbox');
   const quantityField = document.getElementById('quantity');
@@ -581,23 +550,23 @@ function validateCheckboxAndPay() {
   const minAllowedPrice = <?php echo $min_allowed_price; ?>;
   
   if (quantityField.value <= 0) {
-    showNotification('Please enter a valid quantity');
-  } else if (proposedPrice.value <= 0) {
-    showNotification('Please enter a valid bid price');
-  } else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
-    showNotification('Minimum bid price is ₹' + minAllowedPrice.toFixed(2));
-  } else if (!termsCheckbox.checked) {
-    showNotification('You must agree to the Terms and Conditions');
-  } else {
-    openRazorpayModal();
-  }
+        showMessage('Please enter a valid quantity', 'error');
+    } else if (proposedPrice.value <= 0) {
+        showMessage('Please enter a valid bid price', 'error');
+    } else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
+        showMessage('Minimum bid price is ₹' + minAllowedPrice.toFixed(2), 'error');
+    } else if (!termsCheckbox.checked) {
+        showMessage('You must agree to the Terms and Conditions', 'error');
+    } else {
+        openRazorpayModal();
+    }
 }
 
     // Function to open Razorpay modal
     function openRazorpayModal() {
 
     //testing start
-    // alert('biting button working, check the razorpay modal');
+    // showMessage('biting button working, check the razorpay modal');
     // for testing end
 
       const productId = <?php echo $_REQUEST['id']; ?>;
@@ -606,7 +575,7 @@ function validateCheckboxAndPay() {
       checkExistingBid(productId)
           .then(response => {
               if (response.has_bid) {
-                  alert('You have already submitted a bid for this product');
+                  showMessage('You have already submitted a bid for this product', 'error');
                   closeModal();
                   return;
               }})
@@ -647,15 +616,15 @@ function validateCheckboxAndPay() {
                   .then(res => res.json())
                   .then(result => {
                     if (result.status === 'success') {
-                      alert('Bid submitted successfully!');
+                      showMessage('Bid submitted successfully!', 'success');
                       closeModal();
                     } else {
-                      alert('Error: ' + result.message);
+                      showMessage('Error: ' + result.message, 'error');
                     }
                   })
                   .catch(error => {
                     console.error('Error:', error);
-                    alert('An error occurred while processing your payment');
+                    showMessage('An error occurred while processing your payment');
                   });
               },
               prefill: {
@@ -669,12 +638,12 @@ function validateCheckboxAndPay() {
             var rzp = new Razorpay(options);
             rzp.open();
           } else {
-            alert('Error: ' + data.message);
+            showMessage('Error: ' + data.message);
           }
         })
         .catch(error => {
           console.error('Error:', error);
-          alert('An error occurred while checking existing bids');
+          showMessage('An error occurred while checking existing bids');
         });
     }
   </script>
