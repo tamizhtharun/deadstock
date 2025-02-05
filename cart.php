@@ -1,4 +1,5 @@
 <?php
+// cart.php
 ob_start();
 include 'header.php';
 include 'db_connection.php';
@@ -164,8 +165,8 @@ if (isset($_GET['delete_all'])) {
                 </div>
 
                 <!-- Order Summary -->
-                <div class="col-lg-4">
-    <div class="order-summary card shadow-sm sticky-top">
+        <div class="col-lg-4">
+       <div class="order-summary card shadow-sm sticky-top">
         <div class="card-body">
             <h3 class="card-title mb-4">Order Summary</h3>
 
@@ -181,27 +182,31 @@ if (isset($_GET['delete_all'])) {
                 </div>
             <?php endif; ?>
 
-            <div class="summary-item d-flex justify-content-between mb-3">
+            <!-- <div class="summary-item d-flex justify-content-between mb-3">
                 <span>Shipping</span>
                 <span class="amount">₹<?php echo number_format(14, 2); ?></span>
-            </div>
+            </div> -->
 
             <div class="total-amount d-flex justify-content-between mb-4">
                 <span class="fw-bold">Total</span>
                 <span class="amount fw-bold">₹<?php echo number_format($grand_total + 14, 2); ?></span>
             </div>
 
-            <button class="btn btn-primary w-100 mb-3 checkout-btn">
-                Proceed to Checkout
+            <button class="btn btn-primary w-100 mb-3 checkout-btn" onclick="proceedToCheckout()">
+             Proceed to Checkout
             </button>
+            <script>
+            function proceedToCheckout() {
+                // Redirect to checkout page
+                window.location.href = 'checkout-page.php';
+            }
+            </script>
 
             <div class="payment-methods text-center mt-4">
                 <p class="text-muted mb-2">Secure Payment Methods</p>
                 <div class="payment-icons">
                     <i class="fab fa-cc-visa mx-2"></i>
                     <i class="fab fa-cc-mastercard mx-2"></i>
-                    <i class="fab fa-cc-amex mx-2"></i>
-                    <i class="fab fa-cc-paypal mx-2"></i>
                 </div>
             </div>
         </div>

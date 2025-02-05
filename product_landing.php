@@ -2,6 +2,7 @@
 include 'db_connection.php';
 require_once('vendor/autoload.php');
 require_once('config.php');
+//product_landing.php
 ?>
 
 
@@ -38,7 +39,7 @@ foreach ($result as $row) {
   $p_return_policy = $row['p_return_policy'];
   $p_total_view = $row['p_total_view'];
   $p_is_featured = $row['p_is_featured'];
-  $p_is_active = $row['p_is_active'];
+  // $p_is_active = $row['p_is_active'];
   $ecat_id = $row['ecat_id'];
 }
 
@@ -380,24 +381,24 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct/100));
           </div>
     
 
-    <!-- Key Explanation -->
-    <div class="key-button-container">
-  <button class="material-info-btn">
-    Key (explanation of symbols)
-    <span class="info-icon">ⓘ</span>
-  </button>
+            <!-- Key Explanation -->
+            <div class="key-button-container">
+          <button class="material-info-btn">
+            Key (explanation of symbols)
+            <span class="info-icon">ⓘ</span>
+          </button>
 
-  <!-- The dropdown container that will show/hide -->
-  <div class="l-info-icons-container">
-  <div class="info-row">
-  <div class="material-suitability-icon Rec icon-rank-2"> </div>
-    <div class="description">Main application</div>
-  </div>
-  <div class="info-row">
-  <div class="material-suitability-icon Rec icon-rank-1"> </div>
-    <div class="description">Additional application</div>
-    </div>
-</div>
+          <!-- The dropdown container that will show/hide -->
+          <div class="l-info-icons-container">
+          <div class="info-row">
+          <div class="material-suitability-icon Rec icon-rank-2"> </div>
+            <div class="description">Main application</div>
+          </div>
+          <div class="info-row">
+          <div class="material-suitability-icon Rec icon-rank-1"> </div>
+            <div class="description">Additional application</div>
+            </div>
+        </div>
            
 
             <hr />
@@ -413,39 +414,41 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct/100));
                   <div class="col-md-4 col-6 mb-3">
                     <label class="mb-2 d-block">Quantity</label>
                     <div class="input-group mb-3" style="width: 170px;">
-                      <form method="POST" action="">
-                        <input type="number" class="form-control text-center" name="product_quantity"
-                          id="quantity-input" value="1" min="1" />
+                      <input type="number" class="form-control text-center" name="product_quantity"
+                        id="quantity-input" value="1" min="1" />
                     </div>
                   </div>
                 </div>
+
+                <div class="d-flex">
+               <!-- Buy Now Form -->
+               <!-- Buy Now Form -->
+                <form method="POST" action="checkout-page.php" class="me-3">
+                    <input type="hidden" name="product_id" value="<?php echo $_REQUEST['id']; ?>">
+                    <input type="hidden" name="product_quantity" id="buy-now-quantity" value="1">
+                    <button type="submit" name="buy_now" class="btn btn-warning shadow-0">Buy now</button>
+                </form>
+
+                <!-- Add to Cart Form -->
+                <form method="POST" action="" class="me-3">
+                  <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+                  <input type="hidden" name="product_quantity" id="cart-quantity" value="1">
+                  <button type="submit" name="add_to_cart" class="btn btn-primary shadow-0">
+                    <i class="bi bi-basket me-1"></i> Add to cart
+                  </button>
+                </form>
+
+                <!-- Request Price Button -->
+                <button id="requestPriceBtn" class="request-price-btn btn btn-danger border">
+                  <i class="fa fa-gavel"></i> Place a Bid
+                </button>
               </div>
-
-              <button class="btn btn-warning shadow-0" > Buy now </button>
-
-<input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
-
-<button type="submit" name="add_to_cart" class="btn btn-primary shadow-0">
-  <i class="bi bi-basket me-1"></i> Add to cart
-</button>
-</form>
-
-<!-- Request Price Button -->
-<button id="requestPriceBtn" class="request-price-btn btn btn-danger border"
-  data-product-id="<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>">
-  <i class="fa fa-gavel"></i> Place a Bid
-</button>
-<button class="btn btn-light border"> <i class="bi bi-heart me-1"></i> Save </button>
-
             </div>
+          </div>
       </div>
-
-
-      
-
+</div>
     </div>
-
-  </section>
+</section>
 
 <!-- Modal Overlay For Request Price -->
 <div class="modal-overlay" id="modalOverlay" style="display: none;">
@@ -543,6 +546,9 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct/100));
     })
     .then(response => response.json());
 }
+document.getElementById('quantity-input').addEventListener('change', function() {
+  document.getElementById('buy-now-quantity').value = this.value;
+});
 </script>
 
 <!-- Razorpay Script -->
