@@ -689,9 +689,9 @@ function validateCheckboxAndPay() {
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
               <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="pills-spec-tab" data-bs-toggle="pill" data-bs-target="#pills-spec"
-                  type="button" role="tab">Specification</button>
+                  type="button" role="tab">Description</button>
               </li>
-              <li class="nav-item" role="presentation">
+              <!-- <li class="nav-item" role="presentation">
                 <button class="nav-link" id="pills-warranty-tab" data-bs-toggle="pill" data-bs-target="#pills-warranty"
                   type="button" role="tab">Warranty info</button>
               </li>
@@ -702,7 +702,7 @@ function validateCheckboxAndPay() {
               <li class="nav-item" role="presentation">
                 <button class="nav-link" id="pills-seller-tab" data-bs-toggle="pill" data-bs-target="#pills-seller"
                   type="button" role="tab">Seller profile</button>
-              </li>
+              </li> -->
             </ul>
 
             <!-- Pills content -->
