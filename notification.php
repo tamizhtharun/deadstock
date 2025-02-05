@@ -48,7 +48,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
     }
 }
-
+if (isset($_POST['mark_as_read'])) {
+    $user_id = $_SESSION['user_id'];
+    $update_sql = "UPDATE notifications SET is_read = 1 WHERE user_id = ?";
+    $stmt = $conn->prepare($update_sql);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    echo json_encode(['success' => true]);
+    exit;
+}
 // Function to fetch notifications
 function getNotifications($recipient_id) {
     global $conn;
@@ -132,7 +140,19 @@ function formatDetailedContent($notification) {
 }
 
 // Fetch notifications for the current user
-$notifications = getNotifications($_SESSION['user_session']['id']);
+$notifications = getNotifications(recipient_id: $_SESSION['user_session']['id']);
+
+
+$user_id = $_SESSION['user_session']['id']; 
+
+$sql = "SELECT COUNT(*) AS unread_count FROM notifications WHERE recipient_id = ? AND is_read = 0";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+
 ?>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -406,7 +426,7 @@ $notifications = getNotifications($_SESSION['user_session']['id']);
         </nav>
 
         <div class="content-wrapper">
-            <div class="notifications" id="notificationList">
+            <div class="notifications" id="notificationList" onclick="markNotificationsAsRead()">
                 <!-- Notifications will be inserted here by JavaScript -->
             </div>
             <div class="notification-detail" id="notificationDetail">
@@ -666,4 +686,4 @@ $notifications = getNotifications($_SESSION['user_session']['id']);
         if (window.innerWidth <= 1024) {
             addBackButton();
         }
-    </script>
+</script>

@@ -2,22 +2,22 @@
 ?>
 <?php
 $seller_id = $_SESSION['seller_session'];
-if(isset($_SESSION['seller_session'])) {
-    $seller_id = $_SESSION['seller_session']['seller_id'];
-    
-    // Get seller status from database
-    $statement = $pdo->prepare("SELECT seller_status FROM sellers WHERE seller_id = ?");
-    $statement->execute([$seller_id]);
-    $seller_status = $statement->fetchColumn();
-    
-    if($seller_status == 0) {
-        header('Location: profile-edit.php');
-        exit;
-    }
+if (isset($_SESSION['seller_session'])) {
+	$seller_id = $_SESSION['seller_session']['seller_id'];
+
+	// Get seller status from database
+	$statement = $pdo->prepare("SELECT seller_status FROM sellers WHERE seller_id = ?");
+	$statement->execute([$seller_id]);
+	$seller_status = $statement->fetchColumn();
+
+	if ($seller_status == 0) {
+		header('Location: profile-edit.php');
+		exit;
+	}
 }
 
 
-$ai_id=0;
+$ai_id = 0;
 if (isset($_POST['form1'])) {
 	$valid = 1;
 	$seller_id = $_SESSION['seller_session']['seller_id'];
@@ -47,6 +47,27 @@ if (isset($_POST['form1'])) {
 		$error_message .= "Current Price can not be empty<br>";
 	}
 
+	if (empty($_POST['hsn_code'])) {
+		$valid = 0;
+		$error_message .= "Enter the HSN code<br>";
+	} else {
+		$hsn_code = $_POST['hsn_code'];
+		if (!preg_match('/^\d{8}$/', $hsn_code)) {
+			$valid = 0;
+			$error_message .= "HSN code should be exactly 8 digits<br>";
+		}
+	}
+	if (empty($_POST['gst_percentage'])) {
+		$valid = 0;
+		$error_message .= "Enter the GST percentage<br>";
+	} else {
+		$gst_percentage = $_POST['gst_percentage'];
+		if ($gst_percentage > 18) {
+			$valid = 0;
+			$error_message .= "GST percentage can not be more than 18<br>";
+		}
+	}
+
 	if (empty($_POST['p_qty'])) {
 		$valid = 0;
 		$error_message .= "Quantity can not be empty<br>";
@@ -60,7 +81,7 @@ if (isset($_POST['form1'])) {
 			$valid = 0;
 			$error_message .= "You must specify the brand name<br>";
 		} else {
-			
+
 			$product_brand = $_POST['other_brand'];
 		}
 	}
@@ -153,12 +174,11 @@ if (isset($_POST['form1'])) {
 			p_name,
 			p_old_price,
 			p_current_price,
+			hsn_code,
+			gst_percentage,
 			p_qty,
 			p_featured_photo,
 			p_description,
-			p_short_description,
-			-- p_condition,
-			-- p_return_policy,
 			p_total_view,
 			tcat_id,
 			mcat_id,
@@ -166,19 +186,18 @@ if (isset($_POST['form1'])) {
 			product_catalogue,
 			product_brand,
 			p_date
-		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		$statement->execute(array(
 			$seller_id,
 			$_POST['p_name'],
 			$_POST['p_old_price'],
 			$_POST['p_current_price'],
+			$_POST['hsn_code'],
+			$_POST['gst_percentage'],
 			$_POST['p_qty'],
 			$final_name,
 			$_POST['p_description'],
-			$_POST['p_short_description'],
-			// $_POST['p_condition'],
-			// $_POST['p_return_policy'],
 			0, // Assuming total view is 0 initially
 			$_POST['tcat_id'],
 			$_POST['mcat_id'],
@@ -191,37 +210,34 @@ if (isset($_POST['form1'])) {
 		$success_message = 'Product is added successfully, wait for your administrator approval.';
 	}
 
-
-
 	$selected_values = [];
-$keys = ['P', 'M', 'K', 'N', 'S', 'H', 'O']; // Define the keys (radio groups)
+	$keys = ['P', 'M', 'K', 'N', 'S', 'H', 'O'];
 
-foreach ($keys as $key) {
-    if (isset($_POST[$key]) && !empty($_POST[$key])) {
-        $selected_values[$key] = $_POST[$key]; // Save the selected radio value
-    } else {
-        $selected_values[$key] = ''; // Provide a default empty string instead of NULL
-    }
+	foreach ($keys as $key) {
+		// Check if the key exists in the POST data, otherwise set default value to 0
+		if (isset($_POST[$key])) {
+			$selected_values[$key] = $_POST[$key];
+		} else {
+			$selected_values[$key] = 0;
+		}
+	}
+
+	$statement = $pdo->prepare("INSERT INTO tbl_key (
+		id,  
+		P, M, K, N, S, H, O
+	) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+
+	$statement->execute([
+		$ai_id,
+		$selected_values['P'],     // Value selected for P (or default 0)
+		$selected_values['M'],     // Value selected for M (or default 0)
+		$selected_values['K'],     // Value selected for K (or default 0)
+		$selected_values['N'],     // Value selected for N (or default 0)
+		$selected_values['S'],     // Value selected for S (or default 0)
+		$selected_values['H'],     // Value selected for H (or default 0)
+		$selected_values['O'],     // Value selected for O (or default 0)
+	]);
 }
-
-// If validation is successful
-$statement = $pdo->prepare("INSERT INTO tbl_key (
-    id, P, M, K, N, S, H, O
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-
-$statement->execute([
-    $ai_id,                  // Use the correct product ID
-    $selected_values['P'],   // Value selected for P
-    $selected_values['M'],   // Value selected for M
-    $selected_values['K'],   // Value selected for K
-    $selected_values['N'],   // Ensure N is never NULL
-    $selected_values['S'],   // Value selected for S
-    $selected_values['H'],   // Value selected for H
-    $selected_values['O'],   // Value selected for O
-]);
-
-}
-
 
 ?>
 
@@ -445,81 +461,87 @@ $statement->execute([
 					<div class="box box-info">
 						<div class="box-body">
 
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Top Level Category Name <span>*</span></label>
-							<div class="col-sm-4">
-								<select name="tcat_id" class="form-control select2 top-cat">
-									<option value="">Select Top Level Category</option>
-									<?php
-									$statement = $pdo->prepare("SELECT * FROM tbl_top_category ORDER BY tcat_name ASC");
-									$statement->execute();
-									$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-									foreach ($result as $row) {
-										?>
-										<option value="<?php echo $row['tcat_id']; ?>"><?php echo $row['tcat_name']; ?>
-										</option>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Top Level Category Name
+									<span>*</span></label>
+								<div class="col-sm-4">
+									<select name="tcat_id" class="form-control select2 top-cat">
+										<option value="">Select Top Level Category</option>
 										<?php
-									}
-									?>
-								</select>
+										$statement = $pdo->prepare("SELECT * FROM tbl_top_category ORDER BY tcat_name ASC");
+										$statement->execute();
+										$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+										foreach ($result as $row) {
+											?>
+											<option value="<?php echo $row['tcat_id']; ?>"><?php echo $row['tcat_name']; ?>
+											</option>
+											<?php
+										}
+										?>
+									</select>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Mid Level Category Name <span>*</span></label>
-							<div class="col-sm-4">
-								<select name="mcat_id" class="form-control select2 mid-cat">
-									<option value="">Select Mid Level Category</option>
-								</select>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Mid Level Category Name
+									<span>*</span></label>
+								<div class="col-sm-4">
+									<select name="mcat_id" class="form-control select2 mid-cat">
+										<option value="">Select Mid Level Category</option>
+									</select>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">End Level Category Name</label>
-							<div class="col-sm-4">
-								<select name="ecat_id" class="form-control select2 end-cat">
-									<option value="">Select End Level Category</option>
-								</select>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">End Level Category Name</label>
+								<div class="col-sm-4">
+									<select name="ecat_id" class="form-control select2 end-cat">
+										<option value="">Select End Level Category</option>
+									</select>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Brand <span>*</span></label>
-							<div class="col-sm-4">
-								<select name="product_brand" class="form-control select2 brand-cat">
-									<option value="">Select Brand</option>
-									<!-- Add options for brands here -->
-									<?php
-									$seller_id = $_SESSION['seller_session']['seller_id'];
-									$statement = $pdo->prepare("SELECT sb.brand_id,
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Brand <span>*</span></label>
+								<div class="col-sm-4">
+									<select name="product_brand" class="form-control select2 brand-cat">
+										<option value="">Select Brand</option>
+										<!-- Add options for brands here -->
+										<?php
+										$seller_id = $_SESSION['seller_session']['seller_id'];
+										$statement = $pdo->prepare("SELECT sb.brand_id,
 																b.brand_name
 																FROM seller_brands sb
 																 JOIN tbl_brands b ON sb.brand_id = b.brand_id
 																 WHERE sb.seller_id = :seller_id");
-									$statement->bindParam(':seller_id', $seller_id);
-									$statement->execute();
-									$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-									foreach ($result as $row) {
+										$statement->bindParam(':seller_id', $seller_id);
+										$statement->execute();
+										$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+										foreach ($result as $row) {
+											?>
+											<option value="<?php echo $row['brand_id']; ?>">
+												<?php echo $row['brand_name']; ?>
+											</option>
+											<?php
+										}
 										?>
-										<option value="<?php echo $row['brand_id']; ?>"><?php echo $row['brand_name']; ?>
-										</option>
-										<?php
-									}
-									?>
-									<option value="Others">Others</option>
-								</select>
-								<!-- <input type="text" name="other_brand" class="form-control" id="other-brand" style="margin-top:10px;" placeholder="Please specify brand"> -->
+										<option value="Others">Others</option>
+									</select>
+									<!-- <input type="text" name="other_brand" class="form-control" id="other-brand" style="margin-top:10px;" placeholder="Please specify brand"> -->
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Product Name <span>*</span></label>
-							<div class="col-sm-4">
-								<input type="text" name="p_name" class="form-control">
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Product Name <span>*</span></label>
+								<div class="col-sm-4">
+									<input type="text" name="p_name"
+										value="<?php echo isset($_POST['p_name']) ? htmlspecialchars($_POST['p_name']) : ''; ?>"
+										required class="form-control">
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Product Catalogue (PDF) <span>*</span></label>
-							<div class="col-sm-4" style="padding-top:4px;">
-								<input type="file" name="product_catalogue">
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">Product Catalogue (PDF)
+									<span>*</span></label>
+								<div class="col-sm-4" style="padding-top:4px;">
+									<input type="file" name="product_catalogue">
+								</div>
 							</div>
-						</div>
 
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Key <span>*</span></label>
@@ -530,7 +552,7 @@ $statement->execute([
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon p">P</div>
 												<div class="radio-group">
-													<label><input type="radio" name="P" value="0"> 0</label>
+
 													<label><input type="radio" name="P" value="1"> 1</label>
 													<label><input type="radio" name="P" value="2"> 2</label>
 												</div>
@@ -538,7 +560,7 @@ $statement->execute([
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon m">M</div>
 												<div class="radio-group">
-													<label><input type="radio" name="M" value="0"> 0</label>
+
 													<label><input type="radio" name="M" value="1"> 1</label>
 													<label><input type="radio" name="M" value="2"> 2</label>
 												</div>
@@ -546,7 +568,7 @@ $statement->execute([
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon k">K</div>
 												<div class="radio-group">
-													<label><input type="radio" name="K" value="0"> 0</label>
+
 													<label><input type="radio" name="K" value="1"> 1</label>
 													<label><input type="radio" name="K" value="2"> 2</label>
 												</div>
@@ -554,7 +576,7 @@ $statement->execute([
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon n">N</div>
 												<div class="radio-group">
-													<label><input type="radio" name="N" value="0"> 0</label>
+
 													<label><input type="radio" name="N" value="1"> 1</label>
 													<label><input type="radio" name="N" value="2"> 2</label>
 												</div>
@@ -562,7 +584,7 @@ $statement->execute([
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon s">S</div>
 												<div class="radio-group">
-													<label><input type="radio" name="S" value="0"> 0</label>
+
 													<label><input type="radio" name="S" value="1"> 1</label>
 													<label><input type="radio" name="S" value="2"> 2</label>
 												</div>
@@ -570,7 +592,7 @@ $statement->execute([
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon h">H</div>
 												<div class="radio-group">
-													<label><input type="radio" name="H" value="0"> 0</label>
+
 													<label><input type="radio" name="H" value="1"> 1</label>
 													<label><input type="radio" name="H" value="2"> 2</label>
 												</div>
@@ -578,7 +600,7 @@ $statement->execute([
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon o">O</div>
 												<div class="radio-group">
-													<label><input type="radio" name="O" value="0"> 0</label>
+
 													<label><input type="radio" name="O" value="1"> 1</label>
 													<label><input type="radio" name="O" value="2"> 2</label>
 												</div>
@@ -604,20 +626,43 @@ $statement->execute([
 								<label for="" class="col-sm-3 control-label">Old Price <br><span
 										style="font-size:10px;font-weight:normal;">(In INR)</span></label>
 								<div class="col-sm-4">
-									<input type="text" name="p_old_price" class="form-control">
+									<input type="text" name="p_old_price"
+										value="<?php echo isset($_POST['p_old_price']) ? htmlspecialchars($_POST['p_old_price']) : ''; ?>"
+										required class="form-control">
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Current Price <span>*</span><br><span
 										style="font-size:10px;font-weight:normal;">(In INR)</span></label>
 								<div class="col-sm-4">
-									<input type="text" name="p_current_price" class="form-control">
+									<input type="text" name="p_current_price"
+										value="<?php echo isset($_POST['p_current_price']) ? htmlspecialchars($_POST['p_current_price']) : ''; ?>"
+										required class="form-control">
 								</div>
 							</div>
 							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">HSN Code <span>*</span><br></label>
+								<div class="col-sm-4">
+									<input type="text" name="hsn_code"
+										value="<?php echo isset($_POST['hsn_code']) ? htmlspecialchars($_POST['hsn_code']) : ''; ?>"
+										required class="form-control" placeholder="8 digit code">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-3 control-label">GST % <span>*</span><br></label>
+								<div class="col-sm-4">
+									<input type="text" name="gst_percentage"
+										value="<?php echo isset($_POST['gst_percentage']) ? htmlspecialchars($_POST['gst_percentage']) : ''; ?>"
+										required class="form-control" placeholder="Max upto 18%">
+								</div>
+							</div>
+
+							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Quantity <span>*</span></label>
 								<div class="col-sm-4">
-									<input type="text" name="p_qty" class="form-control">
+									<input type="text" name="p_qty"
+										value="<?php echo isset($_POST['p_qty']) ? htmlspecialchars($_POST['p_qty']) : ''; ?>"
+										required class="form-control">
 								</div>
 							</div>
 
@@ -654,44 +699,12 @@ $statement->execute([
 								<label for="" class="col-sm-3 control-label">Description</label>
 								<div class="col-sm-8">
 
-									<textarea type="text" name="p_description" class="form-control"></textarea>
+									<textarea type="text" name="p_description"
+										value="<?php echo isset($_POST['p_description']) ? htmlspecialchars($_POST['p_description']) : ''; ?>"
+										required class="form-control"></textarea>
 								</div>
 							</div>
-							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">Short Description</label>
-								<div class="col-sm-8">
-									<textarea type="text" name="p_short_description" class="form-control"></textarea>
-								</div>
-							</div>
-							<!-- <div class="form-group">
-								<label for="" class="col-sm-3 control-label">Conditions</label>
-								<div class="col-sm-8">
-									<textarea type="text" name="p_condition" class="form-control"></textarea>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">Return Policy</label>
-								<div class="col-sm-8">
-									<textarea type="text" name="p_return_policy" class="form-control"></textarea>
-								</div>
-							</div> -->
-							<!-- <div class="form-group">
-							<label for="" class="col-sm-3 control-label">Is Featured?</label>
-							<div class="col-sm-8">
-								<select name="p_is_featured" class="form-control" style="width:auto;">
-									<option value="0">No</option>
-									<option value="1">Yes</option>
-								</select> 
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Is Active?</label>
-							<div class="col-sm-8">
-								<select name="p_is_active" class="form-control" style="width:auto;">
-									<option value="0">No</option>
-									<option value="1">Yes</option>
-								</select> 
-							</div> -->
+
 						</div>
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label"></label>
