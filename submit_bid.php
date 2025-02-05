@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $check_stmt->close();
                 
                 $stmt = $conn->prepare(
-                    "INSERT INTO bidding (product_id, user_id, bid_price, bid_quantity, payment_id, order_id, bid_status) 
+                    "INSERT INTO bidding (product_id, user_id, bid_price, bid_quantity, payment_id, bid_status) 
                      VALUES (?, ?, ?, ?, ?, ?, '0')"
                 );
 
@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $bid['price'],
                     $bid['quantity'],
                     $postData['razorpay_payment_id'],
-                    $postData['razorpay_order_id']
+                    // $postData['razorpay_order_id']
                 );
 
                 if ($stmt->execute()) {
