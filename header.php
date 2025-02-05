@@ -68,50 +68,7 @@ unset($_SESSION['error_message']);
         </div>
         
 </head>
-<style>
- .suggestions-dropdown {
-    position: absolute;
-    width: 100%;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-top: none;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: 250px;
-    overflow-y: auto;
-    z-index: 1000;
-    display: none;
-    text-decoration: none;
-}
 
-.suggestion-item {
-    padding: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid #eee;
-    text-decoration: none;
-}
-
-.suggestion-item:last-child {
-    border-bottom: none;
-}
-
-.suggestion-item:hover {
-    background: #f8f8f8;
-    text-decoration: none;
-}
-
-.suggestion-item img {
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-    border-radius: 5px;
-}
-
-</style>
 <body>
 <div class="header">   
 
