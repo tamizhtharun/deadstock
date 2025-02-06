@@ -24,7 +24,7 @@ if (isset($_GET['search_text'])) {
     UNION ALL
     SELECT p.id, p.p_name AS name, 'Product' AS type FROM tbl_product p 
     JOIN tbl_brands b ON p.product_brand = b.brand_id WHERE b.brand_name LIKE ?
-    LIMIT 10
+    LIMIT 5
 ");
 
 $search_param = "%$search_text%"; // Add wildcard for LIKE query

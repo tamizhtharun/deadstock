@@ -348,7 +348,7 @@ body {
     margin-bottom: 8px;
 }
 
-.input-group.full-width,  {
+.input-group.full-width  {
     grid-column: 1 / -1;
 }
 
