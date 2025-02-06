@@ -12,22 +12,19 @@ if (!isset($_SESSION['user_session']['id'])) {
 }
 
 
-// Add this near the top of the content area, just before the tab content
 if (isset($_GET['success']) || isset($_GET['error'])) {
     $alertType = isset($_GET['success']) ? 'success' : 'error';
     $alertMessage = isset($_GET['success']) ? htmlspecialchars($_GET['success']) : htmlspecialchars($_GET['error']);
-    echo "
-    <div class='premium-alert {$alertType}'>
-        {$alertMessage}
-        <button class='close-alert'>&times;</button>
-    </div>
+?>
     <script>
-    document.querySelector('.close-alert').addEventListener('click', function() {
-        this.closest('.premium-alert').style.display = 'none';
-    });
+        document.addEventListener('DOMContentLoaded', function() {
+            showMessage("<?php echo $alertMessage; ?>", "<?php echo $alertType; ?>");
+        });
     </script>
-    ";
+<?php
 }
+
+
 // Assuming user ID is stored in session
 $userId = $_SESSION['user_session']['id'];
 
