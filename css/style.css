@@ -685,6 +685,7 @@ a.btn-link.text-light:after {
   text-decoration: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  border-radius: 0 0 15px 15px;
 }
 
 .suggestions-dropdown::-webkit-scrollbar {

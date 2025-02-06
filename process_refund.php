@@ -6,31 +6,35 @@ ini_set('display_startup_errors', 1);
 use Razorpay\Api\Api;
 
 // Function to log debug messages
-function debug_log($message) {
+function debug_log($message)
+{
     echo $message . "<br>";
     error_log($message);
 }
 
-class RefundHandler {
+class RefundHandler
+{
     private $conn;
     private $api;
-    
-    public function __construct($conn) {
+
+    public function __construct($conn)
+    {
         $this->conn = $conn;
         $this->api = new Razorpay\Api\Api(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET);
     }
 
-    public function processRefunds() {
+    public function processRefunds()
+    {
         // Get pending refunds from database with bid_price and quantity
         $query = "SELECT order_id, bid_price, bid_quantity, payment_id FROM bidding 
                  WHERE bid_status = '3' 
                  AND (refund_status IS NULL OR refund_status = 'pending')";
         $result = $this->conn->query($query);
-        
+
         if (!$result) {
             throw new Exception("Failed to fetch refunds: " . $this->conn->error);
         }
-        
+
         $processedCount = 0;
         while ($row = $result->fetch_assoc()) {
             // Calculate total amount from bid_price and quantity
@@ -38,25 +42,26 @@ class RefundHandler {
             $this->processRefund($row['order_id'], $amount, $row['payment_id']);
             $processedCount++;
         }
-        
+
         return $processedCount;
     }
 
-    private function processRefund($orderId, $amount, $paymentId) {
+    private function processRefund($orderId, $amount, $paymentId)
+    {
         debug_log("Starting refund process for Order ID: $orderId with amount: $amount");
-        
+
         // Validate amount
         if (!$amount || $amount <= 0) {
             throw new Exception("Invalid refund amount for Order ID $orderId: $amount");
         }
-        
+
         try {
             // Update refund status to processing
             $updateQuery = "UPDATE bidding SET refund_status = 'processing' WHERE order_id = ?";
             $stmt = $this->conn->prepare($updateQuery);
             $stmt->bind_param('s', $orderId);
             $stmt->execute();
-            
+
             // Process refund through Razorpay
             try {
                 $refund = $this->api->payment->fetch($paymentId)->refund([
@@ -66,7 +71,7 @@ class RefundHandler {
                         'reason' => 'Bid unsuccessful'
                     ]
                 ]);
-                
+
                 // Update refund status to completed
                 $updateQuery = "UPDATE bidding SET 
                     refund_status = 'completed',
@@ -75,11 +80,11 @@ class RefundHandler {
                     refund_amount = ?
                     WHERE order_id = ?";
                 $stmt = $this->conn->prepare($updateQuery);
-                $stmt->bind_param('sds',$refund['id'], $amount, $orderId);
+                $stmt->bind_param('sds', $refund['id'], $amount, $orderId);
                 $stmt->execute();
-                
+
                 debug_log("Refund processed successfully for Order ID: $orderId, Amount: $amount");
-                
+
             } catch (Exception $e) {
                 // Update refund status to failed
                 $updateQuery = "UPDATE bidding SET 
@@ -91,10 +96,10 @@ class RefundHandler {
                 $errorMessage = $e->getMessage();
                 $stmt->bind_param('sds', $errorMessage, $amount, $orderId);
                 $stmt->execute();
-                
+
                 throw new Exception("Razorpay refund failed for Order ID $orderId: " . $e->getMessage());
             }
-            
+
         } catch (Exception $e) {
             debug_log("Error processing refund for Order ID $orderId: " . $e->getMessage());
             throw $e;
