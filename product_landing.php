@@ -428,9 +428,9 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
                 </div>
 
                 <div class="d-flex">
-               <!-- Buy Now Form -->
-               <!-- Buy Now Form -->
-                <!-- <form method="POST" action="checkout-page.php" class="me-3">
+                  <!-- Buy Now Form -->
+                  <!-- Buy Now Form -->
+                  <!-- <form method="POST" action="checkout-page.php" class="me-3">
                     <input type="hidden" name="product_id" value="<?php echo $_REQUEST['id']; ?>">
                     <input type="hidden" name="product_quantity" id="buy-now-quantity" value="1">
                     <button type="submit" name="buy_now" class="btn btn-warning shadow-0">Buy now</button>
@@ -743,9 +743,9 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
               $file_path = 'assets/uploads/' . $pdf_name;
               $view_url = "pdf_download.php?action=view&id=$product_id";
               $download_url = "pdf_download.php?action=download&id=$product_id";
-              echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
+              echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank" style="text-decoration: none;"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
               echo '&nbsp;&nbsp;';
-              echo '<a href="' . $download_url . '" class="btn btn-success"><i class="fa fa-download"></i> Download Catalogue</a>';
+              echo '<a href="' . $download_url . '" class="btn btn-success" style="text-decoration: none;"><i class="fa fa-download"></i> Download Catalogue</a>';
             }
             ?>
           </div>
@@ -761,7 +761,7 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
           FROM tbl_product 
           WHERE p_name LIKE :search_term 
           AND id != :current_id
-          LIMIT 5"; // Ensures we don’t show the same product
+          LIMIT 3"; // Ensures we don’t show the same product
       
       $stmt = $pdo->prepare($sql);
       $stmt->execute([
