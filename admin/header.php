@@ -45,7 +45,26 @@ if(!isset($_SESSION['admin_session'])) {
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
+<style>
+	/* Aligns the profile section to the right */
+.navbar-custom-menu {
+    display: flex;
+    justify-content: flex-end; /* Moves the div to the right */
+    align-items: center;
+}
 
+/* Style the dropdown menu */
+.profile-dropdown .dropdown-menu {
+    min-width: 220px; /* Wider dropdown */
+    right: 0; /* Align to the right */
+}
+
+/* Ensure dropdown opens on hover */
+.profile-dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+</style>
 <body class="hold-transition fixed skin-blue sidebar-mini">
 	
 	<div class="wrapper">
@@ -70,27 +89,25 @@ if(!isset($_SESSION['admin_session'])) {
 
     <!-- Top Bar ... User Information .. Login/Log out Area -->
     <div class="navbar-custom-menu">
-	<div class="dropdown">
-    <button id="profile-btn" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-    <?php 
-    // Check if the profile photo exists; if not, use the Font Awesome user icon
-    if (!empty($_SESSION['admin_session']['user_photo'])) {
-        $profile_photo = $_SESSION['admin_session']['user_photo'];
-        echo '<img src="../assets/uploads/profile-pictures/'. $profile_photo .'" style="width: 40px; height: 40px; border-radius: 50%;">';
-    } else {
-        // Display the Font Awesome user icon
-        echo '<i class="fa fa-user" style="font-size: 20px;"></i>';
-    }
-    ?>
-     Hi, <span style="font-weight:800"><?php echo $_SESSION['admin_session']['user_name']; ?></span>
-    <!-- <i class="fas fa-chevron-down"></i> -->
-</button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="profile-edit.php">Edit Profile</a>
-        <a class="dropdown-item text-danger" href="logout.php">Log out</a>
+    <div class="dropdown profile-dropdown">
+        <button id="profile-btn" class="btn dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
+            <?php 
+            if (!empty($_SESSION['admin_session']['user_photo'])) {
+                $profile_photo = $_SESSION['admin_session']['user_photo'];
+                echo '<img src="../assets/uploads/profile-pictures/'. $profile_photo .'" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 8px;">';
+            } else {
+                echo '<i class="fa fa-user" style="font-size: 20px; margin-right: 8px;"></i>';
+            }
+            ?>
+            <span style="font-weight:800"><?php echo $_SESSION['admin_session']['user_name']; ?></span>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profile-btn">
+            <a class="dropdown-item" href="profile-edit.php">Edit Profile</a>
+            <a class="dropdown-item text-danger" href="logout.php">Log out</a>
+        </div>
     </div>
 </div>
-    </div>
+
 </nav>
 		</header>
 
