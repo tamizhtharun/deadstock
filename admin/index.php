@@ -11,18 +11,6 @@ require_once('header.php');
 </section>
 
 <?php
-// $statement = $pdo->prepare("SELECT * FROM tbl_top_category");
-// $statement->execute();
-// $total_top_category = $statement->rowCount();
-
-// $statement = $pdo->prepare("SELECT * FROM tbl_mid_category");
-// $statement->execute();
-// $total_mid_category = $statement->rowCount();
-
-// $statement = $pdo->prepare("SELECT * FROM tbl_end_category");
-// $statement->execute();
-// $total_end_category = $statement->rowCount();
-
 $statement = $pdo->prepare("SELECT * FROM tbl_product");
 $statement->execute();
 $total_product = $statement->rowCount();
