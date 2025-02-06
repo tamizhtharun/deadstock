@@ -103,9 +103,9 @@ if (isset($_POST['add_to_cart'])) {
       $stmt = $conn->prepare("INSERT INTO tbl_cart (id, user_id, quantity) VALUES (?, ?, ?)");
       $stmt->bind_param("iii", $product_id, $user_id, $product_quantity);
       if ($stmt->execute()) {
-        MessageSystem::set('Product added to cart!', 'success');
+        // MessageSystem::set('Product added to cart!', 'success');
       } else {
-        MessageSystem::set('Failed to add product to cart.', 'error');
+        // MessageSystem::set('Failed to add product to cart.', 'error');
       }
     }
   } else {
