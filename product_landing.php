@@ -116,7 +116,7 @@ if (isset($_POST['add_to_cart'])) {
                   backdrop: 'static'
               });
               loginModal.show();
-              showMessage('Please login to add items to your cart', 'error');
+              // showMessage('Please login to add items to your cart', 'error');
           });
       </script>";
   }
