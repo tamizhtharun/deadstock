@@ -1,9 +1,9 @@
 <?php include 'header.php';
-require_once 'messages.php';
-
 include 'db_connection.php';
+require_once 'messages.php';
 require_once('vendor/autoload.php');
 require_once('config.php');
+//product_landing.php
 ?>
 
 
@@ -108,18 +108,17 @@ if (isset($_POST['add_to_cart'])) {
         MessageSystem::set('Failed to add product to cart.', 'error');
       }
     }
-
   } else {
     // User is not logged in, show login modal
     echo "<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var loginModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
-            backdrop: 'static'
-        });
-        loginModal.show();
-        showMessage('Please login to add items to your cart', 'error');
-    });
-  </script>";
+          document.addEventListener('DOMContentLoaded', function() {
+              var loginModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+                  backdrop: 'static'
+              });
+              loginModal.show();
+              showMessage('Please login to add items to your cart', 'error');
+          });
+      </script>";
   }
 }
 
@@ -149,8 +148,8 @@ if ($success_message1 != '') {
   MessageSystem::set($success_message1, 'success');
   header('location: product.php?id=' . $_REQUEST['id']);
   exit;
-}
 
+}
 
 // Get product details first
 $statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
@@ -468,8 +467,6 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
     <div class="terms-modal-header-rp">
       <h3>Request a Price</h3>
     </div>
-
-
     <!-- Form -->
     <form id="priceRequestForm" method="POST" action="submit_bid.php">
       <input type="hidden" name="product_id"
