@@ -445,10 +445,14 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
                     </button>
                   </form>
 
-                  <!-- Request Price Button -->
-                  <button id="requestPriceBtn" class="request-price-btn btn btn-danger border">
-                    <i class="fa fa-gavel"></i> Place a Bid
-                  </button>
+                    <!-- Request Price Button -->
+                    <button id="requestPriceBtn" 
+                            class="request-price-btn btn btn-danger border" 
+                            <?php echo !isset($_SESSION['user_session']['id']) ? 'disabled' : ''; ?> 
+                            data-bs-toggle="tooltip" data-bs-placement="top" 
+                            title="Please login to your account">
+                      <i class="fa fa-gavel"></i> Place a Bid
+                    </button>
                 </div>
               </div>
             </div>
