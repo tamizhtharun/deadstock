@@ -125,10 +125,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
-
-
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('sellerRegistrationForm');
