@@ -103,9 +103,9 @@ if (isset($_POST['add_to_cart'])) {
       $stmt = $conn->prepare("INSERT INTO tbl_cart (id, user_id, quantity) VALUES (?, ?, ?)");
       $stmt->bind_param("iii", $product_id, $user_id, $product_quantity);
       if ($stmt->execute()) {
-        MessageSystem::set('Product added to cart!', 'success');
+        // MessageSystem::set('Product added to cart!', 'success');
       } else {
-        MessageSystem::set('Failed to add product to cart.', 'error');
+        // MessageSystem::set('Failed to add product to cart.', 'error');
       }
     }
   } else {
@@ -428,13 +428,13 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
                 </div>
 
                 <div class="d-flex">
-                  <!-- Buy Now Form -->
-                  <!-- Buy Now Form -->
-                  <form method="POST" action="checkout-page.php" class="me-3" onsubmit="return checkLogin()">
+               <!-- Buy Now Form -->
+               <!-- Buy Now Form -->
+                <!-- <form method="POST" action="checkout-page.php" class="me-3">
                     <input type="hidden" name="product_id" value="<?php echo $_REQUEST['id']; ?>">
                     <input type="hidden" name="product_quantity" id="buy-now-quantity" value="1">
                     <button type="submit" name="buy_now" class="btn btn-warning shadow-0">Buy now</button>
-                  </form>
+                </form> -->
 
                   <!-- Add to Cart Form -->
                   <form method="POST" action="" class="me-3">
@@ -445,10 +445,14 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
                     </button>
                   </form>
 
-                  <!-- Request Price Button -->
-                  <button id="requestPriceBtn" class="request-price-btn btn btn-danger border">
-                    <i class="fa fa-gavel"></i> Place a Bid
-                  </button>
+                    <!-- Request Price Button -->
+                    <button id="requestPriceBtn" 
+                            class="request-price-btn btn btn-danger border" 
+                            <?php echo !isset($_SESSION['user_session']['id']) ? 'disabled' : ''; ?> 
+                            data-bs-toggle="tooltip" data-bs-placement="top" 
+                            title="Please login to your account">
+                      <i class="fa fa-gavel"></i> Place a Bid
+                    </button>
                 </div>
               </div>
             </div>
