@@ -63,6 +63,7 @@ require_once('header.php');
                         o.order_status,
                         o.processing_time,
                         o.tracking_id,
+                        o.address_id,
                         o.created_at,
                         p.id AS product_id,
                         p.p_name,
@@ -88,8 +89,8 @@ require_once('header.php');
                         sellers s ON p.seller_id = s.seller_id
                     JOIN 
                         users u ON o.user_id = u.id
-                    LEFT JOIN 
-                        users_addresses ua ON u.id = ua.user_id AND ua.is_default = 1
+                    LEFT JOIN
+                        users_addresses ua ON o.address_id = ua.id
                     WHERE 
                         o.order_type = 'direct'
                     ORDER BY 

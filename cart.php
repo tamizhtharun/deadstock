@@ -189,7 +189,7 @@ if (isset($_GET['delete_all'])) {
 
             <div class="total-amount d-flex justify-content-between mb-4">
                 <span class="fw-bold">Total</span>
-                <span class="amount fw-bold">₹<?php echo number_format($grand_total + 14, 2); ?></span>
+                <span class="amount fw-bold">₹<?php echo number_format($grand_total); ?></span>
             </div>
 
             <button class="btn btn-primary w-100 mb-3 checkout-btn" onclick="proceedToCheckout()">

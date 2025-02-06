@@ -424,11 +424,11 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct/100));
                 <div class="d-flex">
                <!-- Buy Now Form -->
                <!-- Buy Now Form -->
-                <form method="POST" action="checkout-page.php" class="me-3">
+                <!-- <form method="POST" action="checkout-page.php" class="me-3">
                     <input type="hidden" name="product_id" value="<?php echo $_REQUEST['id']; ?>">
                     <input type="hidden" name="product_quantity" id="buy-now-quantity" value="1">
                     <button type="submit" name="buy_now" class="btn btn-warning shadow-0">Buy now</button>
-                </form>
+                </form> -->
 
                 <!-- Add to Cart Form -->
                 <form method="POST" action="" class="me-3">

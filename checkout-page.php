@@ -1,6 +1,7 @@
 <?php
 //checkout-page.php
 require_once('header.php');
+require_once('db_connection.php');
 
 if (!isset($_SESSION['user_session']['id'])) {
     header('Location: index.php');
@@ -10,29 +11,29 @@ if (!isset($_SESSION['user_session']['id'])) {
 $userId = $_SESSION['user_session']['id'];
 
 // Handle Buy Now submission
-if (isset($_POST['buy_now'])) {
-    $product_id = $_POST['product_id'];
-    $quantity = $_POST['product_quantity'];
+// if (isset($_POST['buy_now'])) {
+//     $product_id = $_POST['product_id'];
+//     $quantity = $_POST['product_quantity'];
     
-    // Fetch the product details for buy now
-    $stmt = $pdo->prepare("
-        SELECT id, p_name, p_current_price, p_old_price, p_featured_photo 
-        FROM tbl_product 
-        WHERE id = ? AND p_is_approve = 1
-    ");
-    $stmt->execute([$product_id]);
-    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+//     // Fetch the product details for buy now
+//     $stmt = $pdo->prepare("
+//         SELECT id, p_name, p_current_price, p_old_price, p_featured_photo 
+//         FROM tbl_product 
+//         WHERE id = ? AND p_is_approve = 1
+//     ");
+//     $stmt->execute([$product_id]);
+//     $product = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if ($product) {
-        // Store buy now data in session
-        $_SESSION['buy_now'] = [
-            'product_id' => $product_id,
-            'product' => $product,
-            'quantity' => $quantity,
-            'user_id' => $userId
-        ];
-    }
-}
+//     if ($product) {
+//         // Store buy now data in session
+//         $_SESSION['buy_now'] = [
+//             'product_id' => $product_id,
+//             'product' => $product,
+//             'quantity' => $quantity,
+//             'user_id' => $userId
+//         ];
+//     }
+// }
 
 function calculateOrderSummary($items) {
     $summary = [
@@ -54,50 +55,22 @@ function calculateOrderSummary($items) {
 }
 
 function getOrderItems($pdo) {
-    // Check if this is a buy now purchase
-    if (isset($_POST['buy_now'])) {
-        $product_id = $_POST['product_id'];
-        $quantity = $_POST['product_quantity'];
-        
-        // Fetch the product details
-        $stmt = $pdo->prepare("
-            SELECT id, p_name, p_current_price, p_old_price, p_featured_photo 
-            FROM tbl_product 
-            WHERE id = ? AND p_is_approve = 1
-        ");
-        $stmt->execute([$product_id]);
-        $product = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($product) {
-            return [[
-                'id' => $product['id'],
-                'p_name' => $product['p_name'],
-                'p_current_price' => $product['p_current_price'],
-                'p_old_price' => $product['p_old_price'],
-                'p_featured_photo' => $product['p_featured_photo'],
-                'quantity' => $quantity
-            ]];
-        }
-        return [];
-    } else {
-        // Get cart items - Fixed JOIN query
-        $user_id = $_SESSION['user_session']['id'];
-        $stmt = $pdo->prepare("
-            SELECT 
-                p.id,
-                p.p_name,
-                p.p_current_price,
-                p.p_old_price,
-                p.p_featured_photo,
-                c.quantity
-            FROM tbl_cart c
-            JOIN tbl_product p ON c.id = p.id
-            WHERE c.user_id = ?
-            AND p.p_is_approve = 1
-        ");
-        $stmt->execute([$user_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    $user_id = $_SESSION['user_session']['id'];
+    $stmt = $pdo->prepare("
+        SELECT 
+            p.id,
+            p.p_name,
+            p.p_current_price,
+            p.p_old_price,
+            p.p_featured_photo,
+            c.quantity
+        FROM tbl_cart c
+        JOIN tbl_product p ON p.id = c.id
+        WHERE c.user_id = ?
+        AND p.p_is_approve = 1
+    ");
+    $stmt->execute([$user_id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 // Fetch addresses
@@ -195,6 +168,131 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </aside>
     </div>
 </div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+// Add this script to your checkout page
+document.addEventListener('DOMContentLoaded', function() {
+    const orderButton = document.querySelector('.btn-primary.btn-large');
+    
+    async function initializePayment(e) {
+        e.preventDefault();
+        
+        // Validate address
+        const selectedAddress = document.querySelector('input[name="address"]:checked');
+        if (!selectedAddress) {
+            alert('Please select a delivery address');
+            return;
+        }
+
+        try {
+            // Disable button and show loading state
+            orderButton.disabled = true;
+            orderButton.textContent = 'Processing...';
+
+            // Create order
+            const response = await fetch('process-payment.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+
+            // Check if response is OK
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Get response text first for debugging
+            const responseText = await response.text();
+            
+            // Try to parse JSON
+            let data;
+            try {
+                data = JSON.parse(responseText);
+            } catch (e) {
+                console.error('Raw response:', responseText);
+                throw new Error('Failed to parse server response');
+            }
+
+            // Check for success
+            if (!data.success) {
+                throw new Error(data.error || 'Failed to create order');
+            }
+
+            // Configure Razorpay
+            const options = {
+                key: data.key,
+                amount: data.amount,
+                currency: data.currency,
+                name: 'Deadstock',
+                description: `Order Payment (${data.total_items} items)`,
+                order_id: data.order_id,
+                handler: function(response) {
+                    handlePaymentSuccess(response, selectedAddress.value);
+                },
+                prefill: {
+                    name: document.querySelector('.name')?.textContent.trim() || '',
+                    contact: document.querySelector('.phone')?.textContent.replace('📞 ', '').trim() || ''
+                },
+                modal: {
+                    ondismiss: function() {
+                        orderButton.disabled = false;
+                        orderButton.textContent = 'Place Order';
+                    }
+                }
+            };
+
+            // Initialize Razorpay
+            const rzp = new Razorpay(options);
+            rzp.open();
+
+        } catch (error) {
+            console.error('Payment Error:', error);
+            alert('Payment initialization failed: ' + error.message);
+            
+            // Reset button state
+            orderButton.disabled = false;
+            orderButton.textContent = 'Place Order';
+        }
+    }
+
+    async function handlePaymentSuccess(response, addressId) {
+        try {
+            const verifyData = new FormData();
+            verifyData.append('razorpay_payment_id', response.razorpay_payment_id);
+            verifyData.append('razorpay_order_id', response.razorpay_order_id);
+            verifyData.append('razorpay_signature', response.razorpay_signature);
+            verifyData.append('address_id', addressId);
+
+            const verifyResponse = await fetch('verify-payment.php', {
+                method: 'POST',
+                body: verifyData
+            });
+
+            const result = await verifyResponse.json();
+
+            if (result.success) {
+                window.location.href = 'order-confirmation.php';
+            } else {
+                throw new Error(result.error || 'Payment verification failed');
+            }
+
+        } catch (error) {
+            console.error('Verification Error:', error);
+            alert('Payment verification failed: ' + error.message);
+            orderButton.disabled = false;
+            orderButton.textContent = 'Place Order';
+        }
+    }
+
+    // Attach click handler
+    orderButton.addEventListener('click', initializePayment);
+});
+</script>
+
     <script>
 
 document.addEventListener('DOMContentLoaded', function() {
