@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "ks4ympr0demc";
+$password = "Deadstock@2025";
 $dbname = "deadstock";
 
 // MySQLi Connection

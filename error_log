@@ -1,0 +1,552 @@
+[06-Feb-2025 11:10:47 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/ks4ympr0demc/public_html/db_connection.php:8
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/db_connection.php(8): mysqli->__construct()
+#1 /home/ks4ympr0demc/public_html/header.php(5): include('/home/ks4ympr0d...')
+#2 /home/ks4ympr0demc/public_html/index.php(1): require_once('/home/ks4ympr0d...')
+#3 {main}
+  thrown in /home/ks4ympr0demc/public_html/db_connection.php on line 8
+[06-Feb-2025 11:10:49 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/ks4ympr0demc/public_html/db_connection.php:8
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/db_connection.php(8): mysqli->__construct()
+#1 /home/ks4ympr0demc/public_html/header.php(5): include('/home/ks4ympr0d...')
+#2 /home/ks4ympr0demc/public_html/index.php(1): require_once('/home/ks4ympr0d...')
+#3 {main}
+  thrown in /home/ks4ympr0demc/public_html/db_connection.php on line 8
+[06-Feb-2025 11:10:50 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/ks4ympr0demc/public_html/db_connection.php:8
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/db_connection.php(8): mysqli->__construct()
+#1 /home/ks4ympr0demc/public_html/header.php(5): include('/home/ks4ympr0d...')
+#2 /home/ks4ympr0demc/public_html/index.php(1): require_once('/home/ks4ympr0d...')
+#3 {main}
+  thrown in /home/ks4ympr0demc/public_html/db_connection.php on line 8
+[06-Feb-2025 11:10:53 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/ks4ympr0demc/public_html/db_connection.php:8
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/db_connection.php(8): mysqli->__construct()
+#1 /home/ks4ympr0demc/public_html/header.php(5): include('/home/ks4ympr0d...')
+#2 /home/ks4ympr0demc/public_html/index.php(1): require_once('/home/ks4ympr0d...')
+#3 {main}
+  thrown in /home/ks4ympr0demc/public_html/db_connection.php on line 8
+[06-Feb-2025 11:10:53 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/ks4ympr0demc/public_html/db_connection.php:8
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/db_connection.php(8): mysqli->__construct()
+#1 /home/ks4ympr0demc/public_html/header.php(5): include('/home/ks4ympr0d...')
+#2 /home/ks4ympr0demc/public_html/index.php(1): require_once('/home/ks4ympr0d...')
+#3 {main}
+  thrown in /home/ks4ympr0demc/public_html/db_connection.php on line 8
+[06-Feb-2025 11:10:54 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/ks4ympr0demc/public_html/db_connection.php:8
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/db_connection.php(8): mysqli->__construct()
+#1 /home/ks4ympr0demc/public_html/header.php(5): include('/home/ks4ympr0d...')
+#2 /home/ks4ympr0demc/public_html/index.php(1): require_once('/home/ks4ympr0d...')
+#3 {main}
+  thrown in /home/ks4ympr0demc/public_html/db_connection.php on line 8
+[06-Feb-2025 11:11:31 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/ks4ympr0demc/public_html/db_connection.php:8
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/db_connection.php(8): mysqli->__construct()
+#1 /home/ks4ympr0demc/public_html/header.php(5): include('/home/ks4ympr0d...')
+#2 /home/ks4ympr0demc/public_html/index.php(1): require_once('/home/ks4ympr0d...')
+#3 {main}
+  thrown in /home/ks4ympr0demc/public_html/db_connection.php on line 8
+[06-Feb-2025 11:11:32 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/ks4ympr0demc/public_html/db_connection.php:8
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/db_connection.php(8): mysqli->__construct()
+#1 /home/ks4ympr0demc/public_html/header.php(5): include('/home/ks4ympr0d...')
+#2 /home/ks4ympr0demc/public_html/index.php(1): require_once('/home/ks4ympr0d...')
+#3 {main}
+  thrown in /home/ks4ympr0demc/public_html/db_connection.php on line 8
+[06-Feb-2025 11:11:47 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/ks4ympr0demc/public_html/db_connection.php:8
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/db_connection.php(8): mysqli->__construct()
+#1 /home/ks4ympr0demc/public_html/header.php(5): include('/home/ks4ympr0d...')
+#2 /home/ks4ympr0demc/public_html/index.php(1): require_once('/home/ks4ympr0d...')
+#3 {main}
+  thrown in /home/ks4ympr0demc/public_html/db_connection.php on line 8
+[06-Feb-2025 11:11:48 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/ks4ympr0demc/public_html/db_connection.php:8
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/db_connection.php(8): mysqli->__construct()
+#1 /home/ks4ympr0demc/public_html/header.php(5): include('/home/ks4ympr0d...')
+#2 /home/ks4ympr0demc/public_html/index.php(1): require_once('/home/ks4ympr0d...')
+#3 {main}
+  thrown in /home/ks4ympr0demc/public_html/db_connection.php on line 8
+[06-Feb-2025 11:11:49 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/ks4ympr0demc/public_html/db_connection.php:8
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/db_connection.php(8): mysqli->__construct()
+#1 /home/ks4ympr0demc/public_html/header.php(5): include('/home/ks4ympr0d...')
+#2 /home/ks4ympr0demc/public_html/index.php(1): require_once('/home/ks4ympr0d...')
+#3 {main}
+  thrown in /home/ks4ympr0demc/public_html/db_connection.php on line 8
+[06-Feb-2025 11:14:37 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/ks4ympr0demc/public_html/db_connection.php:8
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/db_connection.php(8): mysqli->__construct()
+#1 /home/ks4ympr0demc/public_html/header.php(5): include('/home/ks4ympr0d...')
+#2 /home/ks4ympr0demc/public_html/index.php(1): require_once('/home/ks4ympr0d...')
+#3 {main}
+  thrown in /home/ks4ympr0demc/public_html/db_connection.php on line 8
+[06-Feb-2025 11:19:00 UTC] PHP Warning:  require(phpmailer/src/PHPMailer.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/seller_registration.php on line 5
+[06-Feb-2025 11:19:00 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'phpmailer/src/PHPMailer.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/seller_registration.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/seller_registration.php on line 5
+[06-Feb-2025 11:19:15 UTC] PHP Warning:  require(phpmailer/src/PHPMailer.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/seller_registration.php on line 5
+[06-Feb-2025 11:19:15 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'phpmailer/src/PHPMailer.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/seller_registration.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/seller_registration.php on line 5
+[06-Feb-2025 12:22:04 UTC] PHP Warning:  require(phpmailer/src/PHPMailer.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/seller_registration.php on line 5
+[06-Feb-2025 12:22:04 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'phpmailer/src/PHPMailer.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/seller_registration.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/seller_registration.php on line 5
+[06-Feb-2025 12:26:29 UTC] PHP Warning:  require(phpmailer/src/PHPMailer.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/seller_registration.php on line 5
+[06-Feb-2025 12:26:29 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'phpmailer/src/PHPMailer.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/seller_registration.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/seller_registration.php on line 5
+[06-Feb-2025 12:30:25 UTC] PHP Warning:  require(phpmailer/src/PHPMailer.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/seller_registration.php on line 5
+[06-Feb-2025 12:30:25 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'phpmailer/src/PHPMailer.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/seller_registration.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/seller_registration.php on line 5
+[06-Feb-2025 12:36:58 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/seller_registration.php:98
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/seller_registration.php on line 98
+[06-Feb-2025 12:38:28 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/seller_registration.php:98
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/seller_registration.php on line 98
+[06-Feb-2025 16:01:31 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 10
+    [proposed_price] => 500
+)
+
+[06-Feb-2025 16:02:15 UTC] Received payment data: Array
+(
+    [razorpay_payment_id] => pay_PsU2Q447ga845o
+    [razorpay_order_id] => order_PsU21DPnxI2957
+    [razorpay_signature] => 0f767abad3a193e3c0486d2f1b16d5dc8e229e2722e38c3dd7dc448110f30acb
+)
+
+[06-Feb-2025 16:04:52 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 10
+    [proposed_price] => 200
+)
+
+[06-Feb-2025 16:04:57 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 10
+    [proposed_price] => 200
+)
+
+[06-Feb-2025 16:17:42 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/seller_registration.php:98
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/seller_registration.php on line 98
+[06-Feb-2025 16:25:03 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/seller_registration.php:98
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/seller_registration.php on line 98
+[06-Feb-2025 16:26:16 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/seller_registration.php:98
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/seller_registration.php on line 98
+[07-Feb-2025 04:02:44 UTC] Email error: SMTP Error: Could not connect to SMTP host. Failed to connect to serverSMTP server error: Failed to connect to server
+[07-Feb-2025 04:06:21 UTC] Email error: SMTP Error: Could not connect to SMTP host. Failed to connect to serverSMTP server error: Failed to connect to server
+[07-Feb-2025 04:19:05 UTC] Email error: SMTP Error: Could not connect to SMTP host. Connection failed. stream_socket_enable_crypto(): Peer certificate CN=`*.prod.phx3.secureserver.net' did not match expected CN=`mail.thedeadstock.in'SMTP server error: QUIT command failed Detail:  [ºŠý„L²ÌÁß~­Ìw!-221 p3plzcpnl508868.prod.phx3.secureserver.net closing connection
+
+[07-Feb-2025 04:28:33 UTC] Email error: SMTP Error: Could not connect to SMTP host. Failed to connect to serverSMTP server error: Failed to connect to server
+[07-Feb-2025 07:09:27 UTC] Email error: SMTP Error: Could not connect to SMTP host. Failed to connect to serverSMTP server error: Failed to connect to server
+[07-Feb-2025 07:27:50 UTC] Email error: SMTP Error: Could not connect to SMTP host.
+[07-Feb-2025 08:52:14 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/testmail.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/testmail.php on line 18
+[07-Feb-2025 08:52:15 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/testmail.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/testmail.php on line 18
+[07-Feb-2025 08:52:16 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/testmail.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/testmail.php on line 18
+[07-Feb-2025 08:52:16 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/testmail.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/testmail.php on line 18
+[07-Feb-2025 08:52:17 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/testmail.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/testmail.php on line 18
+[07-Feb-2025 08:52:18 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/testmail.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/testmail.php on line 18
+[07-Feb-2025 08:52:19 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/testmail.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/testmail.php on line 18
+[07-Feb-2025 08:52:22 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/testmail.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/testmail.php on line 18
+[07-Feb-2025 08:54:11 UTC] SERVER -> CLIENT: 220-p3plzcpnl508868.prod.phx3.secureserver.net ESMTP Exim 4.96.2 #2 Fri, 07 Feb 2025 01:54:11 -0700 
+220-We do not authorize the use of this system to transport unsolicited, 
+220 and/or bulk e-mail.
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: EHLO thedeadstock.in
+
+[07-Feb-2025 08:54:11 UTC] SERVER -> CLIENT: 250-p3plzcpnl508868.prod.phx3.secureserver.net Hello thedeadstock.in [72.167.66.83]
+250-SIZE 52428800
+250-8BITMIME
+250-PIPELINING
+250-PIPECONNECT
+250-AUTH PLAIN LOGIN
+250 HELP
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: AUTH LOGIN
+
+[07-Feb-2025 08:54:11 UTC] SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: [credentials hidden]
+[07-Feb-2025 08:54:11 UTC] SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: [credentials hidden]
+[07-Feb-2025 08:54:11 UTC] SERVER -> CLIENT: 235 Authentication succeeded
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: MAIL FROM:<admin@thedeadstock.in>
+
+[07-Feb-2025 08:54:11 UTC] SERVER -> CLIENT: 250 OK
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: RCPT TO:<mailtotharun23@gmail.com>
+
+[07-Feb-2025 08:54:11 UTC] SERVER -> CLIENT: 250 Accepted
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: DATA
+
+[07-Feb-2025 08:54:11 UTC] SERVER -> CLIENT: 354 Enter message, ending with "." on a line by itself
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: Date: Fri, 7 Feb 2025 08:54:11 +0000
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: To: Tamil <mailtotharun23@gmail.com>
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: From: Deadstock <admin@thedeadstock.in>
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: Subject: Test Email from PHPMailer
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: Message-ID: <PCM3shqIEY6OVy6aZWtqOMieQqN3Uod3GGzJIrHB0@thedeadstock.in>
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.1 (https://github.com/PHPMailer/PHPMailer)
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: MIME-Version: 1.0
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: Content-Type: text/html; charset=iso-8859-1
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: 
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: <h1>PHPMailer Test Successful</h1><p>This is a test email sent using cPanel SMTP.</p>
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: 
+
+[07-Feb-2025 08:54:11 UTC] CLIENT -> SERVER: .
+
+[07-Feb-2025 08:54:16 UTC] SERVER -> CLIENT: 250 OK id=1tgK7n-0081X2-2F
+
+[07-Feb-2025 08:54:16 UTC] CLIENT -> SERVER: QUIT
+
+[07-Feb-2025 08:54:16 UTC] SERVER -> CLIENT: 221 p3plzcpnl508868.prod.phx3.secureserver.net closing connection
+
+[07-Feb-2025 09:04:23 UTC] SERVER -> CLIENT: 220-p3plzcpnl508868.prod.phx3.secureserver.net ESMTP Exim 4.96.2 #2 Fri, 07 Feb 2025 02:04:23 -0700 
+220-We do not authorize the use of this system to transport unsolicited, 
+220 and/or bulk e-mail.
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: EHLO thedeadstock.in
+
+[07-Feb-2025 09:04:23 UTC] SERVER -> CLIENT: 250-p3plzcpnl508868.prod.phx3.secureserver.net Hello thedeadstock.in [72.167.66.83]
+250-SIZE 52428800
+250-8BITMIME
+250-PIPELINING
+250-PIPECONNECT
+250-AUTH PLAIN LOGIN
+250 HELP
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: AUTH LOGIN
+
+[07-Feb-2025 09:04:23 UTC] SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: [credentials hidden]
+[07-Feb-2025 09:04:23 UTC] SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: [credentials hidden]
+[07-Feb-2025 09:04:23 UTC] SERVER -> CLIENT: 235 Authentication succeeded
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: MAIL FROM:<admin@thedeadstock.in>
+
+[07-Feb-2025 09:04:23 UTC] SERVER -> CLIENT: 250 OK
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: RCPT TO:<mailtotharun23@gmail.com>
+
+[07-Feb-2025 09:04:23 UTC] SERVER -> CLIENT: 250 Accepted
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: DATA
+
+[07-Feb-2025 09:04:23 UTC] SERVER -> CLIENT: 354 Enter message, ending with "." on a line by itself
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: Date: Fri, 7 Feb 2025 09:04:23 +0000
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: To: Tamil <mailtotharun23@gmail.com>
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: From: Deadstock <admin@thedeadstock.in>
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: Subject: Test Email from PHPMailer
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: Message-ID: <Eg3MgJuqz5tioirDnlZFihnHCHZpmaTJiLF9LeN8@thedeadstock.in>
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.1 (https://github.com/PHPMailer/PHPMailer)
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: MIME-Version: 1.0
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: Content-Type: text/html; charset=iso-8859-1
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: 
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: <h1>PHPMailer Test Successful</h1><p>This is a test email sent using cPanel SMTP.</p>
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: 
+
+[07-Feb-2025 09:04:23 UTC] CLIENT -> SERVER: .
+
+[07-Feb-2025 09:04:27 UTC] SERVER -> CLIENT: 250 OK id=1tgKHf-00860I-0N
+
+[07-Feb-2025 09:04:27 UTC] CLIENT -> SERVER: QUIT
+
+[07-Feb-2025 09:04:27 UTC] SERVER -> CLIENT: 221 p3plzcpnl508868.prod.phx3.secureserver.net closing connection
+
+[07-Feb-2025 09:06:52 UTC] SERVER -> CLIENT: 220-p3plzcpnl508868.prod.phx3.secureserver.net ESMTP Exim 4.96.2 #2 Fri, 07 Feb 2025 02:06:52 -0700 
+220-We do not authorize the use of this system to transport unsolicited, 
+220 and/or bulk e-mail.
+
+[07-Feb-2025 09:06:52 UTC] CLIENT -> SERVER: EHLO thedeadstock.in
+
+[07-Feb-2025 09:06:52 UTC] SERVER -> CLIENT: 250-p3plzcpnl508868.prod.phx3.secureserver.net Hello thedeadstock.in [72.167.66.83]
+250-SIZE 52428800
+250-8BITMIME
+250-PIPELINING
+250-PIPECONNECT
+250-AUTH PLAIN LOGIN
+250 HELP
+
+[07-Feb-2025 09:06:52 UTC] CLIENT -> SERVER: AUTH LOGIN
+
+[07-Feb-2025 09:06:52 UTC] SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[07-Feb-2025 09:06:52 UTC] CLIENT -> SERVER: [credentials hidden]
+[07-Feb-2025 09:06:52 UTC] SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[07-Feb-2025 09:06:52 UTC] CLIENT -> SERVER: [credentials hidden]
+[07-Feb-2025 09:06:52 UTC] SERVER -> CLIENT: 235 Authentication succeeded
+
+[07-Feb-2025 09:06:52 UTC] CLIENT -> SERVER: MAIL FROM:<support@thedeadstock.in>
+
+[07-Feb-2025 09:06:52 UTC] SERVER -> CLIENT: 250 OK
+
+[07-Feb-2025 09:06:52 UTC] CLIENT -> SERVER: RCPT TO:<mailtotharun23@gmail.com>
+
+[07-Feb-2025 09:06:53 UTC] SERVER -> CLIENT: 250 Accepted
+
+[07-Feb-2025 09:06:53 UTC] CLIENT -> SERVER: DATA
+
+[07-Feb-2025 09:06:53 UTC] SERVER -> CLIENT: 354 Enter message, ending with "." on a line by itself
+
+[07-Feb-2025 09:06:53 UTC] CLIENT -> SERVER: Date: Fri, 7 Feb 2025 09:06:52 +0000
+
+[07-Feb-2025 09:06:53 UTC] CLIENT -> SERVER: To: Tamil <mailtotharun23@gmail.com>
+
+[07-Feb-2025 09:06:53 UTC] CLIENT -> SERVER: From: Deadstock <support@thedeadstock.in>
+
+[07-Feb-2025 09:06:53 UTC] CLIENT -> SERVER: Subject: Test Email from PHPMailer
+
+[07-Feb-2025 09:06:53 UTC] CLIENT -> SERVER: Message-ID: <oF6gncykIUz2CYqc0wvY19hmPhEnFEQ941H1RYAnU@thedeadstock.in>
+
+[07-Feb-2025 09:06:53 UTC] CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.1 (https://github.com/PHPMailer/PHPMailer)
+
+[07-Feb-2025 09:06:53 UTC] CLIENT -> SERVER: MIME-Version: 1.0
+
+[07-Feb-2025 09:06:53 UTC] CLIENT -> SERVER: Content-Type: text/html; charset=iso-8859-1
+
+[07-Feb-2025 09:06:53 UTC] CLIENT -> SERVER: 
+
+[07-Feb-2025 09:06:53 UTC] CLIENT -> SERVER: <h1>PHPMailer Test Successful</h1><p>This is a test email sent using cPanel SMTP.</p>
+
+[07-Feb-2025 09:06:53 UTC] CLIENT -> SERVER: 
+
+[07-Feb-2025 09:06:53 UTC] CLIENT -> SERVER: .
+
+[07-Feb-2025 09:06:57 UTC] SERVER -> CLIENT: 250 OK id=1tgKK5-008776-06
+
+[07-Feb-2025 09:06:57 UTC] CLIENT -> SERVER: QUIT
+
+[07-Feb-2025 09:06:57 UTC] SERVER -> CLIENT: 221 p3plzcpnl508868.prod.phx3.secureserver.net closing connection
+
+[07-Feb-2025 09:19:23 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 40
+    [proposed_price] => 1000
+)
+
+[07-Feb-2025 09:19:25 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 40
+    [proposed_price] => 1000
+)
+
+[07-Feb-2025 09:20:13 UTC] Received payment data: Array
+(
+    [razorpay_payment_id] => pay_PsliqTaJ88MpGb
+    [razorpay_order_id] => order_PsliNTtemuT4cb
+    [razorpay_signature] => e4e155b71edc452d3ff758a837e09080752c346d2c0f7787886bafe03f35d772
+)
+
+[07-Feb-2025 09:20:58 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 10
+    [proposed_price] => 1000
+)
+
+[07-Feb-2025 09:21:28 UTC] Received payment data: Array
+(
+    [razorpay_payment_id] => pay_PslkC24JSNb85r
+    [razorpay_order_id] => order_Pslk1QcRTffXwx
+    [razorpay_signature] => 0e9246c09650bfa4beb177f41ac644fd818663dd19e253acd28853541b5b4cfe
+)
+
+[07-Feb-2025 09:22:20 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 10
+    [proposed_price] => 1000
+)
+
+[07-Feb-2025 09:22:21 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 10
+    [proposed_price] => 1000
+)
+
+[07-Feb-2025 09:22:56 UTC] Received payment data: Array
+(
+    [razorpay_payment_id] => pay_PsllhViruaBWgN
+    [razorpay_order_id] => order_PsllTsNAUNCzIB
+    [razorpay_signature] => 2872f63678117087bf2d1a62ae93002cf174ecc603a826bdc8e50ce08809912f
+)
+
+[07-Feb-2025 09:23:25 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 5
+    [proposed_price] => 500
+)
+
+[07-Feb-2025 09:23:25 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 5
+    [proposed_price] => 500
+)
+
+[07-Feb-2025 09:24:21 UTC] Received payment data: Array
+(
+    [razorpay_payment_id] => pay_PslnBXgeDJqyEP
+    [razorpay_order_id] => order_Pslmc9wClLClXA
+    [razorpay_signature] => efaf2afaae802ac519b1f1f40947a11938abc731bad0f29cf02e1f139cd24b71
+)
+
+[07-Feb-2025 09:26:16 UTC] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in /home/ks4ympr0demc/public_html/header.php on line 3
+[07-Feb-2025 09:28:47 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 10
+    [proposed_price] => 350
+)
+
+[07-Feb-2025 09:29:17 UTC] Received payment data: Array
+(
+    [razorpay_payment_id] => pay_PslsRodIWGLfaK
+    [razorpay_order_id] => order_PslsHW7hWKy0ec
+    [razorpay_signature] => 386b52114bbbc442ba5cb87906eab3c47b22f80c57b040fc6544e4f3635a566c
+)
+
+[07-Feb-2025 09:29:17 UTC] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in /home/ks4ympr0demc/public_html/submit_bid.php:120
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/submit_bid.php(120): mysqli_stmt->bind_param()
+#1 {main}
+  thrown in /home/ks4ympr0demc/public_html/submit_bid.php on line 120
+[07-Feb-2025 09:30:30 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 10
+    [proposed_price] => 300
+)
+
+[07-Feb-2025 09:31:01 UTC] Received payment data: Array
+(
+    [razorpay_payment_id] => pay_PsluFYmRhGInu4
+    [razorpay_order_id] => order_Pslu5MceMu0835
+    [razorpay_signature] => b6f5bc67a7af677b9a1c669ee61ea26ad124e91881c9c09a869b69157c93f569
+)
+
+[07-Feb-2025 09:31:01 UTC] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in /home/ks4ympr0demc/public_html/submit_bid.php:120
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/submit_bid.php(120): mysqli_stmt->bind_param()
+#1 {main}
+  thrown in /home/ks4ympr0demc/public_html/submit_bid.php on line 120
+[07-Feb-2025 09:37:24 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 10
+    [proposed_price] => 250
+)
+
+[07-Feb-2025 09:39:10 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 10
+    [proposed_price] => 250
+)
+
+[07-Feb-2025 09:44:11 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 20
+    [proposed_price] => 165
+)
+
+[07-Feb-2025 09:45:50 UTC] Received payment data: Array
+(
+    [product_id] => 1
+    [quantity] => 10
+    [proposed_price] => 250
+)
+
+[07-Feb-2025 09:46:28 UTC] Received payment data: Array
+(
+    [razorpay_payment_id] => pay_PsmAaz28hocioq
+    [razorpay_order_id] => order_PsmAIUr0H958Zl
+    [razorpay_signature] => c4f21125c33643d7ba411805a430e18a3da6df246ec4872fdc46f97d9a815d77
+    [debug_info] => Array
+        (
+            [product_id] => 1
+            [quantity] => 10
+            [proposed_price] => 250
+        )
+
+)
+
