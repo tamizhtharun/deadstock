@@ -76,7 +76,31 @@ unset($_SESSION['error_message']);
         <div class="message-wrapper ">
             <div id="message-container"></div>
         </div>
+        <style>
+        #message-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
         
+    </style>
 </head>
 
 <body>
@@ -235,31 +259,41 @@ unset($_SESSION['error_message']);
                         aria-label="Close"></button>
                 </div>
                 <div id="modal-body" class="modal-body">
+                    <!-- Message container for displaying errors and success messages -->
+                    <div id="modal-message-container"></div>
                     <!-- Error Message HTML -->
-                    <?php if (!empty($error_message)): ?>
-                        <div class="premium-alert" id="premium-alert">
-                            <div class="alert-content">
-                                <div class="alert-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                                    </svg>
-                                </div>
-                                <span class="alert-message"><?php echo htmlspecialchars($error_message); ?></span>
-                                <button class="alert-close" onclick="closeAlert()">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    <?php endif; ?>
+<?php if (!empty($error_message) || !empty($success_message)): ?>
+    <div class="premium-alert" id="premium-alert">
+        <div class="alert-content">
+            <div class="alert-icon">
+                <?php if (!empty($success_message)): ?>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                <?php else: ?>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                <?php endif; ?>
+            </div>
+            <span class="alert-message"><?php echo htmlspecialchars(!empty($success_message) ? $success_message : $error_message); ?></span>
+            <button class="alert-close" onclick="closeAlert()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </div>
+<?php endif; ?>
                     <!-- Login Form -->
                     <form id="signin-form" method="POST" action="login.php">
                         <h1 class="modal-title fs-5" id="box-header">Login</h1>
@@ -318,20 +352,34 @@ unset($_SESSION['error_message']);
                             <p>Already have an account? <a href="#" id="signin-link">Sign In</a></p>
                         </div>
                     </form>
+
+                    <!-- Forgot Password Form -->
+                    <form id="forgot-password-form" method="POST" action="forgot_password.php" style="display: none;">
+                        <h1 class="modal-title fs-5" id="box-header">Forgot Password</h1>
+                        <div class="input-box">
+                            <input type="email" class="input-field" placeholder="Email" name="email" autocomplete="off" required>
+                        </div>
+                        <div class="input-submit">
+                            <button type="submit" class="submit-btn" id="forgot-password-btn" name="forgot_password">
+                                <label for="submit">Reset Password</label>
+                            </button>
+                        </div>
+                        <div class="back-to-login-link">
+                            <p><a href="#" id="back-to-login-link">Back to Login</a></p>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="js/index.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -418,6 +466,38 @@ unset($_SESSION['error_message']);
                     modal.hide(); // Hide the modal when the close button is clicked
                 });
             }
+
+            const signinForm = document.getElementById('signin-form');
+            const signupForm = document.getElementById('signup-form');
+            const forgotPasswordForm = document.getElementById('forgot-password-form');
+            const forgotPasswordLink = document.getElementById('forgot-password-link');
+            const backToLoginLink = document.getElementById('back-to-login-link');
+
+            forgotPasswordLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                signinForm.style.display = 'none';
+                forgotPasswordForm.style.display = 'block';
+            });
+
+            backToLoginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                forgotPasswordForm.style.display = 'none';
+                signinForm.style.display = 'block';
+            });
+
+            document.getElementById('signup-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                signinForm.style.display = 'none';
+                forgotPasswordForm.style.display = 'none';
+                signupForm.style.display = 'block';
+            });
+
+            document.getElementById('signin-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                signupForm.style.display = 'none';
+                forgotPasswordForm.style.display = 'none';
+                signinForm.style.display = 'block';
+            });
         });
 
         // JavaScript for alert functionality
@@ -463,6 +543,53 @@ unset($_SESSION['error_message']);
             xhr.send();
         }
     </script>
+    <script src="forgot-password.js"></script>
+    <!-- <script>
+        document.getElementById('forgot-password-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[name="email"]').value;
+            fetch('forgot_password.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'email=' + encodeURIComponent(email)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageContainer = document.getElementById('modal-message-container');
+                messageContainer.innerHTML = `<div class="alert alert-${data.success ? 'success' : 'danger'}">${data.message}</div>`;
+                messageContainer.style.display = 'block';
+                if (data.success) {
+                    document.getElementById('forgot-password-form').reset();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const messageContainer = document.getElementById('modal-message-container');
+                messageContainer.innerHTML = '<div class="alert alert-danger">An error occurred. Please try again.</div>';
+                messageContainer.style.display = 'block';
+            });
+        });
+
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('message-container');
+            messageContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            messageContainer.style.display = 'block';
+            setTimeout(() => {
+                messageContainer.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+
+    <style>
+        #modal-message-container {
+            margin-bottom: 15px;
+        }
+        #modal-message-container .alert {
+            margin-bottom: 0;
+        }
+    </style> -->
 
  
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
