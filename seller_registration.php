@@ -555,73 +555,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         color: #005bbf;
     }
 
-    /* Modal Styles */
-    .modal {
-        display: none;
-        position: fixed;
-
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.75);
-        z-index: 99999;
-        animation: fadeIn 0.2s ease-out;
-    }
-
-    .modal-content {
-        position: relative;
-        background-color: var(--input-background);
-        margin: 40px auto;
-        padding: 24px;
-        width: 90%;
-        max-width: 600px;
-        max-height: calc(100vh - 80px);
-        border-radius: 0;
-        /* Ensure no border-radius */
-        /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);  */
-        overflow-y: auto;
-    }
-
-    .modal-close {
-        position: absolute;
-        top: 16px;
-        right: 16px;
-        font-size: 24px;
-        cursor: pointer;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--secondary-text);
-        transition: color 0.2s ease;
-        background: none;
-        border: none;
-        padding: 0;
-    }
-
-    .modal-close:hover {
-        color: var(--text-color);
-    }
-
-    .modal-title {
-        font-size: 20px;
-        font-weight: 600;
-        margin-bottom: 16px;
-        padding-right: 40px;
-        color: var(--text-color);
-    }
-
-    .modal-dialog {
-        border-radius: 0;
-        /* Remove rounding from parent container */
-    }
-
-    .modal-header,
-    .modal-body,
-    .modal-footer {
-        border-radius: 0;
-        /* Remove rounding from child elements */
-    }
 
     @keyframes fadeIn {
         from {
@@ -774,15 +707,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <!-- <div id="terms-modal" class="modal">
-    <div class="modal-content">
-        <button type="button" class="modal-close" onclick="closeTermsModal()" aria-label="Close modal">&times;</button>
-        <h2 class="modal-title">Terms and Conditions</h2>
-        <div class="modal-body">
-            <?php echo nl2br($terms); ?>
-        </div>
-    </div>
-</div> -->
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', function () {

@@ -13,7 +13,7 @@ body {
 }
 /* Main container styles */
 .container {
-    max-width: 1280px;
+    max-width: 1370px;
     margin: 2rem auto;
     padding: 0 2rem;
 }
@@ -350,7 +350,7 @@ body {
     display: none;
 }
 
-
+/* 
 .checkout-steps {
     display: flex;
     justify-content: center;
@@ -396,5 +396,105 @@ body {
   .step.active + .step-divider {
     background-color: #10b981;
   }
+  */
+/* Cart Header and Steps */
+.cart-header {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+  }
   
+  .cart-title {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: #212529;
+  }
   
+  .cart-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .step-number {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+  }
+
+  .step1 {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+    font-family: Arial, sans-serif;
+  }
+  
+  .step-number1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px; 
+    height: 35px; 
+    background-color: #10b981; 
+    color: #000000; 
+    border-radius: 50%; 
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .step-text1 {
+    font-size: 16px;
+    color: #6c757d;
+  }
+  
+  .step2 {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+    font-family: Arial, sans-serif;
+  }
+  
+  .step-number2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px; 
+    height: 35px; 
+    background-color: #ffcd2a; 
+    color: #000000; 
+    border-radius: 50%; 
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .step-text2 {
+    font-size: 16px;
+    color: #6c757d;
+  }
+  .step-divider  {
+    height: 3px;
+    background-color: #ccc; 
+    flex-grow: 1;
+    margin: 0 10px; 
+}
+
+.step-divider2{
+    height: 3px;
+    background-color: #10b981;
+    flex-grow: 1;
+    margin: 0 10px;
+}

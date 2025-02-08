@@ -747,9 +747,9 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
               $file_path = 'assets/uploads/' . $pdf_name;
               $view_url = "pdf_download.php?action=view&id=$product_id";
               $download_url = "pdf_download.php?action=download&id=$product_id";
-              echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
+              echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank" style="text-decoration:none;"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
               echo '&nbsp;&nbsp;';
-              echo '<a href="' . $download_url . '" class="btn btn-success"><i class="fa fa-download"></i> Download Catalogue</a>';
+              echo '<a href="' . $download_url . '" class="btn btn-success" style="text-decoration:none;"><i class="fa fa-download"></i> Download Catalogue</a>';
             }
             ?>
           </div>
@@ -765,7 +765,7 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
           FROM tbl_product 
           WHERE p_name LIKE :search_term 
           AND id != :current_id
-          LIMIT 5"; // Ensures we don’t show the same product
+          LIMIT 3";
       
       $stmt = $pdo->prepare($sql);
       $stmt->execute([
@@ -785,7 +785,7 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
                 <div class="d-flex mb-3">
                   <a href="product_landing.php?id=<?php echo $related_product['id']; ?>" class="me-3">
                     <img src="assets/uploads/product-photos/<?php echo $related_product['p_featured_photo']; ?>"
-                      style="min-width: 96px; height: 96px;" class="img-thumbnail"
+                      style="width: 100px; height: 96px;" class="img-thumbnail"
                       alt="<?php echo htmlspecialchars($related_product['p_name']); ?>" />
                   </a>
                   <div class="info">
