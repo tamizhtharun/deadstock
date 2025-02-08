@@ -192,15 +192,29 @@ if (isset($_GET['delete_all'])) {
                 <span class="amount fw-bold">₹<?php echo number_format($grand_total); ?></span>
             </div>
 
-            <button class="btn btn-primary w-100 mb-3 checkout-btn" onclick="proceedToCheckout()">
-             Proceed to Checkout
-            </button>
-            <script>
-            function proceedToCheckout() {
-                // Redirect to checkout page
-                window.location.href = 'checkout-page.php';
-            }
-            </script>
+            <button id="checkout-btn" class="btn btn-primary w-100 mb-3 checkout-btn" onclick="proceedToCheckout()" 
+    <?php echo ($grand_total == 0) ? 'disabled' : ''; ?>>
+    Proceed to Checkout
+</button>
+
+<script>
+    function proceedToCheckout() {
+        window.location.href = 'checkout-page.php';
+    }
+
+    // Enable the button dynamically when an item is added to the cart
+    document.addEventListener("DOMContentLoaded", function () {
+        let checkoutBtn = document.getElementById("checkout-btn");
+        let cartItems = document.querySelectorAll(".cart-item");
+
+        if (cartItems.length > 0) {
+            checkoutBtn.removeAttribute("disabled");
+        } else {
+            checkoutBtn.setAttribute("disabled", "true");
+        }
+    });
+</script>
+
 
             <div class="payment-methods text-center mt-4">
                 <p class="text-muted mb-2">Secure Payment Methods</p>

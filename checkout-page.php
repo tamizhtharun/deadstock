@@ -90,33 +90,37 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <section class="shipping-section">
                 <h2>Delivery Address</h2>
                 <div class="saved-addresses">
-                    <?php if (count($addresses) > 0): ?>
-                        <?php foreach ($addresses as $row): ?>
-                            <label class="address-option">
-                                <input type="radio" name="address" value="<?php echo htmlspecialchars($row['id']); ?>">
-                                <div class="address-details">
-                                    <span class="name"><?php echo htmlspecialchars($row['full_name']); ?></span>
-                                    <span class="phone">📞 <?php echo htmlspecialchars($row['phone_number']); ?></span>
-                                    <span class="address">
-                                        <?php echo htmlspecialchars($row['address']) . ', ' . 
-                                                     htmlspecialchars($row['city']) . ', ' . 
-                                                     htmlspecialchars($row['state']) . ' - ' . 
-                                                     htmlspecialchars($row['pincode']) . 
-                                                     ' (' . htmlspecialchars($row['address_type']) . ')'; ?>
-                                    </span>
-                                </div>
-                                <div class="address-actions">
-                                    <button type="button" class="link-btn view-address" 
-                                            data-address-id="<?php echo htmlspecialchars($row['id']); ?>">
-                                        View Details
-                                    </button>
-                                </div>
-                            </label>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <p class="no-address">No addresses found. Please add a new address.</p>
-                    <?php endif; ?>
+                <?php if (count($addresses) > 0): ?>
+        <?php foreach ($addresses as $row): ?>
+            <label class="address-option">
+                <input type="radio" name="address" value="<?php echo htmlspecialchars($row['id']); ?>">
+                <div class="address-details">
+                    <span class="name"><?php echo htmlspecialchars($row['full_name']); ?></span>
+                    <span class="phone">📞 <?php echo htmlspecialchars($row['phone_number']); ?></span>
+                    <span class="address">
+                        <?php echo htmlspecialchars($row['address']) . ', ' . 
+                                     htmlspecialchars($row['city']) . ', ' . 
+                                     htmlspecialchars($row['state']) . ' - ' . 
+                                     htmlspecialchars($row['pincode']) . 
+                                     ' (' . htmlspecialchars($row['address_type']) . ')'; ?>
+                                </span>
+                            </div>
+                            <div class="address-actions">
+                                <button type="button" class="link-btn view-address" 
+                                        data-address-id="<?php echo htmlspecialchars($row['id']); ?>">
+                                    View Details
+                                </button>
+                            </div>
+                        </label>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+            <!-- Add Address Button (Centered) -->
+            <?php if (count($addresses) === 0): ?>
+                <div class="add-address-container">
+                    <a href="user/profile.php?tab=addresses" class="btn-small add-address-btn">Add Address</a>
                 </div>
+            <?php endif; ?>
             </section>
         </div>
  

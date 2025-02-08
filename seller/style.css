@@ -33,6 +33,35 @@
     background-color: white;
     /* height: 60px !important; */
   }
+  /* Hide dropdown menu initially */
+.profile-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 150px;
+  background: white;
+  border: 1px solid #ddd;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Show dropdown menu when profile is hovered */
+.profile-hover:hover + .profile-menu,
+.profile-menu:hover {
+  display: block;
+}
+
+/* Dropdown icon styling */
+.dropdown-icon {
+  font-size: 14px;
+  color: #555;
+  transition: transform 0.3s ease;
+}
+
+/* Rotate dropdown icon when hovered */
+.profile-hover:hover .dropdown-icon {
+  transform: rotate(180deg);
+}
   
   .main-header .logo {
     background: var(--primary-color);

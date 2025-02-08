@@ -566,4 +566,27 @@ body {
         break-inside: avoid;
     }
 }
-  
+.add-address-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.add-address-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 6px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none; /* Removes underline */
+    display: inline-block;
+    cursor: pointer;
+}
+
+.add-address-btn:hover {
+    background-color: #0056b3;
+    text-decoration: none !important; /* Ensures underline is not applied */
+}
+
+
