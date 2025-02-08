@@ -19,7 +19,7 @@
   gap: 10px;
   font-size: 14px;
   margin-bottom: 8px;
-  animation: slideIn 0.3s ease-out, fadeOut 0.3s 2.5s forwards;
+  /* animation: slideIn 0.3s ease-out, fadeOut 0.3s 2.5s forwards; */
 }
 
 .success {
@@ -36,6 +36,7 @@
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
   font-size: 16px;
+  margin-right: 5px; /* Space added after the icon */
 }
 
 .success::before { content: "\f00c"; color: #28a745; }

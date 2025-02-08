@@ -116,7 +116,7 @@ if (isset($_POST['add_to_cart'])) {
                   backdrop: 'static'
               });
               loginModal.show();
-              showMessage('Please login to add items to your cart', 'error');
+              // showMessage('Please login to add items to your cart', 'error');
           });
       </script>";
   }
@@ -445,20 +445,40 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
                     </button>
                   </form>
 
-                  <!-- Request Price Button -->
-                  <button id="requestPriceBtn" class="request-price-btn btn btn-danger border">
-                    <i class="fa fa-gavel"></i> Place a Bid
-                  </button>
-                </div>
+                   <!-- Request Price Button -->
+                      <div class="d-inline-block" 
+                          <?php if (!isset($_SESSION['user_session']['id'])) { ?> 
+                              data-bs-toggle="tooltip" data-bs-placement="top" title="Please login through your account"
+                          <?php } ?>>
+                        <button id="requestPriceBtn" class="request-price-btn btn btn-danger border" 
+                          <?php if (!isset($_SESSION['user_session']['id'])) { echo 'disabled'; } ?>>
+                          <i class="fa fa-gavel"></i> Place a Bid
+                        </button>
+                      </div>
+                      <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                          var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                          tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                            new bootstrap.Tooltip(tooltipTriggerEl);
+                          });
+                        });
+                      </script>
+
+                      <style>
+                        /* Reduce Tooltip Font Size */
+                        .tooltip-inner {
+                          font-size: 12px !important; /* Adjust size as needed */
+                          padding: 4px 8px !important; /* Adjust padding for a smaller box */
+                        }
+                      </style>
+
+                 </div>
               </div>
             </div>
           </div>
-    </div>
-  </div>
-</section>
-
-
-
+</div>
+      </div>
+   </section>
 <!-- Modal Overlay For Request Price -->
 <div class="modal-overlay" id="modalOverlay" style="display: none;">
   <!-- Modal -->

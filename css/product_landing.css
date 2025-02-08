@@ -567,4 +567,13 @@ body {
     transform: translateY(0);
   }
 }
+.btn-warning,
+.btn-success {
+    text-decoration: none !important; /* Ensures no underline appears */
+}
+
+.btn-warning:hover,
+.btn-success:hover {
+    text-decoration: none !important; /* Prevents underline on hover */
+}
 
