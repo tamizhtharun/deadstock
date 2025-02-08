@@ -72,6 +72,10 @@ body {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.logout-button{
+  padding-left: 700px;
+}
+
 .profile-info h1 {
   font-size: 20px;
   margin-bottom: 0px;
@@ -332,6 +336,9 @@ input:focus {
 
   .button {
       width: 100%;
+  }
+  .card{
+    overflow-x: scroll;
   }
 }
 
@@ -703,6 +710,9 @@ input:focus {
   .modal-content {
     width: 95%;
     padding: 1rem;
+  }
+  .logout-button{
+    padding: 0px !important;
   }
 }
 .form-group {

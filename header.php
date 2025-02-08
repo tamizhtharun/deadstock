@@ -155,7 +155,7 @@ unset($_SESSION['error_message']);
                             $profileImage = isset($userInfo['profile_image']) && !empty($userInfo['profile_image']) 
                             ? 'user/uploads/profile-photos/' . htmlspecialchars($userInfo['profile_image'])
                             : $defaultAvatar;
-                ?>
+                                ?>
                                     <img src="<?= $profileImage ?>" alt="Profile">
                                 </div>
                             </button>

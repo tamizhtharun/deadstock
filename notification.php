@@ -165,7 +165,7 @@ $row = $result->fetch_assoc();
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #f5f7fa;
+            /* background-color: #f5f7fa; */
             color: #1a1a1a;
             line-height: 1.6;
         }
@@ -173,9 +173,9 @@ $row = $result->fetch_assoc();
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background-color: white;
+            /* background-color: white; */
             min-height: 100vh;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            /* box-shadow: 0 0 10px rgba(0,0,0,0.1); */
             margin-bottom: 20px !important;
             padding-bottom : 20px !important;
         }
