@@ -9,8 +9,7 @@
     --apple-shadow: rgba(0, 0, 0, 0.1);
     --apple-radius: 12px;
   }
-  
-  /* Category layout container */
+
   .category-pad {
     display: flex;
     flex-direction: row;
