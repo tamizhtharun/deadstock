@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user_id = $_SESSION['user_session']['id'];
 
         // Check if user has already bid on this product
-        $check_stmt = $conn->prepare("SELECT user_id FROM bidding WHERE product_id = ? AND user_id = ? AND bid_status = '0'");
+        $check_stmt = $conn->prepare("SELECT user_id FROM bidding WHERE product_id = ? AND user_id = ? AND bid_status != '3'");
         $check_stmt->bind_param("ii", $product_id, $user_id);
         $check_stmt->execute();
         $result = $check_stmt->get_result();
@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $bid = $_SESSION['pending_bid'];
                 
                 // Double-check for existing bids before inserting
-                $check_stmt = $conn->prepare("SELECT user_id FROM bidding WHERE product_id = ? AND user_id = ? AND bid_status = '0'");
+                $check_stmt = $conn->prepare("SELECT user_id FROM bidding WHERE product_id = ? AND user_id = ? AND bid_status != '3'");
                 $check_stmt->bind_param("ii", $bid['product_id'], $_SESSION['user_session']['id']);
                 $check_stmt->execute();
                 $result = $check_stmt->get_result();
@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $check_stmt->close();
                 
                 $stmt = $conn->prepare(
-                    "INSERT INTO bidding (product_id, user_id, bid_price, bid_quantity, payment_id, bid_status) 
+                    "INSERT INTO bidding (product_id, user_id, bid_price, bid_quantity, payment_id, order_id, bid_status) 
                      VALUES (?, ?, ?, ?, ?, ?, '0')"
                 );
 
@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $bid['price'],
                     $bid['quantity'],
                     $postData['razorpay_payment_id'],
-                    // $postData['razorpay_order_id']
+                    $postData['razorpay_order_id']
                 );
 
                 if ($stmt->execute()) {

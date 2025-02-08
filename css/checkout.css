@@ -396,5 +396,197 @@ body {
   .step.active + .step-divider {
     background-color: #10b981;
   }
-  
-  
+  /* Responsive Design */
+@media screen and (max-width: 1280px) {
+    .container {
+        max-width: 100%;
+        margin: 1rem auto;
+        padding: 0 1.5rem;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .checkout-container {
+        gap: 1.5rem;
+    }
+
+    .order-summary {
+        width: 340px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        margin: 1rem auto;
+        padding: 0 1rem;
+    }
+
+    .checkout-container {
+        flex-direction: column;
+    }
+
+    .forms-container {
+        width: 100%;
+    }
+
+    .order-summary {
+        width: 100%;
+        margin-top: 1.5rem;
+    }
+
+    .shipping-section {
+        padding: 1.5rem;
+    }
+
+    .checkout-steps {
+        overflow-x: auto;
+        padding: 1rem 0;
+    }
+
+    .step-divider {
+        width: 2rem;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .container {
+        padding: 0 0.75rem;
+    }
+
+    .shipping-section {
+        padding: 1rem;
+    }
+
+    .saved-addresses .address-option {
+        padding: 1rem;
+        flex-direction: column;
+    }
+
+    .saved-addresses .address-option input[type="radio"] {
+        align-self: flex-start;
+    }
+
+    .saved-addresses .address-actions {
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 0.5rem;
+    }
+
+    .product-item {
+        align-items: flex-start;
+    }
+
+    .product-image {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .product-name {
+        font-size: 0.875rem;
+    }
+
+    .summary-row, .summary-total {
+        font-size: 0.875rem;
+    }
+
+    .btn-large {
+        padding: 0.875rem;
+    }
+
+    .address-modal-content {
+        padding: 1.5rem;
+        width: 95%;
+    }
+
+    .address-details-list dt {
+        font-size: 0.875rem;
+    }
+
+    .address-details-list dd {
+        font-size: 0.875rem;
+        padding: 0.25rem 0;
+    }
+}
+
+@media screen and (max-width: 375px) {
+    .shipping-section h2 {
+        font-size: 1.25rem;
+    }
+
+    .saved-addresses .address-details .name {
+        font-size: 0.9375rem;
+    }
+
+    .saved-addresses .address-details .phone,
+    .saved-addresses .address-details .address {
+        font-size: 0.8125rem;
+    }
+
+    .product-item {
+        gap: 0.75rem;
+    }
+
+    .product-image {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .btn-large {
+        font-size: 0.9375rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        background: white;
+    }
+
+    .container {
+        margin: 0;
+        padding: 0;
+    }
+
+    .checkout-steps,
+    .btn-primary,
+    .btn-secondary,
+    .address-actions,
+    .modal-close {
+        display: none;
+    }
+
+    .shipping-section,
+    .order-summary {
+        box-shadow: none;
+        border: 1px solid #e5e7eb;
+        break-inside: avoid;
+    }
+
+    .saved-addresses .address-option {
+        break-inside: avoid;
+    }
+}
+.add-address-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.add-address-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 6px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none; /* Removes underline */
+    display: inline-block;
+    cursor: pointer;
+}
+
+.add-address-btn:hover {
+    background-color: #0056b3;
+    text-decoration: none !important; /* Ensures underline is not applied */
+}
+
+

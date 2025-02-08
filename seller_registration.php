@@ -2,11 +2,16 @@
 <?php
 // Include database connection and PHPMailer files
 require 'db_connection.php'; // Update with actual DB connection code if inline is needed
-require 'phpmailer/src/PHPMailer.php';
-require 'phpmailer/src/SMTP.php';
-require 'phpmailer/src/Exception.php';
-require_once('track_view.php');
-trackPageView('SRF', 'Seller Registration Form');
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+require 'PHPMailer/src/Exception.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+$mail = new PHPMailer(true);
+// require_once('track_view.php');
+// trackPageView('SRF', 'Seller Registration Form');
 
 // Initialize variables for error messages and success message
 $errorMessages = [];
@@ -90,16 +95,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     // Sending email logic...
                     try {
-                        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+                        $mail = new PHPMailer(true);
                         $mail->isSMTP();
-                        $mail->Host = 'smtp.gmail.com';
+                        $mail->Host = 'p3plzcpnl508868.prod.phx3.secureserver.net';
                         $mail->SMTPAuth = true;
-                        $mail->Username = 'deaddstock@gmail.com';
-                        $mail->Password = 'fnsdadrefmosspym';
-                        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-                        $mail->Port = 587;
+                        $mail->Username = 'support@thedeadstock.in';
+                        $mail->Password = 'Deadstock@2025';
+                        $mail->SMTPSecure =PHPMailer::ENCRYPTION_SMTPS;
+                        $mail->Port = 465;
 
-                        $mail->setFrom('deaddstock@gmail.com', 'Deadstock');
+                        $mail->setFrom('support@thedeadstock.in', 'Deadstock');
                         $mail->addAddress($seller_email, $seller_name);
 
                         $mail->isHTML(true);
@@ -556,73 +561,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     /* Modal Styles */
-    .modal {
-        display: none;
-        position: fixed;
-
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.75);
-        z-index: 99999;
-        animation: fadeIn 0.2s ease-out;
-    }
-
-    .modal-content {
-        position: relative;
-        background-color: var(--input-background);
-        margin: 40px auto;
-        padding: 24px;
-        width: 90%;
-        max-width: 600px;
-        max-height: calc(100vh - 80px);
-        border-radius: 0;
-        /* Ensure no border-radius */
-        /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);  */
-        overflow-y: auto;
-    }
-
-    .modal-close {
-        position: absolute;
-        top: 16px;
-        right: 16px;
-        font-size: 24px;
-        cursor: pointer;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--secondary-text);
-        transition: color 0.2s ease;
-        background: none;
-        border: none;
-        padding: 0;
-    }
-
-    .modal-close:hover {
-        color: var(--text-color);
-    }
-
-    .modal-title {
-        font-size: 20px;
-        font-weight: 600;
-        margin-bottom: 16px;
-        padding-right: 40px;
-        color: var(--text-color);
-    }
-
-    .modal-dialog {
-        border-radius: 0;
-        /* Remove rounding from parent container */
-    }
-
-    .modal-header,
-    .modal-body,
-    .modal-footer {
-        border-radius: 0;
-        /* Remove rounding from child elements */
-    }
-
+   
     @keyframes fadeIn {
         from {
             opacity: 0;
