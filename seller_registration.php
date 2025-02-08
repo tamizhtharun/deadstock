@@ -2,11 +2,16 @@
 <?php
 // Include database connection and PHPMailer files
 require 'db_connection.php'; // Update with actual DB connection code if inline is needed
-require 'phpmailer/src/PHPMailer.php';
-require 'phpmailer/src/SMTP.php';
-require 'phpmailer/src/Exception.php';
-require_once('track_view.php');
-trackPageView('SRF', 'Seller Registration Form');
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+require 'PHPMailer/src/Exception.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+$mail = new PHPMailer(true);
+// require_once('track_view.php');
+// trackPageView('SRF', 'Seller Registration Form');
 
 // Initialize variables for error messages and success message
 $errorMessages = [];
@@ -90,16 +95,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     // Sending email logic...
                     try {
-                        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+                        $mail = new PHPMailer(true);
                         $mail->isSMTP();
-                        $mail->Host = 'smtp.gmail.com';
+                        $mail->Host = 'p3plzcpnl508868.prod.phx3.secureserver.net';
                         $mail->SMTPAuth = true;
-                        $mail->Username = 'deaddstock@gmail.com';
-                        $mail->Password = 'fnsdadrefmosspym';
-                        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-                        $mail->Port = 587;
+                        $mail->Username = 'support@thedeadstock.in';
+                        $mail->Password = 'Deadstock@2025';
+                        $mail->SMTPSecure =PHPMailer::ENCRYPTION_SMTPS;
+                        $mail->Port = 465;
 
-                        $mail->setFrom('deaddstock@gmail.com', 'Deadstock');
+                        $mail->setFrom('support@thedeadstock.in', 'Deadstock');
                         $mail->addAddress($seller_email, $seller_name);
 
                         $mail->isHTML(true);

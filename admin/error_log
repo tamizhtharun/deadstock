@@ -1,0 +1,716 @@
+[06-Feb-2025 11:20:05 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 11:20:05 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 11:20:06 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 11:20:06 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $contact_fax in /home/ks4ympr0demc/public_html/admin/settings.php on line 1128
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1378
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1381
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1391
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1394
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $cta_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1458
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $cta_content in /home/ks4ympr0demc/public_html/admin/settings.php on line 1464
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $cta_read_more_text in /home/ks4ympr0demc/public_html/admin/settings.php on line 1470
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $cta_read_more_url in /home/ks4ympr0demc/public_html/admin/settings.php on line 1476
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $cta_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1482
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $testimonial_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1609
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $testimonial_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1615
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $testimonial_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1621
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $blog_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1648
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $blog_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1654
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $banner_blog in /home/ks4ympr0demc/public_html/admin/settings.php on line 1848
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $stripe_public_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1883
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $stripe_secret_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1889
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1963
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1966
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1976
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1979
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1989
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1992
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2002
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2005
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2015
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2018
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2028
+[06-Feb-2025 11:20:28 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2031
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $contact_fax in /home/ks4ympr0demc/public_html/admin/settings.php on line 1128
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1378
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1381
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1391
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1394
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $cta_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1458
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $cta_content in /home/ks4ympr0demc/public_html/admin/settings.php on line 1464
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $cta_read_more_text in /home/ks4ympr0demc/public_html/admin/settings.php on line 1470
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $cta_read_more_url in /home/ks4ympr0demc/public_html/admin/settings.php on line 1476
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $cta_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1482
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $testimonial_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1609
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $testimonial_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1615
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $testimonial_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1621
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $blog_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1648
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $blog_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1654
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $banner_blog in /home/ks4ympr0demc/public_html/admin/settings.php on line 1848
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $stripe_public_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1883
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $stripe_secret_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1889
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1963
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1966
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1976
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1979
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1989
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1992
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2002
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2005
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2015
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2018
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2028
+[06-Feb-2025 11:20:29 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2031
+[06-Feb-2025 11:24:41 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 11:24:41 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 11:27:31 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 11:27:31 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 11:37:05 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 11:37:05 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $contact_fax in /home/ks4ympr0demc/public_html/admin/settings.php on line 1128
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1378
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1381
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1391
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1394
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $cta_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1458
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $cta_content in /home/ks4ympr0demc/public_html/admin/settings.php on line 1464
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $cta_read_more_text in /home/ks4ympr0demc/public_html/admin/settings.php on line 1470
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $cta_read_more_url in /home/ks4ympr0demc/public_html/admin/settings.php on line 1476
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $cta_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1482
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $testimonial_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1609
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $testimonial_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1615
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $testimonial_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1621
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $blog_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1648
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $blog_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1654
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $banner_blog in /home/ks4ympr0demc/public_html/admin/settings.php on line 1848
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $stripe_public_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1883
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $stripe_secret_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1889
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1963
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1966
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1976
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1979
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1989
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1992
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2002
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2005
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2015
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2018
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2028
+[06-Feb-2025 11:37:12 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2031
+[06-Feb-2025 11:38:14 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 11:38:14 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 12:28:50 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 12:28:50 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 12:31:33 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 12:31:33 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 12:38:15 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[06-Feb-2025 12:38:15 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[06-Feb-2025 12:39:12 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[06-Feb-2025 12:39:12 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[06-Feb-2025 12:41:28 UTC] Array
+(
+    [seller_id] => 2
+    [seller_name] => TAMIL SELVAN Seller
+    [seller_cname] => Deadstock Tooling
+    [seller_email] => mailtotharun23@gmail.com
+    [seller_phone] => 9597049879
+    [seller_gst] => 22AAAAA0000A1Z5
+    [seller_address] => 4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.
+    [seller_state] => Tamil Nadu
+    [seller_city] => Dindigul
+    [seller_zipcode] => 624710
+    [seller_password] => $2y$10$ndArBjwIfn2T1zniXVNcQOxPnYBV3BQImHMpBXvANR3j2nfspzfKC
+    [created_at] => 2025-02-06 05:38:28
+    [seller_status] => 0
+    [seller_photo] => 
+    [account_number] => 
+    [ifsc_code] => 
+    [bank_name] => 
+    [bank_branch] => 
+    [bank_address] => 
+    [bank_city] => 
+    [bank_state] => 
+    [account_holder] => 
+    [total_revenue] => 0.00
+    [formatted_revenue] => ₹0.00
+)
+
+[06-Feb-2025 12:50:06 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 12:50:06 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 12:50:12 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[06-Feb-2025 12:50:12 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[06-Feb-2025 12:50:15 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/admin/seller-change-status.php:48
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 48
+[06-Feb-2025 12:50:41 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 12:50:41 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 12:50:44 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[06-Feb-2025 12:50:44 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[06-Feb-2025 12:51:54 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[06-Feb-2025 12:51:54 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[06-Feb-2025 12:51:55 UTC] PHP Warning:  require(PHPMailer/src/PHPMailer.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 3
+[06-Feb-2025 12:51:55 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'PHPMailer/src/PHPMailer.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/seller-change-status.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 3
+[06-Feb-2025 12:51:57 UTC] PHP Warning:  require(PHPMailer/src/PHPMailer.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 3
+[06-Feb-2025 12:51:57 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'PHPMailer/src/PHPMailer.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/seller-change-status.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 3
+[06-Feb-2025 12:51:57 UTC] PHP Warning:  require(PHPMailer/src/PHPMailer.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 3
+[06-Feb-2025 12:51:57 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'PHPMailer/src/PHPMailer.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/seller-change-status.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 3
+[06-Feb-2025 12:52:03 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 12:52:03 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 13:03:51 UTC] PHP Warning:  include(C:/xampp/htdocs/deadstock/db_connection.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 13:03:51 UTC] PHP Warning:  include(): Failed opening 'C:/xampp/htdocs/deadstock/db_connection.php' for inclusion (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 18:33:51 Asia/Kolkata] PHP Warning:  Undefined variable $conn in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 18:33:51 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in /home/ks4ympr0demc/public_html/admin/auto-bid.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 13:03:53 UTC] PHP Warning:  include(C:/xampp/htdocs/deadstock/db_connection.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 13:03:53 UTC] PHP Warning:  include(): Failed opening 'C:/xampp/htdocs/deadstock/db_connection.php' for inclusion (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 18:33:53 Asia/Kolkata] PHP Warning:  Undefined variable $conn in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 18:33:53 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in /home/ks4ympr0demc/public_html/admin/auto-bid.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 13:03:59 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 13:03:59 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 13:06:22 UTC] PHP Warning:  include(C:/xampp/htdocs/deadstock/db_connection.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 13:06:22 UTC] PHP Warning:  include(): Failed opening 'C:/xampp/htdocs/deadstock/db_connection.php' for inclusion (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 18:36:22 Asia/Kolkata] PHP Warning:  Undefined variable $conn in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 18:36:22 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in /home/ks4ympr0demc/public_html/admin/auto-bid.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 13:06:28 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 13:06:28 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $contact_fax in /home/ks4ympr0demc/public_html/admin/settings.php on line 1128
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1378
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1381
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1391
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1394
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $cta_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1458
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $cta_content in /home/ks4ympr0demc/public_html/admin/settings.php on line 1464
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $cta_read_more_text in /home/ks4ympr0demc/public_html/admin/settings.php on line 1470
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $cta_read_more_url in /home/ks4ympr0demc/public_html/admin/settings.php on line 1476
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $cta_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1482
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $testimonial_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1609
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $testimonial_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1615
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $testimonial_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1621
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $blog_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1648
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $blog_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1654
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $banner_blog in /home/ks4ympr0demc/public_html/admin/settings.php on line 1848
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $stripe_public_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1883
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $stripe_secret_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1889
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1963
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1966
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1976
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1979
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1989
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1992
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2002
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2005
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2015
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2018
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2028
+[06-Feb-2025 13:06:59 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2031
+[06-Feb-2025 13:11:04 UTC] PHP Warning:  include(/public_html/db_connection.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 13:11:04 UTC] PHP Warning:  include(): Failed opening '/public_html/db_connection.php' for inclusion (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 18:41:04 Asia/Kolkata] PHP Warning:  Undefined variable $conn in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 18:41:04 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in /home/ks4ympr0demc/public_html/admin/auto-bid.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 13:11:15 UTC] PHP Warning:  include(/public_html/db_connection.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 13:11:15 UTC] PHP Warning:  include(): Failed opening '/public_html/db_connection.php' for inclusion (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 18:41:15 Asia/Kolkata] PHP Warning:  Undefined variable $conn in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 18:41:15 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in /home/ks4ympr0demc/public_html/admin/auto-bid.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 13:11:15 UTC] PHP Warning:  include(/public_html/db_connection.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 13:11:15 UTC] PHP Warning:  include(): Failed opening '/public_html/db_connection.php' for inclusion (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 18:41:15 Asia/Kolkata] PHP Warning:  Undefined variable $conn in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 18:41:15 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in /home/ks4ympr0demc/public_html/admin/auto-bid.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 13:11:15 UTC] PHP Warning:  include(/public_html/db_connection.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 13:11:15 UTC] PHP Warning:  include(): Failed opening '/public_html/db_connection.php' for inclusion (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 18:41:15 Asia/Kolkata] PHP Warning:  Undefined variable $conn in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 18:41:15 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in /home/ks4ympr0demc/public_html/admin/auto-bid.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 13:11:15 UTC] PHP Warning:  include(/public_html/db_connection.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 13:11:15 UTC] PHP Warning:  include(): Failed opening '/public_html/db_connection.php' for inclusion (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 18:41:15 Asia/Kolkata] PHP Warning:  Undefined variable $conn in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 18:41:15 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in /home/ks4ympr0demc/public_html/admin/auto-bid.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 13:11:15 UTC] PHP Warning:  include(/public_html/db_connection.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 13:11:15 UTC] PHP Warning:  include(): Failed opening '/public_html/db_connection.php' for inclusion (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 18:41:15 Asia/Kolkata] PHP Warning:  Undefined variable $conn in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 18:41:15 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in /home/ks4ympr0demc/public_html/admin/auto-bid.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 13:11:16 UTC] PHP Warning:  include(/public_html/db_connection.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 13:11:16 UTC] PHP Warning:  include(): Failed opening '/public_html/db_connection.php' for inclusion (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 18:41:16 Asia/Kolkata] PHP Warning:  Undefined variable $conn in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 18:41:16 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in /home/ks4ympr0demc/public_html/admin/auto-bid.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 13:11:16 UTC] PHP Warning:  include(/public_html/db_connection.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 13:11:16 UTC] PHP Warning:  include(): Failed opening '/public_html/db_connection.php' for inclusion (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 18:41:16 Asia/Kolkata] PHP Warning:  Undefined variable $conn in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 18:41:16 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in /home/ks4ympr0demc/public_html/admin/auto-bid.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 13:11:16 UTC] PHP Warning:  include(/public_html/db_connection.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 13:11:16 UTC] PHP Warning:  include(): Failed opening '/public_html/db_connection.php' for inclusion (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 18:41:16 Asia/Kolkata] PHP Warning:  Undefined variable $conn in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 18:41:16 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in /home/ks4ympr0demc/public_html/admin/auto-bid.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 13:11:17 UTC] PHP Warning:  include(/public_html/db_connection.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 13:11:17 UTC] PHP Warning:  include(): Failed opening '/public_html/db_connection.php' for inclusion (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 3
+[06-Feb-2025 18:41:17 Asia/Kolkata] PHP Warning:  Undefined variable $conn in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 18:41:17 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in /home/ks4ympr0demc/public_html/admin/auto-bid.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/auto-bid.php on line 12
+[06-Feb-2025 16:00:23 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 16:00:23 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 16:10:30 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 16:10:30 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 16:21:52 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 16:21:52 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 16:22:18 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[06-Feb-2025 16:22:18 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[06-Feb-2025 16:22:23 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[06-Feb-2025 16:22:23 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[06-Feb-2025 16:22:24 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[06-Feb-2025 16:22:24 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[06-Feb-2025 16:22:29 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[06-Feb-2025 16:22:29 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[06-Feb-2025 16:24:36 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 16:24:36 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $contact_fax in /home/ks4ympr0demc/public_html/admin/settings.php on line 1128
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1378
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1381
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1391
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1394
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $cta_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1458
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $cta_content in /home/ks4ympr0demc/public_html/admin/settings.php on line 1464
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $cta_read_more_text in /home/ks4ympr0demc/public_html/admin/settings.php on line 1470
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $cta_read_more_url in /home/ks4ympr0demc/public_html/admin/settings.php on line 1476
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $cta_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1482
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $testimonial_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1609
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $testimonial_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1615
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $testimonial_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1621
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $blog_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1648
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $blog_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1654
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $banner_blog in /home/ks4ympr0demc/public_html/admin/settings.php on line 1848
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $stripe_public_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1883
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $stripe_secret_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1889
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1963
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1966
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1976
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1979
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1989
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1992
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2002
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2005
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2015
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2018
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2028
+[06-Feb-2025 16:25:01 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2031
+[06-Feb-2025 17:03:35 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 17:03:35 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[06-Feb-2025 17:03:41 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[06-Feb-2025 17:03:41 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[06-Feb-2025 17:03:41 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[06-Feb-2025 17:03:41 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 04:05:57 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 04:05:57 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 04:06:04 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 04:06:04 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 04:06:06 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 04:06:06 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 04:06:06 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 04:06:06 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 04:06:06 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 04:06:06 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 04:18:32 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 04:18:32 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 04:18:36 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 04:18:36 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 04:18:36 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 04:18:36 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 04:18:36 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 04:18:36 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 04:18:45 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 04:18:45 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 04:18:47 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 04:18:47 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 04:18:47 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 04:18:47 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 04:23:52 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 04:23:52 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $contact_fax in /home/ks4ympr0demc/public_html/admin/settings.php on line 1128
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1378
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1381
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1391
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1394
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $cta_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1458
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $cta_content in /home/ks4ympr0demc/public_html/admin/settings.php on line 1464
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $cta_read_more_text in /home/ks4ympr0demc/public_html/admin/settings.php on line 1470
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $cta_read_more_url in /home/ks4ympr0demc/public_html/admin/settings.php on line 1476
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $cta_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1482
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $testimonial_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1609
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $testimonial_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1615
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $testimonial_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1621
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $blog_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1648
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $blog_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1654
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $banner_blog in /home/ks4ympr0demc/public_html/admin/settings.php on line 1848
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $stripe_public_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1883
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $stripe_secret_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1889
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1963
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1966
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1976
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1979
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1989
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1992
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2002
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2005
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2015
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2018
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2028
+[07-Feb-2025 04:24:03 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2031
+[07-Feb-2025 04:24:20 UTC] Array
+(
+    [seller_id] => 2
+    [seller_name] => TAMIL SELVAN Seller
+    [seller_cname] => Deadstock Tooling
+    [seller_email] => mailtotharun23@gmail.com
+    [seller_phone] => 9597049879
+    [seller_gst] => 22AAAAA0000A1Z5
+    [seller_address] => 4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.
+    [seller_state] => Tamil Nadu
+    [seller_city] => Dindigul
+    [seller_zipcode] => 624710
+    [seller_password] => $2y$10$ndArBjwIfn2T1zniXVNcQOxPnYBV3BQImHMpBXvANR3j2nfspzfKC
+    [created_at] => 2025-02-06 05:38:28
+    [seller_status] => 1
+    [seller_photo] => seller-2.png
+    [account_number] => 122001000021664
+    [ifsc_code] => IOBA0001220
+    [bank_name] => Indian Overseas Bank
+    [bank_branch] => SALAIYUR
+    [bank_address] => SALAIYUR NAL ROAD SULLERUMBU POST,VIA VEDASANDUR SALAIYUR PIN 624710
+    [bank_city] => SULLERUMBU
+    [bank_state] => TAMILNADU
+    [account_holder] => Tamil Selvan V
+    [total_revenue] => 0.00
+    [formatted_revenue] => ₹0.00
+)
+
+[07-Feb-2025 04:25:13 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 04:25:13 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 04:51:06 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 04:51:06 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 04:51:06 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 04:51:06 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 04:51:06 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 04:51:06 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 04:51:06 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 04:51:06 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 04:58:46 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/admin/mail.php:21
+Stack trace:
+#0 /home/ks4ympr0demc/public_html/admin/mail.php(121): sendEmail()
+#1 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/mail.php on line 21
+[07-Feb-2025 06:27:13 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 06:27:13 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $contact_fax in /home/ks4ympr0demc/public_html/admin/settings.php on line 1128
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1378
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1381
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1391
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1394
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $cta_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1458
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $cta_content in /home/ks4ympr0demc/public_html/admin/settings.php on line 1464
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $cta_read_more_text in /home/ks4ympr0demc/public_html/admin/settings.php on line 1470
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $cta_read_more_url in /home/ks4ympr0demc/public_html/admin/settings.php on line 1476
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $cta_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1482
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $testimonial_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1609
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $testimonial_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1615
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $testimonial_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1621
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $blog_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1648
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $blog_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1654
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $banner_blog in /home/ks4ympr0demc/public_html/admin/settings.php on line 1848
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $stripe_public_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1883
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $stripe_secret_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1889
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1963
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1966
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1976
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1979
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1989
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1992
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2002
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2005
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2015
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2018
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2028
+[07-Feb-2025 06:28:16 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2031
+[07-Feb-2025 06:33:08 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 06:33:08 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 07:26:17 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 07:26:17 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 07:26:26 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:26:26 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:26:26 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:26:26 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:26:26 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:26:26 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:26:26 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:26:26 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:26:26 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:26:26 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:26:36 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 07:26:36 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 07:26:38 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:26:38 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:26:38 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:26:38 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:26:38 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:26:38 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:26:38 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:26:38 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:26:45 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 07:26:45 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 07:26:48 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:26:48 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:26:48 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:26:48 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:26:48 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:26:48 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:26:53 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 07:26:53 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 07:26:56 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:26:56 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:26:56 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:26:56 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:27:01 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 07:27:01 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 07:27:04 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 07:27:04 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 07:27:12 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 07:27:12 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 08:28:57 UTC] Array
+(
+    [seller_id] => 2
+    [seller_name] => TAMIL SELVAN Seller
+    [seller_cname] => Deadstock Tooling
+    [seller_email] => mailtotharun23@gmail.com
+    [seller_phone] => 9597049879
+    [seller_gst] => 22AAAAA0000A1Z5
+    [seller_address] => 4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.
+    [seller_state] => Tamil Nadu
+    [seller_city] => Dindigul
+    [seller_zipcode] => 624710
+    [seller_password] => $2y$10$ndArBjwIfn2T1zniXVNcQOxPnYBV3BQImHMpBXvANR3j2nfspzfKC
+    [created_at] => 2025-02-06 05:38:28
+    [seller_status] => 1
+    [seller_photo] => seller-2.png
+    [account_number] => 122001000021664
+    [ifsc_code] => IOBA0001220
+    [bank_name] => Indian Overseas Bank
+    [bank_branch] => SALAIYUR
+    [bank_address] => SALAIYUR NAL ROAD SULLERUMBU POST,VIA VEDASANDUR SALAIYUR PIN 624710
+    [bank_city] => SULLERUMBU
+    [bank_state] => TAMILNADU
+    [account_holder] => Tamil Selvan V
+    [total_revenue] => 0.00
+    [formatted_revenue] => ₹0.00
+)
+
+[07-Feb-2025 08:29:33 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 08:29:33 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 08:29:45 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 08:29:45 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 08:29:49 UTC] Array
+(
+    [seller_id] => 2
+    [seller_name] => TAMIL SELVAN Seller
+    [seller_cname] => Deadstock Tooling
+    [seller_email] => mailtotharun23@gmail.com
+    [seller_phone] => 9597049879
+    [seller_gst] => 22AAAAA0000A1Z5
+    [seller_address] => 4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.
+    [seller_state] => Tamil Nadu
+    [seller_city] => Dindigul
+    [seller_zipcode] => 624710
+    [seller_password] => $2y$10$ndArBjwIfn2T1zniXVNcQOxPnYBV3BQImHMpBXvANR3j2nfspzfKC
+    [created_at] => 2025-02-06 05:38:28
+    [seller_status] => 1
+    [seller_photo] => seller-2.png
+    [account_number] => 122001000021664
+    [ifsc_code] => IOBA0001220
+    [bank_name] => Indian Overseas Bank
+    [bank_branch] => SALAIYUR
+    [bank_address] => SALAIYUR NAL ROAD SULLERUMBU POST,VIA VEDASANDUR SALAIYUR PIN 624710
+    [bank_city] => SULLERUMBU
+    [bank_state] => TAMILNADU
+    [account_holder] => Tamil Selvan V
+    [total_revenue] => 0.00
+    [formatted_revenue] => ₹0.00
+)
+
+[07-Feb-2025 08:32:26 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 08:32:26 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 09:03:56 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 09:03:56 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 09:05:25 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 09:05:25 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 09:05:25 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 09:05:25 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 09:05:25 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 09:05:25 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 09:05:25 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 09:05:25 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 09:05:32 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 09:05:32 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 09:05:35 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 09:05:35 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 09:05:35 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 09:05:35 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 09:05:35 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 09:05:35 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 09:05:41 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 09:05:41 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 09:05:44 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 09:05:44 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 09:05:44 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 09:05:44 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 09:05:48 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 09:05:48 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 09:05:50 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 09:05:50 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 09:05:55 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 09:05:55 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 09:16:06 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 09:16:06 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $contact_fax in /home/ks4ympr0demc/public_html/admin/settings.php on line 1128
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1378
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $home_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1381
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1391
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $home_blog_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1394
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $cta_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1458
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $cta_content in /home/ks4ympr0demc/public_html/admin/settings.php on line 1464
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $cta_read_more_text in /home/ks4ympr0demc/public_html/admin/settings.php on line 1470
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $cta_read_more_url in /home/ks4ympr0demc/public_html/admin/settings.php on line 1476
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $cta_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1482
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $testimonial_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1609
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $testimonial_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1615
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $testimonial_photo in /home/ks4ympr0demc/public_html/admin/settings.php on line 1621
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $blog_title in /home/ks4ympr0demc/public_html/admin/settings.php on line 1648
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $blog_subtitle in /home/ks4ympr0demc/public_html/admin/settings.php on line 1654
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $banner_blog in /home/ks4ympr0demc/public_html/admin/settings.php on line 1848
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $stripe_public_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1883
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $stripe_secret_key in /home/ks4ympr0demc/public_html/admin/settings.php on line 1889
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1963
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $ads_above_welcome_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1966
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1976
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $ads_above_featured_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1979
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1989
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $ads_above_latest_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 1992
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2002
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $ads_above_popular_product_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2005
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2015
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $ads_above_testimonial_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2018
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2028
+[07-Feb-2025 09:16:56 UTC] PHP Warning:  Undefined variable $ads_category_sidebar_on_off in /home/ks4ympr0demc/public_html/admin/settings.php on line 2031
+[07-Feb-2025 09:17:06 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 09:17:06 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 09:18:36 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 09:18:36 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 09:18:55 UTC] PHP Warning:  require_once(/home/ks4ympr0demc/public_html/admin/PHPMailer/src/PHPMailer.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 3
+[07-Feb-2025 09:18:55 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ks4ympr0demc/public_html/admin/PHPMailer/src/PHPMailer.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/seller-change-status.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 3
+[07-Feb-2025 09:19:12 UTC] PHP Warning:  require_once(/home/ks4ympr0demc/public_html/admin/PHPMailer/src/PHPMailer.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 3
+[07-Feb-2025 09:19:12 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ks4ympr0demc/public_html/admin/PHPMailer/src/PHPMailer.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/seller-change-status.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 3
+[07-Feb-2025 09:35:46 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 09:35:46 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 09:35:50 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 09:35:50 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 09:35:53 UTC] PHP Warning:  require_once(/home/ks4ympr0demc/public_html/admin/PHPMailer/src/PHPMailer.php): Failed to open stream: No such file or directory in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 3
+[07-Feb-2025 09:35:53 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ks4ympr0demc/public_html/admin/PHPMailer/src/PHPMailer.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ks4ympr0demc/public_html/admin/seller-change-status.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 3
+[07-Feb-2025 09:35:59 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 09:35:59 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 10:04:53 UTC] PHP Warning:  Undefined variable $product in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 10:04:53 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/ks4ympr0demc/public_html/admin/index.php on line 661
+[07-Feb-2025 10:05:02 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 10:05:02 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 10:05:04 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 10:05:04 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 10:05:05 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 10:05:05 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 10:05:08 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 10:05:08 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 10:05:09 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 10:05:09 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 10:05:11 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/admin/seller-change-status.php:49
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 49
+[07-Feb-2025 10:05:17 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 10:05:17 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 10:05:20 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller.php on line 64
+[07-Feb-2025 10:05:20 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller.php on line 65
+[07-Feb-2025 10:05:24 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 10:05:24 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 10:12:28 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/admin/seller-change-status.php:49
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 49
+[07-Feb-2025 10:14:17 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 10:14:17 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 10:14:21 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 10:14:21 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 10:14:24 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer" not found in /home/ks4ympr0demc/public_html/admin/seller-change-status.php:49
+Stack trace:
+#0 {main}
+  thrown in /home/ks4ympr0demc/public_html/admin/seller-change-status.php on line 49
+[07-Feb-2025 10:20:17 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 10:20:17 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 10:20:26 UTC] Activation email sent successfully to nithiishhh@gmail.com
+[07-Feb-2025 10:20:26 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 10:20:26 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 10:21:26 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 10:21:26 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 10:21:30 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 10:21:30 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
+[07-Feb-2025 10:21:37 UTC] Activation email sent successfully to nithiishhh@gmail.com
+[07-Feb-2025 10:21:37 UTC] PHP Warning:  Undefined array key "cust_city" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 64
+[07-Feb-2025 10:21:37 UTC] PHP Warning:  Undefined array key "cust_state" in /home/ks4ympr0demc/public_html/admin/seller-incomplete.php on line 65
