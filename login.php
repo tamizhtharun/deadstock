@@ -1,4 +1,5 @@
 <?php
+//login.php
 include 'db_connection.php';
 
 $error_message = ""; // Variable to store error messages
@@ -35,10 +36,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if ($result_seller->num_rows > 0) {
                 $seller = $result_seller->fetch_assoc();
-                $password_verified = password_verify($password, $seller['seller_password']);
+                
+                // Check if the seller is verified before verifying the password
+                if ($seller['seller_verified'] == 0) {
+                    $error_message = "Your seller account is not verified. Please check your email.";
+                    $password_verified = false;
+                } else {
+                    $password_verified = password_verify($password, $seller['seller_password']);
+                }
             } else {
                 $password_verified = false;
             }
+            
             $stmt_seller->close();
         } elseif ($user['user_role'] === 'user') {
             // For users, verify password from users table

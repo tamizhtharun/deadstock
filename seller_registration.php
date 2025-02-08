@@ -1,5 +1,6 @@
 <?php include 'header.php'; ?>
 <?php
+//seller_registration.php
 // Include database connection and PHPMailer files
 require 'db_connection.php'; // Update with actual DB connection code if inline is needed
 require 'PHPMailer/src/PHPMailer.php';
@@ -81,8 +82,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $hashed_password = password_hash($seller_password, PASSWORD_DEFAULT);
 
             // Insert seller data into `sellers` table
-            $stmt = $conn->prepare("INSERT INTO sellers (seller_name, seller_cname, seller_email, seller_phone, seller_gst, seller_address, seller_state, seller_city, seller_zipcode, seller_password, seller_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssssssss", $seller_name, $seller_cname, $seller_email, $seller_phone, $seller_gst, $seller_address, $seller_state, $seller_city, $seller_zipcode, $hashed_password, $seller_status);
+           // Generate a unique verification token
+            $verification_token = bin2hex(random_bytes(32));
+
+            $stmt = $conn->prepare("INSERT INTO sellers (seller_name, seller_cname, seller_email, seller_phone, seller_gst, seller_address, seller_state, seller_city, seller_zipcode, seller_password, seller_status, seller_verification_token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssssssssss", $seller_name, $seller_cname, $seller_email, $seller_phone, $seller_gst, $seller_address, $seller_state, $seller_city, $seller_zipcode, $hashed_password, $seller_status, $verification_token);
+
 
             if ($stmt->execute()) {
                 // Insert login credentials into `user_login` table
@@ -109,10 +114,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         $mail->isHTML(true);
                         $mail->Subject = 'Seller Registration Confirmation';
-                        $mail->Body = "<h1>Welcome, $seller_name!</h1>
-                        <p>Thank you for registering as a seller on our platform. Your account is currently under review and will be activated soon.</p>
-                        <br><p>Best regards,<br>Deadstock</p>";
+                        $verification_link = "http://localhost/deadstock/verify_seller.php?token=$verification_token";
 
+                        $mail->Body = "
+                            <div style='max-width: 480px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; font-family: Arial, sans-serif; background-color: #ffffff;'>
+                                <div style='text-align: center;'>
+                                    <img src='https://yourdomain.com/uploads/logo.png' alt='Deadstock' style='max-width: 80px; margin-bottom: 20px;'>
+                                    <h2 style='color: #333;'>Confirm Your Seller Account</h2>
+                                </div>
+                                <div style='color: #666; font-size: 14px; line-height: 1.6; text-align: left;'>
+                                    <p>Hi <strong>$seller_name</strong>,</p>
+                                    <p>Welcome to <strong>Deadstock</strong>! We’re excited to have you as a seller on our platform.</p>
+                                    <p>To complete your registration and start listing your products, please verify your email by clicking the button below:</p>
+                                </div>
+                                <div style='text-align: center; margin-top: 20px;'>
+                                    <a href='$verification_link' 
+                                    style='display: inline-block; background-color: #000000; color: #ffffff; padding: 10px 20px; font-size: 14px; text-decoration: none; border-radius: 5px; font-weight: bold;'>
+                                        Verify Email
+                                    </a>
+                                </div>
+                                <div style='color: #999; font-size: 12px; text-align: center; margin-top: 20px;'>
+                                    <p>If you did not sign up as a seller, you can safely ignore this email.</p>
+                                    <p>For any assistance, feel free to reach out to our support team.</p>
+                                </div>
+                            </div>";
                         $mail->send();
                     } catch (Exception $e) {
                         error_log("Email error: " . $mail->ErrorInfo);

@@ -17,7 +17,7 @@ if (isset($_GET['token'])) {
 
         if ($status == 1) {
             // User is already verified, redirect without alert
-            header("Location: index.php");
+            header("Location: index.php?showLoginModal=true");
             exit();
         } else {
             // Update status to verified (1)
@@ -27,7 +27,7 @@ if (isset($_GET['token'])) {
             $update_stmt->execute();
 
             // Redirect to index.php without showing an alert
-            header("Location: index.php");
+            header("Location: index.php?showLoginModal=true");
             exit();
         }
     } else {
