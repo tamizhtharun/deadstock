@@ -256,62 +256,59 @@ unset($_SESSION['error_message']);
                     <?php endif; ?>
                     <!-- Login Form -->
                     <form id="signin-form" method="POST" action="login.php">
-                        <h1 class="modal-title fs-5" id="box-header">Login</h1>
-                        <div class="input-box">
-                            <input type="email" id="mail" class="input-field" placeholder="Email" name="email"
-                                autocomplete="off" required>
-                        </div>
-                        <div class="input-box">
-                            <input type="password" class="input-field" placeholder="Password" name="password"
-                                autocomplete="off" required>
-                        </div>
-                        <div class="forgot" id="forgot-password-link">
-                            <section>
-                                <a href="#">Forgot password?</a>
-                            </section>
-                        </div>
-                        <div class="input-submit">
-                            <button class="submit-btn" id="signin-btn" name="login">
-                                <label for="submit">Sign In</label>
-                            </button>
-                        </div>
-                        <div class="sign-up-link">
-                            <p>Don't have an account? <a href="#" id="signup-link">Sign Up</a></p>
-                        </div>
-                    </form>
+        <h1 class="modal-title fs-5" id="box-header">Login</h1>
+        <div class="input-box">
+            <input type="email" id="mail" class="input-field" placeholder="Email" name="email" autocomplete="off" required>
+            <span id="email-error" class="error-message"></span>
+        </div>
+        <div class="input-box">
+            <input type="password" class="input-field" placeholder="Password" name="password" autocomplete="off" required>
+        </div>
+        <div class="forgot" id="forgot-password-link">
+            <section>
+                <a href="#">Forgot password?</a>
+            </section>
+        </div>
+        <div class="input-submit">
+            <button class="submit-btn" id="signin-btn" name="login" type="submit">
+                <label for="submit">Sign In</label>
+            </button>
+        </div>
+        <div class="sign-up-link">
+            <p>Don't have an account? <a href="#" id="signup-link">Sign Up</a></p>
+        </div>
+    </form>
 
-                    <!-- Sign Up Form -->
-                    <form id="signup-form" method="POST" action="register.php" style="display: none;">
-                        <h1 class="modal-title fs-5" id="box-header">SignUp</h1>
-                        <div class="input-box">
-                            <input type="text" class="input-field" placeholder="Username" name="username"
-                                autocomplete="off" required>
-                        </div>
-                        <div class="input-box">
-                            <input type="tel" id="phone-number" class="input-field" placeholder="Phone"
-                                name="phone_number" autocomplete="off" required pattern="[0-9]{10}">
-                        </div>
-                        <div class="input-box">
-                            <input type="email" id="email" class="input-field" placeholder="Email" name="email"
-                                autocomplete="off" required>
-                        </div>
-                        <div class="input-box">
-                            <input id="password" type="password" class="input-field" placeholder="Password"
-                                name="password" autocomplete="off" required>
-                        </div>
-                        <div class="input-box">
-                            <input type="text" class="input-field" placeholder="GST (Optional)" name="user_gst"
-                                autocomplete="off">
-                        </div>
-                        <div class="input-submit">
-                            <button class="submit-btn" id="signup-btn" name="register">
-                                <label for="submit">Sign Up</label>
-                            </button>
-                        </div>
-                        <div class="sign-in-link">
-                            <p>Already have an account? <a href="#" id="signin-link">Sign In</a></p>
-                        </div>
-                    </form>
+    <!-- Sign Up Form -->
+    <form id="signup-form" method="POST" action="register.php" style="display: none;">
+        <h1 class="modal-title fs-5" id="box-header">SignUp</h1>
+        <div class="input-box">
+            <input type="text" class="input-field" placeholder="Username" name="username" autocomplete="off" required>
+        </div>
+        <div class="input-box">
+            <input type="tel" id="phone-number" class="input-field" placeholder="Phone" name="phone_number" autocomplete="off" required>
+            <span id="error-message" class="error-message"></span>
+        </div>
+        <div class="input-box">
+            <input type="email" id="email" class="input-field" placeholder="Email" name="email" autocomplete="off" required>
+            <span id="email-error-message" class="error-message"></span>
+        </div>
+        <div class="input-box">
+            <input id="password" type="password" class="input-field" placeholder="Password" name="password" autocomplete="off" required>
+            <span id="password-error" class="error-message"></span>
+        </div>
+        <div class="input-box">
+            <input type="text" class="input-field" placeholder="GST (Optional)" name="user_gst" autocomplete="off">
+        </div>
+        <div class="input-submit">
+            <button class="submit-btn" id="signup-btn" name="register" type="submit">
+                <label for="submit">Sign Up</label>
+            </button>
+        </div>
+        <div class="sign-in-link">
+            <p>Already have an account? <a href="#" id="signin-link">Sign In</a></p>
+        </div>
+    </form>
                 </div>
             </div>
         </div>
