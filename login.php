@@ -50,8 +50,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if ($result_user->num_rows > 0) {
                 $user_details = $result_user->fetch_assoc();
-                $password_verified = password_verify($password, $user_details['password']);
-                $user_data_ = $user_details; // Store user details for session
+                
+                // **Check if email is verified (status = 0) before verifying the password**
+                if ($user_details['status'] == 0) {
+                    $error_message = "Your email is not verified. Please check your email.";
+                    $password_verified = false; // Prevent further login attempt
+                } else {
+                    $password_verified = password_verify($password, $user_details['password']);
+                    $user_data_ = $user_details; // Store user details for session
+                }
             } else {
                 $password_verified = false;
             }
@@ -59,6 +66,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             // For admin, verify password from user_login table
             $password_verified = password_verify($password, $user['user_password']);
+        }
+
+        // **Ensure error message is properly displayed**
+        if (isset($user_details) && $user_details['status'] == 0) {
+            $password_verified = false; // Prevents login
         }
 
         if ($password_verified) {
@@ -95,7 +107,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $error_message = "Invalid user role.";
             }
         } else {
-            $error_message = "Invalid password.";
+            // **Ensure proper error message is displayed**
+            if (empty($error_message)) {
+                $error_message = "Invalid email or password.";
+            }
         }
     } else {
         $error_message = "No user found with this email.";
@@ -109,7 +124,7 @@ $conn->close();
 if (!empty($error_message)) {
     session_start();
     $_SESSION['error_message'] = $error_message;
-    header("Location: index.php");
+    header("Location: index.php?showLoginModal=true"); // Ensure modal is shown
     exit();
 }
 ?>
