@@ -726,3 +726,61 @@ a.btn-link.text-light:after {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Modal backdrop styles */
+.modal-backdrop {
+  opacity: 1 !important;
+  background-color: rgba(46, 46, 46, 0.2) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:0.001s !important;
+}
+
+/* Fix modal dialog sizing */
+.modal-dialog.modal-dialog-centered {
+  display: flex;
+  align-items: center;
+  min-height: calc(100% - 1rem);
+  margin: 0 auto;
+}
+
+.modal-content {
+  width: 100%;
+  height: fit-content !important;
+  margin: 0;
+  border: none;
+}
+
+.modal-body {
+  padding: 1rem;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+/* Remove any margins that might cause extra space */
+.modal-header, 
+.modal-footer {
+  padding: 1rem;
+  margin: 0;
+}
+
+/* Forms inside modal */
+#signin-form,
+#signup-form {
+  margin: 0;
+  padding: 0;
+}
+
+/* Reset any default spacing */
+.input-box,
+.input-submit,
+.sign-up-link,
+.sign-in-link {
+  margin-bottom: 1rem;
+}
+
+.input-box:last-child,
+.sign-up-link:last-child,
+.sign-in-link:last-child {
+  margin-bottom: 0;
+}
