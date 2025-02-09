@@ -16,10 +16,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user_gst = $_POST['user_gst'];
     $token = bin2hex(random_bytes(50)); // Generate unique verification token
 
-    // Check if email already exists
-    $check_sql = "SELECT email FROM users WHERE email = ?";
+    // Check if email already exists in users or sellers table
+    $check_sql = "SELECT email FROM users WHERE email = ? UNION SELECT seller_email FROM sellers WHERE seller_email = ?";
     $check_stmt = $conn->prepare($check_sql);
-    $check_stmt->bind_param("s", $email);
+    $check_stmt->bind_param("ss", $email, $email);
     $check_stmt->execute();
     $check_stmt->store_result();
 

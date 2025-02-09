@@ -69,9 +69,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Stop processing if there are errors
     if (empty($errorMessages)) {
-        // Check if email already exists
-        $stmt = $conn->prepare("SELECT seller_email FROM sellers WHERE seller_email = ?");
-        $stmt->bind_param("s", $seller_email);
+        // Check if email already exists in sellers or users table
+        $stmt = $conn->prepare("SELECT seller_email FROM sellers WHERE seller_email = ? UNION SELECT email FROM users WHERE email = ?");
+        $stmt->bind_param("ss", $seller_email, $seller_email);
         $stmt->execute();
         $stmt->store_result();
 
