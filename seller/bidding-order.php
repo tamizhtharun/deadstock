@@ -56,7 +56,6 @@
                         $statement = $pdo->prepare("SELECT 
                             o.id,
                             o.order_id,
-                            o.order_code,
                             o.price,
                             o.quantity,
                             o.order_status,
@@ -97,7 +96,7 @@
                     <tr class="bid-order-row" data-date="<?php echo date('Y-m-d', strtotime($row['created_at'])); ?>" data-status="<?php echo $row['order_status']; ?>" data-order-id="<?php echo $row['id']; ?>">
                             <td><?php echo $i; ?></td>
                             <td>
-                                <strong><?php echo $row['order_code']; ?></strong><br>
+                                <strong><?php echo $row['order_id']; ?></strong><br>
                                 <small class="text-muted"><?php echo date('M d, Y', strtotime($row['created_at'])); ?></small>
                             </td>                           
                                  <td>
