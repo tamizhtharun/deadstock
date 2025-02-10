@@ -57,7 +57,7 @@ try {
     $stmt = $pdo->prepare("
         SELECT 
             COUNT(*) as total, 
-            SUM(p_is_active) as active, 
+            SUM(p_is_approve) as active, 
             COUNT(DISTINCT ecat_id) as categories
         FROM tbl_product 
         WHERE seller_id = ?
