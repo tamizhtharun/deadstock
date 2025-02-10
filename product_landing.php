@@ -40,6 +40,7 @@ foreach ($result as $row) {
   $p_is_featured = $row['p_is_featured'];
   // $p_is_active = $row['p_is_active'];
   $ecat_id = $row['ecat_id'];
+  $gst_percentage = $row['gst_percentage'];
 }
 
 // Getting all categories name for breadcrumb
@@ -116,7 +117,7 @@ if (isset($_POST['add_to_cart'])) {
                   backdrop: 'static'
               });
               loginModal.show();
-              // showMessage('Please login to add items to your cart', 'error');
+              showMessage('Please login to add items to your cart', 'error');
           });
       </script>";
   }
@@ -209,6 +210,11 @@ $min_bid_pct = $bid_settings ? $bid_settings['min_bid_pct'] : 0;
 
 // Calculate minimum allowed bid price
 $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
+//gst and discount calculation
+$gst_amount = ($p_current_price * $gst_percentage) / 100;
+$final_price = $p_current_price + $gst_amount;
+$discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_old_price) * 100) : 0;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -287,7 +293,8 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
           <h4 class="title text-dark">
             <?php echo $p_name; ?>
           </h4>
-          <div class="d-flex flex-row my-3">
+
+          <div class="d-flex flex-row my-2">
             <span class="text-muted"><i class="bi bi-basket mx-1"></i>
               <?php if ($p_qty > 10): ?>
                 <span class="text-success ms-2">In stock</span>
@@ -319,17 +326,20 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
               <?php endif; ?>
             </span>
           </div>
+
           <div class="mb-3">
             <div class="d-flex align-items-center gap-2 mb-1">
-              <span class="h5 mb-0" style="color: #000;">₹<?php echo $p_current_price; ?></span>
-              <span class="h6 mb-0"
-                style="color: #9E9E9E; text-decoration: line-through;">₹<?php echo $p_old_price; ?></span>
-              <?php
-              if ($p_old_price > 0) {
-                $discount = (($p_old_price - $p_current_price) / $p_old_price) * 100;
-                echo '<span class="badge bg-success">' . round($discount) . '% OFF</span>';
-              }
-              ?>
+              <span class="h7" style="color:rgb(137, 134, 134);">₹<?php echo number_format($final_price, 0); ?> (Incl. of all taxes)</span>
+            </div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="h3 mb-0" style="color: #000; font-weight: bold;">₹<?php echo number_format($p_current_price, 0); ?></span>
+              <span class="h6 mb-0">+ ₹<?php echo number_format($gst_amount, 0); ?> GST</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+            <span class="h7 mb-0" style="color:rgb(77, 74, 74);">MRP</span><span class="h6 mb-0" style="color:rgb(77, 74, 74); text-decoration: line-through;">₹<?php echo number_format($p_old_price, 0); ?></span>
+              <?php if ($discount > 0) { ?>
+                <span class="discount-text"><?php echo $discount; ?>% OFF</span>
+              <?php } ?>
             </div>
           </div>
 
@@ -445,40 +455,24 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
                     </button>
                   </form>
 
-                   <!-- Request Price Button -->
-                      <div class="d-inline-block" 
-                          <?php if (!isset($_SESSION['user_session']['id'])) { ?> 
-                              data-bs-toggle="tooltip" data-bs-placement="top" title="Please login through your account"
-                          <?php } ?>>
-                        <button id="requestPriceBtn" class="request-price-btn btn btn-danger border" 
-                          <?php if (!isset($_SESSION['user_session']['id'])) { echo 'disabled'; } ?>>
-                          <i class="fa fa-gavel"></i> Place a Bid
-                        </button>
-                      </div>
-                      <script>
-                        document.addEventListener("DOMContentLoaded", function () {
-                          var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-                          tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-                            new bootstrap.Tooltip(tooltipTriggerEl);
-                          });
-                        });
-                      </script>
-
-                      <style>
-                        /* Reduce Tooltip Font Size */
-                        .tooltip-inner {
-                          font-size: 12px !important; /* Adjust size as needed */
-                          padding: 4px 8px !important; /* Adjust padding for a smaller box */
-                        }
-                      </style>
-
-                 </div>
+                    <!-- Request Price Button -->
+                    <button id="requestPriceBtn" 
+                            class="request-price-btn btn btn-danger border" 
+                            <?php echo !isset($_SESSION['user_session']['id']) ? 'disabled' : ''; ?> 
+                            data-bs-toggle="tooltip" data-bs-placement="top" 
+                            title="Please login to your account">
+                      <i class="fa fa-gavel"></i> Place a Bid
+                    </button>
+                </div>
               </div>
             </div>
           </div>
-</div>
-      </div>
-   </section>
+    </dc>
+  </div>
+</section>
+
+
+
 <!-- Modal Overlay For Request Price -->
 <div class="modal-overlay" id="modalOverlay" style="display: none;">
   <!-- Modal -->
@@ -611,112 +605,89 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
 
   // Function to open Razorpay modal
   function openRazorpayModal() {
-  const productId = <?php echo $_REQUEST['id']; ?>;
-  const quantity = document.getElementById('quantity').value;
-  const proposedPrice = document.getElementById('proposedPrice').value;
 
-  // First check if user has already bid
-  checkExistingBid(productId)
-    .then(response => {
-      if (response.has_bid) {
-        showMessage('You have already submitted a bid for this product', 'error');
-        closeModal();
-        return;
-      }
+    //testing start
+    // showMessage('biting button working, check the razorpay modal');
+    // for testing end
 
-      // Create the order
-      return fetch('submit_bid.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          product_id: productId,
-          quantity: quantity,
-          proposed_price: proposedPrice
-        })
-      });
+    const productId = <?php echo $_REQUEST['id']; ?>;
+
+    // First check if user has already bid
+    checkExistingBid(productId)
+      .then(response => {
+        if (response.has_bid) {
+          showMessage('You have already submitted a bid for this product', 'error');
+          closeModal();
+          return;
+        }
+      })
+    const quantity = document.getElementById('quantity').value;
+    const proposedPrice = document.getElementById('proposedPrice').value;
+
+    // First, create the order
+    fetch('submit_bid.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        product_id: <?php echo $_REQUEST['id']; ?>,
+        quantity: quantity,
+        proposed_price: proposedPrice
+      })
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'success') {
-        var options = {
-          key: "<?php echo RAZORPAY_KEY_ID; ?>",
-          amount: data.amount,
-          currency: "INR",
-          name: "Deadstock",
-          description: "Bid Payment",
-          order_id: data.order_id,
-          handler: function (response) {
-            // Add additional response data for debugging
-            response.debug_info = {
-              product_id: productId,
-              quantity: quantity,
-              proposed_price: proposedPrice
-            };
-
-            // Handle successful payment
-            fetch('submit_bid.php', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(response)
-            })
-            .then(res => {
-              if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
-              }
-              return res.json();
-            })
-            .then(result => {
-              if (result.status === 'success') {
-                showMessage('Bid submitted successfully!', 'success');
-                closeModal();
-                // Optionally refresh the page after successful bid
-                setTimeout(() => {
-                  window.location.reload();
-                }, 2000);
-              } else {
-                throw new Error(result.message || 'Unknown error occurred');
-              }
-            })
-            .catch(error => {
-              console.error('Payment processing error:', error);
-              // Send error details to server for logging
-              fetch('log_error.php', {
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          var options = {
+            key: "<?php echo RAZORPAY_KEY_ID; ?>",
+            amount: data.amount,
+            currency: "INR",
+            name: "Deadstock",
+            description: "Bid Payment",
+            order_id: data.order_id,
+            handler: function (response) {
+              // Handle successful payment
+              fetch('submit_bid.php', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                  error: error.message,
-                  payment_response: response,
-                  debug_info: response.debug_info
+                body: JSON.stringify(response)
+              })
+                .then(res => res.json())
+                .then(result => {
+                  if (result.status === 'success') {
+                    showMessage('Bid submitted successfully!', 'success');
+                    closeModal();
+                  } else {
+                    showMessage('Error: ' + result.message, 'error');
+                  }
                 })
-              });
-              showMessage('Error processing payment. Please contact support with reference: ' + response.razorpay_payment_id, 'error');
-            });
-          },
-          prefill: {
-            name: "<?php echo $_SESSION['user_session']['name'] ?? ''; ?>",
-            email: "<?php echo $_SESSION['user_session']['email'] ?? ''; ?>"
-          },
-          theme: {
-            color: "#3399cc"
-          }
-        };
-        var rzp = new Razorpay(options);
-        rzp.open();
-      } else {
-        showMessage('Error: ' + (data.message || 'Failed to create order'), 'error');
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      showMessage('An error occurred. Please try again later.', 'error');
-    });
-}
+                .catch(error => {
+                  console.error('Error:', error);
+                  showMessage('An error occurred while processing your payment');
+                });
+            },
+            prefill: {
+              name: "<?php echo $_SESSION['user_session']['name'] ?? ''; ?>",
+              email: "<?php echo $_SESSION['user_session']['email'] ?? ''; ?>"
+            },
+            theme: {
+              color: "#3399cc"
+            }
+          };
+          var rzp = new Razorpay(options);
+          rzp.open();
+        } else {
+          showMessage('Error: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showMessage('An error occurred while checking existing bids');
+      });
+  }
 </script>
 
 
