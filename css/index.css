@@ -1502,6 +1502,20 @@ section a{
   .alert-close:hover {
     color: #64748b;
   }
+  /* Success Alert Styles */
+.premium-alert.alert-success {
+  background: linear-gradient(145deg, #e8f5e9, #d4edda);
+  border-left: 4px solid #28a745;
+}
+
+.alert-success .alert-message {
+  color: #155724;
+}
+
+.alert-success .alert-icon svg {
+  stroke: #28a745;
+}
+
 
   @keyframes slideIn {
     from {

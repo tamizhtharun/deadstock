@@ -1,4 +1,6 @@
 <?php
+//register.php
+session_start();
 include 'db_connection.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -7,6 +9,8 @@ require 'PHPMailer/src/PHPMailer.php';
 require 'PHPMailer/src/SMTP.php';
 require 'PHPMailer/src/Exception.php';
 
+$error_message = ""; // Variable to store error messages
+$success_message = ""; // Variable to store success messages
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
@@ -24,10 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $check_stmt->store_result();
 
     if ($check_stmt->num_rows > 0) {
-        echo '<script>
-                alert("Email already exists! Please use a different email.");
-                window.location.href = "index.php"; 
-              </script>';
+        $error_message = "Email already exists! Please use a different email.";
         $check_stmt->close();
     } else {
         $check_stmt->close();
@@ -86,20 +87,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>";
                     $mail->send();
                     
-                    echo '<script>
-                        alert("Registration successful! Please check your email for verification.");
-                        window.location.href = "index.php";
-                      </script>';
+                    $success_message = "Registration successful! Please check your email for verification.";
                 } catch (Exception $e) {
-                    echo "Error sending email: {$mail->ErrorInfo}";
+                    $error_message = "Error sending verification email: {$mail->ErrorInfo}";
                 }
             } else {
-                echo "Error: " . $stmt_login->error;
+                $error_message = "Error: " . $stmt_login->error;
             }
 
             $stmt_login->close();
         } else {
-            echo "Error: " . $stmt->error;
+            $error_message = "Error: " . $stmt->error;
         }
 
         $stmt->close();
@@ -107,4 +105,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $conn->close();
+
+// Store messages in session and redirect to index.php
+if (!empty($error_message)) {
+    $_SESSION['error_message'] = $error_message;
+    header("Location: index.php?showLoginModal=true");
+    exit();
+}
+
+if (!empty($success_message)) {
+    $_SESSION['success_message'] = $success_message;
+    header("Location: index.php?showLoginModal=true");
+    exit();
+}
 ?>

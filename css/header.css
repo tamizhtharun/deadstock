@@ -270,11 +270,15 @@
   }
   
   .ds-user-email {
-
     font-size: 0.875rem;
     color: var(--ds-color-text-secondary);
-  }
-  
+    display: block;
+    max-width: 150px; /* Adjust as needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
   .ds-menu-items {
     padding: 0.5rem 0;
   }

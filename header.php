@@ -21,6 +21,10 @@ if (isset($_GET['showLoginModal']) && $_GET['showLoginModal'] == 'true') {
 }
 $error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : null;
 unset($_SESSION['error_message']);
+
+$success_message = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
+unset($_SESSION['success_message']);
+
 ?>
 
 <!DOCTYPE html>
@@ -100,12 +104,9 @@ unset($_SESSION['error_message']);
 
 <body>
     <div class="header">
-
-
         <?php
         $current_page = basename($_SERVER['PHP_SELF']);
         ?>
-
         <nav class="ds-nav-container">
             <div class="ds-logo-section">
                 <a href="index.php" class="ds-logo">
@@ -222,8 +223,6 @@ unset($_SESSION['error_message']);
             </div>
         </nav>
 
-
-        <!-- runningtxt -->
         <!-- runningtxt -->
         <div class="scrolling-text">
             <?php
@@ -243,8 +242,8 @@ unset($_SESSION['error_message']);
   <script src="js/messages.js"></script>
   <?php MessageSystem::display(); ?>
 
-    <!-- Login Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="true" tabindex="-1"
+  <!-- Login Modal -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="true" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -257,38 +256,40 @@ unset($_SESSION['error_message']);
                     <!-- Message container for displaying errors and success messages -->
                     <div id="modal-message-container"></div>
                     <!-- Error Message HTML -->
-<?php if (!empty($error_message) || !empty($success_message)): ?>
-    <div class="premium-alert" id="premium-alert">
-        <div class="alert-content">
-            <div class="alert-icon">
-                <?php if (!empty($success_message)): ?>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M20 6L9 17l-5-5"/>
-                    </svg>
-                <?php else: ?>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                <?php endif; ?>
-            </div>
-            <span class="alert-message"><?php echo htmlspecialchars(!empty($success_message) ? $success_message : $error_message); ?></span>
-            <button class="alert-close" onclick="closeAlert()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-        </div>
-    </div>
-<?php endif; ?>
+                    <?php if (!empty($error_message) || !empty($success_message)): ?>
+                            <div class="premium-alert <?php echo !empty($success_message) ? 'alert-success' : 'alert-error'; ?>" id="premium-alert">
+                                <div class="alert-content">
+                                    <div class="alert-icon">
+                                        <?php if (!empty($success_message)): ?>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                                fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <path d="M20 6L9 17l-5-5"/>
+                                            </svg>
+                                        <?php else: ?>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                            </svg>
+                                        <?php endif; ?>
+                                    </div>
+                                    <span class="alert-message"><?php echo htmlspecialchars(!empty($success_message) ? $success_message : $error_message); ?></span>
+                                    <button class="alert-close" onclick="closeAlert()">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                    
                     <!-- Login Form -->
                     <form id="signin-form" method="POST" action="login.php">
                         <h1 class="modal-title fs-5" id="box-header">Login</h1>
@@ -367,6 +368,7 @@ unset($_SESSION['error_message']);
             </div>
         </div>
     </div>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

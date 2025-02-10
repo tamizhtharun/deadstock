@@ -354,7 +354,8 @@ document.addEventListener("DOMContentLoaded", function () {
 <div class="col-xl-3 col-lg-3">
     <div class="card l-bg-orange-dark">
         <div class="card-statistic-3 p-4">
-            <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i></div>
+        <div class="card-icon card-icon-large"><i class="fas fa-indian-rupee-sign"></i></div>
+
             <div class="mb-4">
                 <h5 class="card-title mb-0">Today's Revenue</h5>
             </div>
@@ -503,7 +504,8 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="col-xl-3 col-lg-3">
     <div class="card l-bg-green-dark">
         <div class="card-statistic-3 p-4">
-            <div class="card-icon card-icon-large"><i class="fas fa-rupee-sign"></i></div>
+        <div class="card-icon card-icon-large"><i class="fas fa-indian-rupee-sign"></i></div>
+
             <div class="mb-4">
                 <h5 class="card-title mb-0">Total Revenue</h5>
             </div>

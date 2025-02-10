@@ -91,15 +91,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['admin_role'] = 'admin';
                     header("Location: admin/index.php");
                     exit();
-                case 'user':
-                    session_start();
-                    $_SESSION['user_session'] = $user_data_;
-                    $_SESSION['user_email'] = $user['user_email'];
-                    $_SESSION['user_role'] = 'user';
-                    $_SESSION['loggedin'] = true;
-                    $referrer = $_SERVER['HTTP_REFERER'];
-                    header("Location: $referrer");
-                    exit();
+                    case 'user':
+                        session_start();
+                        $_SESSION['user_session'] = $user_data_;
+                        $_SESSION['user_email'] = $user['user_email'];
+                        $_SESSION['user_role'] = 'user';
+                        $_SESSION['loggedin'] = true;
+                    
+                        // Check if HTTP_REFERER is set; otherwise, use a default page
+                        if (!empty($_SERVER['HTTP_REFERER'])) {
+                            $referrer = $_SERVER['HTTP_REFERER'];
+                    
+                            // Remove only 'showLoginModal' query param, keep others
+                            $referrer = preg_replace('/([?&])showLoginModal=true(&|$)/', '$1', $referrer);
+                            $referrer = rtrim($referrer, '?&'); // Clean trailing ? or &
+                        } else {
+                            $referrer = "index.php"; // Default fallback
+                        }
+                    
+                        header("Location: $referrer");
+                        exit();
+                    
                 case 'seller':
                     // Check seller status
                     if ($seller['seller_status'] == '2') {

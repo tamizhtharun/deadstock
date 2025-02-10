@@ -244,7 +244,7 @@ if (!isset($_SESSION['seller_session'])) {
 									echo 'active';
 								} ?>">
 									<a href="revenue.php">
-										<i class="fa fa-rupee"></i> <span>Revenue Details</span>
+									<i class="fas fa-indian-rupee-sign"></i> <span>Revenue Details</span>
 									</a>
 								</li>
 
