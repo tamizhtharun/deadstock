@@ -577,3 +577,8 @@ body {
     text-decoration: none !important; /* Prevents underline on hover */
 }
 
+.discount-text {
+  color: #138808; /* Dark green shade similar to the image */
+  font-weight: bold;
+  font-size: 16px;
+}
