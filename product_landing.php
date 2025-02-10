@@ -455,23 +455,42 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
                     </button>
                   </form>
 
+                           <!-- Request Price Button -->
+                           <div class="d-inline-block" 
+                          <?php if (!isset($_SESSION['user_session']['id'])) { ?> 
+                              data-bs-toggle="tooltip" data-bs-placement="top" title="Please login through your account"
+                          <?php } ?>>
+
                     <!-- Request Price Button -->
-                    <button id="requestPriceBtn" 
-                            class="request-price-btn btn btn-danger border" 
-                            <?php echo !isset($_SESSION['user_session']['id']) ? 'disabled' : ''; ?> 
-                            data-bs-toggle="tooltip" data-bs-placement="top" 
-                            title="Please login to your account">
-                      <i class="fa fa-gavel"></i> Place a Bid
-                    </button>
-                </div>
+                    <button id="requestPriceBtn" class="request-price-btn btn btn-danger border" 
+                          <?php if (!isset($_SESSION['user_session']['id'])) { echo 'disabled'; } ?>>
+                          <i class="fa fa-gavel"></i> Place a Bid
+                        </button>
+                      </div>
+                      <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                          var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                          tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                            new bootstrap.Tooltip(tooltipTriggerEl);
+                          });
+                        });
+                      </script>
+
+                      <style>
+                        /* Reduce Tooltip Font Size */
+                        .tooltip-inner {
+                          font-size: 12px !important; /* Adjust size as needed */
+                          padding: 4px 8px !important; /* Adjust padding for a smaller box */
+                        }
+                      </style>
+
+                 </div>
               </div>
             </div>
           </div>
-    </dc>
-  </div>
-</section>
-
-
+</div>
+      </div>
+   </section>
 
 <!-- Modal Overlay For Request Price -->
 <div class="modal-overlay" id="modalOverlay" style="display: none;">
