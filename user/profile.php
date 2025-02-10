@@ -246,6 +246,13 @@ $active_tab = $_GET['tab'] ?? 'profile';
                 <h1><?php echo htmlspecialchars($_SESSION['user_session']['username']); ?></h1>
                 <p>Member since <?php echo date('F Y', strtotime($_SESSION['user_session']['created_at'])); ?></p>
             </div>
+            <div class="logout-button">
+            <a href="../logout.php" class=" ds-logout"
+                                        style="text-decoration: none !important;">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        <span>Logout</span>
+                                    </a>
+            </div>
         </div>
 
 
