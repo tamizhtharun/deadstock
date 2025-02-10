@@ -159,8 +159,6 @@
     </div>
 </div>
 
-
-
             <!-- <button class="seller-btn seller-primary">View Full Details</button> -->
 
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

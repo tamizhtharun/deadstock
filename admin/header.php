@@ -147,7 +147,8 @@ if(!isset($_SESSION['admin_session'])) {
 							</span>
                         </a>
                         <ul class="treeview-menu">
-												    <li><a href="seller-uploaded-products.php"><i class="fa fa-circle-o"></i> All Products</a></li>
+												    <li><a href="all-products.php"><i class="fa fa-circle-o"></i> All Products</a></li>
+													<li><a href="seller-uploaded-products.php"><i class="fa fa-circle-o"></i> Products by Seller</a></li>
                             <li><a href="seller-approved-products.php"><i class="fa fa-circle-o"></i> Approved Products</a></li>
                             <li><a href="seller-rejected-products.php"><i class="fa fa-circle-o"></i> Rejected Products</a></li>
                             
