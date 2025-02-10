@@ -58,6 +58,7 @@ require_once('header.php');
                     $statement = $pdo->prepare("SELECT 
                         o.id AS order_id,
                         o.order_id AS order_number,
+                        o.order_code,
                         o.price,
                         o.quantity,
                         o.order_status,
@@ -107,7 +108,7 @@ require_once('header.php');
                         data-status="<?php echo $row['order_status']; ?>">
                         <td><?php echo $i; ?></td>
                         <td>
-                            <strong><?php echo $row['order_number']; ?></strong><br>
+                            <strong><?php echo $row['order_code']; ?></strong><br>
                             <small class="text-muted"><?php echo date('M d, Y', strtotime($row['created_at'])); ?></small>
                         </td>
                         <td>

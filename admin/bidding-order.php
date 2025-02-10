@@ -83,6 +83,7 @@ require_once('header.php');
                     DATE(b.bid_time) as bid_date,
                     b.bid_status,
                     o.order_status,
+                    o.order_code,
                     o.id AS order_table_id,
                     o.updated_at,
                     o.processing_time,
@@ -114,7 +115,7 @@ require_once('header.php');
                     <tr class="bid-order-row" data-order-id="<?php echo $row['order_table_id']; ?>" data-date="<?php echo $row['bid_date']; ?>" data-status="<?php echo empty($row['order_status']) ? 'not_sent' : $row['order_status']; ?>">
                         <td><?php echo $i; ?></td>
                         <td>
-                              <strong><?php echo $row['order_id']; ?></strong><br>
+                              <strong><?php echo $row['order_code']; ?></strong><br>
                               <small class="text-muted"><?php echo date('M d, Y', strtotime($row['bid_date'])); ?></small>
                           </td> 
                           <td>
