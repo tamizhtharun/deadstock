@@ -169,17 +169,19 @@ unset($_SESSION['success_message']);
                         <div class="ds-profile-menu">
                             <button class="ds-profile-trigger">
                                 <div class="ds-avatar">
-                                    <?php
-                                    $userAvatar = $_SESSION['user_session']['avatar'] ?? '';
-                                    $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
-                                    $avatarToDisplay = (file_exists($userAvatar) && !empty($userAvatar)) ? $userAvatar : $defaultAvatar;
-                                    ?>
-                                    <img src="<?= $avatarToDisplay ?>" alt="Profile">
+                                <?php
+                                $userInfo = $_SESSION['user_session'];
+                            $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"; // Default avatar URL
+                            $profileImage = isset($userInfo['profile_image']) && !empty($userInfo['profile_image']) 
+                            ? 'user/uploads/profile-photos/' . htmlspecialchars($userInfo['profile_image'])
+                            : $defaultAvatar;
+                                ?>
+                                    <img src="<?= $profileImage ?>" alt="Profile">
                                 </div>
                             </button>
                             <div class="ds-menu-dropdown">
                                 <div class="ds-menu-header">
-                                    <img src="<?= $avatarToDisplay ?>" alt="Profile" class="ds-menu-avatar">
+                                    <img src="<?= $profileImage ?>" alt="Profile" class="ds-menu-avatar">
                                     <div class="ds-user-info">
                                         <span
                                             class="ds-user-name"><?php echo $_SESSION['user_session']['username'] ?></span>
