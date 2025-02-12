@@ -345,13 +345,13 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 
           <div class="product-grid">
             <!-- Headers -->
-            <div class="material-suitability-icon p">P</div>
-            <div class="material-suitability-icon m">M</div>
-            <div class="material-suitability-icon k">K</div>
-            <div class="material-suitability-icon n">N</div>
-            <div class="material-suitability-icon s">S</div>
-            <div class="material-suitability-icon h">H</div>
-            <div class="material-suitability-icon o">O</div>
+            <div class="letter-icon p">P</div>
+            <div class="letter-icon m">M</div>
+            <div class="letter-icon k">K</div>
+            <div class="letter-icon n">N</div>
+            <div class="letter-icon s">S</div>
+            <div class="letter-icon h">H</div>
+            <div class="letter-icon o">O</div>
 
             <?php
 
@@ -377,25 +377,25 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 
             <!-- For each alphabet, we check its value and assign the correct class -->
             <div
-              class="material-suitability-icon Rec p <?php echo ($dot_values['P'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['P']); ?>">
+              class="letter-icon Rec p <?php echo ($dot_values['P'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['P']); ?>">
             </div>
             <div
-              class="material-suitability-icon Rec m <?php echo ($dot_values['M'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['M']); ?>">
+              class="letter-icon Rec m <?php echo ($dot_values['M'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['M']); ?>">
             </div>
             <div
-              class="material-suitability-icon Rec k <?php echo ($dot_values['K'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['K']); ?>">
+              class="letter-icon Rec k <?php echo ($dot_values['K'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['K']); ?>">
             </div>
             <div
-              class="material-suitability-icon Rec n <?php echo ($dot_values['N'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['N']); ?>">
+              class="letter-icon Rec n <?php echo ($dot_values['N'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['N']); ?>">
             </div>
             <div
-              class="material-suitability-icon Rec s <?php echo ($dot_values['S'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['S']); ?>">
+              class="letter-icon Rec s <?php echo ($dot_values['S'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['S']); ?>">
             </div>
             <div
-              class="material-suitability-icon Rec h <?php echo ($dot_values['H'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['H']); ?>">
+              class="letter-icon Rec h <?php echo ($dot_values['H'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['H']); ?>">
             </div>
             <div
-              class="material-suitability-icon Rec o <?php echo ($dot_values['O'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['O']); ?>">
+              class="letter-icon Rec o <?php echo ($dot_values['O'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['O']); ?>">
             </div>
           </div>
           <!-- Key Explanation -->
@@ -408,11 +408,11 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
             <!-- The dropdown container that will show/hide -->
             <div class="l-info-icons-container">
               <div class="info-row">
-                <div class="material-suitability-icon Rec icon-rank-2"> </div>
+                <div class="letter-icon Rec icon-rank-2"> </div>
                 <div class="description">Main application</div>
               </div>
               <div class="info-row">
-                <div class="material-suitability-icon Rec icon-rank-1"> </div>
+                <div class="letter-icon Rec icon-rank-1"> </div>
                 <div class="description">Additional application</div>
               </div>
             </div>
@@ -447,7 +447,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
                 </form> -->
 
                   <!-- Add to Cart Form -->
-                  <form method="POST" action="" class="me-3">
+                  <form method="POST" action="" class="me-3" >
                     <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
                     <input type="hidden" name="product_quantity" id="cart-quantity" value="1">
                     <button type="submit" name="add_to_cart" class="btn btn-primary shadow-0">
@@ -859,6 +859,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
 <!-- Bootstrap JS Bundle -->

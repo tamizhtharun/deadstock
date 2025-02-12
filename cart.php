@@ -13,11 +13,16 @@ if (!isset($_SESSION['user_session']['id'])) {
 $user_id = $_SESSION['user_session']['id'];
 
 // Handle cart updates
-if (isset($_POST['update_cart'])) {
-    $cart_id = $_POST['cart_id'];
-    $quantity = $_POST['cart_quantity'];
-    mysqli_query($conn, "UPDATE tbl_cart SET quantity = '$quantity' WHERE id = '$cart_id' AND user_id = '$user_id'");
+if (isset($_POST['cart_id']) && isset($_POST['cart_quantity'])) {
+    $cart_id = intval($_POST['cart_id']);
+    $quantity = intval($_POST['cart_quantity']);
+    
+    if ($quantity > 0) {
+        $update_query = "UPDATE tbl_cart SET quantity = '$quantity' WHERE id = '$cart_id' AND user_id = '$user_id'";
+        mysqli_query($conn, $update_query) or die(mysqli_error($conn));
+    }
 }
+
 
 // Handle item removal
 if (isset($_GET['remove'])) {
@@ -42,10 +47,10 @@ if (isset($_GET['delete_all'])) {
         <div class="cart-header mb-4">
             <h1 class="cart-title">Shopping Cart</h1>
             <div class="cart-steps">
-            <div class="step1">
-                <span class="step-number1">1</span>
-                <span class="step-text1">Cart</span>
-            </div>
+                <div class="step1">
+                    <span class="step-number1">1</span>
+                    <span class="step-text1">Cart</span>
+                </div>
                 <div class="step-divider"></div>
                 <div class="step">
                     <span class="step-number">2</span>
@@ -124,18 +129,12 @@ if (isset($_GET['delete_all'])) {
                                                     data-price="<?php echo $item['p_current_price']; ?>">
                                                     <input type="hidden" name="cart_id" value="<?php echo $item['id']; ?>">
                                                     <div class="input-group">
-                                                        <!-- <button type="button"
-                                                                class="btn btn-outline-secondary quantity-btn minus">
-                                                                <i class="fas fa-minus"></i>
-                                                            </button> -->
+                                                        
                                                         <input type="number" name="cart_quantity"
                                                             value="<?php echo $item['quantity']; ?>" min="1" max="99"
                                                             class="form-control text-center quantity-input"
                                                             data-item-id="<?php echo $item['id']; ?>">
-                                                        <!-- <button type="button"
-                                                                class="btn btn-outline-secondary quantity-btn plus">
-                                                                <i class="fas fa-plus"></i>
-                                                            </button> -->
+                                                       
                                                     </div>
                                                 </form>
                                             </div>
@@ -181,49 +180,43 @@ if (isset($_GET['delete_all'])) {
                                 <span>Total Savings</span>
                                 <span class="amount">-₹<?php echo number_format($total_savings, 2); ?></span>
                             </div>
+
                         <?php endif; ?>
-
-                        <!-- <div class="summary-item d-flex justify-content-between mb-3">
-                <span>Shipping</span>
-                <span class="amount">₹<?php echo number_format(14, 2); ?></span>
-            </div> -->
-
-                        <div class="total-amount d-flex justify-content-between mb-4">
+                             <div class="total-amount d-flex justify-content-between mb-4">
                             <span class="fw-bold">Total</span>
                             <span class="amount fw-bold">₹<?php echo number_format($grand_total); ?></span>
                         </div>
 
-            <button id="checkout-btn" class="checkout-btn" onclick="proceedToCheckout()" 
-    <?php echo ($grand_total == 0) ? 'disabled' : ''; ?>>
-    Proceed to Checkout
-</button>
+                        <button id="checkout-btn" class="checkout-btn" onclick="proceedToCheckout()" <?php echo ($grand_total == 0) ? 'disabled' : ''; ?>>
+                            Proceed to Checkout
+                        </button>
 
-<script>
-    function proceedToCheckout() {
-        window.location.href = 'checkout-page.php';
-    }
+                        <script>
+                            function proceedToCheckout() {
+                                window.location.href = 'checkout-page.php';
+                            }
 
-    // Enable the button dynamically when an item is added to the cart
-    document.addEventListener("DOMContentLoaded", function () {
-        let checkoutBtn = document.getElementById("checkout-btn");
-        let cartItems = document.querySelectorAll(".cart-item");
+                            // Enable the button dynamically when an item is added to the cart
+                            document.addEventListener("DOMContentLoaded", function () {
+                                let checkoutBtn = document.getElementById("checkout-btn");
+                                let cartItems = document.querySelectorAll(".cart-item");
 
-        if (cartItems.length > 0) {
-            checkoutBtn.removeAttribute("disabled");
-        } else {
-            checkoutBtn.setAttribute("disabled", "true");
-        }
-    });
-</script>
+                                if (cartItems.length > 0) {
+                                    checkoutBtn.removeAttribute("disabled");
+                                } else {
+                                    checkoutBtn.setAttribute("disabled", "true");
+                                }
+                            });
+                        </script>
 
 
-                         <div class="payment-methods text-center mt-4">
-                        <p class="text-muted mb-2">Secure Payment Methods</p>
-                        <div class="payment-icons">
-                            <i class="razorpay-icon"></i>
-                            <span class="razorpay-text">Powered by Razorpay</span>
+                        <div class="payment-methods text-center mt-4">
+                            <p class="text-muted mb-2">Secure Payment Methods</p>
+                            <div class="payment-icons">
+                                <i class="razorpay-icon"></i>
+                                <span class="razorpay-text">Powered by Razorpay</span>
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
@@ -271,7 +264,7 @@ if (isset($_GET['delete_all'])) {
                                 </a>
                             </div>
                         </div>
-                    <?php
+                        <?php
                     endwhile;
                 } else {
                     echo '<div class="col-12 text-center text-muted">No recently viewed products</div>';

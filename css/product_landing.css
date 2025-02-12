@@ -246,7 +246,7 @@ body {
 }
 
 /* Common styles for icons */
-.material-suitability-icon {
+.letter-icon {
   width: 30px;
   height: 30px;
   display: flex;
@@ -261,7 +261,7 @@ body {
 }
 
 /* Header styles */
-.material-suitability-icon.header {
+.letter-icon.header {
   background-color: #f0f0f0;
   /* Neutral background for headers */
 }
@@ -303,52 +303,52 @@ body {
 }
 
 /* Dots for Suitability Indicators */
-.material-suitability-icon.Rec {
+.letter-icon.Rec {
   position: relative;
 }
 
-.material-suitability-icon.Rec.p {
+.letter-icon.Rec.p {
   background-color: #E6F3FF;
   /* Color for P column */
 }
 
-.material-suitability-icon.Rec.m {
+.letter-icon.Rec.m {
   background-color: #FFFDE6;
   /* Color for M column */
 }
 
-.material-suitability-icon.Rec.k {
+.letter-icon.Rec.k {
   background-color: #FFE6F7;
   /* Color for K column */
 }
 
-.material-suitability-icon.Rec.n {
+.letter-icon.Rec.n {
   background-color: #E6FFE6;
   /* Color for N column */
 }
 
-.material-suitability-icon.Rec.s {
+.letter-icon.Rec.s {
   background-color: #E6E6E6;
   /* Color for S column */
 }
 
-.material-suitability-icon.Rec.h {
+.letter-icon.Rec.h {
   background-color: #E6F3FF;
   /* Color for H column */
 }
 
-.material-suitability-icon.Rec.o {
+.letter-icon.Rec.o {
   background-color: #F0F0F0;
   /* Color for O column */
 }
 
-.material-suitability-icon.Rec.no-dot {
+.letter-icon.Rec.no-dot {
   border: none;
   /* No border for empty cells */
 }
 
 /* Rank 1: Single Dot */
-.material-suitability-icon.icon-rank-1::before {
+.letter-icon.icon-rank-1::before {
   content: '•';
   font-size: 25px;
   /* Slightly smaller dot */
@@ -360,7 +360,7 @@ body {
 }
 
 /* Rank 2: Double Dot */
-.material-suitability-icon.icon-rank-2::before {
+.letter-icon.icon-rank-2::before {
   content: '••';
   font-size: 25px;
   color: #000;

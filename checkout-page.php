@@ -91,13 +91,13 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
 
     <div class="container">
-        <div class="cart-header">
-            <h1 class="cart-title">Checkout</h1>
+    <div class="cart-header mb-4">
+            <h1 class="cart-title">Shopping Cart</h1>
             <div class="cart-steps">
-                <div class="step1">
-                    <span class="step-number1">1</span>
-                    <span class="step-text1">Cart</span>
-                </div>
+            <div class="step1">
+                <span class="step-number1">1</span>
+                <span class="step-text1">Cart</span>
+            </div>
                 <div class="step-divider2"></div>
                 <div class="step2">
                     <span class="step-number2">2</span>
@@ -160,13 +160,13 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                             <div class="product-info">
                                 <div class="product-name"><?php echo htmlspecialchars($item['p_name']); ?></div>
-                                <?php if ($item['p_old_price'] > $item['p_current_price']): ?>
+
                                     <div class="product-savings">
-                                        Save ₹<?php echo number_format($item['p_old_price'] - $item['p_current_price'], 2); ?>
+                                        ₹<?php echo number_format($item['p_current_price']); ?> × <?php echo $item['quantity']; ?>
                                     </div>
-                                <?php endif; ?>
+                              
                             </div>
-                            <div class="product-price">₹<?php echo number_format($item['p_current_price'], 2); ?></div>
+                            <div class="product-price">₹<?php $total_price = $item['p_current_price'] * $item['quantity']; echo number_format($total_price, 2); ?></div>
                         </div>
                     <?php
                     endforeach;
