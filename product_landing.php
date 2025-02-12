@@ -136,7 +136,6 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
 $select_product = mysqli_query($conn, "SELECT * FROM tbl_product") or die('query failed');
 if (mysqli_num_rows($select_product) > 0) {
   while ($fetch_product = mysqli_fetch_assoc($select_product)) {
-
   }
 }
 ?>
@@ -149,7 +148,6 @@ if ($success_message1 != '') {
   MessageSystem::set($success_message1, 'success');
   header('location: product.php?id=' . $_REQUEST['id']);
   exit;
-
 }
 
 // Get product details first
@@ -300,7 +298,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
                 <span class="text-success ms-2">In stock</span>
               <?php elseif ($p_qty >= 1 && $p_qty <= 10): ?>
                 <span class="text-warning ms-2">Only Few left</span>
-                <?php
+              <?php
               elseif ($p_qty == 0):
                 // Ensure $product_id is set
                 if (!isset($product_id) || empty($product_id)) {
@@ -322,7 +320,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
                     echo "<script>console.log('Error preparing statement: " . $conn->error . "');</script>";
                   }
                 }
-                ?>
+              ?>
               <?php endif; ?>
             </span>
           </div>
@@ -336,7 +334,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
               <span class="h6 mb-0">+ ₹<?php echo number_format($gst_amount, 0); ?> GST</span>
             </div>
             <div class="d-flex align-items-center gap-2">
-            <span class="h7 mb-0" style="color:rgb(77, 74, 74);">MRP</span><span class="h6 mb-0" style="color:rgb(77, 74, 74); text-decoration: line-through;">₹<?php echo number_format($p_old_price, 0); ?></span>
+              <span class="h7 mb-0" style="color:rgb(77, 74, 74);">MRP</span><span class="h6 mb-0" style="color:rgb(77, 74, 74); text-decoration: line-through;">₹<?php echo number_format($p_old_price, 0); ?></span>
               <?php if ($discount > 0) { ?>
                 <span class="discount-text"><?php echo $discount; ?>% OFF</span>
               <?php } ?>
@@ -438,9 +436,9 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
                 </div>
 
                 <div class="d-flex">
-               <!-- Buy Now Form -->
-               <!-- Buy Now Form -->
-                <!-- <form method="POST" action="checkout-page.php" class="me-3">
+                  <!-- Buy Now Form -->
+                  <!-- Buy Now Form -->
+                  <!-- <form method="POST" action="checkout-page.php" class="me-3">
                     <input type="hidden" name="product_id" value="<?php echo $_REQUEST['id']; ?>">
                     <input type="hidden" name="product_quantity" id="buy-now-quantity" value="1">
                     <button type="submit" name="buy_now" class="btn btn-warning shadow-0">Buy now</button>
@@ -455,42 +453,46 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
                     </button>
                   </form>
 
-                           <!-- Request Price Button -->
-                           <div class="d-inline-block" 
-                          <?php if (!isset($_SESSION['user_session']['id'])) { ?> 
-                              data-bs-toggle="tooltip" data-bs-placement="top" title="Please login through your account"
-                          <?php } ?>>
+                  <!-- Request Price Button -->
+                  <div class="d-inline-block"
+                    <?php if (!isset($_SESSION['user_session']['id'])) { ?>
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Please login through your account"
+                    <?php } ?>>
 
                     <!-- Request Price Button -->
-                    <button id="requestPriceBtn" class="request-price-btn btn btn-danger border" 
-                          <?php if (!isset($_SESSION['user_session']['id'])) { echo 'disabled'; } ?>>
-                          <i class="fa fa-gavel"></i> Place a Bid
-                        </button>
-                      </div>
-                      <script>
-                        document.addEventListener("DOMContentLoaded", function () {
-                          var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-                          tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-                            new bootstrap.Tooltip(tooltipTriggerEl);
-                          });
-                        });
-                      </script>
+                    <button id="requestPriceBtn" class="request-price-btn btn btn-danger border"
+                      <?php if (!isset($_SESSION['user_session']['id'])) {
+                        echo 'disabled';
+                      } ?>>
+                      <i class="fa fa-gavel"></i> Place a Bid
+                    </button>
+                  </div>
+                  <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                      var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                      tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                        new bootstrap.Tooltip(tooltipTriggerEl);
+                      });
+                    });
+                  </script>
 
-                      <style>
-                        /* Reduce Tooltip Font Size */
-                        .tooltip-inner {
-                          font-size: 12px !important; /* Adjust size as needed */
-                          padding: 4px 8px !important; /* Adjust padding for a smaller box */
-                        }
-                      </style>
+                  <style>
+                    /* Reduce Tooltip Font Size */
+                    .tooltip-inner {
+                      font-size: 12px !important;
+                      /* Adjust size as needed */
+                      padding: 4px 8px !important;
+                      /* Adjust padding for a smaller box */
+                    }
+                  </style>
 
-                 </div>
+                </div>
               </div>
             </div>
           </div>
-</div>
-      </div>
-   </section>
+    </div>
+  </div>
+</section>
 
 <!-- Modal Overlay For Request Price -->
 <div class="modal-overlay" id="modalOverlay" style="display: none;">
@@ -557,14 +559,14 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 <script>
   function checkExistingBid(productId) {
     return fetch('check_bid_status.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        product_id: productId
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          product_id: productId
+        })
       })
-    })
       .then(response => response.json());
   }
 </script>
@@ -645,16 +647,16 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 
     // First, create the order
     fetch('submit_bid.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        product_id: <?php echo $_REQUEST['id']; ?>,
-        quantity: quantity,
-        proposed_price: proposedPrice
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          product_id: <?php echo $_REQUEST['id']; ?>,
+          quantity: quantity,
+          proposed_price: proposedPrice
+        })
       })
-    })
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {
@@ -665,15 +667,15 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
             name: "Deadstock",
             description: "Bid Payment",
             order_id: data.order_id,
-            handler: function (response) {
+            handler: function(response) {
               // Handle successful payment
               fetch('submit_bid.php', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(response)
-              })
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(response)
+                })
                 .then(res => res.json())
                 .then(result => {
                   if (result.status === 'success') {
@@ -789,13 +791,13 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
       <?php
       $search_term = substr($p_name, 0, 4); // Get the first 4 letters of the current product name
       $search_term = htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8'); // Prevent any special character issues
-      
+
       $sql = "SELECT id, p_name, p_current_price, p_old_price, p_featured_photo 
           FROM tbl_product 
           WHERE p_name LIKE :search_term 
           AND id != :current_id
           LIMIT 3";
-      
+
       $stmt = $pdo->prepare($sql);
       $stmt->execute([
         ':search_term' => "%$search_term%",
@@ -866,9 +868,9 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 
 <!-- Script For Request Price Process -->
 <script>
-  document.querySelector('.material-info-btn').addEventListener('click', function () {
+  document.querySelector('.material-info-btn').addEventListener('click', function() {
     var container = document.querySelector('.key-button-container');
-    container.classList.toggle('show-info');  // Toggle the visibility of the container
+    container.classList.toggle('show-info'); // Toggle the visibility of the container
   });
 
 
@@ -912,13 +914,13 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     }
   });
 
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function() {
     const infoBtn = document.querySelector('.material-info-btn');
     const infoContainer = document.querySelector('.l-info-icons-container');
     let isVisible = false;
 
     // Toggle info container
-    infoBtn.addEventListener('click', function (e) {
+    infoBtn.addEventListener('click', function(e) {
       e.stopPropagation();
       isVisible = !isVisible;
       infoContainer.classList.toggle('show', isVisible);
@@ -927,7 +929,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     });
 
     // Close info container when clicking outside
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', function(e) {
       if (!infoContainer.contains(e.target) && !infoBtn.contains(e.target)) {
         isVisible = false;
         infoContainer.classList.remove('show');
@@ -936,7 +938,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     });
   });
 
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", function() {
     const thumbnailLinks = document.querySelectorAll(".thumbnail-link img");
     const mainImage = document.getElementById("mainImage");
 
@@ -952,7 +954,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
   });
   const img = document.querySelector('.zoom-effect');
 
-  img.addEventListener('mousemove', function (e) {
+  img.addEventListener('mousemove', function(e) {
     const mouseX = e.offsetX;
     const mouseY = e.offsetY;
 
@@ -964,10 +966,9 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     img.style.transformOrigin = `${percentX}% ${percentY}%`;
   });
 
-  img.addEventListener('mouseleave', function () {
+  img.addEventListener('mouseleave', function() {
     img.style.transformOrigin = 'center center'; // Defaults back to center zoom
   });
-
 </script>
 </body>
 

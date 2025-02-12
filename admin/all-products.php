@@ -32,11 +32,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <?php
-                        $i = 0;
+                            <?php
+                            $i = 0;
 
-                        // Updated query to fetch all products, no seller filter
-                        $statement = $pdo->prepare("SELECT
+                            // Updated query to fetch all products, no seller filter
+                            $statement = $pdo->prepare("SELECT
                                                         t1.id,
                                                         t1.p_name,
                                                         t1.p_old_price,
@@ -64,38 +64,38 @@
                                                     LEFT JOIN tbl_brands t5 ON t1.product_brand=t5.brand_id
                                                     LEFT JOIN sellers t6 ON t1.seller_id = t6.seller_id  -- Join with tbl_sellers
                                                     ORDER BY t1.id DESC");
-                        $statement->execute();
-                        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-                        foreach ($result as $row) {
-                            $i++;
+                            $statement->execute();
+                            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                            foreach ($result as $row) {
+                                $i++;
                             ?>
-                            <tr>
-                                <td><?php echo $i; ?></td>
-                                <td style="width:82px;"><img src="../assets/uploads/product-photos/<?php echo $row['p_featured_photo']; ?>" alt="<?php echo $row['p_name']; ?>" style="width:80px;"></td>
-                                <td><?php echo $row['brand_name']; ?></td>
-                                <td><?php echo $row['p_name']; ?></td>
-                                <td>₹<?php echo $row['p_old_price']; ?></td>
-                                <td>₹<?php echo $row['p_current_price']; ?></td>
-                                <td><?php echo $row['p_qty']; ?></td>
-                                <!-- Update the Featured column -->
-                                <td>
-                                    <select class="form-control" style="width:auto;" onchange="updateFeatured(<?php echo $row['id']; ?>, this.value)">
-                                        <option value="0" <?php echo $row['p_is_featured'] == 0 ? 'selected' : ''; ?>>No</option>
-                                        <option value="1" <?php echo $row['p_is_featured'] == 1 ? 'selected' : ''; ?>>Yes</option>
-                                    </select>
-                                </td>
-                                <td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?></td>
-                                <td><a href="../assets/uploads/product-catalogues/<?php echo $row['product_catalogue']?>">View catalogue</a> </td>
-                                <td><?php echo $row['p_is_approve'] == 1 ? '<span class="badge badge-success" style="background-color:green;">Approved</span>' : '<span class="badge badge-danger" style="background-color:red;">Rejected</span>'; ?></td>
-                                <td><?php echo $row['seller_name']; ?> (ID: <?php echo $row['seller_id']; ?>)
-                                 <div>
-											<a href="javascript:void(0);" onclick="openSellerModal(<?php echo $row['seller_id']; ?>)">View Seller Details</a>
-									</div>
-                            </td>
-                            </tr>
+                                <tr>
+                                    <td><?php echo $i; ?></td>
+                                    <td style="width:82px;"><img src="../assets/uploads/product-photos/<?php echo $row['p_featured_photo']; ?>" alt="<?php echo $row['p_name']; ?>" style="width:80px;"></td>
+                                    <td><?php echo $row['brand_name']; ?></td>
+                                    <td><?php echo $row['p_name']; ?></td>
+                                    <td>₹<?php echo $row['p_old_price']; ?></td>
+                                    <td>₹<?php echo $row['p_current_price']; ?></td>
+                                    <td><?php echo $row['p_qty']; ?></td>
+                                    <!-- Update the Featured column -->
+                                    <td>
+                                        <select class="form-control" style="width:auto;" onchange="updateFeatured(<?php echo $row['id']; ?>, this.value)">
+                                            <option value="0" <?php echo $row['p_is_featured'] == 0 ? 'selected' : ''; ?>>No</option>
+                                            <option value="1" <?php echo $row['p_is_featured'] == 1 ? 'selected' : ''; ?>>Yes</option>
+                                        </select>
+                                    </td>
+                                    <td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?></td>
+                                    <td><a href="../assets/uploads/product-catalogues/<?php echo $row['product_catalogue'] ?>">View catalogue</a> </td>
+                                    <td><?php echo $row['p_is_approve'] == 1 ? '<span class="badge badge-success" style="background-color:green;">Approved</span>' : '<span class="badge badge-danger" style="background-color:red;">Rejected</span>'; ?></td>
+                                    <td><?php echo $row['seller_name']; ?> (ID: <?php echo $row['seller_id']; ?>)
+                                        <div>
+                                            <a href="javascript:void(0);" onclick="openSellerModal(<?php echo $row['seller_id']; ?>)">View Seller Details</a>
+                                        </div>
+                                    </td>
+                                </tr>
                             <?php
-                        }
-                        ?>
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -176,31 +176,30 @@
 <script src="./js/bidding-order.js"></script>
 
 <script>
+    const sellerTabButtons = document.querySelectorAll('.seller-tab-button');
+    const sellerTabPanes = document.querySelectorAll('.seller-tab-pane');
 
-const sellerTabButtons = document.querySelectorAll('.seller-tab-button');
-const sellerTabPanes = document.querySelectorAll('.seller-tab-pane');
+    sellerTabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tab = button.dataset.tab;
+            sellerTabButtons.forEach(b => b.classList.remove('active'));
+            sellerTabPanes.forEach(pane => pane.classList.remove('active'));
+            button.classList.add('active');
+            document.getElementById(tab).classList.add('active');
+        });
+    });
 
-sellerTabButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const tab = button.dataset.tab;
-    sellerTabButtons.forEach(b => b.classList.remove('active'));
-    sellerTabPanes.forEach(pane => pane.classList.remove('active'));
-    button.classList.add('active');
-    document.getElementById(tab).classList.add('active');
-  });
-});
-
-function updateFeatured(productId, value) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "update_product_status.php", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            console.log(xhr.responseText); // Optional: handle response
-        }
-    };
-    xhr.send("id=" + productId + "&p_is_featured=" + value);
-}
+    function updateFeatured(productId, value) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "update_product_status.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                console.log(xhr.responseText); // Optional: handle response
+            }
+        };
+        xhr.send("id=" + productId + "&p_is_featured=" + value);
+    }
 </script>
 
 <?php require_once('footer.php'); ?>
