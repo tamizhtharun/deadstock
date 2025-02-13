@@ -434,3 +434,8 @@ body {
   font-size: 16px;
   color: #6c757d;
 }
+
+.razorpay-img{
+  width: 140px;
+  height: 70px;
+}

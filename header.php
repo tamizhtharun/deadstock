@@ -40,7 +40,7 @@ unset($_SESSION['success_message']);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="./css/index.css">
@@ -49,13 +49,14 @@ unset($_SESSION['success_message']);
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
 
-        <!-- Link Disply the featured categories in home page slider  -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="css/vendor.css">
-        <link rel="stylesheet" type="text/css" href="css/style.css">
-        <link rel="stylesheet" type="text/css" href="css/messages.css">
-        <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <!-- Link Disply the featured categories in home page slider  -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/vendor.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/messages.css">
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
         <defs>
             <symbol xmlns="http://www.w3.org/2000/svg" id="cart" viewBox="0 0 24 24">
                 <path fill="currentColor"
@@ -70,35 +71,37 @@ unset($_SESSION['success_message']);
                     d="m3.1 11.3l3.6 3.3l-1 4.6c-.1.6.1 1.2.6 1.5c.2.2.5.3.8.3c.2 0 .4 0 .6-.1c0 0 .1 0 .1-.1l4.1-2.3l4.1 2.3s.1 0 .1.1c.5.2 1.1.2 1.5-.1c.5-.3.7-.9.6-1.5l-1-4.6c.4-.3 1-.9 1.6-1.5l1.9-1.7l.1-.1c.4-.4.5-1 .3-1.5s-.6-.9-1.2-1h-.1l-4.7-.5l-1.9-4.3s0-.1-.1-.1c-.1-.7-.6-1-1.1-1c-.5 0-1 .3-1.3.8c0 0 0 .1-.1.1L8.7 8.2L4 8.7h-.1c-.5.1-1 .5-1.2 1c-.1.6 0 1.2.4 1.6m8.9 5V5.8l1.7 3.8c.1.3.5.5.8.6l4.2.5l-3.1 2.8c-.3.2-.4.6-.3 1c0 .2.5 2.2.8 4.1l-3.6-2.1c-.2-.2-.3-.2-.5-.2" />
             </symbol>
         </defs>
-        </svg>
-        <!-- Message Container (Fixed Position) -->
-        <div class="message-wrapper ">
-            <div id="message-container"></div>
-        </div>
-        <style>
+    </svg>
+    <!-- Message Container (Fixed Position) -->
+    <div class="message-wrapper ">
+        <div id="message-container"></div>
+    </div>
+    <style>
         #message-container {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 9999;
         }
+
         .alert {
             padding: 15px;
             margin-bottom: 10px;
             border: 1px solid transparent;
             border-radius: 4px;
         }
+
         .alert-success {
             color: #155724;
             background-color: #d4edda;
             border-color: #c3e6cb;
         }
+
         .alert-danger {
             color: #721c24;
             background-color: #f8d7da;
             border-color: #f5c6cb;
         }
-        
     </style>
 </head>
 
@@ -154,14 +157,20 @@ unset($_SESSION['success_message']);
 
 
                         <!-- Notification Icon (Not shown in notification.php) -->
+                        <?php
+                        $notify_query = "SELECT COUNT(*) AS notification_count FROM notifications WHERE recipient_id = $user_id AND is_read = 0";
+                        $query_result = mysqli_query($conn, $notify_query);
+                        $row = mysqli_fetch_assoc($query_result);
+                        $notification_count = $row['notification_count'];
+                        ?>
                         <?php if ($current_page !== 'notification.php'): ?>
 
-                            <button class=" notification-trigger ds-icon-button" title="Notifications"
+                            <button class="notification-trigger ds-icon-button" title="Notifications"
                                 onclick="window.location.href='notification.php';">
                                 <i class="fas fa-bell"></i>
-                                <span class="ds-cart-badge" id="cart-count">5</span>
+                                <span class="ds-notification-badge"
+                                    id="notification-count"><?php echo $notification_count; ?></span>
                             </button>
-
                             </a>
 
                         <?php endif; ?>
@@ -169,13 +178,13 @@ unset($_SESSION['success_message']);
                         <div class="ds-profile-menu">
                             <button class="ds-profile-trigger">
                                 <div class="ds-avatar">
-                                <?php
-                                $userInfo = $_SESSION['user_session'];
-                            $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"; // Default avatar URL
-                            $profileImage = isset($userInfo['profile_image']) && !empty($userInfo['profile_image']) 
-                            ? 'user/uploads/profile-photos/' . htmlspecialchars($userInfo['profile_image'])
-                            : $defaultAvatar;
-                                ?>
+                                    <?php
+                                    $userInfo = $_SESSION['user_session'];
+                                    $defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"; // Default avatar URL
+                                    $profileImage = isset($userInfo['profile_image']) && !empty($userInfo['profile_image'])
+                                        ? 'user/uploads/profile-photos/' . htmlspecialchars($userInfo['profile_image'])
+                                        : $defaultAvatar;
+                                    ?>
                                     <img src="<?= $profileImage ?>" alt="Profile">
                                 </div>
                             </button>
@@ -239,13 +248,13 @@ unset($_SESSION['success_message']);
             </div>
         </div>
     </div>
-</div>
-    
-  <script src="js/messages.js"></script>
-  <?php MessageSystem::display(); ?>
+    </div>
 
-  <!-- Login Modal -->
-  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="true" tabindex="-1"
+    <script src="js/messages.js"></script>
+    <?php MessageSystem::display(); ?>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="true" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -259,39 +268,41 @@ unset($_SESSION['success_message']);
                     <div id="modal-message-container"></div>
                     <!-- Error Message HTML -->
                     <?php if (!empty($error_message) || !empty($success_message)): ?>
-                            <div class="premium-alert <?php echo !empty($success_message) ? 'alert-success' : 'alert-error'; ?>" id="premium-alert">
-                                <div class="alert-content">
-                                    <div class="alert-icon">
-                                        <?php if (!empty($success_message)): ?>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                                fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path d="M20 6L9 17l-5-5"/>
-                                            </svg>
-                                        <?php else: ?>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <circle cx="12" cy="12" r="10"></circle>
-                                                <line x1="12" y1="8" x2="12" y2="12"></line>
-                                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                                            </svg>
-                                        <?php endif; ?>
-                                    </div>
-                                    <span class="alert-message"><?php echo htmlspecialchars(!empty($success_message) ? $success_message : $error_message); ?></span>
-                                    <button class="alert-close" onclick="closeAlert()">
+                        <div class="premium-alert <?php echo !empty($success_message) ? 'alert-success' : 'alert-error'; ?>"
+                            id="premium-alert">
+                            <div class="alert-content">
+                                <div class="alert-icon">
+                                    <?php if (!empty($success_message)): ?>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                            fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M20 6L9 17l-5-5" />
+                                        </svg>
+                                    <?php else: ?>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round">
-                                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
                                         </svg>
-                                    </button>
+                                    <?php endif; ?>
                                 </div>
+                                <span
+                                    class="alert-message"><?php echo htmlspecialchars(!empty($success_message) ? $success_message : $error_message); ?></span>
+                                <button class="alert-close" onclick="closeAlert()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
                             </div>
-                        <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
 
-                    
+
                     <!-- Login Form -->
                     <form id="signin-form" method="POST" action="login.php">
                         <h1 class="modal-title fs-5" id="box-header">Login</h1>
@@ -355,7 +366,8 @@ unset($_SESSION['success_message']);
                     <form id="forgot-password-form" method="POST" action="forgot_password.php" style="display: none;">
                         <h1 class="modal-title fs-5" id="box-header">Forgot Password</h1>
                         <div class="input-box">
-                            <input type="email" class="input-field" placeholder="Email" name="email" autocomplete="off" required>
+                            <input type="email" class="input-field" placeholder="Email" name="email" autocomplete="off"
+                                required>
                         </div>
                         <div class="input-submit">
                             <button type="submit" class="submit-btn" id="forgot-password-btn" name="forgot_password">
@@ -422,8 +434,26 @@ unset($_SESSION['success_message']);
             badge.textContent = unreadCount;
             badge.style.display = unreadCount > 0 ? 'block' : 'none';
         }
+        function updateCartBadge() {
 
-        document.addEventListener('DOMContentLoaded', () => {
+            $.ajax({
+                url: 'header.php',
+                method: 'GET',
+                dataType: 'html',
+                success: function (data) {
+                    var updatedCartCount = $(data).find('.ds-cart-badge').text();
+
+                    $('.ds-cart-badge').text(updatedCartCount);
+                                },
+                error: function () {
+                    console.error('Failed to fetch cart count.');
+                }
+            });
+        }
+        updateCartBadge();
+        setInterval(updateCartBadge, 5000);
+
+    document.addEventListener('DOMContentLoaded', () => {
             const modalElement = document.getElementById('staticBackdrop');
             let modal = new bootstrap.Modal(modalElement, {
                 backdrop: 'true',  // Enable closing when clicking outside (set to 'true')
@@ -543,62 +573,17 @@ unset($_SESSION['success_message']);
         }
     </script>
     <script src="forgot-password.js"></script>
-    <!-- <script>
-        document.getElementById('forgot-password-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = this.querySelector('input[name="email"]').value;
-            fetch('forgot_password.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'email=' + encodeURIComponent(email)
-            })
-            .then(response => response.json())
-            .then(data => {
-                const messageContainer = document.getElementById('modal-message-container');
-                messageContainer.innerHTML = `<div class="alert alert-${data.success ? 'success' : 'danger'}">${data.message}</div>`;
-                messageContainer.style.display = 'block';
-                if (data.success) {
-                    document.getElementById('forgot-password-form').reset();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                const messageContainer = document.getElementById('modal-message-container');
-                messageContainer.innerHTML = '<div class="alert alert-danger">An error occurred. Please try again.</div>';
-                messageContainer.style.display = 'block';
-            });
-        });
 
-        function showMessage(message, type) {
-            const messageContainer = document.getElementById('message-container');
-            messageContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-            messageContainer.style.display = 'block';
-            setTimeout(() => {
-                messageContainer.style.display = 'none';
-            }, 5000);
-        }
-    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/validation.js"></script>
 
-    <style>
-        #modal-message-container {
-            margin-bottom: 15px;
-        }
-        #modal-message-container .alert {
-            margin-bottom: 0;
-        }
-    </style> -->
-
- 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script> 
-  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-  <script src="js/index.js"></script>
-  <script src="js/validation.js"></script>
-  
 </body>
 
 </html>

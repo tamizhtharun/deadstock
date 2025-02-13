@@ -140,17 +140,25 @@ $(document).ready(function () {
         const oldPrice = parseFloat($item.find('.old-price').text().replace('₹', '')) || price;
 
         // Calculate totals
-        const total = (quantity * price).toFixed(2);
-        
+        const total = quantity * price;
+        const savings = quantity * (oldPrice - price);
 
         // Update item total
         $item.find('.item-total').text(total);
+
+        // Update item savings if applicable
+        if (savings > 0) {
+            $item.find('.item-savings').html('You save: ' + formatCurrency(savings));
+        }
+
+        // Update cart totals
         updateCartTotals();
     }
 
     // Function to update all cart totals
     function updateCartTotals() {
         let grandTotal = 0;
+        let totalSavings = 0;
 
         // Calculate totals from all items
         $('.cart-item').each(function () {
@@ -160,10 +168,21 @@ $(document).ready(function () {
             const oldPrice = parseFloat($item.find('.old-price').text().replace('₹', '')) || price;
 
             grandTotal += quantity * price;
+            totalSavings += quantity * (oldPrice - price);
         });
 
         // Update summary sections
         $('.summary-item .amount:eq(0)').text(formatCurrency(grandTotal)); // Subtotal
+
+        // Update total savings if exists
+        if (totalSavings > 0) {
+            $('.summary-item.text-success .amount').text('-' + formatCurrency(totalSavings));
+            $('.summary-item.text-success').show();
+        } else {
+            $('.summary-item.text-success').hide();
+        }
+
+        // Update final total
         $('.total-amount .amount').text(formatCurrency(grandTotal));
     }
 
@@ -255,13 +274,23 @@ $(document).ready(function () {
         const newTotal = (price * newQuantity).toFixed(2);
         input.closest(".cart-item").find(".item-total").text(`₹${newTotal}`);
 
+        // Update item savings
+        const savings = ((oldPrice - price) * newQuantity).toFixed(2);
+        const savingsElement = input.closest(".cart-item").find(".item-savings");
+        if (savings > 0) {
+            savingsElement.text(`You save: ₹${savings}`).show();
+        } else {
+            savingsElement.hide();
+        }
 
         // Update grand total and total savings
         updateSummary();
     });
 
+    // Function to update grand total and total savings
     function updateSummary() {
         let grandTotal = 0;
+        let totalSavings = 0;
 
         $(".cart-item").each(function () {
             const quantity = parseInt($(this).find(".quantity-input").val());
@@ -269,33 +298,11 @@ $(document).ready(function () {
             const oldPrice = parseFloat($(this).find(".quantity-input").data("old-price"));
 
             grandTotal += quantity * price;
+            totalSavings += (oldPrice - price) * quantity;
         });
 
         $(".grand-total").text(`₹${grandTotal.toFixed(2)}`);
-       
+        $(".total-savings").text(`₹${totalSavings.toFixed(2)}`).toggle(totalSavings > 0);
     }
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll(".quantity-input").forEach(function(input) {
-        input.addEventListener("change", function() {
-            let form = this.closest("form");
-            let formData = new FormData(form);
-
-            fetch("", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
-                console.log("Response:", data); // Debugging
-                if (!isNaN(data.trim())) {
-                    console.log("Cart updated successfully");
-                } else {
-                    console.error("Error: Received NaN");
-                }
-            })
-            .catch(error => console.error("Error updating cart:", error));
-        });
-    });
-});

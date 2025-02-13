@@ -16,7 +16,7 @@ $user_id = $_SESSION['user_session']['id'];
 if (isset($_POST['cart_id']) && isset($_POST['cart_quantity'])) {
     $cart_id = intval($_POST['cart_id']);
     $quantity = intval($_POST['cart_quantity']);
-    
+
     if ($quantity > 0) {
         $update_query = "UPDATE tbl_cart SET quantity = '$quantity' WHERE id = '$cart_id' AND user_id = '$user_id'";
         mysqli_query($conn, $update_query) or die(mysqli_error($conn));
@@ -129,12 +129,12 @@ if (isset($_GET['delete_all'])) {
                                                     data-price="<?php echo $item['p_current_price']; ?>">
                                                     <input type="hidden" name="cart_id" value="<?php echo $item['id']; ?>">
                                                     <div class="input-group">
-                                                        
+
                                                         <input type="number" name="cart_quantity"
                                                             value="<?php echo $item['quantity']; ?>" min="1" max="99"
                                                             class="form-control text-center quantity-input"
                                                             data-item-id="<?php echo $item['id']; ?>">
-                                                       
+
                                                     </div>
                                                 </form>
                                             </div>
@@ -182,7 +182,7 @@ if (isset($_GET['delete_all'])) {
                             </div>
 
                         <?php endif; ?>
-                             <div class="total-amount d-flex justify-content-between mb-4">
+                        <div class="total-amount d-flex justify-content-between mb-4">
                             <span class="fw-bold">Total</span>
                             <span class="amount fw-bold">₹<?php echo number_format($grand_total); ?></span>
                         </div>
@@ -211,10 +211,10 @@ if (isset($_GET['delete_all'])) {
 
 
                         <div class="payment-methods text-center mt-4">
-                            <p class="text-muted mb-2">Secure Payment Methods</p>
+                            <p class="h5 mb-0">Powered by</p>
                             <div class="payment-icons">
                                 <i class="razorpay-icon"></i>
-                                <span class="razorpay-text">Powered by Razorpay</span>
+                                <img src="assets/uploads/razorpay.png" alt="Razorpay Image" class="razorpay-img">
                             </div>
                         </div>
                     </div>

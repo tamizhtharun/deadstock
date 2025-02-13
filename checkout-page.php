@@ -190,7 +190,15 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
                 <button class="btn-primary btn-large">Place Order</button>
+                <div class="payment-methods text-center mt-4">
+                            <p class="h5 mb-0">Powered by</p>
+                            <div class="payment-icons">
+                                <i class="razorpay-icon"></i>
+                                <img src="assets/uploads/razorpay.png" alt="Razorpay Image" class="razorpay-img">
+                            </div>
+                        </div>
             </aside>
+            
         </div>
     </div>
 

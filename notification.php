@@ -612,33 +612,6 @@ $row = $result->fetch_assoc();
         console.error('Error marking all notifications as read:', error);
     }
 });
-
-        // Delete all notifications
-        // deleteAllBtn.addEventListener('click', async () => {
-        //     if (confirm('Are you sure you want to delete all notifications?')) {
-        //         try {
-        //             const response = await fetch('notification.php', {
-        //                 method: 'POST',
-        //                 headers: {
-        //                     'Content-Type': 'application/x-www-form-urlencoded',
-        //                 },
-        //                 body: 'action=delete_all'
-        //             });
-
-        //             const result = await response.json();
-        //             if (result.success) {
-        //                 notifications.length = 0;
-        //                 updateUnreadCount();
-        //                 renderNotifications();
-        //                 showEmptyState();
-        //             }
-        //         } catch (error) {
-        //             console.error('Error deleting all notifications:', error);
-        //         }
-        //     }
-        // });
-
-        // Handle back button on mobile
         function addBackButton() {
             const backButton = document.createElement('button');
             backButton.className = 'action-btn secondary';
