@@ -1864,3 +1864,15 @@
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 3px;
 }
+
+.responsive-img {
+  width: 400px;
+  height: auto;
+}
+
+@media (max-width: 576px) {
+  /* Adjusts to 270px on small screens */
+  .responsive-img {
+      width: 270px;
+  }
+}
