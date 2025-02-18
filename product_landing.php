@@ -250,7 +250,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
         <div class="d-flex justify-content-center mb-3">
         <!-- Main Image -->
         <div class="border rounded-4 mb-3 d-flex justify-content-center"
-          style="width: 400px; height: 250px; overflow: hidden; position: relative;">
+          style="width: 450px; height: 300px; overflow: hidden; position: relative;">
           <a data-bs-toggle="modal" id="mainImageLink" class="rounded-4" data-bs-target="#imageModal" href="#">
             <!-- Default Big Photo -->
             <img id="mainImage" class="rounded-4 zoom-effect" class="rounded-4"
