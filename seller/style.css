@@ -616,7 +616,7 @@ select {
 
   .table {
       display: block;
-      overflow-x: auto;
+      overflow-x: auto !important;
   }
 
   .btn-xs {
