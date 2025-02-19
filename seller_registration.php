@@ -27,6 +27,19 @@ if ($row = mysqli_fetch_assoc($result)) {
     $terms = htmlspecialchars($row['seller_tc']);
 }
 
+function generateUniqueSellerId($conn) {
+    $year = date('Y');
+    $stmt = $conn->prepare("SELECT MAX(CAST(SUBSTRING(unique_seller_id, 8) AS UNSIGNED)) as max_id FROM sellers WHERE unique_seller_id LIKE ?");
+    $like_pattern = "SLR{$year}%";
+    $stmt->bind_param("s", $like_pattern);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $max_id = $row['max_id'] ?? 0;
+    $next_id = $max_id + 1;
+    return "SLR{$year}" . str_pad($next_id, 4, '0', STR_PAD_LEFT);
+}
+
 // Process form submission if POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Collect and sanitize input data
@@ -81,9 +94,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $verification_token = bin2hex(random_bytes(32));
 
             $stmt = $conn->prepare("INSERT INTO sellers (seller_name, seller_cname, seller_email, seller_phone, seller_gst, seller_address, seller_state, seller_city, seller_zipcode, seller_password, seller_status, seller_verification_token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $unique_seller_id = generateUniqueSellerId($conn);
             $stmt->bind_param("ssssssssssss", $seller_name, $seller_cname, $seller_email, $seller_phone, $seller_gst, $seller_address, $seller_state, $seller_city, $seller_zipcode, $hashed_password, $seller_status, $verification_token);
 
             if ($stmt->execute()) {
+                $seller_id = $stmt->insert_id;
+
+                // Update the seller record with the unique seller ID
+                $update_stmt = $conn->prepare("UPDATE sellers SET unique_seller_id = ? WHERE seller_id = ?");
+                $update_stmt->bind_param("si", $unique_seller_id, $seller_id);
+                $update_stmt->execute();
+                $update_stmt->close();
+
                 // Insert login credentials into `user_login` table
                 $stmt_login = $conn->prepare("INSERT INTO user_login (user_name, user_email, user_password, user_role) VALUES (?, ?, ?, ?)");
                 $user_role = 'seller';
@@ -91,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 if ($stmt_login->execute()) {
                     $successMessage = "New seller registered successfully! Please verify your email address to complete the registration.";
-
+ 
                     // Sending email logic...
                     try {
                         $mail = new PHPMailer(true);
@@ -132,6 +154,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <p>For any assistance, feel free to reach out to our support team.</p>
                                 </div>
                             </div>";
+                        $mail->Body .= "<p>Your unique seller ID is: <strong>$unique_seller_id</strong></p>";
                         $mail->send();
                     } catch (Exception $e) {
                         error_log("Email error: " . $mail->ErrorInfo);
@@ -632,3 +655,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </body>
 </html>
 <?php include 'footer.php'; ?>
+

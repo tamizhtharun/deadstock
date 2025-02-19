@@ -56,7 +56,8 @@
                                                         t5.brand_id,
                                                         t5.brand_name,
                                                         t6.seller_id,  -- Seller ID from tbl_sellers
-                                                        t6.seller_name -- Seller Name from tbl_sellers
+                                                        t6.seller_name, -- Seller Name from tbl_sellers
+                                                        t6.unique_seller_id
                                                     FROM tbl_product t1
                                                     LEFT JOIN tbl_end_category t2 ON t1.ecat_id = t2.ecat_id
                                                     LEFT JOIN tbl_mid_category t3 ON t1.mcat_id = t3.mcat_id
@@ -87,7 +88,7 @@
                                     <td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?></td>
                                     <td><a href="../assets/uploads/product-catalogues/<?php echo $row['product_catalogue'] ?>">View catalogue</a> </td>
                                     <td><?php echo $row['p_is_approve'] == 1 ? '<span class="badge badge-success" style="background-color:green;">Approved</span>' : '<span class="badge badge-danger" style="background-color:red;">Rejected</span>'; ?></td>
-                                    <td><?php echo $row['seller_name']; ?> (ID: <?php echo $row['seller_id']; ?>)
+                                    <td><?php echo $row['seller_name']; ?> (<?php echo $row['unique_seller_id']; ?>)
                                         <div>
                                             <a href="javascript:void(0);" onclick="openSellerModal(<?php echo $row['seller_id']; ?>)">View Seller Details</a>
                                         </div>

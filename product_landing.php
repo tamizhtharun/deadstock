@@ -616,7 +616,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     } else if (proposedPrice.value <= 0) {
       showMessage('Please enter a valid bid price', 'error');
     } else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
-      showMessage('Minimum bid price is ₹' + minAllowedPrice.toFixed(2), 'error');
+      showMessage('Bidding too low? Try offering a fair price.', 'error');    
     } else if (!termsCheckbox.checked) {
       showMessage('You must agree to the Terms and Conditions', 'error');
     } else {
