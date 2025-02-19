@@ -4,12 +4,9 @@ require_once('header.php');
 // trackPageView('dashboard', 'Admin Dashboard');
 
 ?>
-
-
 <section class="content-header">
     <h1>Dashboard</h1>
 </section>
-
 <?php
 $statement = $pdo->prepare("SELECT * FROM tbl_product");
 $statement->execute();
@@ -229,7 +226,7 @@ $order_status_distribution[] = ['order_status' => 'Not Sended Orders', 'count' =
         <!-- Active sellers card -->
         <div class="col-xl-3 col-lg-3">
             <a href="seller.php" style="text-decoration: none; color: inherit;">
-                <div class="card l-bg-blue-dark">
+                <div class="card l-bg-blue-dark" id="seller-card">
                     <div class="card-statistic-3 p-3">
                         <div class="card-icon card-icon-large"><i class="fas fa-users"></i></div>
                         <div class="mb-6">
@@ -260,12 +257,25 @@ $order_status_distribution[] = ['order_status' => 'Not Sended Orders', 'count' =
                                 // Calculate Percentage
                                 $percentage_of_active_sellers = ($total_sellers != 0) ? ($total_seller_active / $total_sellers) * 100 : 0;
                                 $percentage_of_inactive_sellers = ($total_sellers != 0) ? ($total_seller_inactive / $total_sellers) * 100 : 0;
+
+                                // Get Today's Registered Sellers
+                                $today_date = date("Y-m-d");
+                                $statement = $pdo->prepare("SELECT COUNT(*) FROM sellers WHERE DATE(created_at) = ?");
+                                $statement->execute([$today_date]);
+                                $today_registered_sellers = $statement->fetchColumn();
+
+                                // Get Today's Active Sellers
+                                $statement = $pdo->prepare("SELECT COUNT(*) FROM sellers WHERE DATE(created_at) = ? AND seller_status = 1");
+                                $statement->execute([$today_date]);
+                                $today_active_sellers = $statement->fetchColumn();
+
+                                // Get Today's Inactive Sellers
+                                $today_inactive_sellers = $today_registered_sellers - $today_active_sellers;
                                 ?>
                                 <span><?php echo number_format($percentage_of_active_sellers, 1); ?>% <i class="fa fa-check"></i></span>
                             </div>
                         </div>
                         <div class="progress mt-1" data-height="8" style="height: 8px;">
-                            <!-- Inactive Sellers Progress (Red) with Always Visible Tooltip -->
                             <div class="progress-bar bg-danger" role="progressbar"
                                 style="width: <?php echo max($percentage_of_inactive_sellers, 1); ?>%;"
                                 aria-valuenow="<?php echo $percentage_of_inactive_sellers; ?>"
@@ -273,7 +283,6 @@ $order_status_distribution[] = ['order_status' => 'Not Sended Orders', 'count' =
                                 aria-valuemax="100"
                                 id="inactive-sellers-bar">
                             </div>
-                            <!-- Active Sellers Progress (Green) (Tooltip Removed) -->
                             <div class="progress-bar l-bg-green" role="progressbar"
                                 style="width: <?php echo $percentage_of_active_sellers; ?>%;"
                                 aria-valuenow="<?php echo $percentage_of_active_sellers; ?>"
@@ -286,19 +295,29 @@ $order_status_distribution[] = ['order_status' => 'Not Sended Orders', 'count' =
             </a>
         </div>
 
-        <!-- Enable Bootstrap Tooltip with Full Hover Effect -->
+        <!-- Enable Bootstrap Tooltip -->
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 var inactiveSellersBar = document.getElementById("inactive-sellers-bar");
+                var sellerCard = document.getElementById("seller-card");
 
-                // Create Tooltip for Inactive Sellers
-                var tooltip = new bootstrap.Tooltip(inactiveSellersBar, {
+                // Tooltip for Inactive Sellers
+                new bootstrap.Tooltip(inactiveSellersBar, {
                     title: "Inactive Sellers: <?php echo $total_seller_inactive; ?>",
+                    placement: "top",
+                    trigger: "hover"
+                });
+
+                // Tooltip for Entire Card (Displays Today's Active & Inactive Sellers)
+                new bootstrap.Tooltip(sellerCard, {
+                    title: "Today's Registered: <?php echo $today_registered_sellers; ?> | Active: <?php echo $today_active_sellers; ?> | Inactive: <?php echo $today_inactive_sellers; ?>",
                     placement: "top",
                     trigger: "hover"
                 });
             });
         </script>
+
+
 
 
         <div class="col-xl-3 col-lg-3">
