@@ -45,9 +45,10 @@
         /* Improves readability */
     }
 
+    /* 
     .dropdown:hover .dropdown-menu {
         display: block;
-    }
+    } */
 
     @media (max-width: 768px) {
         .filter-container {
