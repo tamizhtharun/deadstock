@@ -94,16 +94,7 @@
     width: 100%;
   }
 
-  /* small laptops */
-  @media (max-width:1200){
-    .brand{
-      flex-direction: column;
-      background-color: #000 !important;
-    }
-    .logo{
-      margin: 0 !important;
-    }
-  }
+
   
   /* Mobile Styles */
   @media (max-width: 768px) {
