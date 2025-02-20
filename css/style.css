@@ -191,7 +191,7 @@ h6 {
 .container-sm,
 .container-xl,
 .container-xxl {
-  --bs-gutter-x: 3rem;
+  /* --bs-gutter-x: 3rem; */
 }
 
 /* 6. SITE STRUCTURE */
@@ -263,7 +263,7 @@ h6 {
 */
 @media (min-width: 1400px) {
   .container-lg {
-    max-width: 1600px;
+    max-width: 100% !important;
   }
 }
 
@@ -342,17 +342,18 @@ h6 {
   position: fixed;
   width: 100% !important;
   margin: 0px !important;
+  background-color: #f3f3f3 !important;
 }
 
 .swiper-wrapper {
   top: 0;
   padding: 10px !important;
-  background-color: #f3f3f3 !important;
 }
 
 .container-lg {
   margin: 0px !important;
   padding: 0px;
+  min-width: 100% !important;
 }
 
 /* category carousel */
@@ -470,6 +471,9 @@ h6 {
   margin-top: auto;
   /* Push button area to the bottom */
   width: 100%;
+}
+.container-lg{
+  width: 100% !important;
 }
 
 
