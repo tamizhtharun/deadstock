@@ -26,7 +26,7 @@ require_once('header.php');
 
                 <div class="status-filter-group">
                     <label>Filter by status:</label>
-                    <select id="statusFilter" class="form-control input-sm" style="display: inline-block; width: auto; margin-left: 10px;">
+                    <select id="statusFilter" class="form-control input-sm" style="display: inline-block; width: auto; margin-left: 10px;padding-top:0;">
                         <option value="">All Orders</option>
                         <option value="not_sent">Not Sent Orders</option>
                         <option value="pending">Pending</option>
