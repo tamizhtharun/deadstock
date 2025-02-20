@@ -27,7 +27,8 @@ if ($row = mysqli_fetch_assoc($result)) {
     $terms = htmlspecialchars($row['seller_tc']);
 }
 
-function generateUniqueSellerId($conn) {
+function generateUniqueSellerId($conn)
+{
     $year = date('Y');
     $stmt = $conn->prepare("SELECT MAX(CAST(SUBSTRING(unique_seller_id, 8) AS UNSIGNED)) as max_id FROM sellers WHERE unique_seller_id LIKE ?");
     $like_pattern = "SLR{$year}%";
@@ -90,11 +91,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $hashed_password = password_hash($seller_password, PASSWORD_DEFAULT);
 
             // Insert seller data into `sellers` table
-            // Generate a unique verification token
-            $verification_token = bin2hex(random_bytes(32));
-
             $stmt = $conn->prepare("INSERT INTO sellers (seller_name, seller_cname, seller_email, seller_phone, seller_gst, seller_address, seller_state, seller_city, seller_zipcode, seller_password, seller_status, seller_verification_token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $unique_seller_id = generateUniqueSellerId($conn);
+            // Generate a unique verification token
+            $verification_token = bin2hex(random_bytes(32));
             $stmt->bind_param("ssssssssssss", $seller_name, $seller_cname, $seller_email, $seller_phone, $seller_gst, $seller_address, $seller_state, $seller_city, $seller_zipcode, $hashed_password, $seller_status, $verification_token);
 
             if ($stmt->execute()) {
@@ -113,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 if ($stmt_login->execute()) {
                     $successMessage = "New seller registered successfully! Please verify your email address to complete the registration.";
- 
+
                     // Sending email logic...
                     try {
                         $mail = new PHPMailer(true);
@@ -175,6 +175,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -338,6 +339,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -403,6 +405,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -451,6 +454,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="registration-wrapper">
@@ -575,7 +579,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <script src="https://kit.fontawesome.com/dbb791f861.js" crossorigin="anonymous"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('.registration-form');
             const inputs = form.querySelectorAll('input, textarea');
 
@@ -594,7 +598,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 let isValid = true;
                 let errorMessage = '';
 
-                switch(input.id) {
+                switch (input.id) {
                     case 'seller_gst':
                         isValid = validateGST(input.value);
                         errorMessage = 'Invalid GST Number format';
@@ -631,7 +635,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 return phoneRegex.test(phoneNumber);
             }
 
-            form.addEventListener('submit', function (event) {
+            form.addEventListener('submit', function(event) {
                 let hasError = false;
                 inputs.forEach(input => {
                     validateInput(input);
@@ -653,6 +657,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     </script>
 </body>
+
 </html>
 <?php include 'footer.php'; ?>
-
