@@ -138,12 +138,17 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     </div>
                                 </label>
                             <?php endforeach; ?>
-                        <?php else: ?>
-                            <p class="no-address">No addresses found. Please add a new address.</p>
                         <?php endif; ?>
                     </div>
+                    <!-- Add Address Button (Centered) -->
+                    <?php if (count($addresses) === 0): ?>
+                        <div class="add-address-container">
+                            <a href="user/profile.php?tab=addresses" class="btn-small add-address-btn">Add Address</a>
+                        </div>
+                    <?php endif; ?>
                 </section>
             </div>
+
 
             <aside class="order-summary">
                 <h2>Order Summary</h2>
@@ -151,7 +156,7 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <?php
                     $items = getOrderItems($pdo);
                     foreach ($items as $item):
-                        ?>
+                    ?>
                         <div class="product-item">
                             <div class="product-image">
                                 <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($item['p_featured_photo']); ?>"
@@ -206,7 +211,7 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <script>
         // Add this script to your checkout page
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const orderButton = document.querySelector('.btn-primary.btn-large');
 
             async function initializePayment(e) {
@@ -263,7 +268,7 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         name: 'Deadstock',
                         description: `Order Payment (${data.total_items} items)`,
                         order_id: data.order_id,
-                        handler: function (response) {
+                        handler: function(response) {
                             handlePaymentSuccess(response, selectedAddress.value);
                         },
                         prefill: {
@@ -271,7 +276,7 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             contact: document.querySelector('.phone')?.textContent.replace('📞 ', '').trim() || ''
                         },
                         modal: {
-                            ondismiss: function () {
+                            ondismiss: function() {
                                 orderButton.disabled = false;
                                 orderButton.textContent = 'Place Order';
                             }
@@ -327,11 +332,10 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </script>
 
     <script>
-
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // Handle View button clicks
             document.querySelectorAll('.view-address').forEach(button => {
-                button.addEventListener('click', function (e) {
+                button.addEventListener('click', function(e) {
                     e.stopPropagation(); // Prevent radio button selection when clicking view
                     const addressId = this.getAttribute('data-address-id');
                     const addressOption = this.closest('.address-option');
@@ -367,7 +371,7 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 document.body.appendChild(modal);
 
                 // Close modal when clicking outside or on close button
-                modal.addEventListener('click', function (e) {
+                modal.addEventListener('click', function(e) {
                     if (e.target === modal || e.target.className === 'modal-close') {
                         modal.style.display = 'none';
                     }
