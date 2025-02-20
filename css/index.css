@@ -66,7 +66,7 @@
   /* Brands section */
   .brands {
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     justify-content: space-around;
     gap: 20px;
     padding: 20px;
@@ -92,6 +92,17 @@
   .ds-search-wrapper {
     position: relative;
     width: 100%;
+  }
+
+  /* small laptops */
+  @media (max-width:1200){
+    .brand{
+      flex-direction: column;
+      background-color: #000 !important;
+    }
+    .logo{
+      margin: 0 !important;
+    }
   }
   
   /* Mobile Styles */
