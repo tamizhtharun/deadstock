@@ -245,16 +245,18 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
         <?php endif; ?>
       </ol>
     </nav>
-    <div class="row gx-5">
-      <aside class="col-lg-6">
+    <div class="row gx-5 justify-content-center">
+      <aside class="col-lg-6 justify-content-center">
+        <div class="d-flex justify-content-center mb-3">
         <!-- Main Image -->
         <div class="border rounded-4 mb-3 d-flex justify-content-center"
-          style="width: 500px; height: 310px; overflow: hidden; position: relative;">
+          style="width: 450px; height: 300px; overflow: hidden; position: relative;">
           <a data-bs-toggle="modal" id="mainImageLink" class="rounded-4" data-bs-target="#imageModal" href="#">
             <!-- Default Big Photo -->
             <img id="mainImage" class="rounded-4 zoom-effect" class="rounded-4"
               src="assets/uploads/product-photos/<?php echo $p_featured_photo; ?>">
           </a>
+        </div>
         </div>
         <!-- Thumbnail Images -->
         <div class="d-flex justify-content-center mb-3">
@@ -616,7 +618,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     } else if (proposedPrice.value <= 0) {
       showMessage('Please enter a valid bid price', 'error');
     } else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
-      showMessage('Minimum bid price is ₹' + minAllowedPrice.toFixed(2), 'error');
+      showMessage('Bidding too low? Try offering a fair price.', 'error');    
     } else if (!termsCheckbox.checked) {
       showMessage('You must agree to the Terms and Conditions', 'error');
     } else {
@@ -712,7 +714,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 </script>
 
 
-<section class="bg-light border-top py-4">
+<section class="bg border-top py-4">
   <div class="container">
     <div class="row gx-4">
       <div class="col-lg-8 mb-4">
@@ -971,8 +973,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     img.style.transformOrigin = 'center center'; // Defaults back to center zoom
   });
 </script>
-</body>
 
-</html>
-
+<div>
 <?php include 'footer.php'; ?>
+</div>

@@ -6,87 +6,87 @@ $error_message = '';
 $success_message = '';
 $active_tab = isset($_POST['form4']) ? 'tab_4' : 'tab_1';
 
-    // Get seller status from database
-    $statement = $pdo->prepare("SELECT seller_status FROM sellers WHERE seller_id = ?");
-    $statement->execute([$seller_id]);
-    $seller_status = $statement->fetchColumn();
-    
+// Get seller status from database
+$statement = $pdo->prepare("SELECT seller_status FROM sellers WHERE seller_id = ?");
+$statement->execute([$seller_id]);
+$seller_status = $statement->fetchColumn();
 
 
-    if(isset($_POST['form1'])) {
-        if($_SESSION['seller_session']) {
-            $valid = 1;
-            $error_message = '';
-            
-            // Name validation
-            if(empty($_POST['full_name'])) {
+
+if (isset($_POST['form1'])) {
+    if ($_SESSION['seller_session']) {
+        $valid = 1;
+        $error_message = '';
+
+        // Name validation
+        if (empty($_POST['full_name'])) {
+            $valid = 0;
+            $error_message .= "Name can not be empty. ";
+        }
+
+        // Email validation
+        if (empty($_POST['email'])) {
+            $valid = 0;
+            $error_message .= 'Email address can not be empty. ';
+        } else {
+            if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) === false) {
                 $valid = 0;
-                $error_message .= "Name can not be empty. ";
-            }
-            
-            // Email validation
-            if(empty($_POST['email'])) {
-                $valid = 0;
-                $error_message .= 'Email address can not be empty. ';
+                $error_message .= 'Email address must be valid. ';
             } else {
-                if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) === false) {
+                // Check for duplicate email
+                $statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_id=?");
+                $statement->execute(array($_SESSION['seller_session']['seller_id']));
+                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                $current_email = $result[0]['seller_email'];
+
+                $statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_email=? AND seller_email!=?");
+                $statement->execute(array($_POST['email'], $current_email));
+                if ($statement->rowCount() > 0) {
                     $valid = 0;
-                    $error_message .= 'Email address must be valid. ';
-                } else {
-                    // Check for duplicate email
-                    $statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_id=?");
-                    $statement->execute(array($_SESSION['seller_session']['seller_id']));
-                    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-                    $current_email = $result[0]['seller_email'];
-                    
-                    $statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_email=? AND seller_email!=?");
-                    $statement->execute(array($_POST['email'], $current_email));
-                    if($statement->rowCount() > 0) {
-                        $valid = 0;
-                        $error_message .= 'Email address already exists. ';
-                    }
+                    $error_message .= 'Email address already exists. ';
                 }
             }
-            
-            // Phone validation
-            if(empty($_POST['seller_phone'])) {
+        }
+
+        // Phone validation
+        if (empty($_POST['seller_phone'])) {
+            $valid = 0;
+            $error_message .= 'Phone number cannot be empty. ';
+        } else {
+            // Assuming Indian phone number format
+            if (!preg_match('/^[6-9]\d{9}$/', $_POST['seller_phone'])) {
                 $valid = 0;
-                $error_message .= 'Phone number cannot be empty. ';
-            } else {
-                // Assuming Indian phone number format
-                if(!preg_match('/^[6-9]\d{9}$/', $_POST['seller_phone'])) {
-                    $valid = 0;
-                    $error_message .= 'Invalid phone number format. Must be 10 digits starting with 6-9. ';
-                }
+                $error_message .= 'Invalid phone number format. Must be 10 digits starting with 6-9. ';
             }
-            
-            // GST validation
-            if(!empty($_POST['seller_gst'])) {
-                // GST format: 2 digits state code + 10 digits PAN + 1 digit entity number + 1 digit check sum
-                if(!preg_match('/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/', $_POST['seller_gst'])) {
-                    $valid = 0;
-                    $error_message .= 'Invalid GST format. ';
-                }
+        }
+
+        // GST validation
+        if (!empty($_POST['seller_gst'])) {
+            // GST format: 2 digits state code + 10 digits PAN + 1 digit entity number + 1 digit check sum
+            if (!preg_match('/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/', $_POST['seller_gst'])) {
+                $valid = 0;
+                $error_message .= 'Invalid GST format. ';
             }
-            
-            // Zipcode validation
-            if(!empty($_POST['seller_zipcode'])) {
-                // Assuming Indian PIN code
-                if(!preg_match('/^[1-9][0-9]{5}$/', $_POST['seller_zipcode'])) {
-                    $valid = 0;
-                    $error_message .= 'Invalid PIN code format. ';
-                }
+        }
+
+        // Zipcode validation
+        if (!empty($_POST['seller_zipcode'])) {
+            // Assuming Indian PIN code
+            if (!preg_match('/^[1-9][0-9]{5}$/', $_POST['seller_zipcode'])) {
+                $valid = 0;
+                $error_message .= 'Invalid PIN code format. ';
             }
-            
-            if($valid == 1) {
-                try {
-                    // Update session data
-                    $_SESSION['seller_session']['seller_name'] = $_POST['full_name'];
-                    $_SESSION['seller_session']['seller_email'] = $_POST['email'];
-                    $_SESSION['seller_session']['seller_phone'] = $_POST['seller_phone'];
-                    
-                    // Update database
-                    $statement = $pdo->prepare("UPDATE sellers SET 
+        }
+
+        if ($valid == 1) {
+            try {
+                // Update session data
+                $_SESSION['seller_session']['seller_name'] = $_POST['full_name'];
+                $_SESSION['seller_session']['seller_email'] = $_POST['email'];
+                $_SESSION['seller_session']['seller_phone'] = $_POST['seller_phone'];
+
+                // Update database
+                $statement = $pdo->prepare("UPDATE sellers SET 
                         seller_name = ?,
                         seller_cname = ?,
                         seller_email = ?,
@@ -97,115 +97,115 @@ $active_tab = isset($_POST['form4']) ? 'tab_4' : 'tab_1';
                         seller_city = ?,
                         seller_zipcode = ?
                         WHERE seller_id = ?");
-                    
-                    $statement->execute(array(
-                        $_POST['full_name'],
-                        $_POST['seller_cname'],
-                        $_POST['email'],
-                        $_POST['seller_phone'],
-                        $_POST['seller_gst'],
-                        $_POST['seller_address'],
-                        $_POST['seller_state'],
-                        $_POST['seller_city'],
-                        $_POST['seller_zipcode'],
-                        $_SESSION['seller_session']['seller_id']
-                    ));
-                    
-                    $success_message = 'User Information is updated successfully.';
-                } catch(PDOException $e) {
-                    $error_message = 'Database error: ' . $e->getMessage();
-                }
-            }
-        } else {
-            // Handle phone update for non-seller session
-            if(!empty($_POST['phone']) && preg_match('/^[6-9]\d{9}$/', $_POST['phone'])) {
-                $_SESSION['seller_session']['seller_phone'] = $_POST['phone'];
-                
-                $statement = $pdo->prepare("UPDATE sellers SET seller_phone=? WHERE seller_id=?");
-                $statement->execute(array($_POST['phone'], $_SESSION['seller_session']['seller_id']));
-                
-                $success_message = 'Phone number updated successfully.';
-            } else {
-                $error_message = 'Invalid phone number format.';
+
+                $statement->execute(array(
+                    $_POST['full_name'],
+                    $_POST['seller_cname'],
+                    $_POST['email'],
+                    $_POST['seller_phone'],
+                    $_POST['seller_gst'],
+                    $_POST['seller_address'],
+                    $_POST['seller_state'],
+                    $_POST['seller_city'],
+                    $_POST['seller_zipcode'],
+                    $_SESSION['seller_session']['seller_id']
+                ));
+
+                $success_message = 'User Information is updated successfully.';
+            } catch (PDOException $e) {
+                $error_message = 'Database error: ' . $e->getMessage();
             }
         }
-    }
+    } else {
+        // Handle phone update for non-seller session
+        if (!empty($_POST['phone']) && preg_match('/^[6-9]\d{9}$/', $_POST['phone'])) {
+            $_SESSION['seller_session']['seller_phone'] = $_POST['phone'];
 
-if(isset($_POST['form2'])) {
+            $statement = $pdo->prepare("UPDATE sellers SET seller_phone=? WHERE seller_id=?");
+            $statement->execute(array($_POST['phone'], $_SESSION['seller_session']['seller_id']));
+
+            $success_message = 'Phone number updated successfully.';
+        } else {
+            $error_message = 'Invalid phone number format.';
+        }
+    }
+}
+
+if (isset($_POST['form2'])) {
     $valid = 1;
 
     // Check if a file was actually selected
-    if(empty($_FILES['photo']['name'])) {
+    if (empty($_FILES['photo']['name'])) {
         $valid = 0;
         $error_message .= 'Please select a photo to upload<br>';
     } else {
         $path = $_FILES['photo']['name'];
         $path_tmp = $_FILES['photo']['tmp_name'];
 
-        $ext = pathinfo($path, PATHINFO_EXTENSION );
-        $file_name = basename( $path, '.' . $ext );
-        
-        if($ext!='jpg' && $ext!='png' && $ext!='jpeg' && $ext!='gif' ) {
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
+        $file_name = basename($path, '.' . $ext);
+
+        if ($ext != 'jpg' && $ext != 'png' && $ext != 'jpeg' && $ext != 'gif') {
             $valid = 0;
             $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
         }
     }
 
-    if($valid == 1) {
+    if ($valid == 1) {
         // removing the existing photo
         // if($_SESSION['seller_session']['seller_id']!='') {
         //     unlink('../assets/uploads/profile-pictures/'.$_SESSION['seller_session']['seller_id']); 
         // }
 
         // updating the data
-        $final_name = 'seller-'.$_SESSION['seller_session']['seller_id'].'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/profile-pictures/'.$final_name );
+        $final_name = 'seller-' . $_SESSION['seller_session']['seller_id'] . '.' . $ext;
+        move_uploaded_file($path_tmp, '../assets/uploads/profile-pictures/' . $final_name);
         $_SESSION['seller_session']['seller_photo'] = $final_name;
 
         // updating the database
         $statement = $pdo->prepare("UPDATE sellers SET seller_photo=? WHERE seller_id=?");
-        $statement->execute(array($final_name,$_SESSION['seller_session']['seller_id']));
+        $statement->execute(array($final_name, $_SESSION['seller_session']['seller_id']));
 
         $success_message = 'User Photo is updated successfully.';
     }
 }
 
-if(isset($_POST['form3'])) {
+if (isset($_POST['form3'])) {
     $valid = 1;
-    if(empty($_POST['current_password'])) {
-		$valid = 0;
-		$error_message .= "Current Password can not be empty<br>";
-	} else {
-		$statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_id=?");
-		$statement->execute(array($_SESSION['seller_session']['seller_id']));
-		$result = $statement->fetch(PDO::FETCH_ASSOC);
-		if(!password_verify($_POST['current_password'], $result['seller_password'])) {
-			$valid = 0;
-			$error_message .= "Current Password is incorrect<br>";
-		}
-	}
-    if(empty($_POST['password']) || empty($_POST['re_password'])) {
+    if (empty($_POST['current_password'])) {
+        $valid = 0;
+        $error_message .= "Current Password can not be empty<br>";
+    } else {
+        $statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_id=?");
+        $statement->execute(array($_SESSION['seller_session']['seller_id']));
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        if (!password_verify($_POST['current_password'], $result['seller_password'])) {
+            $valid = 0;
+            $error_message .= "Current Password is incorrect<br>";
+        }
+    }
+    if (empty($_POST['password']) || empty($_POST['re_password'])) {
         $valid = 0;
         $error_message .= "Password can not be empty<br>";
     }
 
-    if(!empty($_POST['password']) && !empty($_POST['re_password'])) {
-        if($_POST['password'] != $_POST['re_password']) {
+    if (!empty($_POST['password']) && !empty($_POST['re_password'])) {
+        if ($_POST['password'] != $_POST['re_password']) {
             $valid = 0;
-            $error_message .= "Passwords do not match<br>";  
+            $error_message .= "Passwords do not match<br>";
         }
-        
+
         // Add password strength validation
-        if(strlen($_POST['password']) < 8) {
+        if (strlen($_POST['password']) < 8) {
             $valid = 0;
             $error_message .= "Password must be at least 8 characters long<br>";
         }
     }
 
-    if($valid == 1) {
+    if ($valid == 1) {
         // Generate secure password hash
         $password_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        
+
         // Update session with new password hash
         $_SESSION['seller_session']['seller_password'] = $password_hash;
 
@@ -226,17 +226,17 @@ $statement->execute();
 $brands = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 // Handle form submission for brands
-if(isset($_POST['form4'])) {
+if (isset($_POST['form4'])) {
     $valid = 1;
-    
+
     // Validate brand selection
-    if(empty($_POST['brand_id'])) {
+    if (empty($_POST['brand_id'])) {
         $valid = 0;
         $error_message .= "Please select a brand<br>";
     }
 
     // Validate certificate upload
-    if(empty($_FILES['brand_certificate']['name'])) {
+    if (empty($_FILES['brand_certificate']['name'])) {
         $valid = 0;
         $error_message .= "Certificate is required<br>";
     } else {
@@ -244,30 +244,30 @@ if(isset($_POST['form4'])) {
         $certificate_tmp = $_FILES['brand_certificate']['tmp_name'];
         $ext = strtolower(pathinfo($certificate_name, PATHINFO_EXTENSION));
 
-        if($ext != 'pdf') {
+        if ($ext != 'pdf') {
             $valid = 0;
             $error_message .= "Only PDF files are allowed for certificates<br>";
         }
     }
 
     // Validate valid until date
-    if(empty($_POST['valid_to'])) {
+    if (empty($_POST['valid_to'])) {
         $valid = 0;
         $error_message .= "Valid until date is required<br>";
     }
 
-    if($valid == 1) {
+    if ($valid == 1) {
         try {
             // Generate unique filename
-            $final_name = 'certificate-'.$_SESSION['seller_session']['seller_id'].'-'.$_POST['brand_id'].'-'.time().'.pdf';
-            
+            $final_name = 'certificate-' . $_SESSION['seller_session']['seller_id'] . '-' . $_POST['brand_id'] . '-' . time() . '.pdf';
+
             // Move uploaded file
-            if(move_uploaded_file($certificate_tmp, '../assets/uploads/certificates/'.$final_name)) {
+            if (move_uploaded_file($certificate_tmp, '../assets/uploads/certificates/' . $final_name)) {
                 // Check if brand already exists for seller
                 $statement = $pdo->prepare("SELECT * FROM seller_brands WHERE seller_id = ? AND brand_id = ?");
                 $statement->execute(array($_SESSION['seller_session']['seller_id'], $_POST['brand_id']));
-                
-                if($statement->rowCount() > 0) {
+
+                if ($statement->rowCount() > 0) {
                     // Update existing record
                     $statement = $pdo->prepare("UPDATE seller_brands SET 
                         brand_certificate = ?, 
@@ -293,7 +293,7 @@ if(isset($_POST['form4'])) {
             } else {
                 $error_message .= "Error uploading file. Please try again.<br>";
             }
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $error_message .= "Database error: " . $e->getMessage() . "<br>";
         }
     }
@@ -371,7 +371,7 @@ $seller_brands = $statement->fetchAll(PDO::FETCH_ASSOC);
 $statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_id=?");
 $statement->execute(array($_SESSION['seller_session']['seller_id']));
 $statement->rowCount();
-$result = $statement->fetchAll(PDO::FETCH_ASSOC);             
+$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 foreach ($result as $row) {
     $full_name = $row['seller_name'];
     $email     = $row['seller_email'];
@@ -395,21 +395,25 @@ foreach ($result as $row) {
         <h1>Edit Profile</h1>
     </div>
 </section>
-
+<style>
+    .callout.callout-info {
+        color: #3b82f6 !important;
+    }
+</style>
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <?php if($seller_status == 0): ?>
+            <?php if ($seller_status == 0): ?>
                 <div class="callout callout-info">Complete your profile to get Started</div>
             <?php endif; ?>
 
-            <?php if($error_message): ?>
+            <?php if ($error_message): ?>
                 <div class="callout callout-danger">
                     <p><?php echo $error_message; ?></p>
                 </div>
             <?php endif; ?>
 
-            <?php if($success_message): ?>
+            <?php if ($success_message): ?>
                 <div class="callout callout-success">
                     <p><?php echo $success_message; ?></p>
                 </div>
@@ -513,10 +517,10 @@ foreach ($result as $row) {
                             <div class="box box-info">
                                 <div class="box-body">
                                     <div class="form-group">
-									<label for="" class="col-sm-2 control-label">Existing Photo</label>
-							            <div class="col-sm-6" style="padding-top:6px;">
-							                <img src="../assets/uploads/profile-pictures/<?php echo $_SESSION['seller_session']['seller_photo']; ?>" class="existing-photo" width="140">
-							            </div>
+                                        <label for="" class="col-sm-2 control-label">Existing Photo</label>
+                                        <div class="col-sm-6" style="padding-top:6px;">
+                                            <img src="../assets/uploads/profile-pictures/<?php echo $_SESSION['seller_session']['seller_photo']; ?>" class="existing-photo" width="140">
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="" class="col-sm-2 control-label">New Photo</label>
@@ -567,9 +571,9 @@ foreach ($result as $row) {
                             </div>
                         </form>
                     </div>
-					<div class="tab-pane <?php echo ($active_tab == 'tab_4') ? 'active' : ''; ?>" id="tab_4">
+                    <div class="tab-pane <?php echo ($active_tab == 'tab_4') ? 'active' : ''; ?>" id="tab_4">
                         <!-- Display error/success messages only if form4 was submitted -->
-                        
+
                         <!-- Form to add new brand -->
                         <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
                             <div class="box box-info">
@@ -579,7 +583,7 @@ foreach ($result as $row) {
                                         <div class="col-sm-4">
                                             <select name="brand_id" class="form-control">
                                                 <option value="">Select a brand</option>
-                                                <?php foreach($brands as $brand): ?>
+                                                <?php foreach ($brands as $brand): ?>
                                                     <option value="<?php echo $brand['brand_id']; ?>">
                                                         <?php echo $brand['brand_name']; ?>
                                                     </option>
@@ -623,9 +627,9 @@ foreach ($result as $row) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach($seller_brands as $key => $brand): ?>
+                                        <?php foreach ($seller_brands as $key => $brand): ?>
                                             <tr>
-                                                <td><?php echo $key+1; ?></td>
+                                                <td><?php echo $key + 1; ?></td>
                                                 <td><?php echo $brand['brand_name']; ?></td>
                                                 <td>
                                                     <a href="../assets/uploads/certificates/<?php echo $brand['brand_certificate']; ?>" target="_blank">
@@ -634,9 +638,9 @@ foreach ($result as $row) {
                                                 </td>
                                                 <td><?php echo date('d M, Y', strtotime($brand['valid_to'])); ?></td>
                                                 <td>
-                                                    <a href="seller-brand-delete.php?id=<?php echo $brand['brand_id']; ?>" 
-                                                       class="btn btn-danger btn-xs" 
-                                                       onclick="return confirm('Are you sure?');">Delete</a>
+                                                    <a href="seller-brand-delete.php?id=<?php echo $brand['brand_id']; ?>"
+                                                        class="btn btn-danger btn-xs"
+                                                        onclick="return confirm('Are you sure?');">Delete</a>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -646,7 +650,7 @@ foreach ($result as $row) {
                         </div>
                     </div>
                     <div class="tab-pane <?php echo ($active_tab == 'tab_5') ? 'active' : ''; ?>" id="tab_5">
-                    <form class="form-horizontal" action="" method="post">
+                        <form class="form-horizontal" action="" method="post">
                             <div class="box box-info">
                                 <div class="box-body">
                                     <div class="form-group">
@@ -662,25 +666,25 @@ foreach ($result as $row) {
                                         </div>
                                     </div>
                                     <div class="form-group">
-    <label class="col-sm-3 control-label">IFSC Code <span>*</span></label>
-    <div class="col-sm-4">
-        <input type="text" 
-               id="ifsc_code" 
-               name="ifsc_code" 
-               class="form-control" 
-               value="<?php echo isset($ifsc_code) ? $ifsc_code : ''; ?>"
-               onkeyup="debouncedFetchBankDetails()" 
-               maxlength="11"
-               pattern="^[A-Za-z]{4}[0]{1}[A-Za-z0-9]{6}$"
-               title="Please enter a valid IFSC code (e.g., SBIN0123456)"
-               style="text-transform: uppercase;">
-        <small class="text-muted">Enter 11-character IFSC code (e.g., SBIN0123456)</small>
-        <div id="bank_details_loading" style="display: none; margin-top: 10px;">
-            <i class="fa fa-spinner fa-spin"></i> Fetching bank details...
-        </div>
-        <div id="bank_details_error" class="text-danger" style="display: none; margin-top: 10px;"></div>
-    </div>
-</div>
+                                        <label class="col-sm-3 control-label">IFSC Code <span>*</span></label>
+                                        <div class="col-sm-4">
+                                            <input type="text"
+                                                id="ifsc_code"
+                                                name="ifsc_code"
+                                                class="form-control"
+                                                value="<?php echo isset($ifsc_code) ? $ifsc_code : ''; ?>"
+                                                onkeyup="debouncedFetchBankDetails()"
+                                                maxlength="11"
+                                                pattern="^[A-Za-z]{4}[0]{1}[A-Za-z0-9]{6}$"
+                                                title="Please enter a valid IFSC code (e.g., SBIN0123456)"
+                                                style="text-transform: uppercase;">
+                                            <small class="text-muted">Enter 11-character IFSC code (e.g., SBIN0123456)</small>
+                                            <div id="bank_details_loading" style="display: none; margin-top: 10px;">
+                                                <i class="fa fa-spinner fa-spin"></i> Fetching bank details...
+                                            </div>
+                                            <div id="bank_details_error" class="text-danger" style="display: none; margin-top: 10px;"></div>
+                                        </div>
+                                    </div>
 
                                     <div id="bank_details_container" style="display: none;">
                                         <div class="form-group">
@@ -733,84 +737,84 @@ foreach ($result as $row) {
                                     </div>
                                 </div>
                             </div>
-                            </form>
-                        </div>
-                    
-    
+                        </form>
                     </div>
+
+
                 </div>
             </div>
         </div>
+    </div>
 </section>
 <script>
-async function fetchBankDetails() {
-    const ifscCode = document.getElementById('ifsc_code').value.toUpperCase();
-    const loadingIndicator = document.getElementById('bank_details_loading');
-    const errorDisplay = document.getElementById('bank_details_error');
-    const detailsContainer = document.getElementById('bank_details_container');
+    async function fetchBankDetails() {
+        const ifscCode = document.getElementById('ifsc_code').value.toUpperCase();
+        const loadingIndicator = document.getElementById('bank_details_loading');
+        const errorDisplay = document.getElementById('bank_details_error');
+        const detailsContainer = document.getElementById('bank_details_container');
 
-    // Clear previous results
-    errorDisplay.style.display = 'none';
-    detailsContainer.style.display = 'none';
-
-    if(ifscCode.length !== 11) {
-        return;
-    }
-
-    // Show loading
-    loadingIndicator.style.display = 'inline-block';
-
-    try {
-        // Using our PHP proxy
-        const response = await fetch(`fetch-bank-details.php?ifsc=${ifscCode}`);
-        const data = await response.json();
-        
-        // console.log('API Response:', data); // For debugging
-
-        if (data.status === 'ERROR' || data.error) {
-            throw new Error(data.error || 'Failed to fetch bank details');
-        }
-
-        if (data.data && data.data.BANK) {
-            // Update form fields
-            document.getElementById('bank_name').value = data.data.BANK || '';
-            document.getElementById('bank_branch').value = data.data.BRANCH || '';
-            document.getElementById('bank_address').value = data.data.ADDRESS || '';
-            document.getElementById('bank_city').value = data.data.CITY || '';
-            document.getElementById('bank_state').value = data.data.STATE || '';
-            
-            detailsContainer.style.display = 'block';
-            errorDisplay.style.display = 'none';
-        } else {
-            throw new Error('Invalid bank details received');
-        }
-    } catch (error) {
-        console.error('Error details:', error);
-        
-        errorDisplay.textContent = error.message || 'Unable to fetch bank details. Please verify the IFSC code and try again.';
-        errorDisplay.style.display = 'block';
+        // Clear previous results
+        errorDisplay.style.display = 'none';
         detailsContainer.style.display = 'none';
-        
-        // Clear the bank details
-        document.getElementById('bank_name').value = '';
-        document.getElementById('bank_branch').value = '';
-        document.getElementById('bank_address').value = '';
-        document.getElementById('bank_city').value = '';
-        document.getElementById('bank_state').value = '';
-    } finally {
-        loadingIndicator.style.display = 'none';
+
+        if (ifscCode.length !== 11) {
+            return;
+        }
+
+        // Show loading
+        loadingIndicator.style.display = 'inline-block';
+
+        try {
+            // Using our PHP proxy
+            const response = await fetch(`fetch-bank-details.php?ifsc=${ifscCode}`);
+            const data = await response.json();
+
+            // console.log('API Response:', data); // For debugging
+
+            if (data.status === 'ERROR' || data.error) {
+                throw new Error(data.error || 'Failed to fetch bank details');
+            }
+
+            if (data.data && data.data.BANK) {
+                // Update form fields
+                document.getElementById('bank_name').value = data.data.BANK || '';
+                document.getElementById('bank_branch').value = data.data.BRANCH || '';
+                document.getElementById('bank_address').value = data.data.ADDRESS || '';
+                document.getElementById('bank_city').value = data.data.CITY || '';
+                document.getElementById('bank_state').value = data.data.STATE || '';
+
+                detailsContainer.style.display = 'block';
+                errorDisplay.style.display = 'none';
+            } else {
+                throw new Error('Invalid bank details received');
+            }
+        } catch (error) {
+            console.error('Error details:', error);
+
+            errorDisplay.textContent = error.message || 'Unable to fetch bank details. Please verify the IFSC code and try again.';
+            errorDisplay.style.display = 'block';
+            detailsContainer.style.display = 'none';
+
+            // Clear the bank details
+            document.getElementById('bank_name').value = '';
+            document.getElementById('bank_branch').value = '';
+            document.getElementById('bank_address').value = '';
+            document.getElementById('bank_city').value = '';
+            document.getElementById('bank_state').value = '';
+        } finally {
+            loadingIndicator.style.display = 'none';
+        }
     }
-}
 
-// Debounce function
-const debounce = (func, wait) => {
-    let timeout;
-    return (...args) => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
+    // Debounce function
+    const debounce = (func, wait) => {
+        let timeout;
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
     };
-};
 
-const debouncedFetchBankDetails = debounce(fetchBankDetails, 500);
+    const debouncedFetchBankDetails = debounce(fetchBankDetails, 500);
 </script>
 <?php require_once('footer.php'); ?>

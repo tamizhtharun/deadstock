@@ -8,22 +8,22 @@ trackPageView('HP', 'Home page');
     <div class="category-box">
         <ul class="categories">
             <?php
-                $statement = $pdo->prepare("SELECT * FROM tbl_top_category WHERE show_on_menu=1");
-                $statement->execute();
-                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-                foreach ($result as $row) {
+            $statement = $pdo->prepare("SELECT * FROM tbl_top_category WHERE show_on_menu=1");
+            $statement->execute();
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($result as $row) {
             ?>
                 <li class="category">
                     <a class="category-link" href="search-result.php?type=top-category&id=<?php echo $row['tcat_id']; ?>">
                         <img src="./assets/uploads/top-categories-images/<?php echo $row['photo']; ?>" width="30px" height="30px" alt="<?php echo $row['tcat_name']; ?>">
-                        <span><?php echo $row['tcat_name'];?></span>
+                        <span><?php echo $row['tcat_name']; ?></span>
                     </a>
                     <ul class="subcategories">
                         <?php
-                            $statement1 = $pdo->prepare("SELECT * FROM tbl_mid_category WHERE tcat_id=?");
-                            $statement1->execute(array($row['tcat_id']));
-                            $result1 = $statement1->fetchAll(PDO::FETCH_ASSOC);
-                            foreach ($result1 as $row1) {
+                        $statement1 = $pdo->prepare("SELECT * FROM tbl_mid_category WHERE tcat_id=?");
+                        $statement1->execute(array($row['tcat_id']));
+                        $result1 = $statement1->fetchAll(PDO::FETCH_ASSOC);
+                        foreach ($result1 as $row1) {
                         ?>
                             <li class="subcategory">
                                 <a class="subcategory-link" href="search-result.php?type=mid-category&id=<?php echo $row1['mcat_id']; ?>">
@@ -31,10 +31,10 @@ trackPageView('HP', 'Home page');
                                 </a>
                                 <ul class="sub-subcategories">
                                     <?php
-                                        $statement2 = $pdo->prepare("SELECT * FROM tbl_end_category WHERE mcat_id=?");
-                                        $statement2->execute(array($row1['mcat_id']));
-                                        $result2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
-                                        foreach ($result2 as $row2) {
+                                    $statement2 = $pdo->prepare("SELECT * FROM tbl_end_category WHERE mcat_id=?");
+                                    $statement2->execute(array($row1['mcat_id']));
+                                    $result2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
+                                    foreach ($result2 as $row2) {
                                     ?>
                                         <li class="sub-subcategory">
                                             <a href="search-result.php?type=end-category&id=<?php echo $row2['ecat_id']; ?>">
@@ -42,123 +42,124 @@ trackPageView('HP', 'Home page');
                                             </a>
                                         </li>
                                     <?php
-                                        }
+                                    }
                                     ?>
                                 </ul>
                             </li>
                         <?php
-                            }
+                        }
                         ?>
                     </ul>
                 </li>
             <?php
-                }
+            }
             ?>
         </ul>
     </div>
 
-<!-- quote container -->
-  <div class="right-category-pad">
-  <div class="quote-container">
-    <p class="quote">
-        <span class="quote-bold"><?php echo htmlspecialchars($quote_span_text); ?></span> 
-        <?php echo nl2br(htmlspecialchars($quote_text)); ?>
-    </p>
-    <img src="assets/uploads/<?php echo $logo ?>" alt="Logo" class="logo">
-</div>
+    <!-- quote container -->
+    <div class="right-category-pad">
+        <div class="quote-container">
+            <p class="quote">
+                <span class="quote-bold"><?php echo htmlspecialchars($quote_span_text); ?></span>
+                <?php echo nl2br(htmlspecialchars($quote_text)); ?>
+            </p>
+            <img src="assets/uploads/<?php echo $logo ?>" alt="Logo" class="logo">
+        </div>
 
-<div class="brands">
-      <div class="ind-brand">
-        <a href="#" class="link-body-emphasis link-underline-opacity-0">
-          <div class="img-category">
-        <img src="./icons/index milling.png">
-      </div>
-      <p class="brand-name">Indexable Milling Tools</p>
-      </a>
-      </div>
-      <div class="ind-brand">
-        <a href="#" class="link-body-emphasis link-underline-opacity-0">
-          <div class="img-category">
-        <img src="./icons/endmill.png">
-      </div>
-      <p class="brand-name">Solid Carbide Endmills</p>
-        </a>
-      </div>
-      <div class="ind-brand">
-        <a href="#" class="link-body-emphasis link-underline-opacity-0">
-          <div class="img-category">
-        <img src="./icons/turning.png">
-      </div>
-      <p class="brand-name ">Turning Tools</p>
-        </a>
-      </div>
-      <div class="ind-brand">
-        <a href="#" class="link-body-emphasis link-underline-opacity-0">
-          <div class="img-category">
-            <img src="./icons/hole.png">
-          </div>
-          <p class="brand-name">Holemaking Tools</p>
-        </a>
-      </div>
-      <div class="ind-brand">
-        <a href="#" class="link-body-emphasis link-underline-opacity-0">
-          <div class="img-category">
-        <img src="./icons/Threading tools.png">
-      </div>
-      <p class="brand-name">Threading Tools</p>
-        </a>
-      </div>
-      <div class="ind-brand">
-        <a href="#" class="link-body-emphasis link-underline-opacity-0">
-          <div class="img-category">
-            <img src="./icons/others.png">
-      </div>
-      <p class="brand-name">Others</p>
-        </a>
-      </div>
-  </div>
-  </div>
+        <div class="brands">
+            <div class="ind-brand">
+                <a href="#" class="link-body-emphasis link-underline-opacity-0">
+                    <div class="img-category">
+                        <img src="./icons/index milling.png">
+                    </div>
+                    <p class="brand-name">Indexable Milling Tools</p>
+                </a>
+            </div>
+            <div class="ind-brand">
+                <a href="#" class="link-body-emphasis link-underline-opacity-0">
+                    <div class="img-category">
+                        <img src="./icons/endmill.png">
+                    </div>
+                    <p class="brand-name">Solid Carbide Endmills</p>
+                </a>
+            </div>
+            <div class="ind-brand">
+                <a href="#" class="link-body-emphasis link-underline-opacity-0">
+                    <div class="img-category">
+                        <img src="./icons/turning.png">
+                    </div>
+                    <p class="brand-name ">Turning Tools</p>
+                </a>
+            </div>
+            <div class="ind-brand">
+                <a href="#" class="link-body-emphasis link-underline-opacity-0">
+                    <div class="img-category">
+                        <img src="./icons/hole.png">
+                    </div>
+                    <p class="brand-name">Holemaking Tools</p>
+                </a>
+            </div>
+            <div class="ind-brand">
+                <a href="#" class="link-body-emphasis link-underline-opacity-0">
+                    <div class="img-category">
+                        <img src="./icons/Threading tools.png">
+                    </div>
+                    <p class="brand-name">Threading Tools</p>
+                </a>
+            </div>
+            <div class="ind-brand">
+                <a href="#" class="link-body-emphasis link-underline-opacity-0">
+                    <div class="img-category">
+                        <img src="./icons/others.png">
+                    </div>
+                    <p class="brand-name">Others</p>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- banner -->
-<div class="banner"> 
-      <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-inner">
-        
-      <?php
-          $i = 0;
-          $statement = $pdo->prepare("SELECT * FROM tbl_slider");
-          $statement->execute();
-          $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-          foreach ($result as $row) {            
-              $activeClass = ($i === 0) ? 'active' : ''; // Only first item is active
-          ?>
-              <div class="carousel-item <?php echo $activeClass; ?>">
-                  <img class="img" src="assets/uploads/sliders/<?php echo $row['photo']; ?>" class="d-block w-100" alt="..." style="width:100%" >
-              </div>
-          <?php
-              $i++;
-          }
-          ?>
+<div class="banner">
+    <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
 
-              
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-            </button>
-          </div>
+            <?php
+            $i = 0;
+            $statement = $pdo->prepare("SELECT * FROM tbl_slider");
+            $statement->execute();
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($result as $row) {
+                $activeClass = ($i === 0) ? 'active' : ''; // Only first item is active
+            ?>
+                <div class="carousel-item <?php echo $activeClass; ?>">
+                    <img class="img" src="assets/uploads/sliders/<?php echo $row['photo']; ?>" class="d-block w-100" alt="..." style="width:100%">
+                </div>
+            <?php
+                $i++;
+            }
+            ?>
+
+
         </div>
-            
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+
 <!-- end banner  -->
 
 <!-- Live Bidding -->
- 
-<?php //require_once( 'live-bidding-card.php');?>
+
+<?php //require_once( 'live-bidding-card.php');
+?>
 
 <!-- Live Bidding -->
 
@@ -195,36 +196,36 @@ if (!empty($topCategories)) {
             if ($hasFeaturedProducts) {
                 // Create unique identifier for this category's swiper
                 $swiperId = 'featured-swiper-' . $tcat_id;
-                ?>
+?>
                 <section id="featured-products-<?php echo $tcat_id; ?>" class="products-carousel my-10">
                     <div class="container-lg overflow-hidden py-5">
                         <div class="section-header d-flex flex-wrap justify-content-between my-1">
                             <h2 class="section-title"><?php echo htmlspecialchars($topCategory['mcat_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
                             <div class="d-flex align-items-center">
-                            <a href="search-result.php?type=mid-category&id=<?php echo $topCategory['mcat_id'] ?>" class="btn-link text-decoration-none" style="margin-right:20px">View All <?php echo htmlspecialchars($topCategory['mcat_name']) ?> →</a>
+                                <a href="search-result.php?type=mid-category&id=<?php echo $topCategory['mcat_id'] ?>" class="btn-link text-decoration-none" style="margin-right:20px">View All <?php echo htmlspecialchars($topCategory['mcat_name']) ?> →</a>
                                 <div class="swiper-buttons">
                                     <button class="swiper-prev btn btn-primary" id="<?php echo $swiperId; ?>-prev">❮</button>
                                     <button class="swiper-next btn btn-primary" id="<?php echo $swiperId; ?>-next">❯</button>
-                                </div>  
+                                </div>
                             </div>
                         </div>
-                        
+
                         <div class="swiper" id="<?php echo $swiperId; ?>">
                             <div class="swiper-wrapper">
 
                                 <?php foreach ($products as $product): ?>
                                     <?php if ($product['p_is_featured'] == 1): ?>
-                                    <div class="product-item swiper-slide">
-                                        <figure>
-                                            <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>">
-                                                <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>" class="tab-image">
-                                            </a>
-                                        </figure>
-                                        <div class="d-flex flex-column text-left">
-                                        <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration:none !important" title="Product Title">
-                                          <h3 class="fs-6 fw-normal"><?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?></h3>
-                                        
-                                            <!-- <div>
+                                        <div class="product-item swiper-slide">
+                                            <figure>
+                                                <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>">
+                                                    <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>" class="tab-image">
+                                                </a>
+                                            </figure>
+                                            <div class="d-flex flex-column text-left">
+                                                <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration:none !important" title="Product Title">
+                                                    <h3 class="fs-6 fw-normal"><?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?></h3>
+
+                                                    <!-- <div>
                                                 <span class="rating">
                                                     <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
                                                     <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
@@ -232,32 +233,32 @@ if (!empty($topCategories)) {
                                                     <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
                                                     <svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>
                                                 </span>
-                                                <span><?php echo $product['p_current_price']?></span>
+                                                <span><?php echo $product['p_current_price'] ?></span>
                                             </div> -->
-                                            <div class="d-flex justify-content-left align-items-left gap-1">
-                                            <span class="text-dark fw-semibold h6" style="margin-bottom:0px">₹<?php echo number_format($product['p_current_price'], 2); ?></span>
-                                            </div>
-                                            <div class="d-flex justify-content-left align-items-left gap-1">
-                                                <?php if (!empty($product['p_old_price'])): ?>
-                                                    <del>₹<?php echo number_format($product['p_old_price'], 2); ?></del>
-                                                    <div class="cat-product-discount">
-                                                        <?php
-                                                        $discount = (($product['p_old_price'] - $product['p_current_price']) / $product['p_old_price']) * 100;
-                                                        echo round($discount) . '% OFF';
-                                                        ?>
+                                                    <div class="d-flex justify-content-left align-items-left gap-1">
+                                                        <span class="text-dark fw-semibold h6" style="margin-bottom:0px">₹<?php echo number_format($product['p_current_price'], 2); ?></span>
                                                     </div>
-                                                <?php endif; ?>
-                                            </div>
-                                            <!-- <div class="button-area p-3 pt-0">
+                                                    <div class="d-flex justify-content-left align-items-left gap-1">
+                                                        <?php if (!empty($product['p_old_price'])): ?>
+                                                            <del>₹<?php echo number_format($product['p_old_price'], 2); ?></del>
+                                                            <div class="cat-product-discount">
+                                                                <?php
+                                                                $discount = (($product['p_old_price'] - $product['p_current_price']) / $product['p_old_price']) * 100;
+                                                                echo round($discount) . '% OFF';
+                                                                ?>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                    <!-- <div class="button-area p-3 pt-0">
                                                 <div class="row g-1 mt-2">
                                                     <div class="col-3"></div>
                                                     <div class="col-7" style="margin-left:-12px"><a href="cart.php" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart" style="text-decoration:none !important"><svg width="18" height="18"><use xlink:href="#cart"></use></svg> Add to Cart</a></div>
                                                     <div class="col-2"></div>
                                                 </div>
                                             </div> -->
+                                            </div>
                                         </div>
-                                    </div>
-                                    </a>
+                                        </a>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             </div>
@@ -265,30 +266,30 @@ if (!empty($topCategories)) {
                     </div>
                 </section>
                 <script>
-              // Initialize Swiper for this category
-              new Swiper('#<?php echo $swiperId; ?>', {
-                  slidesPerView: 1,
-                  spaceBetween: 10,
-                  navigation: {
-                      nextEl: '#<?php echo $swiperId; ?>-next',
-                      prevEl: '#<?php echo $swiperId; ?>-prev',
-                  },
-                  watchOverflow: true, // Automatically disable navigation if not enough slides
-                  breakpoints: {
-                      640: {
-                          slidesPerView: 2,
-                      },
-                      768: {
-                          slidesPerView: 6,
-                      },
-                      1024: {
-                          slidesPerView: 4,
-                      },
-                  },
-              });
-            </script>
+                    // Initialize Swiper for this category
+                    new Swiper('#<?php echo $swiperId; ?>', {
+                        slidesPerView: 1,
+                        spaceBetween: 10,
+                        navigation: {
+                            nextEl: '#<?php echo $swiperId; ?>-next',
+                            prevEl: '#<?php echo $swiperId; ?>-prev',
+                        },
+                        watchOverflow: true, // Automatically disable navigation if not enough slides
+                        breakpoints: {
+                            640: {
+                                slidesPerView: 2,
+                            },
+                            768: {
+                                slidesPerView: 6,
+                            },
+                            1024: {
+                                slidesPerView: 4,
+                            },
+                        },
+                    });
+                </script>
 
-                <?php
+<?php
             }
         } else {
             error_log("Database query failed: " . implode(", ", $statement->errorInfo()));
@@ -299,33 +300,38 @@ if (!empty($topCategories)) {
 <!-- End Display the product -->
 
 <!-- Display the Best selling Product -->
-<?php //require_once('best-selling-homepage.php')?>
+<?php //require_once('best-selling-homepage.php')
+?>
 <!-- End Display the Best selling Product -->
 
 <!-- Display All Brands  -->
-<?php //require_once('brands-homepage.php') ?>
+<?php //require_once('brands-homepage.php') 
+?>
 <!-- End Display All Brands -->
 
 <!-- Display the Featured Products -->
-<?php //require_once('featured-product.php') ?>
+<?php //require_once('featured-product.php') 
+?>
 <!-- End Display the Featured Products -->
 
-  <script src="js/jquery-1.11.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-  <script src="js/plugins.js"></script>
-  <script src="js/script.js"></script>
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+<script src="js/plugins.js"></script>
+<script src="js/script.js"></script>
 
-  <style>
+<style>
     .quote-container .quote {
-    font-size: 42px; /* Slightly smaller quote size */
-    line-height: 1.4; /* Adjust line height for better spacing */
-}
+        font-size: 42px;
+        /* Slightly smaller quote size */
+        line-height: 1.4;
+        /* Adjust line height for better spacing */
+    }
 
-.quote-container .quote .quote-bold {
-    font-size: 45px; /* Bold "Buy" text slightly larger */
-}
+    .quote-container .quote .quote-bold {
+        font-size: 45px;
+        /* Bold "Buy" text slightly larger */
+    }
+</style>
 
-  </style>
-
-  <?php require_once('footer.php');?>
+<?php require_once('footer.php'); ?>

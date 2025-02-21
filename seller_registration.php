@@ -27,6 +27,20 @@ if ($row = mysqli_fetch_assoc($result)) {
     $terms = htmlspecialchars($row['seller_tc']);
 }
 
+function generateUniqueSellerId($conn)
+{
+    $year = date('Y');
+    $stmt = $conn->prepare("SELECT MAX(CAST(SUBSTRING(unique_seller_id, 8) AS UNSIGNED)) as max_id FROM sellers WHERE unique_seller_id LIKE ?");
+    $like_pattern = "SLR{$year}%";
+    $stmt->bind_param("s", $like_pattern);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $max_id = $row['max_id'] ?? 0;
+    $next_id = $max_id + 1;
+    return "SLR{$year}" . str_pad($next_id, 4, '0', STR_PAD_LEFT);
+}
+
 // Process form submission if POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Collect and sanitize input data
@@ -77,13 +91,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $hashed_password = password_hash($seller_password, PASSWORD_DEFAULT);
 
             // Insert seller data into `sellers` table
+            $stmt = $conn->prepare("INSERT INTO sellers (seller_name, seller_cname, seller_email, seller_phone, seller_gst, seller_address, seller_state, seller_city, seller_zipcode, seller_password, seller_status, seller_verification_token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $unique_seller_id = generateUniqueSellerId($conn);
             // Generate a unique verification token
             $verification_token = bin2hex(random_bytes(32));
-
-            $stmt = $conn->prepare("INSERT INTO sellers (seller_name, seller_cname, seller_email, seller_phone, seller_gst, seller_address, seller_state, seller_city, seller_zipcode, seller_password, seller_status, seller_verification_token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param("ssssssssssss", $seller_name, $seller_cname, $seller_email, $seller_phone, $seller_gst, $seller_address, $seller_state, $seller_city, $seller_zipcode, $hashed_password, $seller_status, $verification_token);
 
             if ($stmt->execute()) {
+                $seller_id = $stmt->insert_id;
+
+                // Update the seller record with the unique seller ID
+                $update_stmt = $conn->prepare("UPDATE sellers SET unique_seller_id = ? WHERE seller_id = ?");
+                $update_stmt->bind_param("si", $unique_seller_id, $seller_id);
+                $update_stmt->execute();
+                $update_stmt->close();
+
                 // Insert login credentials into `user_login` table
                 $stmt_login = $conn->prepare("INSERT INTO user_login (user_name, user_email, user_password, user_role) VALUES (?, ?, ?, ?)");
                 $user_role = 'seller';
@@ -132,6 +154,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <p>For any assistance, feel free to reach out to our support team.</p>
                                 </div>
                             </div>";
+                        $mail->Body .= "<p>Your unique seller ID is: <strong>$unique_seller_id</strong></p>";
                         $mail->send();
                     } catch (Exception $e) {
                         error_log("Email error: " . $mail->ErrorInfo);
@@ -152,6 +175,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -315,6 +339,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -380,6 +405,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -428,6 +454,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="registration-wrapper">
@@ -552,7 +579,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <script src="https://kit.fontawesome.com/dbb791f861.js" crossorigin="anonymous"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('.registration-form');
             const inputs = form.querySelectorAll('input, textarea');
 
@@ -571,7 +598,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 let isValid = true;
                 let errorMessage = '';
 
-                switch(input.id) {
+                switch (input.id) {
                     case 'seller_gst':
                         isValid = validateGST(input.value);
                         errorMessage = 'Invalid GST Number format';
@@ -608,7 +635,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 return phoneRegex.test(phoneNumber);
             }
 
-            form.addEventListener('submit', function (event) {
+            form.addEventListener('submit', function(event) {
                 let hasError = false;
                 inputs.forEach(input => {
                     validateInput(input);
@@ -630,5 +657,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     </script>
 </body>
+
 </html>
 <?php include 'footer.php'; ?>

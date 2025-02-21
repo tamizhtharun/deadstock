@@ -101,7 +101,7 @@ foreach ($result as $row) {
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label">Existing Photo</label>
 							<div class="col-sm-9" style="padding-top:5px">
-								<img src="../assets/uploads/sliders/<?php echo $photo; ?>" alt="Slider Photo" style="width:400px;">
+								<img src="../assets/uploads/sliders/<?php echo $photo; ?>" alt="Slider Photo" class="responsive-img">
 							</div>
 						</div>
 						<div class="form-group">

@@ -108,7 +108,8 @@ if (isset($_POST['reject_all'])) {
                                                         t5.brand_id,
                                                         t5.brand_name,
                                                         t6.seller_id,  -- Seller ID from tbl_sellers
-                                                        t6.seller_name -- Seller Name from tbl_sellers
+                                                        t6.seller_name, -- Seller Name from tbl_sellers
+                                                        t6.unique_seller_id
                                                     FROM tbl_product t1
                                                     LEFT JOIN tbl_end_category t2 ON t1.ecat_id = t2.ecat_id
                                                     LEFT JOIN tbl_mid_category t3 ON t1.mcat_id = t3.mcat_id

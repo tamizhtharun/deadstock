@@ -62,16 +62,17 @@ if (isset($_POST['reject_all'])) {
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
-                <div class="box-header">
-                    <h3 class="box-title"></h3>
-                    <div class="box-tools pull-right">
-                        <form method="POST" action="">
-                            <input type="hidden" name="seller_id" value="<?php echo $seller_id; ?>">
-                            <button type="submit" name="approve_all" class="btn btn-success btn-xs">Approve All</button>
-                            <button type="submit" name="reject_all" class="btn btn-danger btn-xs">Reject All</button>
-                        </form>
-                    </div>
+            <div class="box-header">
+                <h3 class="box-title"></h3>
+                <div class="box-tools pull-right">
+                    <form method="POST" action="" class="d-flex flex-wrap gap-2 justify-content-end">
+                        <input type="hidden" name="seller_id" value="<?php echo $seller_id; ?>">
+                        <button type="submit" name="approve_all" class="btn btn-success btn-xs">Approve All</button>
+                        <button type="submit" name="reject_all" class="btn btn-danger btn-xs">Reject All</button>
+                    </form>
                 </div>
+            </div>
+
                 <div class="box-body table-responsive">
                     <table id="example1" class="table table-bordered table-hover table-striped">
                         <thead class="thead-dark">
