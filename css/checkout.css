@@ -710,8 +710,8 @@
        flex-grow: 1;
        margin: 0 10px;
    }
-   
-.razorpay-img{
-    width: 140px;
-    height: 70px;
-  }
+
+   .razorpay-img {
+       width: 120px;
+       height: 60px;
+   }

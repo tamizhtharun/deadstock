@@ -1,5 +1,49 @@
 <?php require_once('header.php'); ?>
 
+<?php
+// Check if approve_all button is clicked
+if (isset($_POST['approve_all'])) {
+    try {
+        $stmt = $pdo->prepare("UPDATE tbl_product SET p_is_approve = 1");
+        $stmt->execute();
+        echo '<script>
+            document.getElementById("message").style.backgroundColor = "green";
+            document.getElementById("message").innerHTML = "Success! All products have been Approved.";
+            document.getElementById("message").style.display = "block";
+            setTimeout(function(){ document.getElementById("message").style.display = "none"; }, 1500);
+        </script>';
+    } catch (PDOException $e) {
+        echo '<script>
+            document.getElementById("message").style.backgroundColor = "red";
+            document.getElementById("message").innerHTML = "Error: ' . $e->getMessage() . '";
+            document.getElementById("message").style.display = "block";
+            setTimeout(function(){ document.getElementById("message").style.display = "none"; }, 2000);
+        </script>';
+    }
+}
+
+// Check if reject_all button is clicked
+if (isset($_POST['reject_all'])) {
+    try {
+        $stmt = $pdo->prepare("UPDATE tbl_product SET p_is_approve = 0");
+        $stmt->execute();
+        echo '<script>
+            document.getElementById("message").style.backgroundColor = "red";
+            document.getElementById("message").innerHTML = "Success! All products have been Rejected.";
+            document.getElementById("message").style.display = "block";
+            setTimeout(function(){ document.getElementById("message").style.display = "none"; }, 2000);
+        </script>';
+    } catch (PDOException $e) {
+        echo '<script>
+            document.getElementById("message").style.backgroundColor = "red";
+            document.getElementById("message").innerHTML = "Error: ' . $e->getMessage() . '";
+            document.getElementById("message").style.display = "block";
+            setTimeout(function(){ document.getElementById("message").style.display = "none"; }, 2000);
+        </script>';
+    }
+}
+?>
+
 <section class="content-header">
     <div class="content-header-left">
         <h1>View Products</h1>
@@ -12,6 +56,13 @@
             <div class="box box-info">
                 <div class="box-header">
                     <h3 class="box-title"></h3>
+                    <div class="box-tools pull-right">
+                        <form method="POST" action="">
+                            <input type="hidden" name="seller_id" value="<?php echo $seller_id; ?>">
+                            <button type="submit" name="approve_all" class="btn btn-success btn-xs">Approve All</button>
+                            <button type="submit" name="reject_all" class="btn btn-danger btn-xs">Reject All</button>
+                        </form>
+                    </div>
                 </div>
                 <div class="box-body table-responsive">
                     <table id="example1" class="table table-bordered table-hover table-striped">
@@ -27,8 +78,9 @@
                                 <th>Featured?</th>
                                 <th>Category</th>
                                 <th>Product Catalogue</th>
-                                <th>Approval Status</th>
                                 <th>Seller ID</th>
+                                <th>Approval Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -86,11 +138,20 @@
                                     </td>
                                     <td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?></td>
                                     <td><a href="../assets/uploads/product-catalogues/<?php echo $row['product_catalogue'] ?>">View catalogue</a> </td>
-                                    <td><?php echo $row['p_is_approve'] == 1 ? '<span class="badge badge-success" style="background-color:green;">Approved</span>' : '<span class="badge badge-danger" style="background-color:red;">Rejected</span>'; ?></td>
                                     <td><?php echo $row['seller_name']; ?> (ID: <?php echo $row['seller_id']; ?>)
                                         <div>
                                             <a href="javascript:void(0);" onclick="openSellerModal(<?php echo $row['seller_id']; ?>)">View Seller Details</a>
                                         </div>
+                                    </td>
+                                    <td><?php echo $row['p_is_approve'] == 1 ? '<span class="badge badge-success" style="background-color:green;">Approved</span>' : '<span class="badge badge-danger" style="background-color:red;">Rejected</span>'; ?></td>
+                                    <td>
+                                        <?php if ($row['p_is_approve'] == 1) { ?>
+                                            <a href="seller-product-approve-status.php?id=<?php echo $row['id']; ?>&status=0"
+                                                class="btn btn-warning btn-xs">Reject</a>
+                                        <?php } else { ?>
+                                            <a href="seller-product-approve-status.php?id=<?php echo $row['id']; ?>&status=1"
+                                                class="btn btn-success btn-xs">Approve</a>
+                                        <?php } ?>
                                     </td>
                                 </tr>
                             <?php

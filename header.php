@@ -169,7 +169,7 @@ unset($_SESSION['success_message']);
                                 onclick="window.location.href='notification.php';">
                                 <i class="fas fa-bell"></i>
                                 <span class="ds-notification-badge"
-                                    id="notification-count"><?php echo $notification_count; ?></span>
+                                    id="notification-count"><?php echo ($notification_count > 5) ? '5+' : $notification_count; ?></span>
                             </button>
                             </a>
 
