@@ -11,27 +11,22 @@ foreach ($result as $row) {
     $favicon = $row['favicon'];
     $quote_text = $row['quote_text'];
     $quote_span_text = $row['quote_span_text'];
+
 }
+$user_id = $_SESSION['user_session']['id'] ?? null;
 ?>
 <?php
 // Check if the 'showLoginModal' query parameter exists
 if (isset($_GET['showLoginModal']) && $_GET['showLoginModal'] == 'true') {
-    echo "<script>
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => { $('#staticBackdrop').modal('show'); }, 500);
-        });
-    </script>";
+    echo "<script>window.addEventListener('DOMContentLoaded', function() { $('#staticBackdrop').modal('show'); });</script>";
 }
-
-// Store and unset the error message
 $error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : null;
 unset($_SESSION['error_message']);
 
-// Store the success message but do NOT show an alert
 $success_message = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
 unset($_SESSION['success_message']);
-?>
 
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -48,15 +43,12 @@ unset($_SESSION['success_message']);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/responsive.css">
     <link rel="stylesheet" href="./css/header.css">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
 
     <!-- Link Disply the featured categories in home page slider  -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
@@ -150,22 +142,9 @@ unset($_SESSION['success_message']);
                         <button class="ds-icon-button cart-button" title="Shopping Cart"
                             onclick="window.location.href='cart.php';">
                             <i class="fas fa-shopping-cart"></i>
-                            <span class="ds-cart-badge" id="cart-count">
-                                <?php
-                                $user_id = $_SESSION['user_session']['id'] ?? null;
-                                $cart_count = 0;
-
-                                if ($user_id) {
-                                    $cart_query = mysqli_query($conn, "SELECT * FROM tbl_cart WHERE user_id = '$user_id'");
-                                    $cart_count = mysqli_num_rows($cart_query);
-                                }
-                                echo $cart_count;
-                                ?>
-                            </span>
-                        </button>
-
-
-                        <!-- Notification Icon (Not shown in notification.php) -->
+                            <span class="ds-cart-badge" id="cart-count" style="display: none;"></span>
+</button>
+<!-- Notification Icon (Not shown in notification.php) -->
                         <?php
                         $notify_query = "SELECT COUNT(*) AS notification_count FROM notifications WHERE recipient_id = $user_id AND is_read = 0";
                         $query_result = mysqli_query($conn, $notify_query);
@@ -177,9 +156,13 @@ unset($_SESSION['success_message']);
                             <button class="notification-trigger ds-icon-button" title="Notifications"
                                 onclick="window.location.href='notification.php';">
                                 <i class="fas fa-bell"></i>
+                                <?php if ($notification_count > 0): ?>
                                 <span class="ds-notification-badge"
-                                    id="notification-count"><?php echo ($notification_count > 5) ? '5+' : $notification_count; ?></span>
-                            </button>
+                                    id="notification-count">
+                                    <?php echo ($notification_count > 5) ? '5+' : $notification_count; ?>
+                                </span>
+                            <?php endif; ?>
+</button>
                             </a>
 
                         <?php endif; ?>
@@ -277,7 +260,8 @@ unset($_SESSION['success_message']);
                     <div id="modal-message-container"></div>
                     <!-- Error Message HTML -->
                     <?php if (!empty($error_message) || !empty($success_message)): ?>
-                        <div class="premium-alert <?php echo !empty($success_message) ? 'alert-success' : 'alert-error'; ?>" id="premium-alert">
+                        <div class="premium-alert <?php echo !empty($success_message) ? 'alert-success' : 'alert-error'; ?>"
+                            id="premium-alert">
                             <div class="alert-content">
                                 <div class="alert-icon">
                                     <?php if (!empty($success_message)): ?>
@@ -296,7 +280,8 @@ unset($_SESSION['success_message']);
                                         </svg>
                                     <?php endif; ?>
                                 </div>
-                                <span class="alert-message"><?php echo htmlspecialchars(!empty($success_message) ? $success_message : $error_message); ?></span>
+                                <span
+                                    class="alert-message"><?php echo htmlspecialchars(!empty($success_message) ? $success_message : $error_message); ?></span>
                                 <button class="alert-close" onclick="closeAlert()">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -390,8 +375,7 @@ unset($_SESSION['success_message']);
         </div>
     </div>
 
-
-    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
@@ -400,17 +384,15 @@ unset($_SESSION['success_message']);
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
     <script>
-        $(document).ready(function() {
-            $("#search-bar").on("keyup", function() {
+        $(document).ready(function () {
+            $("#search-bar").on("keyup", function () {
                 let query = $(this).val();
                 if (query.length > 0) {
                     $.ajax({
                         url: "search_suggestions.php",
                         method: "GET",
-                        data: {
-                            search_text: query
-                        },
-                        success: function(data) {
+                        data: { search_text: query },
+                        success: function (data) {
                             $("#suggestions-list").html(data).fadeIn();
                         }
                     });
@@ -419,56 +401,60 @@ unset($_SESSION['success_message']);
                 }
             });
 
-            $(document).on("click", ".suggestion-item", function() {
+            $(document).on("click", ".suggestion-item", function () {
                 $("#search-bar").val($(this).text());
                 $("#suggestions-list").fadeOut();
             });
 
-            $(document).on("click", function(e) {
+            $(document).on("click", function (e) {
                 if (!$(e.target).closest(".ds-search-wrapper").length) {
                     $("#suggestions-list").fadeOut();
                 }
             });
         });
 
-        window.addEventListener('pageshow', function(event) {
+        window.addEventListener('pageshow', function (event) {
             if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
                 document.getElementById('search-bar').value = '';
                 document.getElementById('suggestions-list').style.display = 'none'; // Hide suggestions
             }
         });
-
         function updateBadgeCount() {
             const unreadCount = notifications.filter(n => !n.isRead).length;
             const badge = document.getElementById('notificationBadge');
             badge.textContent = unreadCount;
             badge.style.display = unreadCount > 0 ? 'block' : 'none';
         }
-
         function updateCartBadge() {
+    $.ajax({
+        url: 'cart_count.php', // Fetch only cart count
+        method: 'GET',
+        success: function (response) {
+            var cartBadge = $('.ds-cart-badge');
 
-            $.ajax({
-                url: 'header.php',
-                method: 'GET',
-                dataType: 'html',
-                success: function(data) {
-                    var updatedCartCount = $(data).find('.ds-cart-badge').text();
-
-                    $('.ds-cart-badge').text(updatedCartCount);
-                },
-                error: function() {
-                    console.error('Failed to fetch cart count.');
-                }
-            });
+            if ($.trim(response) === "") {
+                cartBadge.hide(); // Hide if 0
+            } else {
+                cartBadge.text(response).show(); // Update and show
+            }
+        },
+        error: function () {
+            console.error('Failed to fetch cart count.');
         }
-        updateCartBadge();
-        setInterval(updateCartBadge, 5000);
+    });
+}
+
+// Fetch on page load and refresh every 5 seconds
+$(document).ready(function() {
+    updateCartBadge();
+    setInterval(updateCartBadge, 5000);
+});
 
         document.addEventListener('DOMContentLoaded', () => {
             const modalElement = document.getElementById('staticBackdrop');
             let modal = new bootstrap.Modal(modalElement, {
-                backdrop: 'true', // Enable closing when clicking outside (set to 'true')
-                keyboard: false // Prevent closing when pressing ESC
+                backdrop: 'true',  // Enable closing when clicking outside (set to 'true')
+                keyboard: false    // Prevent closing when pressing ESC
             });
 
             // Show the modal if there's an error message
@@ -476,12 +462,13 @@ unset($_SESSION['success_message']);
             if (errorMessage) {
                 modal.show(); // Show the modal with error message
             }
+
             // Handle cleanup when the modal is hidden
             modalElement.addEventListener('hidden.bs.modal', () => {
                 // Remove the modal backdrop manually
                 const backdrop = document.querySelector('.modal-backdrop');
                 if (backdrop) {
-                    backdrop.remove(); // Remove the backdrop when modal is closed
+                    backdrop.remove();  // Remove the backdrop when modal is closed
                 }
 
                 // Reset the modal-open class and body styles
@@ -564,19 +551,19 @@ unset($_SESSION['success_message']);
 `;
         document.head.appendChild(style);
 
-        document.getElementById('search-bar').addEventListener('focus', function() {
-            fetchSuggestions(''); // Empty string to show top 5 most viewed products immediately
+        document.getElementById('search-bar').addEventListener('focus', function () {
+            fetchSuggestions('');  // Empty string to show top 5 most viewed products immediately
         });
 
         // Function to fetch suggestions from the server
         function fetchSuggestions(searchText) {
             const suggestionsList = document.getElementById('suggestions-list');
-            suggestionsList.style.display = 'block'; // Ensure the suggestions dropdown is visible
+            suggestionsList.style.display = 'block';  // Ensure the suggestions dropdown is visible
             const xhr = new XMLHttpRequest();
             xhr.open('GET', 'search_automatic.php?search_text=' + searchText, true);
-            xhr.onreadystatechange = function() {
+            xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    suggestionsList.innerHTML = xhr.responseText; // Populate the suggestion list with response
+                    suggestionsList.innerHTML = xhr.responseText;  // Populate the suggestion list with response
                 }
             };
             xhr.send();
