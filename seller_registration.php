@@ -90,11 +90,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Hash the password for security
             $hashed_password = password_hash($seller_password, PASSWORD_DEFAULT);
 
+
+            // Generate a unique verification token
+            $verification_token = bin2hex(random_bytes(32));
             // Insert seller data into `sellers` table
             $stmt = $conn->prepare("INSERT INTO sellers (seller_name, seller_cname, seller_email, seller_phone, seller_gst, seller_address, seller_state, seller_city, seller_zipcode, seller_password, seller_status, seller_verification_token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $unique_seller_id = generateUniqueSellerId($conn);
-            // Generate a unique verification token
-            $verification_token = bin2hex(random_bytes(32));
             $stmt->bind_param("ssssssssssss", $seller_name, $seller_cname, $seller_email, $seller_phone, $seller_gst, $seller_address, $seller_state, $seller_city, $seller_zipcode, $hashed_password, $seller_status, $verification_token);
 
             if ($stmt->execute()) {

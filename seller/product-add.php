@@ -472,10 +472,9 @@ if (isset($_POST['form1'])) {
 										$statement->execute();
 										$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 										foreach ($result as $row) {
-											?>
-											<option value="<?php echo $row['tcat_id']; ?>"><?php echo $row['tcat_name']; ?>
-											</option>
-											<?php
+										?>
+											<option value="<?php echo $row['tcat_id']; ?>" <?php if (isset($_POST['tcat_id']) && $_POST['tcat_id'] == $row['tcat_id']) echo 'selected'; ?>><?php echo $row['tcat_name']; ?></option>
+										<?php
 										}
 										?>
 									</select>
@@ -487,43 +486,78 @@ if (isset($_POST['form1'])) {
 								<div class="col-sm-4">
 									<select name="mcat_id" class="form-control select2 mid-cat">
 										<option value="">Select Mid Level Category</option>
+										<?php
+										// This is where you need to add code to populate mid-level categories
+										// based on the selected top-level category
+										if (isset($_POST['tcat_id']) && !empty($_POST['tcat_id'])) {
+											$statement = $pdo->prepare("SELECT * FROM tbl_mid_category 
+                                           WHERE tcat_id = ? 
+                                           ORDER BY mcat_name ASC");
+											$statement->execute(array($_POST['tcat_id']));
+											$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+											foreach ($result as $row) {
+										?>
+												<option value="<?php echo $row['mcat_id']; ?>"
+													<?php if (isset($_POST['mcat_id']) && $_POST['mcat_id'] == $row['mcat_id']) echo 'selected'; ?>>
+													<?php echo $row['mcat_name']; ?>
+												</option>
+										<?php
+											}
+										}
+										?>
 									</select>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="" class="col-sm-3 control-label">End Level Category Name</label>
+								<label for="" class="col-sm-3 control-label">End Level Category</label>
 								<div class="col-sm-4">
 									<select name="ecat_id" class="form-control select2 end-cat">
 										<option value="">Select End Level Category</option>
+										<?php
+										if (isset($_POST['mcat_id']) && !empty($_POST['mcat_id'])) {
+											$statement = $pdo->prepare("SELECT * FROM tbl_end_category WHERE mcat_id = ? ORDER BY ecat_name ASC");
+											$statement->execute([$_POST['mcat_id']]);
+											$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+											foreach ($result as $row) {
+										?>
+												<option value="<?php echo $row['ecat_id']; ?>"
+													<?php if (isset($_POST['ecat_id']) && $_POST['ecat_id'] == $row['ecat_id']) echo 'selected'; ?>>
+													<?php echo $row['ecat_name']; ?>
+												</option>
+										<?php
+											}
+										}
+										?>
 									</select>
 								</div>
 							</div>
+
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Brand <span>*</span></label>
 								<div class="col-sm-4">
 									<select name="product_brand" class="form-control select2 brand-cat">
 										<option value="">Select Brand</option>
-										<!-- Add options for brands here -->
 										<?php
 										$seller_id = $_SESSION['seller_session']['seller_id'];
 										$statement = $pdo->prepare("SELECT sb.brand_id,
-																b.brand_name
-																FROM seller_brands sb
-																 JOIN tbl_brands b ON sb.brand_id = b.brand_id
-																 WHERE sb.seller_id = :seller_id");
+                                    b.brand_name
+                                    FROM seller_brands sb
+                                     JOIN tbl_brands b ON sb.brand_id = b.brand_id
+                                     WHERE sb.seller_id = :seller_id");
 										$statement->bindParam(':seller_id', $seller_id);
 										$statement->execute();
 										$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 										foreach ($result as $row) {
-											?>
-											<option value="<?php echo $row['brand_id']; ?>">
+										?>
+											<option value="<?php echo $row['brand_id']; ?>" <?php if (isset($_POST['product_brand']) && $_POST['product_brand'] == $row['brand_id']) echo 'selected'; ?>>
 												<?php echo $row['brand_name']; ?>
 											</option>
-											<?php
+										<?php
 										}
 										?>
-										<option value="Others">Others</option>
+										<option value="Others" <?php if (isset($_POST['product_brand']) && $_POST['product_brand'] == 'Others') echo 'selected'; ?>>Others</option>
 									</select>
+
 									<!-- <input type="text" name="other_brand" class="form-control" id="other-brand" style="margin-top:10px;" placeholder="Please specify brand"> -->
 								</div>
 							</div>
@@ -552,57 +586,50 @@ if (isset($_POST['form1'])) {
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon p">P</div>
 												<div class="radio-group">
-
-													<label><input type="radio" name="P" value="1"> 1</label>
-													<label><input type="radio" name="P" value="2"> 2</label>
+													<label><input type="radio" name="P" value="1" <?php if (isset($_POST['P']) && $_POST['P'] == '1') echo 'checked'; ?>> 1</label>
+													<label><input type="radio" name="P" value="2" <?php if (isset($_POST['P']) && $_POST['P'] == '2') echo 'checked'; ?>> 2</label>
 												</div>
 											</div>
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon m">M</div>
 												<div class="radio-group">
-
-													<label><input type="radio" name="M" value="1"> 1</label>
-													<label><input type="radio" name="M" value="2"> 2</label>
+													<label><input type="radio" name="M" value="1" <?php if (isset($_POST['M']) && $_POST['M'] == '1') echo 'checked'; ?>> 1</label>
+													<label><input type="radio" name="M" value="2" <?php if (isset($_POST['M']) && $_POST['M'] == '2') echo 'checked'; ?>> 2</label>
 												</div>
 											</div>
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon k">K</div>
 												<div class="radio-group">
-
-													<label><input type="radio" name="K" value="1"> 1</label>
-													<label><input type="radio" name="K" value="2"> 2</label>
+													<label><input type="radio" name="K" value="1" <?php if (isset($_POST['K']) && $_POST['K'] == '1') echo 'checked'; ?>> 1</label>
+													<label><input type="radio" name="K" value="2" <?php if (isset($_POST['K']) && $_POST['K'] == '2') echo 'checked'; ?>> 2</label>
 												</div>
 											</div>
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon n">N</div>
 												<div class="radio-group">
-
-													<label><input type="radio" name="N" value="1"> 1</label>
-													<label><input type="radio" name="N" value="2"> 2</label>
+													<label><input type="radio" name="N" value="1" <?php if (isset($_POST['N']) && $_POST['N'] == '1') echo 'checked'; ?>> 1</label>
+													<label><input type="radio" name="N" value="2" <?php if (isset($_POST['N']) && $_POST['N'] == '2') echo 'checked'; ?>> 2</label>
 												</div>
 											</div>
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon s">S</div>
 												<div class="radio-group">
-
-													<label><input type="radio" name="S" value="1"> 1</label>
-													<label><input type="radio" name="S" value="2"> 2</label>
+													<label><input type="radio" name="S" value="1" <?php if (isset($_POST['S']) && $_POST['S'] == '1') echo 'checked'; ?>> 1</label>
+													<label><input type="radio" name="S" value="2" <?php if (isset($_POST['S']) && $_POST['S'] == '2') echo 'checked'; ?>> 2</label>
 												</div>
 											</div>
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon h">H</div>
 												<div class="radio-group">
-
-													<label><input type="radio" name="H" value="1"> 1</label>
-													<label><input type="radio" name="H" value="2"> 2</label>
+													<label><input type="radio" name="H" value="1" <?php if (isset($_POST['H']) && $_POST['H'] == '1') echo 'checked'; ?>> 1</label>
+													<label><input type="radio" name="H" value="2" <?php if (isset($_POST['H']) && $_POST['H'] == '2') echo 'checked'; ?>> 2</label>
 												</div>
 											</div>
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon o">O</div>
 												<div class="radio-group">
-
-													<label><input type="radio" name="O" value="1"> 1</label>
-													<label><input type="radio" name="O" value="2"> 2</label>
+													<label><input type="radio" name="O" value="1" <?php if (isset($_POST['O']) && $_POST['O'] == '1') echo 'checked'; ?>> 1</label>
+													<label><input type="radio" name="O" value="2" <?php if (isset($_POST['O']) && $_POST['O'] == '2') echo 'checked'; ?>> 2</label>
 												</div>
 											</div>
 										</div>
@@ -699,9 +726,7 @@ if (isset($_POST['form1'])) {
 								<label for="" class="col-sm-3 control-label">Description</label>
 								<div class="col-sm-8">
 
-									<textarea type="text" name="p_description"
-										value="<?php echo isset($_POST['p_description']) ? htmlspecialchars($_POST['p_description']) : ''; ?>"
-										required class="form-control"></textarea>
+									<textarea name="p_description" class="form-control"><?php echo isset($_POST['p_description']) ? htmlspecialchars($_POST['p_description']) : ''; ?></textarea>
 								</div>
 							</div>
 
@@ -727,50 +752,52 @@ if (isset($_POST['form1'])) {
 
 
 	<script>
-		$(document).ready(function () {
-    // Initial Select2 initialization
-    $('.select2').select2({
-        width: '100%',
-        closeOnSelect: true
-    });
+		$(document).ready(function() {
+			// Initial Select2 initialization
+			$('.select2').select2({
+				width: '100%',
+				closeOnSelect: true
+			});
 
-    // When mid-category changes
-    $(document).on('change', '.mid-cat', function(e) {
-        var mid_cat_id = $(this).val();
-        var $endCat = $('.end-cat');
-        
-        $.ajax({
-            url: "get_end_category.php",
-            type: "POST",
-            data: {id: mid_cat_id},
-            success: function(response) {
-                // Destroy existing select2 instance
-                $endCat.select2('destroy');
-                
-                // Update the HTML
-                $endCat.html(response);
-                
-                // Check for real options (excluding the default option)
-                var hasOptions = $endCat.find('option[value!=""]').length > 0;
-                
-                // Set disabled state based on options
-                $endCat.prop('disabled', !hasOptions);
-                
-                // Reinitialize select2
-                $endCat.select2({
-                    width: '100%'
-                });
-            }
-        });
-    });
+			// When mid-category changes
+			$(document).on('change', '.mid-cat', function(e) {
+				var mid_cat_id = $(this).val();
+				var $endCat = $('.end-cat');
 
-    // Document click handler for closing dropdowns
-    $(document).on('click', function(e) {
-        if (!$(e.target).closest('.select2-container').length) {
-            $('.select2').select2('close');
-        }
-    });
-});
+				$.ajax({
+					url: "get_end_category.php",
+					type: "POST",
+					data: {
+						id: mid_cat_id
+					},
+					success: function(response) {
+						// Destroy existing select2 instance
+						$endCat.select2('destroy');
+
+						// Update the HTML
+						$endCat.html(response);
+
+						// Check for real options (excluding the default option)
+						var hasOptions = $endCat.find('option[value!=""]').length > 0;
+
+						// Set disabled state based on options
+						$endCat.prop('disabled', !hasOptions);
+
+						// Reinitialize select2
+						$endCat.select2({
+							width: '100%'
+						});
+					}
+				});
+			});
+
+			// Document click handler for closing dropdowns
+			$(document).on('click', function(e) {
+				if (!$(e.target).closest('.select2-container').length) {
+					$('.select2').select2('close');
+				}
+			});
+		});
 	</script>
 </body>
 

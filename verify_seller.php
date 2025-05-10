@@ -1,4 +1,5 @@
 <?php
+//verify_seller
 require 'db_connection.php';
 
 if (isset($_GET['token'])) {
@@ -21,7 +22,7 @@ if (isset($_GET['token'])) {
         }
         $stmt_update->close();
     }
-    
+
     // Redirect to index.php if the token is invalid or already verified
     header("Location: index.php");
     exit();
@@ -34,4 +35,3 @@ if (isset($_GET['token'])) {
 }
 
 $conn->close();
-?>
