@@ -111,6 +111,115 @@ function dummyIfEmpty($value, $fieldName) {
     return htmlspecialchars($value);
 }
 
+// Function to convert number to words (Indian currency format)
+function numberToWords($number) {
+    $hyphen      = '-';
+    $conjunction = ' and ';
+    $separator   = ', ';
+    $negative    = 'negative ';
+    $decimal     = ' point ';
+    $dictionary  = [
+        0                   => 'zero',
+        1                   => 'one',
+        2                   => 'two',
+        3                   => 'three',
+        4                   => 'four',
+        5                   => 'five',
+        6                   => 'six',
+        7                   => 'seven',
+        8                   => 'eight',
+        9                   => 'nine',
+        10                  => 'ten',
+        11                  => 'eleven',
+        12                  => 'twelve',
+        13                  => 'thirteen',
+        14                  => 'fourteen',
+        15                  => 'fifteen',
+        16                  => 'sixteen',
+        17                  => 'seventeen',
+        18                  => 'eighteen',
+        19                  => 'nineteen',
+        20                  => 'twenty',
+        30                  => 'thirty',
+        40                  => 'forty',
+        50                  => 'fifty',
+        60                  => 'sixty',
+        70                  => 'seventy',
+        80                  => 'eighty',
+        90                  => 'ninety',
+        100                 => 'hundred',
+        1000                => 'thousand',
+        100000              => 'lakh',
+        10000000            => 'crore'
+    ];
+
+    if (!is_numeric($number)) {
+        return false;
+    }
+
+    if (($number >= 0 && (int) $number < 0) || (int) $number < 0 - PHP_INT_MAX) {
+        // overflow
+        trigger_error(
+            'numberToWords only accepts numbers between -' . PHP_INT_MAX . ' and ' . PHP_INT_MAX,
+            E_USER_WARNING
+        );
+        return false;
+    }
+
+    if ($number < 0) {
+        return $negative . numberToWords(abs($number));
+    }
+
+    $string = $fraction = null;
+
+    if (strpos($number, '.') !== false) {
+        list($number, $fraction) = explode('.', $number);
+    }
+
+    switch (true) {
+        case $number < 21:
+            $string = $dictionary[$number];
+            break;
+        case $number < 100:
+            $tens   = ((int) ($number / 10)) * 10;
+            $units  = $number % 10;
+            $string = $dictionary[$tens];
+            if ($units) {
+                $string .= $hyphen . $dictionary[$units];
+            }
+            break;
+        case $number < 1000:
+            $hundreds  = (int) ($number / 100);
+            $remainder = $number % 100;
+            $string = $dictionary[$hundreds] . ' ' . $dictionary[100];
+            if ($remainder) {
+                $string .= $conjunction . numberToWords($remainder);
+            }
+            break;
+        default:
+            $baseUnit = pow(10, floor(log($number, 10) / 2) * 2);
+            $numBaseUnits = (int) ($number / $baseUnit);
+            $remainder = $number % $baseUnit;
+            $string = numberToWords($numBaseUnits) . ' ' . $dictionary[$baseUnit];
+            if ($remainder) {
+                $string .= $remainder < 100 ? $conjunction : $separator;
+                $string .= numberToWords($remainder);
+            }
+            break;
+    }
+
+    if (null !== $fraction && is_numeric($fraction)) {
+        $string .= $decimal;
+        $words = [];
+        foreach (str_split((string) $fraction) as $number) {
+            $words[] = $dictionary[$number];
+        }
+        $string .= implode(' ', $words);
+    }
+
+    return ucfirst($string);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -118,126 +227,119 @@ function dummyIfEmpty($value, $fieldName) {
     <meta charset="UTF-8">
     <title>Invoice - Order #<?php echo htmlspecialchars($order['order_id']); ?></title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .invoice-box { max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; }
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f7f7f7; }
+        .invoice-box { max-width: 900px; margin: auto; padding: 30px; border: 1px solid #eee; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.15); }
         h1, h2, h3 { margin-bottom: 10px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         table, th, td { border: 1px solid #ddd; }
-        th, td { padding: 8px; text-align: left; }
+        th, td { padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
         .text-right { text-align: right; }
-        .download-button { margin-bottom: 20px; padding: 8px 16px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .download-button { margin-bottom: 20px; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
         .download-button:hover { background-color: #0056b3; }
+        .section-title { background-color: #007bff; color: white; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
         .note { color: red; font-style: italic; }
+        .flex-container { display: flex; justify-content: space-between; flex-wrap: wrap; }
+        .flex-item { flex: 1 1 45%; margin-bottom: 20px; }
+        .no-border { border: none !important; }
     </style>
 </head>
 <body>
 <div class="invoice-box">
     <button class="download-button" onclick="downloadInvoice()">Download Invoice</button>
-    <h1>Invoice</h1>
-    <h3>Order Details (<?php echo ucfirst($order_type); ?> Order)</h3>
-    <table>
-        <tr>
-            <th>Order ID</th>
-            <td><?php echo dummyIfEmpty($order['order_id'], 'Order ID'); ?></td>
-        </tr>
-        <tr>
-            <th>Product</th>
-            <td><?php echo dummyIfEmpty($order['p_name'], 'Product Name'); ?></td>
-        </tr>
-        <tr>
-            <th>Quantity</th>
-            <td><?php echo dummyIfEmpty($order['quantity'], 'Quantity'); ?></td>
-        </tr>
-        <tr>
-            <th>Price</th>
-            <td>₹<?php echo dummyIfEmpty(number_format($order['price'], 2), 'Price'); ?></td>
-        </tr>
-        <tr>
-            <th>Status</th>
-            <td><?php echo dummyIfEmpty(ucfirst($order['order_status']), 'Order Status'); ?></td>
-        </tr>
-        <tr>
-            <th>Processing Time</th>
-            <td><?php echo dummyIfEmpty($order['processing_time'], 'Processing Time'); ?></td>
-        </tr>
-        <tr>
-            <th>Tracking ID</th>
-            <td><?php echo dummyIfEmpty($order['tracking_id'], 'Tracking ID'); ?></td>
-        </tr>
-    </table>
+    <h1 style="text-align:center; margin-bottom: 30px;">Tax Invoice</h1>
 
-    <h3>Seller Details</h3>
-    <table>
-        <tr>
-            <th>Seller Name</th>
-            <td><?php echo dummyIfEmpty($order['seller_name'], 'Seller Name'); ?></td>
-        </tr>
-        <tr>
-            <th>Company Name</th>
-            <td><?php echo dummyIfEmpty($order['seller_cname'], 'Seller Company Name'); ?></td>
-        </tr>
-    </table>
-
-    <h3>Customer Details</h3>
-    <table>
-        <tr>
-            <th>Username</th>
-            <td><?php echo dummyIfEmpty($order['username'], 'Username'); ?></td>
-        </tr>
-        <tr>
-            <th>Email</th>
-            <td><?php echo dummyIfEmpty($order['email'], 'Email'); ?></td>
-        </tr>
-        <tr>
-            <th>Phone Number</th>
-            <td><?php echo dummyIfEmpty($order['phone_number'], 'Phone Number'); ?></td>
-        </tr>
-    </table>
-
-    <h3>Delivery Address</h3>
-    <table>
-        <tr>
-            <th>Full Name</th>
-            <td><?php echo dummyIfEmpty($order['full_name'], 'Full Name'); ?></td>
-        </tr>
-        <tr>
-            <th>Phone Number</th>
-            <td><?php echo dummyIfEmpty($order['delivery_phone'], 'Delivery Phone Number'); ?></td>
-        </tr>
-        <tr>
-            <th>Address</th>
-            <td><?php echo dummyIfEmpty($order['address'], 'Address'); ?></td>
-        </tr>
-        <tr>
-            <th>City</th>
-            <td><?php echo dummyIfEmpty($order['city'], 'City'); ?></td>
-        </tr>
-        <tr>
-            <th>State</th>
-            <td><?php echo dummyIfEmpty($order['state'], 'State'); ?></td>
-        </tr>
-        <tr>
-            <th>Pincode</th>
-            <td><?php echo dummyIfEmpty($order['pincode'], 'Pincode'); ?></td>
-        </tr>
-    </table>
-
-    <h3>Payment Information</h3>
-    <table>
-        <tr>
-            <th>PayPal Email</th>
-            <td><?php echo dummyIfEmpty($settings['paypal_email'], 'PayPal Email'); ?></td>
-        </tr>
-        <tr>
-            <th>Bank Details</th>
-            <td><?php echo nl2br(dummyIfEmpty($settings['bank_detail'], 'Bank Details')); ?></td>
-        </tr>
-    </table>
-
-    <h3>Seller Terms and Conditions</h3>
-    <div class="note">
-        <?php echo nl2br(dummyIfEmpty($settings['seller_tc'], 'Seller Terms and Conditions')); ?>
+    <div class="flex-container">
+        <div class="flex-item">
+            <h3 class="section-title">Company Details</h3>
+            <p><strong>Name:</strong> <?php echo dummyIfEmpty($settings['paypal_email'], 'Company Name'); ?></p>
+            <p><strong>Bank Details:</strong><br><?php echo nl2br(dummyIfEmpty($settings['bank_detail'], 'Bank Details')); ?></p>
+            <p><strong>Terms & Conditions:</strong><br><?php echo nl2br(dummyIfEmpty($settings['seller_tc'], 'Terms & Conditions')); ?></p>
+        </div>
+        <div class="flex-item">
+            <h3 class="section-title">Buyer / Shipping Details</h3>
+            <p><strong>Buyer Name:</strong> <?php echo dummyIfEmpty($order['full_name'], 'Buyer Name'); ?></p>
+            <p><strong>Shipping Address:</strong><br>
+                <?php 
+                if (!empty($order['address'])) {
+                    echo nl2br(htmlspecialchars($order['address'] . ", " . $order['city'] . ", " . $order['state'] . " - " . $order['pincode']));
+                } else {
+                    echo "<span style='color:red;'>[No Shipping Address provided - please update]</span>";
+                }
+                ?>
+            </p>
+            <p><strong>GSTIN:</strong> <?php echo dummyIfEmpty($settings['paypal_email'], 'GSTIN'); ?></p>
+        </div>
     </div>
+
+    <div class="flex-container">
+        <div class="flex-item">
+            <h3 class="section-title">Invoice Info</h3>
+            <p><strong>Invoice No. / Date:</strong> <?php echo dummyIfEmpty($order['order_id'], 'Invoice No.'); ?> / <?php echo dummyIfEmpty($order['processing_time'], 'Date'); ?></p>
+            <p><strong>Order ID / Customer PO:</strong> <?php echo dummyIfEmpty($order['order_id'], 'Order ID'); ?></p>
+            <p><strong>IRN Number / Ack Number:</strong> N/A</p>
+            <p><strong>Payment Terms:</strong> Payment due within 30 days</p>
+        </div>
+    </div>
+
+    <h3 class="section-title">Item Table</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Sr</th>
+                <th>Item Name</th>
+                <th>HSN/SAC</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Tax %</th>
+                <th>Tax Amt</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td><?php echo dummyIfEmpty($order['p_name'], 'Item Name'); ?></td>
+                <td><?php echo dummyIfEmpty($order['hsn_code'] ?? '1234', 'HSN/SAC'); ?></td>
+                <td><?php echo dummyIfEmpty($order['quantity'], 'Quantity'); ?></td>
+                <td>₹<?php echo dummyIfEmpty(number_format($order['price'], 2), 'Rate'); ?></td>
+                <td>18%</td>
+                <td>₹<?php echo number_format(($order['price'] * $order['quantity'] * 18 / 100), 2); ?></td>
+                <td>₹<?php echo number_format(($order['price'] * $order['quantity'] * 118 / 100), 2); ?></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="flex-container" style="justify-content: flex-end;">
+        <div class="flex-item" style="flex: 0 0 300px;">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Subtotal</th>
+                        <td>₹<?php echo number_format($order['price'] * $order['quantity'], 2); ?></td>
+                    </tr>
+                    <tr>
+                        <th>GST/IGST Breakdown</th>
+                        <td>₹<?php echo number_format($order['price'] * $order['quantity'] * 18 / 100, 2); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Final Total</th>
+                        <td>₹<?php echo number_format($order['price'] * $order['quantity'] * 118 / 100, 2); ?></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="text-right" style="font-style: italic; font-size: 12px;">
+                            (In words: <?php echo ucfirst(numberToWords($order['price'] * $order['quantity'] * 118 / 100)); ?> only)
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h3 class="section-title">Footer</h3>
+    <p><strong>Bank details:</strong> <?php echo nl2br(dummyIfEmpty($settings['bank_detail'], 'Bank details')); ?></p>
+    <p><strong>Terms & Conditions:</strong> <?php echo nl2br(dummyIfEmpty($settings['seller_tc'], 'Terms & Conditions')); ?></p>
+    <p><strong>Signature/Company Seal:</strong> ___________________________</p>
 
     <p class="note">* If any information is missing, please update it in the admin settings.</p>
 </div>
