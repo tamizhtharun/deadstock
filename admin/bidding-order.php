@@ -177,13 +177,12 @@ require_once('header.php');
                                         <?php echo !empty($row['tracking_id']) ? $row['tracking_id'] : '-'; ?>
                                     </td>
                                     <td class="action-column">
-                                        <?php if (!empty($row['order_status'])): ?>
-                                            <a href="generate_invoice.php?order_id=<?php echo $row['order_table_id']; ?>"
-                                                class="btn btn-info btn-sm"
-                                                target="_blank">
-                                                <i class="fa fa-file-pdf-o"></i> Generate Invoice
-                                            </a>
-                                        <?php endif; ?>
+<?php if (!empty($row['order_status']) && $row['order_status'] === 'shipped'): ?>
+<a href="generate_invoice.php?order_id=<?php echo $row['order_table_id']; ?>"
+   class="btn btn-sm btn-primary mt-1" style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;">
+   <i class="fa fa-file-pdf-o"></i> Generate Invoice
+</a>
+<?php endif; ?>
                                         <?php if (empty($row['order_status'])): ?>
                                             <button
                                                 class="btn btn-primary btn-sm send-order-btn"
@@ -354,5 +353,60 @@ require_once('header.php');
             document.getElementById(tab).classList.add('active');
         });
     });
+
+    // Update order status function for bidding orders
+    function updateOrderStatus(orderId, newStatus) {
+        $.ajax({
+            url: 'process_bid_order.php',
+            type: 'GET',
+            data: {
+                action: 'update_status',
+                order_id: orderId,
+                status: newStatus
+            },
+            success: function(response) {
+                if (response.success) {
+                    const row = document.querySelector(`.bid-order-row[data-order-id='${orderId}']`);
+                    if (row) {
+                        // Update status badge
+                        const statusCell = row.querySelector('.order-status');
+                        statusCell.innerHTML = `<span class='status-badge status-${newStatus}'>${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}</span>`;
+
+                        // Update action column
+                        const actionCell = row.querySelector('.action-column');
+if (newStatus === 'shipped') {
+    actionCell.innerHTML = `
+        <div class="action-buttons" style="display: flex; flex-direction: column; gap: 8px;">
+            <button 
+                class="btn-status-update"
+                onclick="updateOrderStatus(${orderId}, 'delivered')">
+                <i class="fa fa-check-circle"></i> Delivered
+            </button>
+            <button 
+                class="btn-status-update"
+                onclick="updateOrderStatus(${orderId}, 'canceled')">
+                <i class="fa fa-times-circle"></i> Cancelled
+            </button>
+        </div>
+        <a href="generate_invoice.php?order_id=${orderId}"
+            class="btn btn-sm mt-1" style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff; display: block; margin-top: 8px;">
+            <i class="fa fa-file-pdf-o"></i> Generate Invoice
+        </a>
+    `;
+                        } else if (newStatus === 'delivered' || newStatus === 'canceled') {
+                            actionCell.innerHTML = `<button class="btn-status-update disabled"><i class="fa fa-lock"></i> No Actions Available</button>`;
+                        } else {
+                            location.reload();
+                        }
+                    }
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function() {
+                alert('An error occurred while updating the order status.');
+            }
+        });
+    }
 </script>
 <?php require_once('footer.php'); ?>
