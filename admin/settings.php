@@ -53,7 +53,6 @@ if (isset($_POST['form1'])) {
             var_dump($_FILES); // check the contents of the $_FILES array
             echo "Upload directory: $upload_dir"; // check the upload directory
         }
-
     }
 }
 // Change Favicon
@@ -97,7 +96,6 @@ if (isset($_POST['form2'])) {
         $statement->execute(array($final_name));
 
         $success_message = 'Favicon is updated successfully.';
-
     }
 }
 //quote container
@@ -128,31 +126,30 @@ if (isset($_POST['form_quote'])) {
 
 //bid_time_settings
 if (isset($_POST['form_bid_settings'])) {
-    
+
     // Capture the time inputs
     $bid_send_time = trim($_POST['send_time']);
     $bid_close_time = trim($_POST['close_time']);
 
     if ($bid_close_time <= $bid_send_time) {
         $error_message = 'The close time must be greater than the send time.';
-    } else{
-    // Update the database with send time and close time
-    $statement = $pdo->prepare("UPDATE bid_settings SET send_time=?, close_time=? WHERE id=1");
-    $statement->execute([$bid_send_time, $bid_close_time]);
+    } else {
+        // Update the database with send time and close time
+        $statement = $pdo->prepare("UPDATE bid_settings SET send_time=?, close_time=? WHERE id=1");
+        $statement->execute([$bid_send_time, $bid_close_time]);
 
-    $success_message = 'Bid times updated successfully.';
-}
+        $success_message = 'Bid times updated successfully.';
+    }
 }
 if (isset($_POST['form_min_bid'])) {
     $min_bid_percentage = trim($_POST['min_bid_pct']);
     $max_percentage = 100;
     if ($min_bid_percentage < 0 || $min_bid_percentage > $max_percentage) {
         $error_message = 'Minimum bid percentage must be less than 100% and Greater than 0%.';
-    }else{
+    } else {
         $statement = $pdo->prepare("UPDATE bid_settings SET min_bid_pct=? WHERE id=1");
         $statement->execute([$min_bid_percentage]);
         $success_message = 'Minimum bid percentage updated successfully.';
-
     }
 }
 
@@ -167,7 +164,6 @@ if (isset($_POST['form3'])) {
     $statement->execute([$_POST['running_text']]);
 
     $success_message = 'Running text is updated successfully.';
-
 }
 
 if (isset($_POST['form4'])) {
@@ -180,7 +176,7 @@ if (isset($_POST['form4'])) {
     $success_message = 'Terms and conditions updated successfully.';
 }
 if (isset($_POST['form5'])) { // Check if form5 is submitted
-    $seller_tc = $_POST['seller_tc']; 
+    $seller_tc = $_POST['seller_tc'];
 
     // Updating the database
     $statement = $pdo->prepare("UPDATE tbl_settings SET seller_tc = ? WHERE id = 1");
@@ -270,7 +266,6 @@ if (isset($_POST['form6_7'])) {
         }
 
         $success_message = 'Call to Action Data is updated successfully.';
-
     }
 }
 
@@ -295,7 +290,6 @@ if (isset($_POST['form6_4'])) {
         $statement->execute(array($_POST['featured_product_title'], $_POST['featured_product_subtitle']));
 
         $success_message = 'Featured Product Data is updated successfully.';
-
     }
 }
 
@@ -320,7 +314,6 @@ if (isset($_POST['form6_5'])) {
         $statement->execute(array($_POST['latest_product_title'], $_POST['latest_product_subtitle']));
 
         $success_message = 'Latest Product Data is updated successfully.';
-
     }
 }
 
@@ -345,7 +338,6 @@ if (isset($_POST['form6_6'])) {
         $statement->execute(array($_POST['popular_product_title'], $_POST['popular_product_subtitle']));
 
         $success_message = 'Popular Product Data is updated successfully.';
-
     }
 }
 /*
@@ -440,7 +432,6 @@ if (isset($_POST['form6_3'])) {
     $statement->execute(array($_POST['newsletter_text']));
 
     $success_message = 'Newsletter Text is updated successfully.';
-
 }
 
 if (isset($_POST['form7_1'])) {
@@ -480,7 +471,6 @@ if (isset($_POST['form7_1'])) {
         $statement->execute(array($final_name));
 
         $success_message = 'Login Page Banner is updated successfully.';
-
     }
 }
 
@@ -521,7 +511,6 @@ if (isset($_POST['form7_2'])) {
         $statement->execute(array($final_name));
 
         $success_message = 'Registration Page Banner is updated successfully.';
-
     }
 }
 
@@ -562,7 +551,6 @@ if (isset($_POST['form7_3'])) {
         $statement->execute(array($final_name));
 
         $success_message = 'Forget Password Page Banner is updated successfully.';
-
     }
 }
 
@@ -603,7 +591,6 @@ if (isset($_POST['form7_4'])) {
         $statement->execute(array($final_name));
 
         $success_message = 'Reset Password Page Banner is updated successfully.';
-
     }
 }
 
@@ -645,7 +632,6 @@ if (isset($_POST['form7_6'])) {
         $statement->execute(array($final_name));
 
         $success_message = 'Search Page Banner is updated successfully.';
-
     }
 }
 
@@ -686,7 +672,6 @@ if (isset($_POST['form7_7'])) {
         $statement->execute(array($final_name));
 
         $success_message = 'Cart Page Banner is updated successfully.';
-
     }
 }
 
@@ -727,7 +712,6 @@ if (isset($_POST['form7_8'])) {
         $statement->execute(array($final_name));
 
         $success_message = 'Checkout Page Banner is updated successfully.';
-
     }
 }
 
@@ -768,7 +752,6 @@ if (isset($_POST['form7_9'])) {
         $statement->execute(array($final_name));
 
         $success_message = 'Product Category Page Banner is updated successfully.';
-
     }
 }
 
@@ -929,10 +912,10 @@ foreach ($result as $row) {
     $user_tc = $row['user_tc'];
     $seller_tc = $row['seller_tc'];
     $forget_password_message         = $row['forget_password_message'];
-   // $total_recent_post_footer        = $row['total_recent_post_footer'];
-   // $total_popular_post_footer       = $row['total_popular_post_footer'];
-  //  $total_recent_post_sidebar       = $row['total_recent_post_sidebar'];
-  //  $total_popular_post_sidebar      = $row['total_popular_post_sidebar'];
+    // $total_recent_post_footer        = $row['total_recent_post_footer'];
+    // $total_popular_post_footer       = $row['total_popular_post_footer'];
+    //  $total_recent_post_sidebar       = $row['total_recent_post_sidebar'];
+    //  $total_popular_post_sidebar      = $row['total_popular_post_sidebar'];
     $total_featured_product_home     = $row['total_featured_product_home'];
     $total_latest_product_home       = $row['total_latest_product_home'];
     $total_popular_product_home      = $row['total_popular_product_home'];
@@ -947,27 +930,27 @@ foreach ($result as $row) {
     $banner_cart                     = $row['banner_cart'];
     $banner_checkout                 = $row['banner_checkout'];
     $banner_product_category         = $row['banner_product_category'];
-   // $banner_blog                     = $row['banner_blog'];
-   // $cta_title                       = $row['cta_title'];
-   // $cta_content                     = $row['cta_content'];
-   // $cta_read_more_text              = $row['cta_read_more_text'];
-  //  $cta_read_more_url               = $row['cta_read_more_url'];
-  //  $cta_photo                       = $row['cta_photo'];
+    // $banner_blog                     = $row['banner_blog'];
+    // $cta_title                       = $row['cta_title'];
+    // $cta_content                     = $row['cta_content'];
+    // $cta_read_more_text              = $row['cta_read_more_text'];
+    //  $cta_read_more_url               = $row['cta_read_more_url'];
+    //  $cta_photo                       = $row['cta_photo'];
     $featured_product_title          = $row['featured_product_title'];
     $featured_product_subtitle       = $row['featured_product_subtitle'];
     $latest_product_title            = $row['latest_product_title'];
     $latest_product_subtitle         = $row['latest_product_subtitle'];
     $popular_product_title           = $row['popular_product_title'];
     $popular_product_subtitle        = $row['popular_product_subtitle'];
-   // $testimonial_title               = $row['testimonial_title'];
-   // $testimonial_subtitle            = $row['testimonial_subtitle'];
-  //  $testimonial_photo               = $row['testimonial_photo'];
-  //  $blog_title                      = $row['blog_title'];
-   // $blog_subtitle                   = $row['blog_subtitle'];
+    // $testimonial_title               = $row['testimonial_title'];
+    // $testimonial_subtitle            = $row['testimonial_subtitle'];
+    //  $testimonial_photo               = $row['testimonial_photo'];
+    //  $blog_title                      = $row['blog_title'];
+    // $blog_subtitle                   = $row['blog_subtitle'];
     $newsletter_text                 = $row['newsletter_text'];
     $paypal_email                    = $row['paypal_email'];
-  //  $stripe_public_key               = $row['stripe_public_key'];
- //   $stripe_secret_key               = $row['stripe_secret_key'];
+    //  $stripe_public_key               = $row['stripe_public_key'];
+    //   $stripe_secret_key               = $row['stripe_secret_key'];
     $bank_detail                     = $row['bank_detail'];
     $before_head                     = $row['before_head'];
     $after_body                      = $row['after_body'];
@@ -977,21 +960,20 @@ foreach ($result as $row) {
     $home_featured_product_on_off    = $row['home_featured_product_on_off'];
     $home_latest_product_on_off      = $row['home_latest_product_on_off'];
     $home_popular_product_on_off     = $row['home_popular_product_on_off'];
-  //  $home_testimonial_on_off         = $row['home_testimonial_on_off'];
-   // $home_blog_on_off                = $row['home_blog_on_off'];
+    //  $home_testimonial_on_off         = $row['home_testimonial_on_off'];
+    // $home_blog_on_off                = $row['home_blog_on_off'];
     $newsletter_on_off               = $row['newsletter_on_off'];
-  //  $ads_above_welcome_on_off           = $row['ads_above_welcome_on_off'];
-  //  $ads_above_featured_product_on_off  = $row['ads_above_featured_product_on_off'];
-  //  $ads_above_latest_product_on_off    = $row['ads_above_latest_product_on_off'];
- //   $ads_above_popular_product_on_off   = $row['ads_above_popular_product_on_off'];
- //   $ads_above_testimonial_on_off       = $row['ads_above_testimonial_on_off'];
-  //  $ads_category_sidebar_on_off        = $row['ads_category_sidebar_on_off'];
-  $quote_text                          = $row['quote_text'];
-  $quote_span_text                     = $row['quote_span_text'];
-  $bid_send_time                        = $row['send_time'];
-  $bid_close_time                       = $row['close_time'];
-  $min_bid_percentage                   = $row['min_bid_pct'];
-
+    //  $ads_above_welcome_on_off           = $row['ads_above_welcome_on_off'];
+    //  $ads_above_featured_product_on_off  = $row['ads_above_featured_product_on_off'];
+    //  $ads_above_latest_product_on_off    = $row['ads_above_latest_product_on_off'];
+    //   $ads_above_popular_product_on_off   = $row['ads_above_popular_product_on_off'];
+    //   $ads_above_testimonial_on_off       = $row['ads_above_testimonial_on_off'];
+    //  $ads_category_sidebar_on_off        = $row['ads_category_sidebar_on_off'];
+    $quote_text                          = $row['quote_text'];
+    $quote_span_text                     = $row['quote_span_text'];
+    $bid_send_time                        = $row['send_time'];
+    $bid_close_time                       = $row['close_time'];
+    $min_bid_percentage                   = $row['min_bid_pct'];
 }
 ?>
 
@@ -1168,72 +1150,72 @@ foreach ($result as $row) {
                                     </div>
                                 </div>
                             </div>
-                            </form>
+                        </form>
 
-                            <form class="form-horizontal" action="" method="POST">
-                                <div class="box box-info">
-                                    <div class="box-body">
+                        <!-- <form class="form-horizontal" action="" method="POST">
+                            <div class="box box-info">
+                                <div class="box-body">
                                     <div class="form-group">
-                                    <label for="min_bid_pct" class="col-sm-2 control-label">Min. Bid Percentage</label>
-                                            <div class="col-sm-1">
-                                                <input type="number" class="form-control" name="min_bid_pct" value="<?php echo htmlspecialchars($min_bid_percentage); ?>">
-                                            </div>
+                                        <label for="min_bid_pct" class="col-sm-2 control-label">Min. Bid Percentage</label>
+                                        <div class="col-sm-1">
+                                            <input type="number" class="form-control" name="min_bid_pct" value="<?php echo htmlspecialchars($min_bid_percentage); ?>">
                                         </div>
-                                        <div class="form-group">
+                                    </div>
+                                    <div class="form-group">
                                         <label for="" class="col-sm-4 control-label"></label>
                                         <div class="col-sm-6">
                                             <button type="submit" class="btn btn-success pull-left" name="form_min_bid">Update</button>
                                         </div>
                                     </div>
-                            </div>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form> -->
+                    </div>
 
-                        <div class="tab-pane" id="tab_5">
+                    <div class="tab-pane" id="tab_5">
 
-                            <form class="form-horizontal" action="" method="post">
+                        <form class="form-horizontal" action="" method="post">
                             <div class="box box-info">
                                 <div class="box-body">
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label" for="send_time">Bid Send Time (12-hour format):</label>
-                                    <input class="" type="time"  name="send_time" step="60" value="<?php echo $bid_send_time ?>" required>
-                                    <small class="form-text text-muted">HH:MM AM/PM</small>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label" for="close_time">Bid Close Time (12-hour format):</label>
-                                    <input class="" type="time" name="close_time" step="60" value="<?php echo $bid_close_time ?>" required>
-                                    <small class="form-text text-muted">HH:MM AM/PM</small>
-                                </div> 
-                                <div class="form-group">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="send_time">Bid Send Time (12-hour format):</label>
+                                        <input class="" type="time" name="send_time" step="60" value="<?php echo $bid_send_time ?>" required>
+                                        <small class="form-text text-muted">HH:MM AM/PM</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="close_time">Bid Close Time (12-hour format):</label>
+                                        <input class="" type="time" name="close_time" step="60" value="<?php echo $bid_close_time ?>" required>
+                                        <small class="form-text text-muted">HH:MM AM/PM</small>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="" class="col-sm-4 control-label"></label>
                                         <div class="col-sm-6">
                                             <button type="submit" class="btn btn-success pull-left" name="form_bid_settings">Update</button>
                                         </div>
-                                    </div>                               
+                                    </div>
                                 </div>
                             </div>
-                            </form>
+                        </form>
 
-                            <form class="form-horizontal" action="" method="POST">
-                                <div class="box box-info">
-                                    <div class="box-body">
+                        <form class="form-horizontal" action="" method="POST">
+                            <div class="box box-info">
+                                <div class="box-body">
                                     <div class="form-group">
-                                    <label for="min_bid_pct" class="col-sm-2 control-label">Min. Bid Percentage</label>
-                                            <div class="col-sm-1">
-                                                <input type="number" class="form-control" name="min_bid_pct" value="<?php echo htmlspecialchars($min_bid_percentage); ?>">
-                                            </div>
+                                        <label for="min_bid_pct" class="col-sm-2 control-label">Min. Bid Percentage</label>
+                                        <div class="col-sm-1">
+                                            <input type="number" class="form-control" name="min_bid_pct" value="<?php echo htmlspecialchars($min_bid_percentage); ?>">
                                         </div>
-                                        <div class="form-group">
+                                    </div>
+                                    <div class="form-group">
                                         <label for="" class="col-sm-4 control-label"></label>
                                         <div class="col-sm-6">
                                             <button type="submit" class="btn btn-success pull-left" name="form_min_bid">Update</button>
                                         </div>
                                     </div>
-                            </div>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
+                    </div>
 
 
                     <div class="tab-pane" id="tab_6">
@@ -1258,10 +1240,10 @@ foreach ($result as $row) {
                             </div>
                         </form>
                         <!-- <?php
-                        // if (isset($success_message)) {
-                        //     echo '<div id="success-message" class="alert alert-success">' . htmlspecialchars($success_message) . '</div>';
-                        // }
-                        ?> -->
+                                // if (isset($success_message)) {
+                                //     echo '<div id="success-message" class="alert alert-success">' . htmlspecialchars($success_message) . '</div>';
+                                // }
+                                ?> -->
                     </div>
 
 
@@ -1290,11 +1272,12 @@ foreach ($result as $row) {
                         // if (isset($success_message)) {
                         //     echo '<div id="success-message" class="alert alert-success">' . htmlspecialchars($success_message) . '</div>';
                         // }
-                        // ?>
+                        // 
+                        ?>
                     </div>
 
 
-                   
+
 
                     <div class="tab-pane" id="#">
 
@@ -1308,11 +1291,11 @@ foreach ($result as $row) {
                                         <div class="col-sm-4">
                                             <select name="home_service_on_off" class="form-control" style="width:auto;">
                                                 <option value="1" <?php if ($home_service_on_off == 1) {
-                                                    echo 'selected';
-                                                } ?>>On</option>
+                                                                        echo 'selected';
+                                                                    } ?>>On</option>
                                                 <option value="0" <?php if ($home_service_on_off == 0) {
-                                                    echo 'selected';
-                                                } ?>>Off</option>
+                                                                        echo 'selected';
+                                                                    } ?>>Off</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1321,11 +1304,11 @@ foreach ($result as $row) {
                                         <div class="col-sm-4">
                                             <select name="home_welcome_on_off" class="form-control" style="width:auto;">
                                                 <option value="1" <?php if ($home_welcome_on_off == 1) {
-                                                    echo 'selected';
-                                                } ?>>On</option>
+                                                                        echo 'selected';
+                                                                    } ?>>On</option>
                                                 <option value="0" <?php if ($home_welcome_on_off == 0) {
-                                                    echo 'selected';
-                                                } ?>>Off</option>
+                                                                        echo 'selected';
+                                                                    } ?>>Off</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1335,11 +1318,11 @@ foreach ($result as $row) {
                                             <select name="home_featured_product_on_off" class="form-control"
                                                 style="width:auto;">
                                                 <option value="1" <?php if ($home_featured_product_on_off == 1) {
-                                                    echo 'selected';
-                                                } ?>>On</option>
+                                                                        echo 'selected';
+                                                                    } ?>>On</option>
                                                 <option value="0" <?php if ($home_featured_product_on_off == 0) {
-                                                    echo 'selected';
-                                                } ?>>Off</option>
+                                                                        echo 'selected';
+                                                                    } ?>>Off</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1349,11 +1332,11 @@ foreach ($result as $row) {
                                             <select name="home_latest_product_on_off" class="form-control"
                                                 style="width:auto;">
                                                 <option value="1" <?php if ($home_latest_product_on_off == 1) {
-                                                    echo 'selected';
-                                                } ?>>On</option>
+                                                                        echo 'selected';
+                                                                    } ?>>On</option>
                                                 <option value="0" <?php if ($home_latest_product_on_off == 0) {
-                                                    echo 'selected';
-                                                } ?>>Off</option>
+                                                                        echo 'selected';
+                                                                    } ?>>Off</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1363,11 +1346,11 @@ foreach ($result as $row) {
                                             <select name="home_popular_product_on_off" class="form-control"
                                                 style="width:auto;">
                                                 <option value="1" <?php if ($home_popular_product_on_off == 1) {
-                                                    echo 'selected';
-                                                } ?>>On</option>
+                                                                        echo 'selected';
+                                                                    } ?>>On</option>
                                                 <option value="0" <?php if ($home_popular_product_on_off == 0) {
-                                                    echo 'selected';
-                                                } ?>>Off</option>
+                                                                        echo 'selected';
+                                                                    } ?>>Off</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1376,11 +1359,11 @@ foreach ($result as $row) {
                                         <div class="col-sm-4">
                                             <select name="home_testimonial_on_off" class="form-control" style="width:auto;">
                                                 <option value="1" <?php if ($home_testimonial_on_off == 1) {
-                                                    echo 'selected';
-                                                } ?>>On</option>
+                                                                        echo 'selected';
+                                                                    } ?>>On</option>
                                                 <option value="0" <?php if ($home_testimonial_on_off == 0) {
-                                                    echo 'selected';
-                                                } ?>>Off</option>
+                                                                        echo 'selected';
+                                                                    } ?>>Off</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1389,11 +1372,11 @@ foreach ($result as $row) {
                                         <div class="col-sm-4">
                                             <select name="home_blog_on_off" class="form-control" style="width:auto;">
                                                 <option value="1" <?php if ($home_blog_on_off == 1) {
-                                                    echo 'selected';
-                                                } ?>>On</option>
+                                                                        echo 'selected';
+                                                                    } ?>>On</option>
                                                 <option value="0" <?php if ($home_blog_on_off == 0) {
-                                                    echo 'selected';
-                                                } ?>>Off</option>
+                                                                        echo 'selected';
+                                                                    } ?>>Off</option>
                                             </select>
                                         </div>
                                     </div>-->
@@ -1961,11 +1944,11 @@ foreach ($result as $row) {
                                         <div class="col-sm-4">
                                             <select name="ads_above_welcome_on_off" class="form-control" style="width:auto;">
                                                 <option value="1" <?php if ($ads_above_welcome_on_off == 1) {
-                                                    echo 'selected';
-                                                } ?>>On</option>
+                                                                        echo 'selected';
+                                                                    } ?>>On</option>
                                                 <option value="0" <?php if ($ads_above_welcome_on_off == 0) {
-                                                    echo 'selected';
-                                                } ?>>Off</option>
+                                                                        echo 'selected';
+                                                                    } ?>>Off</option>
                                             </select>
                                         </div>
                                     </div>      
@@ -1974,11 +1957,11 @@ foreach ($result as $row) {
                                         <div class="col-sm-4">
                                             <select name="ads_above_featured_product_on_off" class="form-control" style="width:auto;">
                                                 <option value="1" <?php if ($ads_above_featured_product_on_off == 1) {
-                                                    echo 'selected';
-                                                } ?>>On</option>
+                                                                        echo 'selected';
+                                                                    } ?>>On</option>
                                                 <option value="0" <?php if ($ads_above_featured_product_on_off == 0) {
-                                                    echo 'selected';
-                                                } ?>>Off</option>
+                                                                        echo 'selected';
+                                                                    } ?>>Off</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1987,11 +1970,11 @@ foreach ($result as $row) {
                                         <div class="col-sm-4">
                                             <select name="ads_above_latest_product_on_off" class="form-control" style="width:auto;">
                                                 <option value="1" <?php if ($ads_above_latest_product_on_off == 1) {
-                                                    echo 'selected';
-                                                } ?>>On</option>
+                                                                        echo 'selected';
+                                                                    } ?>>On</option>
                                                 <option value="0" <?php if ($ads_above_latest_product_on_off == 0) {
-                                                    echo 'selected';
-                                                } ?>>Off</option>
+                                                                        echo 'selected';
+                                                                    } ?>>Off</option>
                                             </select>
                                         </div>
                                     </div>
@@ -2000,11 +1983,11 @@ foreach ($result as $row) {
                                         <div class="col-sm-4">
                                             <select name="ads_above_popular_product_on_off" class="form-control" style="width:auto;">
                                                 <option value="1" <?php if ($ads_above_popular_product_on_off == 1) {
-                                                    echo 'selected';
-                                                } ?>>On</option>
+                                                                        echo 'selected';
+                                                                    } ?>>On</option>
                                                 <option value="0" <?php if ($ads_above_popular_product_on_off == 0) {
-                                                    echo 'selected';
-                                                } ?>>Off</option>
+                                                                        echo 'selected';
+                                                                    } ?>>Off</option>
                                             </select>
                                         </div>
                                     </div>
@@ -2013,11 +1996,11 @@ foreach ($result as $row) {
                                         <div class="col-sm-4">
                                             <select name="ads_above_testimonial_on_off" class="form-control" style="width:auto;">
                                                 <option value="1" <?php if ($ads_above_testimonial_on_off == 1) {
-                                                    echo 'selected';
-                                                } ?>>On</option>
+                                                                        echo 'selected';
+                                                                    } ?>>On</option>
                                                 <option value="0" <?php if ($ads_above_testimonial_on_off == 0) {
-                                                    echo 'selected';
-                                                } ?>>Off</option>
+                                                                        echo 'selected';
+                                                                    } ?>>Off</option>
                                             </select>
                                         </div>
                                     </div>
@@ -2026,11 +2009,11 @@ foreach ($result as $row) {
                                         <div class="col-sm-4">
                                             <select name="ads_category_sidebar_on_off" class="form-control" style="width:auto;">
                                                 <option value="1" <?php if ($ads_category_sidebar_on_off == 1) {
-                                                    echo 'selected';
-                                                } ?>>On</option>
+                                                                        echo 'selected';
+                                                                    } ?>>On</option>
                                                 <option value="0" <?php if ($ads_category_sidebar_on_off == 0) {
-                                                    echo 'selected';
-                                                } ?>>Off</option>
+                                                                        echo 'selected';
+                                                                    } ?>>Off</option>
                                             </select>
                                         </div>
                                     </div>                                    
