@@ -46,6 +46,13 @@ if (!isset($_SESSION['admin_session'])) {
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+	<style>
+		/* Make dropdown icon always visible */
+		.dropdown-icon {
+			opacity: 1 !important;
+			visibility: visible !important;
+		}
+	</style>
 
 </head>
 
@@ -74,7 +81,7 @@ if (!isset($_SESSION['admin_session'])) {
 				<!-- Top Bar ... User Information .. Login/Log out Area -->
 				<div class="navbar-custom-menu">
 					<div class="dropdown profile-dropdown">
-						<div id="profile-btn" class="d-flex align-items-center profile-hover">
+						<button class="btn btn-secondary dropdown-toggle d-flex align-items-center profile-hover" type="button" id="newProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none; padding: 0;">
 							<?php
 							if (!empty($_SESSION['admin_session']['user_photo'])) {
 								$profile_photo = $_SESSION['admin_session']['user_photo'];
@@ -84,12 +91,11 @@ if (!isset($_SESSION['admin_session'])) {
 							}
 							?>
 							<span style="font-weight:800; margin-right: 6px;"><?php echo $_SESSION['admin_session']['user_name']; ?></span>
-							<i class="fa fa-chevron-down dropdown-icon"></i> <!-- Dropdown Icon -->
-						</div>
-						<div class="dropdown-menu dropdown-menu-end profile-menu">
-							<a class="dropdown-item" href="profile-edit.php">Edit Profile</a>
-							<a class="dropdown-item text-danger" href="logout.php">Log out</a>
-						</div>
+						</button>
+						<ul class="dropdown-menu dropdown-menu-end profile-menu" aria-labelledby="newProfileDropdown">
+							<li><a class="dropdown-item" href="profile-edit.php">Edit Profile</a></li>
+							<li><a class="dropdown-item text-danger" href="logout.php">Log out</a></li>
+						</ul>
 					</div>
 				</div>
 
