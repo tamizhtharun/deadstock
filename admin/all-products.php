@@ -132,7 +132,7 @@ if (isset($_POST['reject_all'])) {
                                     <td><?php echo $row['p_qty']; ?></td>
                                     <!-- Update the Featured column -->
                                     <td>
-                                        <select class="form-control" style="width:auto;" onchange="updateFeatured(<?php echo $row['id']; ?>, this.value)">
+                                        <select class="form-control" style="width:auto;" onchange="updateFeatured(<?php echo $row['id']; ?>, this.value)" <?php echo $row['p_is_approve'] == 0 ? 'disabled' : ''; ?>>
                                             <option value="0" <?php echo $row['p_is_featured'] == 0 ? 'selected' : ''; ?>>No</option>
                                             <option value="1" <?php echo $row['p_is_featured'] == 1 ? 'selected' : ''; ?>>Yes</option>
                                         </select>
