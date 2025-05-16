@@ -15,8 +15,6 @@ if (isset($_SESSION['seller_session'])) {
 		exit;
 	}
 }
-
-
 $ai_id = 0;
 if (isset($_POST['form1'])) {
 	$valid = 1;
@@ -417,12 +415,9 @@ if (isset($_POST['form1'])) {
 			transform: translateX(-50%);
 		}
 	</style>
-
-
 </head>
 
 <body>
-
 	<section class="content-header">
 		<div class="content-header-left">
 			<h1>Add Product</h1>
@@ -434,10 +429,8 @@ if (isset($_POST['form1'])) {
 
 
 	<section class="content">
-
 		<div class="row">
 			<div class="col-md-12">
-
 				<?php if ($error_message): ?>
 					<div class="callout callout-danger">
 						<p>
@@ -523,7 +516,6 @@ if (isset($_POST['form1'])) {
 									</select>
 								</div>
 							</div>
-
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Brand <span>*</span></label>
 								<div class="col-sm-4">
@@ -568,7 +560,6 @@ if (isset($_POST['form1'])) {
 									<input type="file" name="product_catalogue">
 								</div>
 							</div>
-
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Key <span>*</span></label>
 								<div class="col-sm-9">
@@ -640,7 +631,6 @@ if (isset($_POST['form1'])) {
 									</div>
 								</div>
 							</div>
-
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Old Price <br><span
 										style="font-size:10px;font-weight:normal;">(In INR)</span></label>
@@ -675,7 +665,6 @@ if (isset($_POST['form1'])) {
 										required class="form-control" placeholder="Max upto 18%">
 								</div>
 							</div>
-
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Quantity <span>*</span></label>
 								<div class="col-sm-4">
@@ -684,7 +673,6 @@ if (isset($_POST['form1'])) {
 										required class="form-control">
 								</div>
 							</div>
-
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Featured Photo <span>*</span></label>
 								<div class="col-sm-4" style="padding-top:4px;">
@@ -732,17 +720,11 @@ if (isset($_POST['form1'])) {
 						</div>
 					</div>
 			</div>
-
 			</form>
-
-
 		</div>
 		</div>
-
+		`
 	</section>
-
-
-
 	<script>
 		$(document).ready(function() {
 			// Initial Select2 initialization
@@ -765,16 +747,12 @@ if (isset($_POST['form1'])) {
 					success: function(response) {
 						// Destroy existing select2 instance
 						$endCat.select2('destroy');
-
 						// Update the HTML
 						$endCat.html(response);
-
 						// Check for real options (excluding the default option)
 						var hasOptions = $endCat.find('option[value!=""]').length > 0;
-
 						// Set disabled state based on options
 						$endCat.prop('disabled', !hasOptions);
-
 						// Reinitialize select2
 						$endCat.select2({
 							width: '100%'
@@ -782,7 +760,6 @@ if (isset($_POST['form1'])) {
 					}
 				});
 			});
-
 			// Document click handler for closing dropdowns
 			$(document).on('click', function(e) {
 				if (!$(e.target).closest('.select2-container').length) {
