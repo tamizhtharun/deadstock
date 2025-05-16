@@ -240,17 +240,13 @@ if (isset($_POST['form1'])) {
 		$selected_values['O'],     // Comma-separated values for O or empty string
 	]);
 }
-
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 	<!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
@@ -444,25 +440,19 @@ if (isset($_POST['form1'])) {
 
 				<?php if ($error_message): ?>
 					<div class="callout callout-danger">
-
 						<p>
 							<?php echo $error_message; ?>
 						</p>
 					</div>
 				<?php endif; ?>
-
 				<?php if ($success_message): ?>
 					<div class="callout callout-success">
-
 						<p><?php echo $success_message; ?></p>
 					</div>
 				<?php endif; ?>
-
 				<form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-
 					<div class="box box-info">
 						<div class="box-body">
-
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Top Level Category Name
 									<span>*</span></label>
