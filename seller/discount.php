@@ -16,25 +16,27 @@ $seller_status = $statement->fetchColumn();
         <!-- <?php echo $seller_status; ?> -->
     </div>
     <div class="content-header-right">
-    <?php if($seller_status == 1){ ?>
-        <button class="btn btn-primary btn-sm" type="button" onclick="toggleDiscountForm()">
-            Overall Discount
-        </button>
+        <?php if ($seller_status == 1) { ?>
+            <button class="btn btn-primary btn-sm" type="button" onclick="toggleDiscountForm()">
+                Overall Discount
+            </button>
 
-        <div id="overallDiscountForm" class="mt-3 p-3 border rounded bg-light" style="display:none; max-width:350px;">
-            <form action="overall-discount.php" method="post">
-                <div class="form-group">
-                    <label for="discountInput"><b>Enter Discount Percentage (%)</b></label>
-                    <input type="number" name="discount" id="discountInput" class="form-control mt-2" min="0" max="100" required placeholder="e.g. 20">
-                </div>
-                <button type="submit" class="btn btn-success btn-sm mt-2">Update</button>
-                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="toggleDiscountForm()">Cancel</button>
-            </form>
-        </div>
-    <?php } else { ?>
-        <a href="profile-edit.php" class="btn btn-primary btn-sm disabled">Add Product</a>
-    <?php } ?>
-</div>
+            <div id="overallDiscountForm" class="mt-3 p-3 border rounded bg-light" style="display:none; max-width:350px;">
+                <form action="overall-discount.php" method="post">
+                    <div class="form-group">
+                        <label for="discountInput"><b>Enter Discount Percentage (%)</b></label>
+                        <input type="number" name="discount" id="discountInput" class="form-control mt-2" min="0" max="100"
+                            required placeholder="e.g. 20">
+                    </div>
+                    <button type="submit" class="btn btn-success btn-sm mt-2">Update</button>
+                    <button type="button" class="btn btn-secondary btn-sm mt-2"
+                        onclick="toggleDiscountForm()">Cancel</button>
+                </form>
+            </div>
+        <?php } else { ?>
+            <a href="profile-edit.php" class="btn btn-primary btn-sm disabled">Add Product</a>
+        <?php } ?>
+    </div>
 </section>
 
 <section class="content">
@@ -57,11 +59,11 @@ $seller_status = $statement->fetchColumn();
                                     <th>Photo</th>
                                     <th width="140">Product Brand</th>
                                     <th width="140">Product Name</th>
-                                    <th width="60">Old Price</th>
-                                    <th width="60">(C) Price</th>
-                                    <th width="60">Quantity</th>
-                                    <th width="250">Category</th>
-                                    <th width="90">Current Discount</th>
+                                    <th width="90">Old Price</th>
+                                    <th width="90">Discounted Price</th>
+                                    <th width="90">Quantity</th>
+                                    <th width="200">Approval Status</th>
+                                    <th width="100">Current Discount</th>
                                     <th width="160">Update Discount</th>
                                 </tr>
                             </thead>
@@ -74,11 +76,13 @@ $seller_status = $statement->fetchColumn();
 																						t1.id,
 																						t1.p_name,
 																						t1.p_old_price,
-																						t1.p_current_price,
+                                                                                        t1.p_current_price,
+																						t1.p_discount_price,
 																						t1.p_qty,
 																						t1.p_featured_photo,
 																						t1.p_is_featured,
 																						t1.p_is_approve,
+                                                                                        t1.is_discount,
 																						t1.product_catalogue,
 																						t1.product_brand,
 																						t1.ecat_id,
@@ -104,7 +108,7 @@ $seller_status = $statement->fetchColumn();
                                 foreach ($result as $row) {
                                     $discount = 0;
                                     if ($row['p_old_price'] > 0) {
-                                        $discount = round((($row['p_old_price'] - $row['p_current_price']) / $row['p_old_price']) * 100);
+                                        $discount = round((($row['p_old_price'] - $row['p_discount_price']) / $row['p_old_price']) * 100);
                                     }
                                     $i++;
                                     ?>
@@ -116,9 +120,14 @@ $seller_status = $statement->fetchColumn();
                                         <td><?php echo $row['brand_name']; ?></td>
                                         <td><?php echo $row['p_name']; ?></td>
                                         <td>₹<?php echo $row['p_old_price']; ?></td>
-                                        <td>₹<?php echo $row['p_current_price']; ?></td>
+                                        <td>₹<?php echo $row['p_discount_price']; ?></td>
                                         <td><?php echo $row['p_qty']; ?></td>
-                                        <td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?>
+                                        <td>
+                                            <?php if ($row['is_discount'] == 0) {
+                                                echo '<span class="badge badge-success" style="background-color:green;">Approved</span>';
+                                            } else {
+                                                echo '<span class="badge badge-danger"  style="background-color:6689C6;">Waiting for Approval</span>';
+                                            } ?>
                                         </td>
                                         <td><b><?php echo $discount; ?>%</b></td>
                                         <td>
@@ -181,13 +190,13 @@ $seller_status = $statement->fetchColumn();
     }
 </style>
 <script>
-function toggleDiscountForm() {
-    var form = document.getElementById("overallDiscountForm");
-    if (form.style.display === "none") {
-        form.style.display = "block";
-    } else {
-        form.style.display = "none";
+    function toggleDiscountForm() {
+        var form = document.getElementById("overallDiscountForm");
+        if (form.style.display === "none") {
+            form.style.display = "block";
+        } else {
+            form.style.display = "none";
+        }
     }
-}
 </script>
 <?php require_once('footer.php'); ?>

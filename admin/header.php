@@ -169,6 +169,7 @@ if (!isset($_SESSION['admin_session'])) {
 							<li><a href="seller-uploaded-products.php"><i class="fa fa-circle-o"></i> Products by Seller</a></li>
 							<li><a href="seller-approved-products.php"><i class="fa fa-circle-o"></i> Approved Products</a></li>
 							<li><a href="seller-rejected-products.php"><i class="fa fa-circle-o"></i> Rejected Products</a></li>
+							<li><a href="discount-products.php"><i class="fa fa-circle-o"></i> Discount Products</a></li>
 
 
 						</ul>

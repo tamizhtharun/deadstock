@@ -16,7 +16,7 @@ if (isset($_POST['id']) && isset($_POST['discount'])) {
             $new_price = round($old_price - (($discount / 100) * $old_price));
 
 
-            $update = $pdo->prepare("UPDATE tbl_product SET p_current_price = ?,p_is_approve= 0 WHERE id = ?");
+            $update = $pdo->prepare("UPDATE tbl_product SET p_discount_price = ?,is_discount= 1 WHERE id = ?");
             $update->execute([$new_price, $id]);
 
             header("Location: discount.php?success=1");

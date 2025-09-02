@@ -22,7 +22,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['discount'])) {
             $old_price = $product['p_old_price'];
             $new_price = round($old_price - (($discount / 100) * $old_price));
             $update = $pdo->prepare("UPDATE tbl_product 
-                                     SET p_current_price = ?, p_is_approve = 0 
+                                     SET p_discount_price = ?, is_discount = 1 
                                      WHERE id = ?");
             $update->execute([$new_price, $product['id']]);
         }
