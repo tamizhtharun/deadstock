@@ -100,7 +100,8 @@ $seller_status = $statement->fetchColumn();
 																				LEFT JOIN tbl_mid_category t3 ON t1.mcat_id = t3.mcat_id
 																				LEFT JOIN tbl_top_category t4 ON t1.tcat_id = t4.tcat_id
 																				LEFT JOIN tbl_brands t5 ON t1.product_brand=t5.brand_id
-																				WHERE t1.seller_id = :seller_id  -- Filter by seller_id
+																				WHERE t1.seller_id = :seller_id
+                                                                                AND t1.p_is_approve = 1   -- Filter by seller_id
 																				ORDER BY t1.id DESC");
                                 $statement->bindParam(':seller_id', $seller_id, PDO::PARAM_INT); // Bind the seller_id parameter
                                 $statement->execute();

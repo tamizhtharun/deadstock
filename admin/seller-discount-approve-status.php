@@ -10,6 +10,7 @@ if (isset($_GET['id']) && isset($_GET['status'])) {
         // Update is_discount to 0 and set current price = discount price
         $sql = "UPDATE tbl_product 
                 SET is_discount = 0, 
+                is_discount_approved = 1,
                 p_current_price = p_discount_price
                 WHERE id = ?";
     } 

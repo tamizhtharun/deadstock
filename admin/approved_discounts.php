@@ -1,34 +1,5 @@
 <?php require_once('header.php'); ?>
 
-<?php
-if (isset($_POST['approve_all'])) {
-    try {
-        $stmt = $pdo->prepare("UPDATE tbl_product 
-                SET is_discount = 0,
-                is_discount_approved = 1, 
-                p_current_price = p_discount_price
-                WHERE is_discount = 1");
-        $stmt->execute();
-
-        echo '<script>
-            document.getElementById("message").style.backgroundColor = "green";
-            document.getElementById("message").innerHTML = "Success! All products have been Approved.";
-            document.getElementById("message").style.display = "block";
-            setTimeout(function(){ document.getElementById("message").style.display = "none"; }, 1500);
-        </script>';
-    } catch (PDOException $e) {
-        echo '<script>
-            document.getElementById("message").style.backgroundColor = "red";
-            document.getElementById("message").innerHTML = "Error: ' . $e->getMessage() . '";
-            document.getElementById("message").style.display = "block";
-            setTimeout(function(){ document.getElementById("message").style.display = "none"; }, 2000);
-        </script>';
-    }
-}
-
-
-?>
-
 <section class="content-header">
     <div class="content-header-left">
         <h1>View Products</h1>
@@ -42,10 +13,6 @@ if (isset($_POST['approve_all'])) {
                 <div class="box-header">
                     <h3 class="box-title"></h3>
                     <div class="box-tools pull-right">
-                        <form method="POST" action="">
-                            <input type="hidden" name="seller_id" value="<?php echo $seller_id; ?>">
-                            <button type="submit" name="approve_all" class="btn btn-success btn-xs">Approve All</button>
-                        </form>
                     </div>
                 </div>
                 <div class="box-body table-responsive">
@@ -58,14 +25,13 @@ if (isset($_POST['approve_all'])) {
                                 <th>Product Name</th>
                                 <th>Old Price</th>
                                 <th>(C) Price</th>
-                                <th>Discount Price</th>
                                 <th>Quantity</th>
 
                                 <th>Category</th>
                                 <th>Product Catalogue</th>
                                 <th>Seller ID</th>
                                 <th>Approval Status</th>
-                                <th>Actions</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -104,7 +70,7 @@ if (isset($_POST['approve_all'])) {
                                                     LEFT JOIN tbl_top_category t4 ON t1.tcat_id = t4.tcat_id
                                                     LEFT JOIN tbl_brands t5 ON t1.product_brand=t5.brand_id
                                                     LEFT JOIN sellers t6 ON t1.seller_id = t6.seller_id
-                                                     WHERE t1.is_discount = 1  -- Join with tbl_sellers
+                                                     WHERE t1.is_discount_approved = 1  -- Join with tbl_sellers
                                                     ORDER BY t1.id DESC");
                             $statement->execute();
                             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -120,9 +86,6 @@ if (isset($_POST['approve_all'])) {
                                     <td><?php echo $row['p_name']; ?></td>
                                     <td>₹<?php echo $row['p_old_price']; ?></td>
                                     <td>₹<?php echo $row['p_current_price']; ?></td>
-                                    <td>
-                                        ₹<?php echo $row['p_discount_price']; ?>
-                                    </td>
                                     <td><?php echo $row['p_qty']; ?></td>
                                     <!-- Update the Featured column -->
 
@@ -138,14 +101,9 @@ if (isset($_POST['approve_all'])) {
                                                 Details</a>
                                         </div>
                                     </td>
-                                    <td><?php echo $row['is_discount'] == 0 ? '<span class="badge badge-success" style="background-color:green;">Approved</span>' : '<span class="badge badge-danger" style="background-color:6689C6;">Waiting for Approval</span>'; ?>
+                                    <td><?php echo $row['is_discount_approved'] == 1 ? '<span class="badge badge-success" style="background-color:green;">Approved</span>' : '<span class="badge badge-danger" style="background-color:6689C6;">Waiting for Approval</span>'; ?>
                                     </td>
-                                    <td>
-                                        <?php if ($row['p_is_approve'] == 1) { ?>
-                                            <a href="seller-discount-approve-status.php?id=<?php echo $row['id']; ?>&status=0"
-                                                class="btn btn-success btn-xs">Approve</a>
-                                        <?php } ?>
-                                    </td>
+                                    
                                 </tr>
                                 <?php
                             }
