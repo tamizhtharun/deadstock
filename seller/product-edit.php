@@ -24,14 +24,62 @@ if (isset($_POST['form1'])) {
 	//     $error_message .= "Product name can not be empty<br>";
 	// }
 
-	if (empty($_POST['p_current_price'])) {
-		$valid = 0;
-		$error_message .= "Current Price can not be empty<br>";
+	// Remove strict validation for most fields to allow partial updates
+	// if (empty($_POST['tcat_id']) || $_POST['tcat_id'] == '') {
+	// 	$valid = 0;
+	// 	$error_message .= "You must have to select a top level category<br>";
+	// }
+
+	// if (empty($_POST['mcat_id'])) {
+	// 	$valid = 0;
+	// 	$error_message .= "You must have to select a mid level category<br>";
+	// }
+
+	// if (empty($_POST['p_name'])) {
+	// 	$valid = 0;
+	// 	$error_message .= "Product name can not be empty<br>";
+	// }
+
+	// if (empty($_POST['p_current_price'])) {
+	// 	$valid = 0;
+	// 	$error_message .= "Current Price can not be empty<br>";
+	// }
+
+	// Keep validation for HSN Code: if provided, must be 8 digits
+	if (!empty($_POST['hsn_code'])) {
+		$hsn_code = $_POST['hsn_code'];
+		if (!preg_match('/^\d{8}$/', $hsn_code)) {
+			$valid = 0;
+			$error_message .= "HSN code should be exactly 8 digits<br>";
+		}
 	}
 
-	if (empty($_POST['p_qty'])) {
-		$valid = 0;
-		$error_message .= "Quantity can not be empty<br>";
+	// Keep validation for GST Percentage: if provided, must be up to 18%
+	if (!empty($_POST['gst_percentage'])) {
+		$gst_percentage = $_POST['gst_percentage'];
+		if ($gst_percentage > 18) {
+			$valid = 0;
+			$error_message .= "GST percentage can not be more than 18<br>";
+		}
+	}
+
+	// if (empty($_POST['p_qty'])) {
+	// 	$valid = 0;
+	// 	$error_message .= "Quantity can not be empty<br>";
+	// }
+
+	// if (empty($_POST['product_brand'])) {
+	// 	$valid = 0;
+	// 	$error_message .= "Product Brand should be selected<br>";
+	// }
+
+	if ($_POST['tcat_id'] === 'others') {
+		if (empty($_POST['other_brand'])) {
+			$valid = 0;
+			$error_message .= "You must specify the brand name<br>";
+		} else {
+			$product_brand = $_POST['other_brand'];
+		}
 	}
 
 	$path = $_FILES['p_featured_photo']['name'];
@@ -100,7 +148,7 @@ if (isset($_POST['form1'])) {
 				$my_ext1 = pathinfo($photo[$i], PATHINFO_EXTENSION);
 				if ($my_ext1 == 'jpg' || $my_ext1 == 'png' || $my_ext1 == 'jpeg' || $my_ext1 == 'gif') {
 					$final_name1[$m] = $z . '.' . $my_ext1;
-					move_uploaded_file($photo_temp[$i], "../assets/uploads/product_photos/" . $final_name1[$m]);
+					move_uploaded_file($photo_temp[$i], "../assets/uploads/product-photos/" . $final_name1[$m]);
 					$m++;
 					$z++;
 				}
@@ -115,65 +163,78 @@ if (isset($_POST['form1'])) {
 		}
 
 		if ($path == '') {
-			$statement = $pdo->prepare("UPDATE tbl_product SET 
-        			
-        							p_old_price=?, 
-        							p_current_price=?, 
-        							p_qty=?,
-        							p_description=?,
-        							-- p_short_description=?,
-        							-- p_condition=?,
-        							-- p_return_policy=?,
-									product_catalogue=?
-
-        							WHERE id=?");
+			$statement = $pdo->prepare("UPDATE tbl_product SET
+								p_name=?,
+								tcat_id=?,
+								mcat_id=?,
+								ecat_id=?,
+								product_brand=?,
+								hsn_code=?,
+								gst_percentage=?,
+        						p_old_price=?,
+        						p_current_price=?,
+        						p_qty=?,
+        						p_description=?,
+        						product_catalogue=?,
+        						p_is_featured = CASE WHEN p_is_featured = 1 THEN 0 ELSE p_is_featured END,
+        						p_is_approve=0
+        						WHERE id=?");
 			$statement->execute(array(
-				// $_POST['p_name'],
+				$_POST['p_name'],
+				$_POST['tcat_id'],
+				$_POST['mcat_id'],
+				$_POST['ecat_id'],
+				$_POST['product_brand'],
+				$_POST['hsn_code'],
+				$_POST['gst_percentage'],
 				$_POST['p_old_price'],
 				$_POST['p_current_price'],
 				$_POST['p_qty'],
 				$_POST['p_description'],
-				// $_POST['p_short_description'],
-				// $_POST['p_condition'],
-				// $_POST['p_return_policy'],
 				$pdf_final_name,
-				// $_POST['p_is_featured'],
-				// $_POST['p_is_active'],
-				// $_POST['ecat_id'],
 				$_REQUEST['id']
 			));
 		} else {
 
-			unlink('../assets/uploads/product-photos/' . $_POST['current_photo']);
+			$current_photo_path = '../assets/uploads/product-photos/' . $_POST['current_photo'];
+			if (!empty($_POST['current_photo']) && file_exists($current_photo_path) && !is_dir($current_photo_path)) {
+				unlink($current_photo_path);
+			}
 
 			$final_name = 'product-featured-' . $_REQUEST['id'] . '.' . $ext;
 			move_uploaded_file($path_tmp, '../assets/uploads/product-photos/' . $final_name);
 
 
-			$statement = $pdo->prepare("UPDATE tbl_product SET 
-        							
-        							p_old_price=?, 
-        							p_current_price=?, 
-        							p_qty=?,
-        							p_featured_photo=?,
-        							p_description=?,
-        							-- p_short_description=?,
-        							-- p_condition=?,
-        							-- p_return_policy=?,
-        							
-        							
-									product_catalogue=?
-        							WHERE id=?");
+			$statement = $pdo->prepare("UPDATE tbl_product SET
+								p_name=?,
+								tcat_id=?,
+								mcat_id=?,
+								ecat_id=?,
+								product_brand=?,
+								hsn_code=?,
+								gst_percentage=?,
+        						p_old_price=?,
+        						p_current_price=?,
+        						p_qty=?,
+        						p_featured_photo=?,
+        						p_description=?,
+        						product_catalogue=?,
+        						p_is_featured = CASE WHEN p_is_featured = 1 THEN 0 ELSE p_is_featured END,
+        						p_is_approve=0
+        						WHERE id=?");
 			$statement->execute(array(
-
+				$_POST['p_name'],
+				$_POST['tcat_id'],
+				$_POST['mcat_id'],
+				$_POST['ecat_id'],
+				$_POST['product_brand'],
+				$_POST['hsn_code'],
+				$_POST['gst_percentage'],
 				$_POST['p_old_price'],
 				$_POST['p_current_price'],
 				$_POST['p_qty'],
 				$final_name,
 				$_POST['p_description'],
-				$_POST['p_feature'],
-				$_POST['p_condition'],
-				$_POST['p_return_policy'],
 				$pdf_final_name,
 				$_REQUEST['id']
 			));
@@ -256,8 +317,17 @@ foreach ($result as $row) {
 	$p_is_featured = $row['p_is_featured'];
 	// $p_is_active = $row['p_is_active'];
 	$ecat_id = $row['ecat_id'];
+	$tcat_id = $row['tcat_id'];
+	$mcat_id = $row['mcat_id'];
+	$product_brand = $row['product_brand'];
+	$hsn_code = $row['hsn_code'];
+	$gst_percentage = $row['gst_percentage'];
+	$p_is_approve = $row['p_is_approve'];
 }
 
+if (!isset($ecat_id)) {
+    $ecat_id = 0;
+}
 $statement = $pdo->prepare("SELECT * 
                         FROM tbl_end_category t1
                         JOIN tbl_mid_category t2
@@ -310,11 +380,13 @@ foreach ($result as $row) {
 				</div>
 			<?php endif; ?>
 
+
+
 			<form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
 
 				<div class="box box-info">
 					<div class="box-body">
-						<!-- <div class="form-group">
+						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Top Level Category Name <span>*</span></label>
 							<div class="col-sm-4">
 								<select name="tcat_id" class="form-control select2 top-cat">
@@ -333,8 +405,8 @@ foreach ($result as $row) {
 										?>
 		                        </select>
 							</div>
-						</div> -->
-						<!-- <div class="form-group">
+						</div>
+						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Mid Level Category Name <span>*</span></label>
 							<div class="col-sm-4">
 								<select name="mcat_id" class="form-control select2 mid-cat">
@@ -353,8 +425,8 @@ foreach ($result as $row) {
 										?>
 		                        </select>
 							</div>
-						</div> -->
-						<!-- <div class="form-group">
+						</div>
+						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">End Level Category Name <span>*</span></label>
 							<div class="col-sm-4">
 								<select name="ecat_id" class="form-control select2 end-cat">
@@ -373,13 +445,56 @@ foreach ($result as $row) {
 										?>
 		                        </select>
 							</div>
-						</div> -->
-						<!-- <div class="form-group">
+						</div>
+						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Product Name <span>*</span></label>
 							<div class="col-sm-4">
 								<input type="text" name="p_name" class="form-control" value="<?php echo $p_name; ?>">
 							</div>
-						</div>	 -->
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Product Brand <span>*</span></label>
+							<div class="col-sm-4">
+								<select name="product_brand" class="form-control select2">
+									<option value="">Select Brand</option>
+									<?php
+									$seller_id = $_SESSION['seller_session']['seller_id'];
+									$statement = $pdo->prepare("SELECT sb.brand_id,
+                                    b.brand_name
+                                    FROM seller_brands sb
+                                     JOIN tbl_brands b ON sb.brand_id = b.brand_id
+                                     WHERE sb.seller_id = :seller_id");
+									$statement->bindParam(':seller_id', $seller_id);
+									$statement->execute();
+									$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+									foreach ($result as $row) {
+									?>
+										<option value="<?php echo $row['brand_id']; ?>" <?php if ($row['brand_id'] == $product_brand) {
+																							echo 'selected';
+																						} ?>><?php echo $row['brand_name']; ?></option>
+									<?php
+									}
+									?>
+									<option value="Others" <?php if ($product_brand == 'Others') echo 'selected'; ?>>Others</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">HSN Code <span>*</span><br></label>
+							<div class="col-sm-4">
+								<input type="text" name="hsn_code"
+									value="<?php echo isset($_POST['hsn_code']) ? htmlspecialchars($_POST['hsn_code']) : $hsn_code; ?>"
+									required class="form-control" maxlength="8" placeholder="8 digit code">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">GST % <span>*</span><br></label>
+							<div class="col-sm-4">
+								<input type="text" name="gst_percentage"
+									value="<?php echo isset($_POST['gst_percentage']) ? htmlspecialchars($_POST['gst_percentage']) : $gst_percentage; ?>"
+									required class="form-control" placeholder="Max upto 18%">
+							</div>
+						</div>
 
 
 

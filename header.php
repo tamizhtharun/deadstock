@@ -188,7 +188,7 @@ unset($_SESSION['success_message']);
                                             class="ds-user-name"><?php echo $_SESSION['user_session']['username'] ?></span>
                                         <span class="ds-user-email"><?php echo $_SESSION['user_session']['email'] ?></span>
                                     </div>
-                                </div>
+                                </div>  
                                 <div class="ds-menu-items">
                                     <a href="user/profile.php" class="ds-menu-item"
                                         style="text-decoration: none !important;">

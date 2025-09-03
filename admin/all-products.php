@@ -25,7 +25,7 @@ if (isset($_POST['approve_all'])) {
 // Check if reject_all button is clicked
 if (isset($_POST['reject_all'])) {
     try {
-        $stmt = $pdo->prepare("UPDATE tbl_product SET p_is_approve = 0");
+        $stmt = $pdo->prepare("UPDATE tbl_product SET p_is_approve = 0, p_is_featured = 0");
         $stmt->execute();
         echo '<script>
             document.getElementById("message").style.backgroundColor = "red";

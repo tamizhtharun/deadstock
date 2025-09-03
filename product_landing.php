@@ -765,14 +765,14 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
               $file_path = 'assets/uploads/' . $pdf_name;
               $view_url = "pdf_download.php?action=view&id=$product_id";
               $download_url = "pdf_download.php?action=download&id=$product_id";
-              echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank" style="text-decoration:none;"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
+              echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank" style="text-decoration:none;"><i class="fa fa-file-pdf-o"></i>View</a>';
               echo '&nbsp;&nbsp;';
-              echo '<a href="' . $download_url . '" class="btn btn-success" style="text-decoration:none;"><i class="fa fa-download"></i> Download Catalogue</a>';
+              echo '<a href="' . $download_url . '" class="btn btn-success" style="text-decoration:none;"><i class="fa fa-download"></i>Download</a>';
             }
             ?>
           </div>
         </div>
-      </div>
+     </div>
 
 
       <?php

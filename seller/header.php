@@ -105,26 +105,34 @@ if (!isset($_SESSION['seller_session'])) {
 
 				<!-- Top Bar ... User Information .. Login/Log out Area -->
 				<div class="navbar-custom-menu">
-					<div class="dropdown profile-dropdown">
-						<button class="btn btn-secondary dropdown-toggle d-flex align-items-center profile-hover" type="button" id="newProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none; padding: 0;">
-							<?php
-							// Check if the profile photo exists; if not, use the Font Awesome user icon
-							if (!empty($_SESSION['seller_session']['seller_photo'])) {
-								$profile_photo = $_SESSION['seller_session']['seller_photo'];
-								echo '<img src="../assets/uploads/profile-pictures/' . $profile_photo . '" style="width: 35px; height: 35px; border-radius: 50%; margin-right: 8px;">';
-							} else {
-								echo '<i class="fa fa-user" style="font-size: 20px; margin-right: 8px;"></i>';
-							}
-							?>
-							<span style="font-weight:800; margin-right: 6px;"><?php echo $_SESSION['seller_session']['seller_name']; ?></span>
-							<i class="fa fa-chevron-down dropdown-icon"></i> <!-- Dropdown Icon -->
-						</button>
-						<ul class="dropdown-menu dropdown-menu-end profile-menu" aria-labelledby="newProfileDropdown">
-							<li><a class="dropdown-item" href="profile-edit.php">Edit Profile</a></li>
-							<li><a class="dropdown-item text-danger" href="logout.php">Log out</a></li>
-						</ul>
-					</div>
-				</div>
+    <div class="dropdown profile-dropdown">
+        <button class="btn d-flex align-items-center profile-hover" 
+                type="button" 
+                id="newProfileDropdown" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false" 
+                style="background:none; border:none; padding:0;">
+            <?php
+            // Check if the profile photo exists; if not, use the Font Awesome user icon
+            if (!empty($_SESSION['seller_session']['seller_photo'])) {
+                $profile_photo = $_SESSION['seller_session']['seller_photo'];
+                echo '<img src="../assets/uploads/profile-pictures/' . $profile_photo . '" style="width:35px; height:35px; border-radius:50%; margin-right:8px;">';
+            } else {
+                echo '<i class="fa fa-user" style="font-size:20px; margin-right:8px;"></i>';
+            }
+            ?>
+            <span style="font-weight:800; margin-right:6px;">
+                <?php echo $_SESSION['seller_session']['seller_name']; ?>
+            </span>
+            <i class="fa fa-chevron-down"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="newProfileDropdown">
+            <li><a class="dropdown-item" href="profile-edit.php">Edit Profile</a></li>
+            <li><a class="dropdown-item text-danger" href="logout.php">Log out</a></li>
+        </ul>
+    </div>
+</div>
+
 			</nav>
 		</header>
 
