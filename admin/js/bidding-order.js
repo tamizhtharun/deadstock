@@ -404,14 +404,14 @@ function updateSellerModal(data) {
                 <img src="${seller.seller_photo || defaultImage}" alt="Seller Photo">
             </div>
         </div>
-        <div class="seller-info-item"><label>Company Name</label><span>${seller.seller_cname}</span></div>
+        <div class="seller-info-item"><label>Seller ID</label><span>${seller.unique_seller_id}</span></div>       
         <div class="seller-info-item">
     <label>Total Revenue</label>
     <span>${seller.formatted_revenue}</span>
 </div>
 
         <div class="seller-info-item"><label>Email</label><span>${seller.seller_email}</span></div>
-        <div class="seller-info-item"><label>Phone</label><span>${seller.seller_phone}</span></div>
+        <div class="seller-info-item"><label>Company Name</label><span>${seller.seller_cname}</span></div>
         <div class="seller-info-item"><label>GST Number</label><span>${seller.seller_gst}</span></div>
         <div class="seller-info-item"><label>Registration Date</label><span>${seller.created_at}</span></div>
         <div class="seller-info-item"><label>Status</label><span class="status-badge ${seller.seller_status ? "active" : "inactive"}">${seller.seller_status ? "Active" : "Inactive"}</span></div>
@@ -419,12 +419,7 @@ function updateSellerModal(data) {
             <label>Business Address</label>
             <span>${seller.seller_address} <br> ${seller.seller_city}, ${seller.seller_state} ${seller.seller_zipcode}</span>
         </div>
-        <div class="seller-info-item">
-            <label>Business Certification</label>
-            <button id="downloadSellerCertificate" class="btn btn-primary">
-                <i class="fa fa-download"></i> Download Seller Certificate
-            </button>
-        </div>
+        <div class="seller-info-item"><label>Phone</label><span>${seller.seller_phone}</span></div>
     `
 
   // Add click event listeners for the photo modal

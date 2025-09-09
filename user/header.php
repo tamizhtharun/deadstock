@@ -24,6 +24,7 @@ session_start();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="../css/messages.css">
 
     <style>
     
@@ -52,7 +53,11 @@ session_start();
 </style>
         
 </head>
+<div class="message-wrapper">
+    <div id="message-container"></div>
+</div>
 <body>
+
 <div class="header">   
 <nav class="ds-nav-container">
             <div class="ds-logo-section">
@@ -208,105 +213,7 @@ session_start();
   </div>
 
   <script>
-     const notifications = [
-                    // All Notifications
-                    {
-                        type: 'all',
-                        subtype: 'bid',
-                        title: 'New Bid Received',
-                        message: 'Someone placed a bid of $250 on Vintage Watch',
-                        time: '2 min ago',
-                        isRead: false,
-                        // image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=200&q=80'
-                        image: 'assets/uploads/logo.png'
-                    },
-                    {
-                        type: 'all',
-                        subtype: 'order',
-                        title: 'Order Confirmed',
-                        message: 'Your order #12345 has been confirmed',
-                        time: '15 min ago',
-                        isRead: false
-                    },
-                    // Orders Notifications
-                    {
-                        type: 'orders',
-                        title: 'Shipping Update',
-                        message: 'Your package is out for delivery',
-                        time: '30 min ago',
-                        isRead: false
-                    },
-                    {
-                        type: 'orders',
-                        title: 'Order Delivered',
-                        message: 'Your recent order has been delivered',
-                        time: '2 hours ago',
-                        isRead: true
-                    },
-                    // Bids Notifications
-                    {
-                        type: 'bids',
-                        title: 'Outbid Alert',
-                        message: 'Welcome To Deadstock',
-                        time: '1 hour ago',
-                        isRead: true,
-                        // image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=200&q=80'
-                        image: 'assets/uploads/logo.png'
-
-                    },
-                    {
-                        type: 'bids',
-                        title: 'Bid Accepted',
-                        message: 'Your bid on Luxury Watch was accepted',
-                        time: '3 hours ago',
-                        isRead: false
-                    }
-                ];
-
-        function createNotificationElement(notification) {
-            const div = document.createElement('div');
-            div.className = `notification-item ${notification.isRead ? '' : 'unread'}`;
-            
-            const icon = getNotificationIcon(notification.type);
-            
-            div.innerHTML = `
-                <div class="notification-icon">
-                    <i class="${icon}"></i>
-                </div>
-                <div class="notification-content">
-                    <div class="notification-title">${notification.title}</div>
-                    <div class="notification-message">${notification.message}</div>
-                    <div class="notification-time">${notification.time}</div>
-                </div>
-                ${notification.image ? `<img src="${notification.image}" alt="" class="notification-image">` : ''}
-            `;
-            
-            return div;
-        }
-
-        function getNotificationIcon(type) {
-            switch(type) {
-                case 'bid': return 'fas fa-gavel';
-                case 'order': return 'fas fa-shopping-bag';
-                default: return 'fas fa-bell';
-            }
-        }
-
-        function updateNotifications(filter = 'all') {
-            const notificationList = document.getElementById('notificationList');
-            notificationList.innerHTML = '';
-            
-            let filteredNotifications = notifications;
-            if (filter !== 'all') {
-                filteredNotifications = notifications.filter(n => n.type === filter.toLowerCase());
-            }
-            
-            filteredNotifications.forEach(notification => {
-                notificationList.appendChild(createNotificationElement(notification));
-            });
-            
-            updateBadgeCount();
-        }
+  
 
         function updateBadgeCount() {
             const unreadCount = notifications.filter(n => !n.isRead).length;
@@ -365,5 +272,29 @@ notificationList.addEventListener('wheel', (event) => {
 
   </script>
   <script src="../js/index.js"></script>
+  <script src="../js/messages.js"></script>
+  <script>
+function showMessage(text, type = 'success') {
+    const container = document.getElementById('message-container');
+    if (!container) return;
+
+    const message = document.createElement('div');
+    message.className = `message-box ${type}`;
+    message.innerHTML = text;
+
+    container.prepend(message);
+
+    setTimeout(() => {
+        message.remove();
+    }, 4500);
+}
+
+document.addEventListener('click', (e) => {
+    if (e.target.closest('.message-box')) {
+        e.target.closest('.message-box').remove();
+    }
+});
+</script>
+
   </body>
 </html>

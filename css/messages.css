@@ -11,31 +11,38 @@
 
 .message-box {
   background: #fff;
-  padding: 10px 15px;
+  padding: 8px 12px;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  margin-bottom: 8px;
-  animation: slideIn 0.3s ease-out, fadeOut 0.3s 2.5s forwards;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 6px;
+  white-space: normal; /* Changed from nowrap to allow text wrapping */
+  overflow: visible; /* Changed from hidden to show full content */
+  text-overflow: clip; /* Remove ellipsis */
+  max-height: none; /* Remove fixed height to accommodate multiple lines */
+  line-height: 1.2;
+  text-align: left; /* Ensure text alignment is consistent */
 }
 
 .success {
-  border-left: 3px solid #28a745;
+  border-left: 2px solid #28a745; /* Thinner border */
   background: #f0fff4;
 }
 
 .error {
-  border-left: 3px solid #dc3545;
+  border-left: 2px solid #dc3545; /* Thinner border */
   background: #fff0f0;
 }
 
 .message-box::before {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
-  font-size: 16px;
+  font-size: 14px; /* Smaller icon */
+  margin-right: 4px; /* Reduced spacing */
+  flex-shrink: 0; /* Prevent icon from shrinking */
 }
 
 .success::before { content: "\f00c"; color: #28a745; }
@@ -49,3 +56,4 @@
 @keyframes fadeOut {
   to { opacity: 0 }
 }
+

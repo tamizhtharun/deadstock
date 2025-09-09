@@ -195,7 +195,23 @@
     100% { transform: scale(1); }
   }
   
- 
+  .ds-notification-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background-color: #007aff;
+    color: white;
+    border-radius: 12px;
+    padding: 0.125rem 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 2px solid var(--ds-color-background);
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   
   .ds-profile-menu {
     position: relative;
@@ -270,11 +286,15 @@
   }
   
   .ds-user-email {
-
     font-size: 0.875rem;
     color: var(--ds-color-text-secondary);
-  }
-  
+    display: block;
+    max-width: 150px; /* Adjust as needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
   .ds-menu-items {
     padding: 0.5rem 0;
   }

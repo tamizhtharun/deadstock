@@ -159,7 +159,6 @@ $(document).ready(function () {
     function updateCartTotals() {
         let grandTotal = 0;
         let totalSavings = 0;
-        const shippingCost = 14; // Your fixed shipping cost
 
         // Calculate totals from all items
         $('.cart-item').each(function () {
@@ -184,7 +183,7 @@ $(document).ready(function () {
         }
 
         // Update final total
-        $('.total-amount .amount').text(formatCurrency(grandTotal + shippingCost));
+        $('.total-amount .amount').text(formatCurrency(grandTotal));
     }
 
     // Handle quantity button clicks
@@ -306,5 +305,4 @@ $(document).ready(function () {
         $(".total-savings").text(`₹${totalSavings.toFixed(2)}`).toggle(totalSavings > 0);
     }
 });
-
 

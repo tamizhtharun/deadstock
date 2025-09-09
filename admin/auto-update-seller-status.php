@@ -20,21 +20,21 @@ try {
         GROUP BY 
             s.seller_id
     ";
-    
+
     $statement = $pdo->prepare($query);
     $statement->execute();
     $sellers = $statement->fetchAll(PDO::FETCH_ASSOC);
 
     // Current date for comparison
     $current_date = date('Y-m-d');
-    
+
     foreach ($sellers as $seller) {
         $seller_id = $seller['seller_id'];
         $valid_to_date = $seller['certification_end_date'] ? date('Y-m-d', strtotime($seller['certification_end_date'])) : null;
-        
+
         // Determine the new status
         $new_status = null;
-        
+
         if ($valid_to_date) {
             if ($current_date > $valid_to_date) {
                 // If certification has expired, set status to 0
@@ -44,13 +44,13 @@ try {
                 $new_status = 1;
             }
         }
-        
+
         // Update status if it needs to be changed
         if ($new_status !== null && $new_status != $seller['seller_status']) {
             $update_query = "UPDATE sellers SET seller_status = ? WHERE seller_id = ?";
             $update_stmt = $pdo->prepare($update_query);
             $update_stmt->execute([$new_status, $seller_id]);
-            
+
             // Log the status change
             $log_message = sprintf(
                 "Seller ID: %d status changed to %d on %s (Certification valid to: %s)",
@@ -60,13 +60,13 @@ try {
                 $valid_to_date
             );
             error_log($log_message, 3, "logs/seller_status_updates.log");
-            
+
             // If status changed to 1, send notification email
             if ($new_status == 1) {
                 require 'phpmailer/src/PHPMailer.php';
                 require 'phpmailer/src/SMTP.php';
                 require 'phpmailer/src/Exception.php';
-                
+
                 try {
                     $mail = new PHPMailer\PHPMailer\PHPMailer(true);
                     $mail->isSMTP();
@@ -97,7 +97,7 @@ try {
                 try {
                     $mail = new PHPMailer\PHPMailer\PHPMailer(true);
                     // ... (same email setup as above)
-                    
+
                     $mail->Subject = 'Account Deactivation Notice';
                     $mail->Body = "<h1>Hello, {$seller['seller_name']}!</h1>
                                  <p>Your account has been deactivated as your certification has expired on: {$valid_to_date}</p>
@@ -112,11 +112,9 @@ try {
             }
         }
     }
-    
+
     echo "Seller status update process completed successfully.\n";
-    
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());
     echo "An error occurred during the update process.\n";
 }
-?>

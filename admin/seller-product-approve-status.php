@@ -29,9 +29,14 @@ try {
                     $updateFeaturedActiveStatement->execute();
                 }
                 // Successfully updated, redirect back to the seller products page
-                $seller_id = isset($_GET['seller_id']) ? intval($_GET['seller_id']) : 0; // Get seller_id from URL
-                header("Location: seller-products.php?seller_id=" . $seller_id);
-                exit();
+                $seller_id = isset($_GET['seller_id']) ? intval($_GET['seller_id']) : 0;
+                $referer = $_SERVER['HTTP_REFERER'] ?? '';
+                if (strpos($referer, 'seller-products.php') !== false && $seller_id) {
+                    header("Location: seller-products.php?seller_id=" . $seller_id);
+                } else {
+                    header("Location: all-products.php");
+                }
+                exit;
             } else {
                 throw new Exception("Failed to update the product approval status.");
             }

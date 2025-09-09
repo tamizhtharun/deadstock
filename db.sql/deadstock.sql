@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 30, 2025 at 10:44 AM
+-- Generation Time: Feb 10, 2025 at 11:10 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -49,9 +49,11 @@ CREATE TABLE `bidding` (
 --
 
 INSERT INTO `bidding` (`bid_id`, `product_id`, `user_id`, `bid_price`, `bid_quantity`, `payment_id`, `order_id`, `bid_time`, `bid_status`, `refund_status`, `refund_id`, `refund_amount`, `refund_date`, `refund_error`) VALUES
-(29, 162, 11, 50.00, 60, 'pay_PnxuG8019DtDQU', 'order_PnxttQVoBYxND6', '2025-01-26 11:30:18', 2, NULL, NULL, NULL, NULL, NULL),
 (11123, 169, 11, 10.00, 600, 'pay_Po3xnTLqv3nRrM', 'order_Po3xQqltvYheTu', '2025-01-26 17:25:47', 3, NULL, NULL, NULL, NULL, NULL),
-(11124, 164, 11, 50.00, 60, 'pay_PoNOz6fP47So8l', 'order_PoNOVr5Bm3BzTa', '2025-01-27 12:26:44', 2, NULL, NULL, NULL, NULL, NULL);
+(11124, 164, 11, 50.00, 60, 'pay_PoNOz6fP47So8l', 'order_PoNOVr5Bm3BzTa', '2025-01-27 12:26:44', 2, NULL, NULL, NULL, NULL, NULL),
+(11125, 173, 11, 250.00, 10, 'pay_PrCcVQEtAmgwfz', 'order_PrCbNxYULTk3LR', '2025-02-03 15:51:02', 2, NULL, NULL, NULL, NULL, NULL),
+(11127, 171, 11, 500.00, 3, 'pay_PrV6XZX3sdFojo', 'order_PrV65Sa7033di1', '2025-02-04 09:56:00', 0, NULL, NULL, NULL, NULL, NULL),
+(11128, 172, 11, 165.00, 50, 'pay_Pt7Yh7w558s3V6', 'order_Pt7XujeHJ1eUSt', '2025-02-08 12:11:50', 0, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -66,15 +68,16 @@ CREATE TABLE `bid_settings` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `last_updated` date DEFAULT NULL,
-  `min_bid_pct` int(3) NOT NULL
+  `min_bid_pct` int(3) NOT NULL,
+  `notifications_sent` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `bid_settings`
 --
 
-INSERT INTO `bid_settings` (`id`, `send_time`, `close_time`, `created_at`, `updated_at`, `last_updated`, `min_bid_pct`) VALUES
-(1, '12:27:00', '12:30:00', '2025-01-11 08:38:00', '2025-01-27 06:58:41', '2025-01-27', 57);
+INSERT INTO `bid_settings` (`id`, `send_time`, `close_time`, `created_at`, `updated_at`, `last_updated`, `min_bid_pct`, `notifications_sent`) VALUES
+(1, '10:22:00', '12:40:00', '2025-01-11 03:08:00', '2025-02-08 04:42:28', '2025-02-04', 45, 1);
 
 -- --------------------------------------------------------
 
@@ -210,7 +213,8 @@ INSERT INTO `notifications` (`id`, `recipient_id`, `recipient_type`, `title`, `m
 (45, 11, 'user', 'What is deadstock ?', 'Dead stock is inventory that is no longer sellable and will likely never sell in the future, oftentimes because it\'s expired, obsolete, low quality, or out of season. Dead stock, usually stored in the warehouse, only refers to inventory that has never been sold, which excludes returns.', 'error', 1, '2025-01-30 07:15:42'),
 (46, 11, 'user', 'What is deadstock ?', 'Dead stock is inventory that is no longer sellable and will likely never sell in the future, oftentimes because it\'s expired, obsolete, low quality, or out of season. Dead stock, usually stored in the warehouse, only refers to inventory that has never been sold, which excludes returns.', 'error', 1, '2025-01-30 07:21:19'),
 (47, 11, 'user', 'TEST', 'SEND', 'info', 1, '2025-01-30 08:53:38'),
-(48, 11, 'user', '123456', '123456', 'info', 1, '2025-01-30 08:55:15');
+(48, 11, 'user', '123456', '123456', 'info', 1, '2025-01-30 08:55:15'),
+(49, 11, 'user', 'Bid Accepted', 'Congratulations! Your bid for Shank tool – Rigid clamping has been accepted. Bid details: ₹250.00 for 10 unit(s). We\'ll be in touch soon with next steps. Thank you for your business!', 'success', 1, '2025-02-03 10:26:42');
 
 -- --------------------------------------------------------
 
@@ -276,7 +280,81 @@ INSERT INTO `page_views` (`id`, `page_id`, `page_title`, `view_count`, `view_dat
 (0, 'HP', 'Home page', 1, '2025-01-30'),
 (0, 'HP', 'Home page', 1, '2025-01-30'),
 (0, 'HP', 'Home page', 1, '2025-01-30'),
-(0, 'HP', 'Home page', 1, '2025-01-30');
+(0, 'HP', 'Home page', 1, '2025-01-30'),
+(0, 'HP', 'Home page', 1, '2025-01-31'),
+(0, 'SRF', 'Seller Registration Form', 1, '2025-01-31'),
+(0, 'HP', 'Home page', 1, '2025-01-31'),
+(0, 'SRF', 'Seller Registration Form', 1, '2025-01-31'),
+(0, 'HP', 'Home page', 1, '2025-01-31'),
+(0, 'HP', 'Home page', 1, '2025-01-31'),
+(0, 'HP', 'Home page', 1, '2025-01-31'),
+(0, 'HP', 'Home page', 1, '2025-01-31'),
+(0, 'HP', 'Home page', 1, '2025-02-01'),
+(0, 'HP', 'Home page', 1, '2025-02-01'),
+(0, 'HP', 'Home page', 1, '2025-02-01'),
+(0, 'HP', 'Home page', 1, '2025-02-01'),
+(0, 'HP', 'Home page', 1, '2025-02-01'),
+(0, 'SRF', 'Seller Registration Form', 1, '2025-02-01'),
+(0, 'SRF', 'Seller Registration Form', 1, '2025-02-01'),
+(0, 'HP', 'Home page', 1, '2025-02-01'),
+(0, 'HP', 'Home page', 1, '2025-02-01'),
+(0, 'HP', 'Home page', 1, '2025-02-01'),
+(0, 'HP', 'Home page', 1, '2025-02-01'),
+(0, 'HP', 'Home page', 1, '2025-02-03'),
+(0, 'HP', 'Home page', 1, '2025-02-03'),
+(0, 'HP', 'Home page', 1, '2025-02-03'),
+(0, 'HP', 'Home page', 1, '2025-02-03'),
+(0, 'HP', 'Home page', 1, '2025-02-03'),
+(0, 'HP', 'Home page', 1, '2025-02-03'),
+(0, 'HP', 'Home page', 1, '2025-02-03'),
+(0, 'HP', 'Home page', 1, '2025-02-03'),
+(0, 'HP', 'Home page', 1, '2025-02-03'),
+(0, 'HP', 'Home page', 1, '2025-02-03'),
+(0, 'HP', 'Home page', 1, '2025-02-03'),
+(0, 'HP', 'Home page', 1, '2025-02-03'),
+(0, 'HP', 'Home page', 1, '2025-02-03'),
+(0, 'HP', 'Home page', 1, '2025-02-04'),
+(0, 'HP', 'Home page', 1, '2025-02-04'),
+(0, 'HP', 'Home page', 1, '2025-02-04'),
+(0, 'HP', 'Home page', 1, '2025-02-04'),
+(0, 'HP', 'Home page', 1, '2025-02-04'),
+(0, 'HP', 'Home page', 1, '2025-02-04'),
+(0, 'HP', 'Home page', 1, '2025-02-04'),
+(0, 'HP', 'Home page', 1, '2025-02-04'),
+(0, 'HP', 'Home page', 1, '2025-02-05'),
+(0, 'HP', 'Home page', 1, '2025-02-05'),
+(0, 'HP', 'Home page', 1, '2025-02-05'),
+(0, 'HP', 'Home page', 1, '2025-02-05'),
+(0, 'HP', 'Home page', 1, '2025-02-05'),
+(0, 'HP', 'Home page', 1, '2025-02-05'),
+(0, 'HP', 'Home page', 1, '2025-02-05'),
+(0, 'HP', 'Home page', 1, '2025-02-05'),
+(0, 'HP', 'Home page', 1, '2025-02-05'),
+(0, 'HP', 'Home page', 1, '2025-02-06'),
+(0, 'HP', 'Home page', 1, '2025-02-06'),
+(0, 'HP', 'Home page', 1, '2025-02-06'),
+(0, 'HP', 'Home page', 1, '2025-02-06'),
+(0, 'HP', 'Home page', 1, '2025-02-06'),
+(0, 'HP', 'Home page', 1, '2025-02-06'),
+(0, 'HP', 'Home page', 1, '2025-02-06'),
+(0, 'HP', 'Home page', 1, '2025-02-06'),
+(0, 'HP', 'Home page', 1, '2025-02-06'),
+(0, 'HP', 'Home page', 1, '2025-02-06'),
+(0, 'HP', 'Home page', 1, '2025-02-06'),
+(0, 'HP', 'Home page', 1, '2025-02-06'),
+(0, 'HP', 'Home page', 1, '2025-02-07'),
+(0, 'HP', 'Home page', 1, '2025-02-07'),
+(0, 'HP', 'Home page', 1, '2025-02-07'),
+(0, 'HP', 'Home page', 1, '2025-02-07'),
+(0, 'HP', 'Home page', 1, '2025-02-08'),
+(0, 'HP', 'Home page', 1, '2025-02-08'),
+(0, 'HP', 'Home page', 1, '2025-02-08'),
+(0, 'HP', 'Home page', 1, '2025-02-08'),
+(0, 'HP', 'Home page', 1, '2025-02-08'),
+(0, 'HP', 'Home page', 1, '2025-02-08'),
+(0, 'HP', 'Home page', 1, '2025-02-08'),
+(0, 'HP', 'Home page', 1, '2025-02-08'),
+(0, 'HP', 'Home page', 1, '2025-02-10');
 
 -- --------------------------------------------------------
 
@@ -298,19 +376,29 @@ CREATE TABLE `sellers` (
   `seller_password` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `seller_status` tinyint(4) DEFAULT 0,
-  `seller_photo` varchar(255) NOT NULL
+  `seller_photo` varchar(255) DEFAULT NULL,
+  `account_number` varchar(18) DEFAULT NULL,
+  `ifsc_code` varchar(11) DEFAULT NULL,
+  `bank_name` varchar(255) DEFAULT NULL,
+  `bank_branch` varchar(255) DEFAULT NULL,
+  `bank_address` varchar(1000) DEFAULT NULL,
+  `bank_city` varchar(255) DEFAULT NULL,
+  `bank_state` varchar(500) DEFAULT NULL,
+  `account_holder` varchar(550) DEFAULT NULL,
+  `seller_verification_token` varchar(255) NOT NULL,
+  `seller_verified` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `sellers`
 --
 
-INSERT INTO `sellers` (`seller_id`, `seller_name`, `seller_cname`, `seller_email`, `seller_phone`, `seller_gst`, `seller_address`, `seller_state`, `seller_city`, `seller_zipcode`, `seller_password`, `created_at`, `seller_status`, `seller_photo`) VALUES
-(9, 'TAMIL SELVAN V', 'Deadstock Tooling', 'mailtotharun23@gmail.com', '9865969799', '22AAAAA0000A1Z5', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$bMO/LgY/F2pMyocMrUaeRudf5xMYmkkkZecWFeQjhQ/X16T63btKm', '2025-01-09 04:34:52', 1, 'seller-9.png'),
-(10, 'TAMIL SELVAN V', 'IMET', '927622bal049@mkce.ac.in', '9597049879', '22AAAAA0000A1Z5', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', '2025-01-26 11:23:02', 1, ''),
-(11, 'Test Seller', 'IMET TOOLING', 'seller@deadstock.in', '9865969799', '22AAAAA0000A1Z5', '1/20, Matha kovil street, Karai- po, Alathur- tk, Perambalur.', 'Tamil Nadu', 'Perambalur', '639133', '$2y$10$qzRaXi.d9lgOEqFGDAKG4uNHfJ95sptoMLJXEXfI68wfanQ7bwGNC', '2025-01-27 14:25:15', 1, 'seller-11.jpg'),
-(12, 'Seller 1', 'Company 11', 'company@deadstock.in', '9876543213', '22AAAAA0000A1Z5', 'Sullerumbu', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$qzRaXi.d9lgOEqFGDAKG4uNHfJ95sptoMLJXEXfI68wfanQ7bwGNC', '2025-01-27 16:29:00', 1, 'seller-12.png'),
-(13, 'Lokesh TL', 'LOKESH GROUP OF COMPANIES', 'lokeshlokesh93662@gmail.com', '9876543215', '22AAAAA0000A1Z5', 'Mecheri, Mettur Dam', 'Tamil Nadu', 'Salem', '636402', '$2y$10$UVc0YZPHVjEAa3XgBKjdLOynIUbPe.fDv.3j4XfaxjHeHAvYWLCYi', '2025-01-29 05:49:57', 1, '');
+INSERT INTO `sellers` (`seller_id`, `seller_name`, `seller_cname`, `seller_email`, `seller_phone`, `seller_gst`, `seller_address`, `seller_state`, `seller_city`, `seller_zipcode`, `seller_password`, `created_at`, `seller_status`, `seller_photo`, `account_number`, `ifsc_code`, `bank_name`, `bank_branch`, `bank_address`, `bank_city`, `bank_state`, `account_holder`, `seller_verification_token`, `seller_verified`) VALUES
+(9, 'TAMIL SELVAN V', 'Deadstock Tooling', 'mailtotharun23@gmail.com', '9865969799', '22AAAAA0000A1Z5', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$77O97KlaGcTNX1Lw5jiWWewRcZDHr499V.bqLn6Wn.WU3K9DNcyK.', '2025-01-09 04:34:52', 1, 'seller-9.png', '122001000021664', 'IOBA0001220', 'Indian Overseas Bank', 'SALAIYUR', 'SALAIYUR NAL ROAD SULLERUMBU POST,VIA VEDASANDUR SALAIYUR PIN 624710', 'SULLERUMBU', 'TAMILNADU', 'Tamil Selvan V', '', 0),
+(10, 'TAMIL SELVAN V', 'IMET', '927622bal049@mkce.ac.in', '9597049879', '22AAAAA0000A1Z5', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', '2025-01-26 11:23:02', 0, '', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, '', 0),
+(11, 'Test Seller', 'IMET TOOLING', 'seller@deadstock.in', '9865969799', '22AAAAA0000A1Z5', '1/20, Matha kovil street, Karai- po, Alathur- tk, Perambalur.', 'Tamil Nadu', 'Perambalur', '639133', '$2y$10$qzRaXi.d9lgOEqFGDAKG4uNHfJ95sptoMLJXEXfI68wfanQ7bwGNC', '2025-01-27 14:25:15', 0, 'seller-11.jpg', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, '', 0),
+(12, 'Seller 1', 'Company 11', 'company@deadstock.in', '9876543213', '22AAAAA0000A1Z5', 'Sullerumbu', 'Tamil Nadu', 'Dindigul', '624710', '$2y$10$qzRaXi.d9lgOEqFGDAKG4uNHfJ95sptoMLJXEXfI68wfanQ7bwGNC', '2025-01-27 16:29:00', 0, 'seller-12.png', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, '', 0),
+(13, 'Lokesh TL', 'LOKESH GROUP OF COMPANIES', 'lokeshlokesh93662@gmail.com', '9876543215', '22AAAAA0000A1Z5', 'Mecheri, Mettur Dam', 'Tamil Nadu', 'Salem', '636402', '$2y$10$UVc0YZPHVjEAa3XgBKjdLOynIUbPe.fDv.3j4XfaxjHeHAvYWLCYi', '2025-01-29 05:49:57', 1, '', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, '', 0);
 
 -- --------------------------------------------------------
 
@@ -331,7 +419,7 @@ CREATE TABLE `seller_brands` (
 --
 
 INSERT INTO `seller_brands` (`seller_id`, `brand_id`, `brand_certificate`, `valid_to`, `created_at`) VALUES
-(9, 41, 'certificate-9-41-1738209827.pdf', '2025-01-31', '2025-01-30'),
+(9, 41, 'certificate-9-41-1738732016.pdf', '2025-02-28', '2025-02-05'),
 (11, 44, 'certificate-11-44-1738038507.pdf', '2025-01-28', '2025-01-28'),
 (11, 49, 'certificate-11-49-1738039496.pdf', '2025-05-29', '2025-01-28'),
 (12, 42, 'certificate-12-42-1737997120.pdf', '2025-01-28', '2025-01-27'),
@@ -398,7 +486,35 @@ CREATE TABLE `tbl_cart` (
 --
 
 INSERT INTO `tbl_cart` (`id`, `user_id`, `quantity`) VALUES
-(162, 10, 1);
+(162, 10, 1),
+(171, 10, 1),
+(170, 10, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_company_settings`
+--
+
+CREATE TABLE `tbl_company_settings` (
+  `id` int(11) NOT NULL,
+  `company_name` varchar(100) DEFAULT NULL,
+  `address` text DEFAULT NULL,
+  `gstin` varchar(20) DEFAULT NULL,
+  `state` varchar(50) DEFAULT NULL,
+  `state_code` varchar(2) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `pan_number` varchar(20) DEFAULT NULL,
+  `vat_tin` varchar(20) DEFAULT NULL,
+  `cst_no` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_company_settings`
+--
+
+INSERT INTO `tbl_company_settings` (`id`, `company_name`, `address`, `gstin`, `state`, `state_code`, `email`, `pan_number`, `vat_tin`, `cst_no`) VALUES
+(1, 'DEADSTOCK', '5,1-B, 1st Floor, Sai Sruthi Complex, Ramar Koil Street, Ram Nagar, Coimbatore, Tamil Nadu 641009', '33AACCI1032M1ZW', 'Tamil Nadu', '33', 'contact@deadstock.in', 'AACCI1032M', '33132027611', '1020070/22-06-2009');
 
 -- --------------------------------------------------------
 
@@ -542,7 +658,18 @@ INSERT INTO `tbl_key` (`id`, `P`, `M`, `K`, `N`, `S`, `H`, `O`) VALUES
 (168, '0', '1', '2', '1', '0', '1', '2'),
 (169, '0', '1', '2', '1', '0', '1', '2'),
 (170, '0', '0', '1', '2', '2', '1', '0'),
-(0, '0', '1', '2', '1', '0', '1', '1');
+(0, '0', '1', '2', '1', '0', '1', '1'),
+(171, '1', '1', '2', '2', '1', '1', ''),
+(0, '', '', '1', '1', '1', '', '2'),
+(0, '', '', '1', '1', '1', '', '2'),
+(0, '', '', '1', '1', '1', '', '2'),
+(172, '1', '', '', '2', '1', '', '1'),
+(173, '', '1', '1', '1', '1', '1', '2'),
+(0, '', '', '', '', '', '', ''),
+(0, '', '', '', '', '', '', ''),
+(174, '', '2', '', '1', '1', '', ''),
+(175, '1', '1', '2', '0', '1', '2', '1'),
+(0, '', '', '', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -619,6 +746,7 @@ CREATE TABLE `tbl_orders` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `order_type` enum('bid','direct') NOT NULL,
+  `address_id` int(11) NOT NULL,
   `processing_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -626,11 +754,21 @@ CREATE TABLE `tbl_orders` (
 -- Dumping data for table `tbl_orders`
 --
 
-INSERT INTO `tbl_orders` (`id`, `order_id`, `product_id`, `user_id`, `seller_id`, `quantity`, `price`, `order_status`, `tracking_id`, `bid_id`, `payment_id`, `created_at`, `updated_at`, `order_type`, `processing_time`) VALUES
-(3, 'order_PnCOIZeJbQLF5n', 164, 11, 9, 20, 1000.00, 'processing', NULL, 27, 'pay_PnCQQCMZ9TQs5c', '2025-01-25 16:18:38', '2025-01-29 17:22:57', 'bid', '2025-01-29 22:52:57'),
-(4, 'order_PldXXwTCszKoxZ', 163, 11, 9, 10, 50.00, 'delivered', 'TRACKING 123 ID', 26, 'pay_PldYUj8aIIpb9J', '2025-01-25 16:18:42', '2025-01-25 16:19:37', 'bid', '2025-01-25 21:49:01'),
-(5, 'order_PnxttQVoBYxND6', 162, 11, 9, 60, 50.00, 'delivered', NULL, 29, 'pay_PnxuG8019DtDQU', '2025-01-26 11:56:49', '2025-01-30 03:38:26', 'bid', NULL),
-(6, 'order_PoNOVr5Bm3BzTa', 164, 11, 9, 60, 50.00, 'delivered', 'TRACKING ID 132', 11124, 'pay_PoNOz6fP47So8l', '2025-01-27 07:00:28', '2025-01-27 07:01:53', 'bid', '2025-01-27 12:31:04');
+INSERT INTO `tbl_orders` (`id`, `order_id`, `product_id`, `user_id`, `seller_id`, `quantity`, `price`, `order_status`, `tracking_id`, `bid_id`, `payment_id`, `created_at`, `updated_at`, `order_type`, `address_id`, `processing_time`) VALUES
+(3, 'order_PnCOIZeJbQLF5n', 164, 11, 9, 20, 1000.00, 'processing', NULL, 27, 'pay_PnCQQCMZ9TQs5c', '2025-01-25 16:18:38', '2025-01-29 17:22:57', 'bid', 0, '2025-01-29 22:52:57'),
+(4, 'order_PldXXwTCszKoxZ', 163, 11, 9, 10, 50.00, 'delivered', 'TRACKING 123 ID', 26, 'pay_PldYUj8aIIpb9J', '2025-01-25 16:18:42', '2025-01-25 16:19:37', 'bid', 0, '2025-01-25 21:49:01'),
+(5, 'order_PnxttQVoBYxND6', 162, 11, 9, 60, 50.00, 'delivered', NULL, 29, 'pay_PnxuG8019DtDQU', '2025-01-26 11:56:49', '2025-01-30 03:38:26', 'bid', 0, NULL),
+(6, 'order_PoNOVr5Bm3BzTa', 164, 11, 9, 60, 50.00, 'delivered', 'TRACKING ID 132', 11124, 'pay_PoNOz6fP47So8l', '2025-01-27 07:00:28', '2025-01-27 07:01:53', 'bid', 0, '2025-01-27 12:31:04'),
+(7, 'order_PrCbNxYULTk3LR', 173, 11, 9, 10, 250.00, 'processing', NULL, 11125, 'pay_PrCcVQEtAmgwfz', '2025-02-03 10:28:11', '2025-02-03 10:30:26', 'bid', 0, '2025-02-03 16:00:26'),
+(8, 'order_PsKxPdZOV5CtFB', 171, 11, 9, 1, 400.00, 'processing', NULL, 0, 'pay_PsKxoIS0Ai9RAY', '2025-02-06 07:09:36', '2025-02-06 07:09:36', 'bid', 4, '0000-00-00 00:00:00'),
+(9, 'order_PsKxPdZOV5CtFB', 170, 11, 11, 1, 111.00, 'processing', NULL, 0, 'pay_PsKxoIS0Ai9RAY', '2025-02-06 07:09:36', '2025-02-06 07:09:36', 'bid', 4, '0000-00-00 00:00:00'),
+(10, 'order_PsL6f9HOxLlAwd', 173, 11, 9, 1, 299.00, 'processing', NULL, 0, 'pay_PsL6wJKAZI7KcL', '2025-02-06 07:18:16', '2025-02-06 07:18:16', 'bid', 9, '0000-00-00 00:00:00'),
+(11, 'order_PsL6f9HOxLlAwd', 172, 11, 9, 1, 199.00, 'processing', NULL, 0, 'pay_PsL6wJKAZI7KcL', '2025-02-06 07:18:16', '2025-02-06 07:18:16', 'bid', 9, '0000-00-00 00:00:00'),
+(12, 'order_PsLB9AYQIlkpwO', 172, 11, 9, 1, 199.00, 'processing', NULL, 0, 'pay_PsLBRbsBVT00Sk', '2025-02-06 07:22:31', '2025-02-06 07:22:31', 'bid', 9, '0000-00-00 00:00:00'),
+(13, 'order_PsLB9AYQIlkpwO', 166, 11, 9, 1, 259.00, 'processing', NULL, 0, 'pay_PsLBRbsBVT00Sk', '2025-02-06 07:22:31', '2025-02-06 07:22:31', 'bid', 9, '0000-00-00 00:00:00'),
+(14, 'order_PsLB9AYQIlkpwO', 170, 11, 11, 1, 111.00, 'processing', NULL, 0, 'pay_PsLBRbsBVT00Sk', '2025-02-06 07:22:31', '2025-02-06 07:22:31', 'bid', 9, '0000-00-00 00:00:00'),
+(15, 'order_PsLDYkYxOMe6g9', 163, 11, 9, 1, 439.00, 'processing', NULL, 0, 'pay_PsLDtVF03qWcB2', '2025-02-06 07:24:51', '2025-02-06 07:24:51', 'bid', 9, '0000-00-00 00:00:00'),
+(16, 'order_PsLIIQabtlCXPH', 170, 11, 11, 1, 111.00, 'processing', NULL, 0, 'pay_PsLIWOBb5gB4ie', '2025-02-06 07:29:13', '2025-02-06 08:47:38', 'direct', 9, NULL);
 
 -- --------------------------------------------------------
 
@@ -647,33 +785,37 @@ CREATE TABLE `tbl_product` (
   `p_qty` int(10) NOT NULL,
   `p_featured_photo` varchar(255) NOT NULL,
   `p_description` text NOT NULL,
+  `p_short_description` text NOT NULL,
   `p_feature` text NOT NULL,
   `p_condition` text NOT NULL,
   `p_return_policy` text NOT NULL,
   `p_total_view` int(11) NOT NULL,
   `p_is_featured` int(1) NOT NULL,
-  `p_is_active` int(1) NOT NULL,
   `p_is_approve` int(1) NOT NULL,
   `tcat_id` int(11) NOT NULL,
   `mcat_id` int(11) NOT NULL,
   `ecat_id` int(11) DEFAULT NULL,
   `product_catalogue` varchar(500) NOT NULL,
   `product_brand` varchar(500) NOT NULL,
-  `p_date` datetime DEFAULT NULL
+  `p_date` datetime DEFAULT NULL,
+  `hsn_code` int(8) NOT NULL,
+  `gst_percentage` int(2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `tbl_product`
 --
 
-INSERT INTO `tbl_product` (`id`, `seller_id`, `p_name`, `p_old_price`, `p_current_price`, `p_qty`, `p_featured_photo`, `p_description`, `p_feature`, `p_condition`, `p_return_policy`, `p_total_view`, `p_is_featured`, `p_is_active`, `p_is_approve`, `tcat_id`, `mcat_id`, `ecat_id`, `product_catalogue`, `product_brand`, `p_date`) VALUES
-(162, 9, 'Shank tool – Rigid clamping', '1329', '400', 222, 'product-featured-162.jpg', '', '', '', '', 199, 1, 1, 1, 0, 0, 97, 'product-catalogue-162.pdf', '41', NULL),
-(163, 9, 'Turning Insert – Positive rhombic 80°', '986', '439', 122, 'product-featured-163.png', '', '', '', '', 127, 1, 1, 1, 0, 0, 112, 'product-catalogue-163.pdf', '42', NULL),
-(164, 9, 'CNMG120404-NF WPP20S', '599', '299', 1500, 'product-featured-164.png', 'Description provided by the seller', '', '', '', 129, 1, 1, 1, 0, 0, 99, 'product-catalogue-164.pdf', '63', NULL),
-(166, 9, 'M5008-016-T14-02-01', '580', '259', 222, 'product-featured-166.png', '', '', '', '', 7, 0, 0, 1, 0, 0, 101, 'product-catalogue-166.pdf', '63', NULL),
-(168, 10, 'TS5008-016-T14-02-01', '1429', '400', 1500, 'product-featured-168.png', '', '', '', '', 2, 0, 0, 1, 0, 0, 0, 'product-catalogue-168.pdf', '43', '2025-01-26 12:36:26'),
-(169, 10, '111008-016-T14-02-01', '1329', '400', 100, 'product-featured-169.png', '', '', '', '', 23, 0, 0, 1, 0, 0, 99, 'product-catalogue-169.pdf', '41', '2025-01-26 12:48:53'),
-(170, 11, 'M5008-016-T14-02-01', '299', '111', 4800, 'product-featured-170.png', 'Tamilselvan', '', '', '', 29, 0, 0, 1, 13, 78, NULL, 'product-catalogue-170.pdf', '43', '2025-01-27 18:23:06');
+INSERT INTO `tbl_product` (`id`, `seller_id`, `p_name`, `p_old_price`, `p_current_price`, `p_qty`, `p_featured_photo`, `p_description`, `p_short_description`, `p_feature`, `p_condition`, `p_return_policy`, `p_total_view`, `p_is_featured`, `p_is_approve`, `tcat_id`, `mcat_id`, `ecat_id`, `product_catalogue`, `product_brand`, `p_date`, `hsn_code`, `gst_percentage`) VALUES
+(163, 9, 'Turning Insert – Positive rhombic 80°', '986', '439', 122, 'product-featured-163.png', '', '', '', '', '', 129, 1, 1, 0, 0, 112, 'product-catalogue-163.pdf', '42', NULL, 0, 0),
+(164, 9, 'CNMG120404-NF WPP20S', '599', '299', 1500, 'product-featured-164.png', 'Description provided by the seller', '', '', '', '', 129, 1, 1, 0, 0, 99, 'product-catalogue-164.pdf', '63', NULL, 0, 0),
+(166, 9, 'M5008-016-T14-02-01', '580', '259', 222, 'product-featured-166.png', '', '', '', '', '', 9, 1, 1, 0, 0, 101, 'product-catalogue-166.pdf', '63', NULL, 0, 0),
+(168, 10, 'TS5008-016-T14-02-01', '1429', '400', 1500, 'product-featured-168.png', '', '', '', '', '', 2, 1, 1, 0, 0, 0, 'product-catalogue-168.pdf', '43', '2025-01-26 12:36:26', 0, 0),
+(169, 10, '111008-016-T14-02-01', '1329', '400', 100, 'product-featured-169.png', '', '', '', '', '', 24, 1, 1, 0, 0, 99, 'product-catalogue-169.pdf', '41', '2025-01-26 12:48:53', 0, 0),
+(170, 11, 'M5008-016-T14-02-01', '299', '111', 4800, 'product-featured-170.png', 'Tamilselvan', '', '', '', '', 47, 1, 1, 13, 78, NULL, 'product-catalogue-170.pdf', '43', '2025-01-27 18:23:06', 0, 0),
+(171, 9, 'TA008-016-T14-02-01', '1329', '400', 4800, 'product-featured-171.png', 'A description', 'A short description', '', '', '', 27, 1, 1, 13, 78, 0, 'product-catalogue-171.pdf', '41', '2025-02-03 05:32:01', 0, 0),
+(172, 9, '016-T14-02-01', '401', '199', 123, 'product-featured-172.png', 'qwertyuiopasdfghjklzxcvbnm', 'qwertyuiopasdfghjklzxcvbnm', '', '', '', 22, 1, 1, 13, 78, NULL, 'product-catalogue-172.pdf', '41', '2025-02-03 06:10:55', 0, 0),
+(173, 9, 'Shank tool – Rigid clamping', '580', '299', 10, 'product-featured-173.png', 'Descriptionnnnnnnnnnnnnnnnnnnnnnnn', 'Short Descriptionnnnnnnnnnnnnnnnnnn', '', '', '', 59, 1, 1, 13, 78, NULL, 'product-catalogue-173.pdf', '41', '2025-02-03 06:16:23', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -705,21 +847,17 @@ INSERT INTO `tbl_product_photo` (`pp_id`, `photo`, `p_id`) VALUES
 (17, '17.png', 168),
 (18, '18.png', 168),
 (19, '19.png', 170),
-(22, '22.png', 170);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tbl_rating`
---
-
-CREATE TABLE `tbl_rating` (
-  `rt_id` int(11) NOT NULL,
-  `p_id` int(11) NOT NULL,
-  `cust_id` int(11) NOT NULL,
-  `comment` text NOT NULL,
-  `rating` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+(22, '22.png', 170),
+(23, '23.png', 171),
+(24, '24.png', 171),
+(25, '25.png', 171),
+(26, '26.png', 171),
+(27, '27.png', 172),
+(28, '28.jpg', 172),
+(29, '29.jpg', 172),
+(30, '30.png', 173),
+(31, '31.png', 173),
+(32, '32.png', 173);
 
 -- --------------------------------------------------------
 
@@ -873,18 +1011,27 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `user_gst` varchar(50) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `profile_image` varchar(255) DEFAULT NULL
+  `profile_image` varchar(255) DEFAULT NULL,
+  `token` varchar(255) DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `phone_number`, `email`, `password`, `user_gst`, `created_at`, `profile_image`) VALUES
-(10, 'TAMIL SELVAN V', '9597049879', 'user@mail.com', '$2y$10$UfjZWLicsEiA.dMhXThReuWkDeWMRmZw5xZ/6M24AYesX/XTDGmtG', '', '2025-01-10 15:32:06', NULL),
-(11, 'THARUN', '9597049879', 'visva@gmail.com', '$2y$10$0Mbk8unYwk6MdOzHl8q8veV3ujQ5.q1REfM/gV36hHodyerqlwNfq', '', '2025-01-11 04:17:31', 'profile-11.jpg'),
-(12, 'Lokesh Gethu', '8529637419', 'mailtotharun23@gmail.com', '$2y$10$Uv2.CGwjR8QR8XMH6TSNAO0SgVZWp3aPjftxPAHooPruGlwBA2sPW', '', '2025-01-29 06:37:04', NULL),
-(13, 'Lokeee', '7418529637', 'nithiishhh@gmail.com', '$2y$10$M7iCaKWmuuvN1vdZt1tHoeJvfB13sTHlgTn16W6RsKcsV4Woxg.oG', '', '2025-01-29 06:43:28', NULL);
+INSERT INTO `users` (`id`, `username`, `phone_number`, `email`, `password`, `user_gst`, `created_at`, `profile_image`, `token`, `status`) VALUES
+(10, 'TAMIL SELVAN V', '9597049879', 'user@mail.com', '$2y$10$UfjZWLicsEiA.dMhXThReuWkDeWMRmZw5xZ/6M24AYesX/XTDGmtG', '', '2025-01-10 15:32:06', NULL, NULL, 0),
+(11, 'THARUN', '9597049879', 'visva@gmail.com', '$2y$10$0Mbk8unYwk6MdOzHl8q8veV3ujQ5.q1REfM/gV36hHodyerqlwNfq', '', '2025-01-11 04:17:31', 'profile-11.jpg', NULL, 0),
+(12, 'Lokesh Gethu', '8529637419', 'mailtotharun23@gmail.com', '$2y$10$Uv2.CGwjR8QR8XMH6TSNAO0SgVZWp3aPjftxPAHooPruGlwBA2sPW', '', '2025-01-29 06:37:04', NULL, NULL, 0),
+(13, 'Lokeee', '7418529637', 'nithiishhh@gmail.com', '$2y$10$M7iCaKWmuuvN1vdZt1tHoeJvfB13sTHlgTn16W6RsKcsV4Woxg.oG', '', '2025-01-29 06:43:28', NULL, NULL, 0),
+(14, '123', '9865969799', 'sriramsriram16145@gmail.com', '$2y$10$NzqO2uT6vPrpQJMAHqsJJ.Mi3FsHQZRNBbVOu5dKX3jkvHItNieDK', '', '2025-02-01 10:48:26', NULL, NULL, 0),
+(15, '1233', '8529637413', 'sriramsrim16145@gmail.com', '$2y$10$OL2pjUZgqIreKAARJUA8OOD40sr46jBw23lXv860GPI7mwuo8mDUi', '', '2025-02-01 10:49:09', NULL, NULL, 0),
+(16, '123', '7418529637', '123@123.com', '$2y$10$tSPlNYTSsLbsE8rztfC/4OLYlnWEi0gSghRy32BYHvZEIq2yLLvAS', '', '2025-02-01 10:50:56', NULL, NULL, 0),
+(17, '123', '7419638523', 'ddf@11.cc', '$2y$10$BPt91pEQV1UMtt.31EOR/eX/Bf3qnKB7xwjZ08uK.KY3q.Iob/eIG', '', '2025-02-01 11:50:44', NULL, NULL, 0),
+(18, 'ww', 'qw', 'ww@123.cc', '$2y$10$zg3U0LCyGVlmmFkaJDifZuaxJiI10bSYTNJj7UginRtEO.dFi9z4S', '', '2025-02-01 12:04:40', NULL, NULL, 0),
+(19, 'qw', 'qw', 'qw@gm.cc', '$2y$10$m.QihpqZEitE9ZAz6aYCZu7efvO27aT7KcclArNIfLtXD.HYrrIFG', '', '2025-02-01 12:09:31', NULL, NULL, 0),
+(20, 'Test (user)', '9865969799', 'testuser@dstock.in', '$2y$10$F3s8l6NMSgRYtAoaqY4gSeT33kmPZjEDgfwme78sAivgVppBReTSq', '29ABCDE1234F1Z5', '2025-02-01 13:19:41', NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -913,7 +1060,8 @@ CREATE TABLE `users_addresses` (
 
 INSERT INTO `users_addresses` (`id`, `user_id`, `full_name`, `phone_number`, `address`, `city`, `state`, `pincode`, `address_type`, `is_default`, `created_at`, `updated_at`) VALUES
 (4, 11, 'Tharun', '9597049879', '4/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.', 'Dindigul', 'Tamil Nadu', '624710', 'Primary', 1, '2025-01-25 04:54:40', '2025-01-27 09:17:02'),
-(9, 11, 'SRIRAM R', '7708401467', '1/20, Matha kovil street, Karai- po, Alathur- tk, Perambalur.', 'Perambalur', 'Tamil Nadu', '621109', 'Secondary', 0, '2025-01-27 05:37:33', '2025-01-27 09:17:02');
+(9, 11, 'SRIRAM R', '7708401467', '1/20, Matha kovil street, Karai- po, Alathur- tk, Perambalur.', 'Perambalur', 'Tamil Nadu', '621109', 'Secondary', 0, '2025-01-27 05:37:33', '2025-01-27 09:17:02'),
+(10, 10, 'Nithish', '7708401467', '1/20, Matha kovil street, Karai- po, Alathur- tk, Perambalur.', 'Perambalur', 'Tamil Nadu', '621109', 'Primary', 1, '2025-02-06 04:20:19', '2025-02-06 04:20:19');
 
 -- --------------------------------------------------------
 
@@ -928,26 +1076,35 @@ CREATE TABLE `user_login` (
   `user_phone` varchar(13) DEFAULT NULL,
   `user_photo` varchar(250) DEFAULT NULL,
   `user_password` varchar(100) NOT NULL,
-  `user_role` enum('admin','seller','user','') NOT NULL
+  `user_role` enum('admin','seller','user','') NOT NULL,
+  `reset_token` varchar(255) NOT NULL,
+  `reset_token_expires` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_login`
 --
 
-INSERT INTO `user_login` (`id`, `user_name`, `user_email`, `user_phone`, `user_photo`, `user_password`, `user_role`) VALUES
-(1, 'தமிழ்', 'superadmin@deadstock.in', '9597049879', 'user-1.jpg', '$2y$10$tj6EZTOvNTR2h6Xed7AoDe7l23pXGUYc/ngxpIRCsb0bRobtTyjTi', 'admin'),
-(3, 'Admin', 'admin@deadstock.in', '', 'user-3.jpg', '$2y$10$A.gx7L08.unOG1kxmZXGYu33IcQ7yM/tO3aQk7zwXzx7u9fVji6lG', 'admin'),
-(17, 'TAMIL SELVAN V', 'seller@deadstock.in', '', '', '$2y$10$ZSY8tFAINSJ45Hg7Y.Oeq.VckmCjVCD0LDwQ8oDk28n8shHNfIKaG', 'seller'),
-(18, 'TAMIL SELVAN V', 'mailtotharun23@gmail.com', '', '', '$2y$10$bMO/LgY/F2pMyocMrUaeRudf5xMYmkkkZecWFeQjhQ/X16T63btKm', 'seller'),
-(19, 'tamizhtharun', 'user@mail.com', '', '', '$2y$10$UfjZWLicsEiA.dMhXThReuWkDeWMRmZw5xZ/6M24AYesX/XTDGmtG', 'user'),
-(20, 'visva', 'visva@gmail.com', '', '', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', 'user'),
-(21, 'TAMIL SELVAN V', '927622bal049@mkce.ac.in', '', '', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', 'seller'),
-(22, 'Test Seller', 'seller@deadstock.in', '', '', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5...', 'seller'),
-(23, 'Seller 1', 'company@deadstock.in', '', '', '$2y$10$A.gx7L08.unOG1kxmZXGYu33IcQ7yM/tO3aQk7zwXzx7u9fVji6lG1', 'seller'),
-(24, 'Lokesh TL', 'lokeshlokesh93662@gmail.com', NULL, NULL, '$2y$10$UVc0YZPHVjEAa3XgBKjdLOynIUbPe.fDv.3j4XfaxjHeHAvYWLCYi', 'seller'),
-(25, 'Lokesh Gethu', 'mailtotharun23@gmail.com', NULL, NULL, '$2y$10$Uv2.CGwjR8QR8XMH6TSNAO0SgVZWp3aPjftxPAHooPruGlwBA2sPW', 'user'),
-(26, 'Lokeee', 'nithiishhh@gmail.com', NULL, NULL, '$2y$10$M7iCaKWmuuvN1vdZt1tHoeJvfB13sTHlgTn16W6RsKcsV4Woxg.oG', 'user');
+INSERT INTO `user_login` (`id`, `user_name`, `user_email`, `user_phone`, `user_photo`, `user_password`, `user_role`, `reset_token`, `reset_token_expires`) VALUES
+(1, 'தமிழ்', 'superadmin@deadstock.in', '9597049879', 'user-1.jpg', '$2y$10$tj6EZTOvNTR2h6Xed7AoDe7l23pXGUYc/ngxpIRCsb0bRobtTyjTi', 'admin', '', NULL),
+(3, 'Admin', 'admin@deadstock.in', '', 'user-3.jpg', '$2y$10$GfkFk4a1fOZ9dmbtUvhzf.PWEnRuVK84R7.0EQraojh5PRPNt9bIu', 'admin', '', NULL),
+(17, 'TAMIL SELVAN V', 'seller@deadstock.in', '', '', '$2y$10$ZSY8tFAINSJ45Hg7Y.Oeq.VckmCjVCD0LDwQ8oDk28n8shHNfIKaG', 'seller', '', NULL),
+(18, 'TAMIL SELVAN V', 'mailtotharun23@gmail.com', '', '', '$2y$10$bMO/LgY/F2pMyocMrUaeRudf5xMYmkkkZecWFeQjhQ/X16T63btKm', 'seller', '', NULL),
+(19, 'tamizhtharun', 'user@mail.com', '', '', '$2y$10$UfjZWLicsEiA.dMhXThReuWkDeWMRmZw5xZ/6M24AYesX/XTDGmtG', 'user', '', NULL),
+(20, 'visva', 'visva@gmail.com', '', '', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', 'user', '', NULL),
+(21, 'TAMIL SELVAN V', '927622bal049@mkce.ac.in', '', '', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5tD5onG91BC', 'seller', '', NULL),
+(22, 'Test Seller', 'seller@deadstock.in', '', '', '$2y$10$3JFOgCpiixGl0IXLIh4IHuOlYYM4IOpPFvSXbd3QGJ5...', 'seller', '', NULL),
+(23, 'Seller 1', 'company@deadstock.in', '', '', '$2y$10$A.gx7L08.unOG1kxmZXGYu33IcQ7yM/tO3aQk7zwXzx7u9fVji6lG1', 'seller', '', NULL),
+(24, 'Lokesh TL', 'lokeshlokesh93662@gmail.com', NULL, NULL, '$2y$10$UVc0YZPHVjEAa3XgBKjdLOynIUbPe.fDv.3j4XfaxjHeHAvYWLCYi', 'seller', '', NULL),
+(25, 'Lokesh Gethu', 'mailtotharun23@gmail.com', NULL, NULL, '$2y$10$Uv2.CGwjR8QR8XMH6TSNAO0SgVZWp3aPjftxPAHooPruGlwBA2sPW', 'user', '', NULL),
+(26, 'Lokeee', 'nithiishhh@gmail.com', NULL, NULL, '$2y$10$M7iCaKWmuuvN1vdZt1tHoeJvfB13sTHlgTn16W6RsKcsV4Woxg.oG', 'user', '', NULL),
+(27, '123', 'sriramsriram16145@gmail.com', NULL, NULL, '$2y$10$NzqO2uT6vPrpQJMAHqsJJ.Mi3FsHQZRNBbVOu5dKX3jkvHItNieDK', 'user', '', NULL),
+(28, '1233', 'sriramsrim16145@gmail.com', NULL, NULL, '$2y$10$OL2pjUZgqIreKAARJUA8OOD40sr46jBw23lXv860GPI7mwuo8mDUi', 'user', '', NULL),
+(29, '123', '123@123.com', NULL, NULL, '$2y$10$tSPlNYTSsLbsE8rztfC/4OLYlnWEi0gSghRy32BYHvZEIq2yLLvAS', 'user', '', NULL),
+(30, '123', 'ddf@11.cc', NULL, NULL, '$2y$10$BPt91pEQV1UMtt.31EOR/eX/Bf3qnKB7xwjZ08uK.KY3q.Iob/eIG', 'user', '', NULL),
+(31, 'ww', 'ww@123.cc', NULL, NULL, '$2y$10$zg3U0LCyGVlmmFkaJDifZuaxJiI10bSYTNJj7UginRtEO.dFi9z4S', 'user', '', NULL),
+(32, 'qw', 'qw@gm.cc', NULL, NULL, '$2y$10$m.QihpqZEitE9ZAz6aYCZu7efvO27aT7KcclArNIfLtXD.HYrrIFG', 'user', '', NULL),
+(33, 'Test (user)', 'testuser@dstock.in', NULL, NULL, '$2y$10$F3s8l6NMSgRYtAoaqY4gSeT33kmPZjEDgfwme78sAivgVppBReTSq', 'user', '', NULL);
 
 --
 -- Indexes for dumped tables
@@ -1000,6 +1157,12 @@ ALTER TABLE `tbl_brands`
   ADD PRIMARY KEY (`brand_id`);
 
 --
+-- Indexes for table `tbl_company_settings`
+--
+ALTER TABLE `tbl_company_settings`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_end_category`
 --
 ALTER TABLE `tbl_end_category`
@@ -1034,12 +1197,6 @@ ALTER TABLE `tbl_product`
 --
 ALTER TABLE `tbl_product_photo`
   ADD PRIMARY KEY (`pp_id`);
-
---
--- Indexes for table `tbl_rating`
---
-ALTER TABLE `tbl_rating`
-  ADD PRIMARY KEY (`rt_id`);
 
 --
 -- Indexes for table `tbl_settings`
@@ -1086,7 +1243,7 @@ ALTER TABLE `user_login`
 -- AUTO_INCREMENT for table `bidding`
 --
 ALTER TABLE `bidding`
-  MODIFY `bid_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11125;
+  MODIFY `bid_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11129;
 
 --
 -- AUTO_INCREMENT for table `bid_settings`
@@ -1104,7 +1261,7 @@ ALTER TABLE `emails`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `sellers`
@@ -1140,19 +1297,19 @@ ALTER TABLE `tbl_mid_category`
 -- AUTO_INCREMENT for table `tbl_orders`
 --
 ALTER TABLE `tbl_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `tbl_product`
 --
 ALTER TABLE `tbl_product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=176;
 
 --
 -- AUTO_INCREMENT for table `tbl_product_photo`
 --
 ALTER TABLE `tbl_product_photo`
-  MODIFY `pp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `pp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `tbl_slider`
@@ -1170,19 +1327,19 @@ ALTER TABLE `tbl_top_category`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `users_addresses`
 --
 ALTER TABLE `users_addresses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- Constraints for dumped tables

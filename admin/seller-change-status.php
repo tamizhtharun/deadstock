@@ -1,76 +1,83 @@
-<?php require_once('header.php'); ?>
 <?php
-require 'C:/xampp/htdocs/deadstock/phpmailer/src/PHPMailer.php';
-require 'C:/xampp/htdocs/deadstock/phpmailer/src/SMTP.php';
-require 'C:/xampp/htdocs/deadstock/phpmailer/src/Exception.php';
+require_once('header.php');
 
-if(!isset($_REQUEST['id'])) {
+// Updated paths to go up one more directory level
+require_once('../PHPMailer/src/PHPMailer.php');
+require_once('../PHPMailer/src/SMTP.php');
+require_once('../PHPMailer/src/Exception.php');
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+// Rest of the code remains the same
+if (!isset($_REQUEST['id'])) {
     header('location: logout.php');
     exit;
-} else {
-    // Check if the id is valid or not
-    $statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_id=?");
-    $statement->execute(array($_REQUEST['id']));
-    $total = $statement->rowCount();
-    if( $total == 0 ) {
+}
+
+try {
+    // Check if the id is valid
+    $statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_id = ?");
+    $statement->execute([$_REQUEST['id']]);
+    
+    if ($statement->rowCount() === 0) {
         header('location: logout.php');
         exit;
-    } else {
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);							
-        foreach ($result as $row) {
-            $seller_status = $row['seller_status'];
-            $seller_name = $row['seller_name'];
-            $seller_email = $row['seller_email'];
-        }
     }
-}
-
-if($seller_status == 0) {
-    $final = 1;
-} else {
-    $final = 0;
-}
-
-// Update seller status in the database
-$statement = $pdo->prepare("UPDATE sellers SET seller_status=? WHERE seller_id=?");
-$statement->execute(array($final, $_REQUEST['id']));
-
-// Send email only if the status is changed to active
-if ($final == 1) {
-    $admin_name = 'Mr.Arun krishnan'; // Replace this with the logged-in admin's name if available
-
-    try {
-        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+    
+    $row = $statement->fetch(PDO::FETCH_ASSOC);
+    $seller_status = $row['seller_status'];
+    $seller_name = $row['seller_name'];
+    $seller_email = $row['seller_email'];
+    
+    // Toggle status
+    $final = $seller_status == 0 ? 1 : 0;
+    
+    // Update seller status
+    $statement = $pdo->prepare("UPDATE sellers SET seller_status = ? WHERE seller_id = ?");
+    $statement->execute([$final, $_REQUEST['id']]);
+    
+    // Send email only if account is activated
+    if ($final == 1) {
+        $mail = new PHPMailer(true);
+        
+        // Server settings
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP server
+        $mail->Host = 'p3plzcpnl508868.prod.phx3.secureserver.net';
         $mail->SMTPAuth = true;
-        $mail->Username = 'nithiishhh@gmail.com'; // Replace with your email
-        $mail->Password = 'meknepblkzosmavu'; // Replace with your email's app-specific password
-        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
-
-        // Email sender and recipient
-        $mail->setFrom('nithiishhh@gmail.com', 'Deadstock'); // Replace with sender details
-        $mail->addAddress($seller_email, $seller_name); // Recipient email and name
-
-        // Email content
+        $mail->Username = 'support@thedeadstock.in';
+        $mail->Password = 'Deadstock@2025';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port = 465;
+        
+        // Recipients
+        $mail->setFrom('support@thedeadstock.in', 'Deadstock');
+        $mail->addAddress($seller_email, $seller_name);
+        
+        // Content
         $mail->isHTML(true);
         $mail->Subject = 'Account Activation';
-        $mail->Body = "<h1>Hello, $seller_name!</h1>
-                       <p>Your account has been activated by $admin_name. You can now log in and start using our platform.</p>
-                       <br>
-                       <p>Best regards,<br>Deadstock</p>";
-
-        // Send the email
+        $mail->Body = <<<HTML
+            <h1>Hello, {$seller_name}!</h1>
+            <p>Your account has been activated by Admin. You can now log in and start using our platform.</p>
+            <br>
+            <p>Best regards,<br>Deadstock</p>
+HTML;
+        
         $mail->send();
-    } catch (Exception $e) {
-        // Log the email error (optional) and continue
-        error_log("Email could not be sent to $seller_email. Error: " . $mail->ErrorInfo);
+        error_log("Activation email sent successfully to $seller_email");
     }
+    
+    // Redirect back
+    $referrer = $_SERVER['HTTP_REFERER'] ?? 'index.php';
+    header("Location: $referrer");
+    exit;
+    
+} catch (Exception $e) {
+    error_log("Error processing seller activation: " . $e->getMessage());
+    // Redirect to an error page or show error message
+    header("Location: error.php?message=" . urlencode("An error occurred while processing your request."));
+    exit;
 }
-
-// Redirect to the seller page after status update
-$referrer = $_SERVER['HTTP_REFERER'];
-                   header("Location: $referrer");
-                   exit();
 ?>

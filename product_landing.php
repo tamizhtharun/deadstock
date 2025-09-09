@@ -40,6 +40,7 @@ foreach ($result as $row) {
   $p_is_featured = $row['p_is_featured'];
   // $p_is_active = $row['p_is_active'];
   $ecat_id = $row['ecat_id'];
+  $gst_percentage = $row['gst_percentage'];
 }
 
 // Getting all categories name for breadcrumb
@@ -103,9 +104,9 @@ if (isset($_POST['add_to_cart'])) {
       $stmt = $conn->prepare("INSERT INTO tbl_cart (id, user_id, quantity) VALUES (?, ?, ?)");
       $stmt->bind_param("iii", $product_id, $user_id, $product_quantity);
       if ($stmt->execute()) {
-        MessageSystem::set('Product added to cart!', 'success');
+        // MessageSystem::set('Product added to cart!', 'success');
       } else {
-        MessageSystem::set('Failed to add product to cart.', 'error');
+        // MessageSystem::set('Failed to add product to cart.', 'error');
       }
     }
   } else {
@@ -135,7 +136,6 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
 $select_product = mysqli_query($conn, "SELECT * FROM tbl_product") or die('query failed');
 if (mysqli_num_rows($select_product) > 0) {
   while ($fetch_product = mysqli_fetch_assoc($select_product)) {
-
   }
 }
 ?>
@@ -148,7 +148,6 @@ if ($success_message1 != '') {
   MessageSystem::set($success_message1, 'success');
   header('location: product.php?id=' . $_REQUEST['id']);
   exit;
-
 }
 
 // Get product details first
@@ -209,6 +208,11 @@ $min_bid_pct = $bid_settings ? $bid_settings['min_bid_pct'] : 0;
 
 // Calculate minimum allowed bid price
 $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
+//gst and discount calculation
+$gst_amount = ($p_current_price * $gst_percentage) / 100;
+$final_price = $p_current_price + $gst_amount;
+$discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_old_price) * 100) : 0;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -241,16 +245,18 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
         <?php endif; ?>
       </ol>
     </nav>
-    <div class="row gx-5">
-      <aside class="col-lg-6">
+    <div class="row gx-5 justify-content-center">
+      <aside class="col-lg-6 justify-content-center">
+        <div class="d-flex justify-content-center mb-3">
         <!-- Main Image -->
         <div class="border rounded-4 mb-3 d-flex justify-content-center"
-          style="width: 500px; height: 310px; overflow: hidden; position: relative;">
+          style="width: 450px; height: 300px; overflow: hidden; position: relative;">
           <a data-bs-toggle="modal" id="mainImageLink" class="rounded-4" data-bs-target="#imageModal" href="#">
             <!-- Default Big Photo -->
             <img id="mainImage" class="rounded-4 zoom-effect" class="rounded-4"
               src="assets/uploads/product-photos/<?php echo $p_featured_photo; ?>">
           </a>
+        </div>
         </div>
         <!-- Thumbnail Images -->
         <div class="d-flex justify-content-center mb-3">
@@ -287,13 +293,14 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
           <h4 class="title text-dark">
             <?php echo $p_name; ?>
           </h4>
-          <div class="d-flex flex-row my-3">
+
+          <div class="d-flex flex-row my-2">
             <span class="text-muted"><i class="bi bi-basket mx-1"></i>
               <?php if ($p_qty > 10): ?>
                 <span class="text-success ms-2">In stock</span>
               <?php elseif ($p_qty >= 1 && $p_qty <= 10): ?>
                 <span class="text-warning ms-2">Only Few left</span>
-                <?php
+              <?php
               elseif ($p_qty == 0):
                 // Ensure $product_id is set
                 if (!isset($product_id) || empty($product_id)) {
@@ -315,33 +322,36 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
                     echo "<script>console.log('Error preparing statement: " . $conn->error . "');</script>";
                   }
                 }
-                ?>
+              ?>
               <?php endif; ?>
             </span>
           </div>
+
           <div class="mb-3">
             <div class="d-flex align-items-center gap-2 mb-1">
-              <span class="h5 mb-0" style="color: #000;">₹<?php echo $p_current_price; ?></span>
-              <span class="h6 mb-0"
-                style="color: #9E9E9E; text-decoration: line-through;">₹<?php echo $p_old_price; ?></span>
-              <?php
-              if ($p_old_price > 0) {
-                $discount = (($p_old_price - $p_current_price) / $p_old_price) * 100;
-                echo '<span class="badge bg-success">' . round($discount) . '% OFF</span>';
-              }
-              ?>
+              <span class="h7" style="color:rgb(137, 134, 134);">₹<?php echo number_format($final_price, 0); ?> (Incl. of all taxes)</span>
+            </div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="h3 mb-0" style="color: #000; font-weight: bold;">₹<?php echo number_format($p_current_price, 0); ?></span>
+              <span class="h6 mb-0">+ ₹<?php echo number_format($gst_amount, 0); ?> GST</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span class="h7 mb-0" style="color:rgb(77, 74, 74);">MRP</span><span class="h6 mb-0" style="color:rgb(77, 74, 74); text-decoration: line-through;">₹<?php echo number_format($p_old_price, 0); ?></span>
+              <?php if ($discount > 0) { ?>
+                <span class="discount-text"><?php echo $discount; ?>% OFF</span>
+              <?php } ?>
             </div>
           </div>
 
           <div class="product-grid">
             <!-- Headers -->
-            <div class="material-suitability-icon p">P</div>
-            <div class="material-suitability-icon m">M</div>
-            <div class="material-suitability-icon k">K</div>
-            <div class="material-suitability-icon n">N</div>
-            <div class="material-suitability-icon s">S</div>
-            <div class="material-suitability-icon h">H</div>
-            <div class="material-suitability-icon o">O</div>
+            <div class="letter-icon p">P</div>
+            <div class="letter-icon m">M</div>
+            <div class="letter-icon k">K</div>
+            <div class="letter-icon n">N</div>
+            <div class="letter-icon s">S</div>
+            <div class="letter-icon h">H</div>
+            <div class="letter-icon o">O</div>
 
             <?php
 
@@ -367,25 +377,25 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
 
             <!-- For each alphabet, we check its value and assign the correct class -->
             <div
-              class="material-suitability-icon Rec p <?php echo ($dot_values['P'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['P']); ?>">
+              class="letter-icon Rec p <?php echo ($dot_values['P'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['P']); ?>">
             </div>
             <div
-              class="material-suitability-icon Rec m <?php echo ($dot_values['M'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['M']); ?>">
+              class="letter-icon Rec m <?php echo ($dot_values['M'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['M']); ?>">
             </div>
             <div
-              class="material-suitability-icon Rec k <?php echo ($dot_values['K'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['K']); ?>">
+              class="letter-icon Rec k <?php echo ($dot_values['K'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['K']); ?>">
             </div>
             <div
-              class="material-suitability-icon Rec n <?php echo ($dot_values['N'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['N']); ?>">
+              class="letter-icon Rec n <?php echo ($dot_values['N'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['N']); ?>">
             </div>
             <div
-              class="material-suitability-icon Rec s <?php echo ($dot_values['S'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['S']); ?>">
+              class="letter-icon Rec s <?php echo ($dot_values['S'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['S']); ?>">
             </div>
             <div
-              class="material-suitability-icon Rec h <?php echo ($dot_values['H'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['H']); ?>">
+              class="letter-icon Rec h <?php echo ($dot_values['H'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['H']); ?>">
             </div>
             <div
-              class="material-suitability-icon Rec o <?php echo ($dot_values['O'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['O']); ?>">
+              class="letter-icon Rec o <?php echo ($dot_values['O'] == 0 ? 'no-dot' : 'icon-rank-' . $dot_values['O']); ?>">
             </div>
           </div>
           <!-- Key Explanation -->
@@ -398,11 +408,11 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
             <!-- The dropdown container that will show/hide -->
             <div class="l-info-icons-container">
               <div class="info-row">
-                <div class="material-suitability-icon Rec icon-rank-2"> </div>
+                <div class="letter-icon Rec icon-rank-2"> </div>
                 <div class="description">Main application</div>
               </div>
               <div class="info-row">
-                <div class="material-suitability-icon Rec icon-rank-1"> </div>
+                <div class="letter-icon Rec icon-rank-1"> </div>
                 <div class="description">Additional application</div>
               </div>
             </div>
@@ -412,52 +422,64 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
             <!-- <button class="btn btn-warning shadow-0"> Buy now </button> -->
 
             <div class="product-container">
-              <div class="product-box">
-                <!-- Key Section -->
+  <div class="product-box">
+    <form method="POST" action="">
+      <div class="row mb-4">
+        <div class="col-md-4 col-6 mb-3">
+          <label class="mb-2 d-block">Quantity</label>
+          <div class="input-group mb-3" style="width: 170px;">
+            <input type="number" class="form-control text-center" name="product_quantity" id="quantity-input"
+              value="1" min="1" />
+          </div>
+        </div>
+      </div>
 
+      <!-- Flexbox for buttons to align them horizontally -->
+      <div class="d-flex align-items-center">
+        <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+        
+        <!-- Add to Cart Button -->
+        <button type="submit" name="add_to_cart" class="btn btn-primary shadow-0 me-2">
+          <i class="bi bi-basket me-1"></i> Add to cart
+        </button>
 
-                <!-- Quantity Section -->
-                <div class="row mb-4">
-                  <div class="col-md-4 col-6 mb-3">
-                    <label class="mb-2 d-block">Quantity</label>
-                    <div class="input-group mb-3" style="width: 170px;">
-                      <input type="number" class="form-control text-center" name="product_quantity" id="quantity-input"
-                        value="1" min="1" />
-                    </div>
-                  </div>
-                </div>
+        <!-- Place a Bid Button -->
+        <div class="d-inline-block"
+          <?php if (!isset($_SESSION['user_session']['id'])) { ?>
+          data-bs-toggle="tooltip" data-bs-placement="top" title="Please login through your account"
+          <?php } ?>>
+          
+          <button id="requestPriceBtn" class="request-price-btn btn btn-danger border"
+            <?php if (!isset($_SESSION['user_session']['id'])) {
+              echo 'disabled';
+            } ?>>
+            <i class="fa fa-gavel"></i> Place a Bid
+          </button>
+        </div>
+      </div>
+    </form>
 
-                <div class="d-flex">
-                  <!-- Buy Now Form -->
-                  <!-- Buy Now Form -->
-                  <!-- <form method="POST" action="checkout-page.php" class="me-3">
-                    <input type="hidden" name="product_id" value="<?php echo $_REQUEST['id']; ?>">
-                    <input type="hidden" name="product_quantity" id="buy-now-quantity" value="1">
-                    <button type="submit" name="buy_now" class="btn btn-warning shadow-0">Buy now</button>
-                </form> -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+          new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+      });
+    </script>
 
-                  <!-- Add to Cart Form -->
-                  <form method="POST" action="" class="me-3">
-                    <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
-                    <input type="hidden" name="product_quantity" id="cart-quantity" value="1">
-                    <button type="submit" name="add_to_cart" class="btn btn-primary shadow-0">
-                      <i class="bi bi-basket me-1"></i> Add to cart
-                    </button>
-                  </form>
-
-                  <!-- Request Price Button -->
-                  <button id="requestPriceBtn" class="request-price-btn btn btn-danger border" <?php echo !isset($_SESSION['user_session']['id']) ? 'disabled' : ''; ?>>
-                    <i class="fa fa-gavel"></i> Place a Bid
-                  </button>
-                </div>
-              </div>
-            </div>
+    <style>
+      .tooltip-inner {
+        font-size: 12px !important;
+        padding: 4px 8px !important;
+      }
+    </style>
+  </div>
+</div>
           </div>
     </div>
   </div>
 </section>
-
-
 
 <!-- Modal Overlay For Request Price -->
 <div class="modal-overlay" id="modalOverlay" style="display: none;">
@@ -524,14 +546,14 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
 <script>
   function checkExistingBid(productId) {
     return fetch('check_bid_status.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        product_id: productId
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          product_id: productId
+        })
       })
-    })
       .then(response => response.json());
   }
 </script>
@@ -581,7 +603,7 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
     } else if (proposedPrice.value <= 0) {
       showMessage('Please enter a valid bid price', 'error');
     } else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
-      showMessage('Minimum bid price is ₹' + minAllowedPrice.toFixed(2), 'error');
+      showMessage('Bidding too low? Try offering a fair price.', 'error');    
     } else if (!termsCheckbox.checked) {
       showMessage('You must agree to the Terms and Conditions', 'error');
     } else {
@@ -612,16 +634,16 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
 
     // First, create the order
     fetch('submit_bid.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        product_id: <?php echo $_REQUEST['id']; ?>,
-        quantity: quantity,
-        proposed_price: proposedPrice
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          product_id: <?php echo $_REQUEST['id']; ?>,
+          quantity: quantity,
+          proposed_price: proposedPrice
+        })
       })
-    })
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {
@@ -632,15 +654,15 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
             name: "Deadstock",
             description: "Bid Payment",
             order_id: data.order_id,
-            handler: function (response) {
+            handler: function(response) {
               // Handle successful payment
               fetch('submit_bid.php', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(response)
-              })
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(response)
+                })
                 .then(res => res.json())
                 .then(result => {
                   if (result.status === 'success') {
@@ -677,7 +699,7 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
 </script>
 
 
-<section class="bg-light border-top py-4">
+<section class="bg border-top py-4">
   <div class="container">
     <div class="row gx-4">
       <div class="col-lg-8 mb-4">
@@ -743,9 +765,9 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
               $file_path = 'assets/uploads/' . $pdf_name;
               $view_url = "pdf_download.php?action=view&id=$product_id";
               $download_url = "pdf_download.php?action=download&id=$product_id";
-              echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank" style="text-decoration: none;"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
+              echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank" style="text-decoration:none;"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
               echo '&nbsp;&nbsp;';
-              echo '<a href="' . $download_url . '" class="btn btn-success" style="text-decoration: none;"><i class="fa fa-download"></i> Download Catalogue</a>';
+              echo '<a href="' . $download_url . '" class="btn btn-success" style="text-decoration:none;"><i class="fa fa-download"></i> Download Catalogue</a>';
             }
             ?>
           </div>
@@ -756,13 +778,13 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
       <?php
       $search_term = substr($p_name, 0, 4); // Get the first 4 letters of the current product name
       $search_term = htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8'); // Prevent any special character issues
-      
+
       $sql = "SELECT id, p_name, p_current_price, p_old_price, p_featured_photo 
           FROM tbl_product 
           WHERE p_name LIKE :search_term 
           AND id != :current_id
-          LIMIT 3"; // Ensures we don’t show the same product
-      
+          LIMIT 3";
+
       $stmt = $pdo->prepare($sql);
       $stmt->execute([
         ':search_term' => "%$search_term%",
@@ -781,7 +803,7 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
                 <div class="d-flex mb-3">
                   <a href="product_landing.php?id=<?php echo $related_product['id']; ?>" class="me-3">
                     <img src="assets/uploads/product-photos/<?php echo $related_product['p_featured_photo']; ?>"
-                      style="min-width: 96px; height: 96px;" class="img-thumbnail"
+                      style="width: 100px; height: 96px;" class="img-thumbnail"
                       alt="<?php echo htmlspecialchars($related_product['p_name']); ?>" />
                   </a>
                   <div class="info">
@@ -826,6 +848,7 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
 <!-- Bootstrap JS Bundle -->
@@ -833,9 +856,9 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
 
 <!-- Script For Request Price Process -->
 <script>
-  document.querySelector('.material-info-btn').addEventListener('click', function () {
+  document.querySelector('.material-info-btn').addEventListener('click', function() {
     var container = document.querySelector('.key-button-container');
-    container.classList.toggle('show-info');  // Toggle the visibility of the container
+    container.classList.toggle('show-info'); // Toggle the visibility of the container
   });
 
 
@@ -879,13 +902,13 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
     }
   });
 
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function() {
     const infoBtn = document.querySelector('.material-info-btn');
     const infoContainer = document.querySelector('.l-info-icons-container');
     let isVisible = false;
 
     // Toggle info container
-    infoBtn.addEventListener('click', function (e) {
+    infoBtn.addEventListener('click', function(e) {
       e.stopPropagation();
       isVisible = !isVisible;
       infoContainer.classList.toggle('show', isVisible);
@@ -894,7 +917,7 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
     });
 
     // Close info container when clicking outside
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', function(e) {
       if (!infoContainer.contains(e.target) && !infoBtn.contains(e.target)) {
         isVisible = false;
         infoContainer.classList.remove('show');
@@ -903,7 +926,7 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
     });
   });
 
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", function() {
     const thumbnailLinks = document.querySelectorAll(".thumbnail-link img");
     const mainImage = document.getElementById("mainImage");
 
@@ -919,7 +942,7 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
   });
   const img = document.querySelector('.zoom-effect');
 
-  img.addEventListener('mousemove', function (e) {
+  img.addEventListener('mousemove', function(e) {
     const mouseX = e.offsetX;
     const mouseY = e.offsetY;
 
@@ -931,13 +954,11 @@ $min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
     img.style.transformOrigin = `${percentX}% ${percentY}%`;
   });
 
-  img.addEventListener('mouseleave', function () {
+  img.addEventListener('mouseleave', function() {
     img.style.transformOrigin = 'center center'; // Defaults back to center zoom
   });
-
 </script>
-</body>
 
-</html>
-
+<div>
 <?php include 'footer.php'; ?>
+</div>
