@@ -184,20 +184,24 @@ require_once('header.php');
                                         <i class="fa fa-times-circle"></i> Cancelled
                                     </button>
                                 </div>
-                            <?php elseif($row['order_status'] === 'shipped'): ?>
-                                <div class="action-buttons">
-                                    <button 
-                                        class="btn-status-update" 
-                                        onclick="updateOrderStatus(<?php echo $row['order_id']; ?>, 'delivered')">
-                                        <i class="fa fa-check-circle"></i> Delivered
-                                    </button>
-                                    <button 
-                                        class="btn-status-update" 
-                                        onclick="updateOrderStatus(<?php echo $row['order_id']; ?>, 'canceled')">
-                                        <i class="fa fa-times-circle"></i> Cancelled
-                                    </button>
-                                </div>
-                            <?php else: ?>
+<?php elseif($row['order_status'] === 'shipped'): ?>
+    <div class="action-buttons">
+        <button 
+            class="btn-status-update" 
+            onclick="updateOrderStatus(<?php echo $row['order_id']; ?>, 'delivered')">
+            <i class="fa fa-check-circle"></i> Delivered
+        </button>
+        <button 
+            class="btn-status-update" 
+            onclick="updateOrderStatus(<?php echo $row['order_id']; ?>, 'canceled')">
+            <i class="fa fa-times-circle"></i> Cancelled
+        </button>
+<a href="generate_invoice.php?order_id=<?php echo $row['order_id']; ?>" 
+   class="btn btn-sm mt-1" style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;">
+   <i class="fa fa-file-pdf-o"></i> Generate Invoice
+</a>
+    </div>
+<?php else: ?>
                                 <button class="btn-status-update disabled">
                                     <i class="fa fa-lock"></i> No Actions Available
                                 </button>
@@ -406,15 +410,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Function to update order status
 function updateOrderStatus(orderId, newStatus) {
     let trackingId = null;
-    
+
     if (newStatus === 'shipped') {
         trackingId = prompt("Please enter tracking ID:");
         if (!trackingId) return;
     }
-    
+
     $.ajax({
         url: 'process_direct_order.php',
         type: 'GET',
@@ -426,7 +429,30 @@ function updateOrderStatus(orderId, newStatus) {
         },
         success: function(response) {
             if (response.success) {
-                location.reload();
+                // Update the UI dynamically without reload
+                const row = document.querySelector(`.order-row[data-order-id='${orderId}']`);
+                if (row) {
+                    // Update status badge
+                    const statusCell = row.querySelector('.order-status');
+                    statusCell.innerHTML = `<span class='status-badge status-${newStatus}'>${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}</span>`;
+
+                    // Update action column
+                    const actionCell = row.querySelector('.action-column');
+if (newStatus === 'shipped') {
+    actionCell.innerHTML = `
+        <div class="action-buttons">
+<a href="generate_invoice.php?order_id=${orderId}" 
+   class="btn btn-sm mt-1" target="_blank" style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;">
+   <i class="fa fa-file-pdf-o"></i> Generate Invoice
+</a>
+        </div>`;
+                    } else if (newStatus === 'delivered' || newStatus === 'canceled') {
+                        actionCell.innerHTML = `<button class="btn-status-update disabled"><i class="fa fa-lock"></i> No Actions Available</button>`;
+                    } else {
+                        // For other statuses, fallback to reload
+                        location.reload();
+                    }
+                }
             } else {
                 alert('Error: ' + response.message);
             }

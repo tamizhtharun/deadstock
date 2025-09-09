@@ -15,8 +15,6 @@ if (isset($_SESSION['seller_session'])) {
 		exit;
 	}
 }
-
-
 $ai_id = 0;
 if (isset($_POST['form1'])) {
 	$valid = 1;
@@ -216,9 +214,11 @@ if (isset($_POST['form1'])) {
 	foreach ($keys as $key) {
 		// Check if the key exists in the POST data, otherwise set default value to 0
 		if (isset($_POST[$key])) {
-			$selected_values[$key] = $_POST[$key];
+			// $_POST[$key] is now an array of selected values (checkboxes)
+			// Convert to a comma-separated string or store as needed
+			$selected_values[$key] = implode(',', $_POST[$key]);
 		} else {
-			$selected_values[$key] = 0;
+			$selected_values[$key] = '';
 		}
 	}
 
@@ -229,26 +229,22 @@ if (isset($_POST['form1'])) {
 
 	$statement->execute([
 		$ai_id,
-		$selected_values['P'],     // Value selected for P (or default 0)
-		$selected_values['M'],     // Value selected for M (or default 0)
-		$selected_values['K'],     // Value selected for K (or default 0)
-		$selected_values['N'],     // Value selected for N (or default 0)
-		$selected_values['S'],     // Value selected for S (or default 0)
-		$selected_values['H'],     // Value selected for H (or default 0)
-		$selected_values['O'],     // Value selected for O (or default 0)
+		$selected_values['P'],     // Comma-separated values for P or empty string
+		$selected_values['M'],     // Comma-separated values for M or empty string
+		$selected_values['K'],     // Comma-separated values for K or empty string
+		$selected_values['N'],     // Comma-separated values for N or empty string
+		$selected_values['S'],     // Comma-separated values for S or empty string
+		$selected_values['H'],     // Comma-separated values for H or empty string
+		$selected_values['O'],     // Comma-separated values for O or empty string
 	]);
 }
-
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 	<!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
@@ -419,12 +415,9 @@ if (isset($_POST['form1'])) {
 			transform: translateX(-50%);
 		}
 	</style>
-
-
 </head>
 
 <body>
-
 	<section class="content-header">
 		<div class="content-header-left">
 			<h1>Add Product</h1>
@@ -436,31 +429,23 @@ if (isset($_POST['form1'])) {
 
 
 	<section class="content">
-
 		<div class="row">
 			<div class="col-md-12">
-
 				<?php if ($error_message): ?>
 					<div class="callout callout-danger">
-
 						<p>
 							<?php echo $error_message; ?>
 						</p>
 					</div>
 				<?php endif; ?>
-
 				<?php if ($success_message): ?>
 					<div class="callout callout-success">
-
 						<p><?php echo $success_message; ?></p>
 					</div>
 				<?php endif; ?>
-
 				<form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-
 					<div class="box box-info">
 						<div class="box-body">
-
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Top Level Category Name
 									<span>*</span></label>
@@ -531,7 +516,6 @@ if (isset($_POST['form1'])) {
 									</select>
 								</div>
 							</div>
-
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Brand <span>*</span></label>
 								<div class="col-sm-4">
@@ -576,7 +560,6 @@ if (isset($_POST['form1'])) {
 									<input type="file" name="product_catalogue">
 								</div>
 							</div>
-
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Key <span>*</span></label>
 								<div class="col-sm-9">
@@ -586,50 +569,50 @@ if (isset($_POST['form1'])) {
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon p">P</div>
 												<div class="radio-group">
-													<label><input type="radio" name="P" value="1" <?php if (isset($_POST['P']) && $_POST['P'] == '1') echo 'checked'; ?>> 1</label>
-													<label><input type="radio" name="P" value="2" <?php if (isset($_POST['P']) && $_POST['P'] == '2') echo 'checked'; ?>> 2</label>
+													<label><input type="checkbox" name="P[]" value="1" <?php if (isset($_POST['P']) && in_array('1', (array)$_POST['P'])) echo 'checked'; ?>> 1</label>
+													<label><input type="checkbox" name="P[]" value="2" <?php if (isset($_POST['P']) && in_array('2', (array)$_POST['P'])) echo 'checked'; ?>> 2</label>
 												</div>
 											</div>
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon m">M</div>
 												<div class="radio-group">
-													<label><input type="radio" name="M" value="1" <?php if (isset($_POST['M']) && $_POST['M'] == '1') echo 'checked'; ?>> 1</label>
-													<label><input type="radio" name="M" value="2" <?php if (isset($_POST['M']) && $_POST['M'] == '2') echo 'checked'; ?>> 2</label>
+													<label><input type="checkbox" name="M[]" value="1" <?php if (isset($_POST['M']) && in_array('1', (array)$_POST['M'])) echo 'checked'; ?>> 1</label>
+													<label><input type="checkbox" name="M[]" value="2" <?php if (isset($_POST['M']) && in_array('2', (array)$_POST['M'])) echo 'checked'; ?>> 2</label>
 												</div>
 											</div>
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon k">K</div>
 												<div class="radio-group">
-													<label><input type="radio" name="K" value="1" <?php if (isset($_POST['K']) && $_POST['K'] == '1') echo 'checked'; ?>> 1</label>
-													<label><input type="radio" name="K" value="2" <?php if (isset($_POST['K']) && $_POST['K'] == '2') echo 'checked'; ?>> 2</label>
+													<label><input type="checkbox" name="K[]" value="1" <?php if (isset($_POST['K']) && in_array('1', (array)$_POST['K'])) echo 'checked'; ?>> 1</label>
+													<label><input type="checkbox" name="K[]" value="2" <?php if (isset($_POST['K']) && in_array('2', (array)$_POST['K'])) echo 'checked'; ?>> 2</label>
 												</div>
 											</div>
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon n">N</div>
 												<div class="radio-group">
-													<label><input type="radio" name="N" value="1" <?php if (isset($_POST['N']) && $_POST['N'] == '1') echo 'checked'; ?>> 1</label>
-													<label><input type="radio" name="N" value="2" <?php if (isset($_POST['N']) && $_POST['N'] == '2') echo 'checked'; ?>> 2</label>
+													<label><input type="checkbox" name="N[]" value="1" <?php if (isset($_POST['N']) && in_array('1', (array)$_POST['N'])) echo 'checked'; ?>> 1</label>
+													<label><input type="checkbox" name="N[]" value="2" <?php if (isset($_POST['N']) && in_array('2', (array)$_POST['N'])) echo 'checked'; ?>> 2</label>
 												</div>
 											</div>
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon s">S</div>
 												<div class="radio-group">
-													<label><input type="radio" name="S" value="1" <?php if (isset($_POST['S']) && $_POST['S'] == '1') echo 'checked'; ?>> 1</label>
-													<label><input type="radio" name="S" value="2" <?php if (isset($_POST['S']) && $_POST['S'] == '2') echo 'checked'; ?>> 2</label>
+													<label><input type="checkbox" name="S[]" value="1" <?php if (isset($_POST['S']) && in_array('1', (array)$_POST['S'])) echo 'checked'; ?>> 1</label>
+													<label><input type="checkbox" name="S[]" value="2" <?php if (isset($_POST['S']) && in_array('2', (array)$_POST['S'])) echo 'checked'; ?>> 2</label>
 												</div>
 											</div>
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon h">H</div>
 												<div class="radio-group">
-													<label><input type="radio" name="H" value="1" <?php if (isset($_POST['H']) && $_POST['H'] == '1') echo 'checked'; ?>> 1</label>
-													<label><input type="radio" name="H" value="2" <?php if (isset($_POST['H']) && $_POST['H'] == '2') echo 'checked'; ?>> 2</label>
+													<label><input type="checkbox" name="H[]" value="1" <?php if (isset($_POST['H']) && in_array('1', (array)$_POST['H'])) echo 'checked'; ?>> 1</label>
+													<label><input type="checkbox" name="H[]" value="2" <?php if (isset($_POST['H']) && in_array('2', (array)$_POST['H'])) echo 'checked'; ?>> 2</label>
 												</div>
 											</div>
 											<div class="material-suitability-icon-container">
 												<div class="material-suitability-icon o">O</div>
 												<div class="radio-group">
-													<label><input type="radio" name="O" value="1" <?php if (isset($_POST['O']) && $_POST['O'] == '1') echo 'checked'; ?>> 1</label>
-													<label><input type="radio" name="O" value="2" <?php if (isset($_POST['O']) && $_POST['O'] == '2') echo 'checked'; ?>> 2</label>
+													<label><input type="checkbox" name="O[]" value="1" <?php if (isset($_POST['O']) && in_array('1', (array)$_POST['O'])) echo 'checked'; ?>> 1</label>
+													<label><input type="checkbox" name="O[]" value="2" <?php if (isset($_POST['O']) && in_array('2', (array)$_POST['O'])) echo 'checked'; ?>> 2</label>
 												</div>
 											</div>
 										</div>
@@ -648,7 +631,6 @@ if (isset($_POST['form1'])) {
 									</div>
 								</div>
 							</div>
-
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Old Price <br><span
 										style="font-size:10px;font-weight:normal;">(In INR)</span></label>
@@ -683,7 +665,6 @@ if (isset($_POST['form1'])) {
 										required class="form-control" placeholder="Max upto 18%">
 								</div>
 							</div>
-
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Quantity <span>*</span></label>
 								<div class="col-sm-4">
@@ -692,7 +673,6 @@ if (isset($_POST['form1'])) {
 										required class="form-control">
 								</div>
 							</div>
-
 							<div class="form-group">
 								<label for="" class="col-sm-3 control-label">Featured Photo <span>*</span></label>
 								<div class="col-sm-4" style="padding-top:4px;">
@@ -740,17 +720,11 @@ if (isset($_POST['form1'])) {
 						</div>
 					</div>
 			</div>
-
 			</form>
-
-
 		</div>
 		</div>
-
+		`
 	</section>
-
-
-
 	<script>
 		$(document).ready(function() {
 			// Initial Select2 initialization
@@ -773,16 +747,12 @@ if (isset($_POST['form1'])) {
 					success: function(response) {
 						// Destroy existing select2 instance
 						$endCat.select2('destroy');
-
 						// Update the HTML
 						$endCat.html(response);
-
 						// Check for real options (excluding the default option)
 						var hasOptions = $endCat.find('option[value!=""]').length > 0;
-
 						// Set disabled state based on options
 						$endCat.prop('disabled', !hasOptions);
-
 						// Reinitialize select2
 						$endCat.select2({
 							width: '100%'
@@ -790,7 +760,6 @@ if (isset($_POST['form1'])) {
 					}
 				});
 			});
-
 			// Document click handler for closing dropdowns
 			$(document).on('click', function(e) {
 				if (!$(e.target).closest('.select2-container').length) {
