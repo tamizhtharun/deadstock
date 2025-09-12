@@ -1,5 +1,5 @@
 <?php
-// process_bid_order.php - Updated for Delhivery Integration
+// process_direct_order.php - Updated for Delhivery Integration
 error_reporting(0);
 ini_set('display_errors', 0);
 
@@ -24,87 +24,11 @@ try {
         throw new Exception('Invalid action');
     }
 
-    function createOrderFromBid($bid_id) {
-        global $pdo;
-
-        try {
-            $pdo->beginTransaction();
-
-            // Get bid details
-            $stmt = $pdo->prepare("
-                SELECT b.*, p.seller_id, p.p_current_price, p.p_name
-                FROM bidding b 
-                JOIN tbl_products p ON b.product_id = p.id 
-                WHERE b.bid_id = ?
-            ");
-            $stmt->execute([$bid_id]);
-            $bidData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$bidData) {
-                throw new Exception('Bid not found');
-            }
-
-            $product_id = $bidData['product_id'];
-            $user_id = $bidData['user_id'];
-            $seller_id = $bidData['seller_id'];
-            $quantity = $bidData['quantity'];
-            $price = $bidData['bid_amount'];
-            $order_id = 'ORD' . time() . rand(1000, 9999);
-
-            // Check if order already exists
-            $stmt = $pdo->prepare("SELECT id FROM tbl_orders WHERE bid_id = ?");
-            $stmt->execute([$bid_id]);
-            
-            if ($stmt->rowCount() == 0) {
-                // Insert the order into the orders table
-                $stmt = $pdo->prepare("INSERT INTO tbl_orders (
-                    product_id, user_id, seller_id, quantity, price, 
-                    order_id, order_status, bid_id, payment_id, order_type
-                ) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?, 'bid')");
-                
-                $stmt->execute([
-                    $product_id, 
-                    $user_id, 
-                    $seller_id, 
-                    $quantity, 
-                    $price,
-                    $order_id,
-                    $bid_id,
-                    $bidData['payment_id']
-                ]);
-                
-                $new_order_id = $pdo->lastInsertId();
-
-                // Update bidding table with order_id if not exists
-                if (!$bidData['order_id']) {
-                    $stmt = $pdo->prepare("UPDATE bidding SET order_id = ? WHERE bid_id = ?");
-                    $stmt->execute([$order_id, $bid_id]);
-                }
-
-                $pdo->commit();
-                return [
-                    'success' => true, 
-                    'message' => 'Order sent to seller successfully.', 
-                    'order_id' => $new_order_id,
-                    'order_status' => 'pending'
-                ];
-            } else {
-                $pdo->rollBack();
-                return ['success' => false, 'message' => 'Order already exists.'];
-            }
-        } catch (Exception $e) {
-            $pdo->rollBack();
-            error_log("Error processing order: " . $e->getMessage());
-            throw $e;
-        }
-    }
-
     function updateOrderStatus($order_id, $new_status) {
         global $pdo;
 
         $valid_statuses = ['pending', 'processing', 'shipped', 'delivered', 'canceled'];
         if (!in_array($new_status, $valid_statuses)) {
-            error_log("Invalid status provided: " . $new_status);
             throw new Exception('Invalid status provided');
         }
 
@@ -113,18 +37,17 @@ try {
 
             // Check if order exists and get current status with customer details
             $stmt = $pdo->prepare("
-                SELECT o.*, u.username as customer_name, u.phone_number as customer_phone, u.email as customer_email,
+                SELECT o.*, u.name as customer_name, u.phone as customer_phone, u.email as customer_email,
                        a.address, a.city, a.state, a.pincode
                 FROM tbl_orders o 
-                LEFT JOIN users u ON o.user_id = u.id 
-                LEFT JOIN users_addresses a ON o.address_id = a.id
-                WHERE o.id = ?
+                LEFT JOIN tbl_users u ON o.user_id = u.id 
+                LEFT JOIN tbl_addresses a ON o.address_id = a.id
+                WHERE o.id = ? AND o.order_type = 'direct'
             ");
             $stmt->execute([$order_id]);
             $order = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$order) {
-                error_log("Order not found: " . $order_id);
                 throw new Exception('Order not found');
             }
 
@@ -153,17 +76,8 @@ try {
 
             // Handle shipment creation when status changes to 'shipped'
             if ($new_status === 'shipped' && $order['order_status'] !== 'shipped') {
-                error_log("Starting shipment creation for order ID: {$order_id}");
-
                 $delhiveryService = new DelhiveryService();
-
-                // Validate required customer data
-                if (empty($order['customer_name']) || empty($order['address']) || empty($order['city']) ||
-                    empty($order['state']) || empty($order['pincode']) || empty($order['customer_phone'])) {
-                    error_log("Missing required customer data for shipment creation");
-                    throw new Exception('Customer address information is incomplete. Please update the customer address before shipping.');
-                }
-
+                
                 // Prepare shipment data
                 $shipmentData = [
                     'reference_no' => $order['order_id'],
@@ -173,22 +87,13 @@ try {
                     'state' => $order['state'],
                     'pincode' => $order['pincode'],
                     'phone' => $order['customer_phone'],
-                    'email' => $order['customer_email'] ?: 'customer@example.com',
-                    'cod_amount' => $order['price'] ?: '0',
-                    'declared_value' => $order['price'] ?: '0'
+                    'email' => $order['customer_email'],
+                    'cod_amount' => $order['price'],
+                    'declared_value' => $order['price']
                 ];
-
-                // Log the shipment data being sent
-                error_log('Shipment data prepared: ' . json_encode($shipmentData));
-
-                try {
-                    // Create shipment with Delhivery
-                    $shipmentResult = $delhiveryService->createShipment($shipmentData);
-                    error_log('Delhivery API response: ' . json_encode($shipmentResult));
-                } catch (Exception $e) {
-                    error_log('Exception during shipment creation: ' . $e->getMessage());
-                    throw new Exception('Failed to create shipment with Delhivery: ' . $e->getMessage());
-                }
+                
+                // Create shipment with Delhivery
+                $shipmentResult = $delhiveryService->createShipment($shipmentData);
                 
                 if ($shipmentResult['success']) {
                     $awbNumber = $shipmentResult['data']['packages'][0]['waybill'] ?? null;
@@ -205,31 +110,7 @@ try {
                     ");
                     $result = $stmt->execute([$new_status, $awbNumber, $order_id]);
                 } else {
-                    // Check if it's a pincode serviceability issue
-                    if (isset($shipmentResult['serviceable']) && !$shipmentResult['serviceable']) {
-                        // Update order status but mark as non-serviceable
-                        $stmt = $pdo->prepare("
-                            UPDATE tbl_orders 
-                            SET order_status = ?, 
-                                delhivery_shipment_status = 'non_serviceable',
-                                delhivery_created_at = CURRENT_TIMESTAMP,
-                                updated_at = CURRENT_TIMESTAMP 
-                            WHERE id = ?
-                        ");
-                        $result = $stmt->execute([$new_status, $order_id]);
-                        
-                        // Return success with a warning message
-                        sendJsonResponse([
-                            'success' => true,
-                            'message' => 'Order marked as shipped, but pincode is not serviceable by Delhivery. Please arrange alternative shipping.',
-                            'warning' => true,
-                            'serviceable' => false
-                        ]);
-                    } else {
-                        // Surface Delhivery message verbatim for operator clarity
-                        $errMsg = isset($shipmentResult['message']) ? $shipmentResult['message'] : 'API call failed';
-                        throw new Exception('Failed to create shipment: ' . $errMsg);
-                    }
+                    throw new Exception('Failed to create shipment: ' . $shipmentResult['message']);
                 }
             } else {
                 // Update order status only
@@ -241,7 +122,6 @@ try {
                 throw new Exception('Failed to update order status in database');
             }
 
-            // If the new status is 'processing', update the processing_time
             if ($new_status === 'processing') {
                 $stmt = $pdo->prepare("UPDATE tbl_orders SET processing_time = CURRENT_TIMESTAMP WHERE id = ?");
                 $stmt->execute([$order_id]);
@@ -249,7 +129,7 @@ try {
 
             $pdo->commit();
 
-            // Fetch the updated_at timestamp, processing_time, and AWB
+            // Fetch the updated order details
             $stmt = $pdo->prepare("SELECT updated_at, processing_time, delhivery_awb, delhivery_shipment_status FROM tbl_orders WHERE id = ?");
             $stmt->execute([$order_id]);
             $updatedOrder = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -326,14 +206,6 @@ try {
 
     // Route actions based on GET parameters
     switch ($_GET['action']) {
-        case 'create_order':
-            if (!isset($_GET['bid_id'])) {
-                throw new Exception('Missing bid ID');
-            }
-            $result = createOrderFromBid($_GET['bid_id']);
-            sendJsonResponse($result);
-            break;
-
         case 'update_status':
             if (!isset($_GET['order_id']) || !isset($_GET['status'])) {
                 throw new Exception('Missing required parameters');
@@ -355,7 +227,7 @@ try {
     }
 
 } catch (Exception $e) {
-    error_log("Caught exception in process_bid_order.php: " . $e->getMessage() . "\n" . $e->getTraceAsString());
+    error_log("Caught exception in process_direct_order.php: " . $e->getMessage() . "\n" . $e->getTraceAsString());
 
     sendJsonResponse([
         'success' => false,

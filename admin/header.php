@@ -224,11 +224,9 @@ if (!isset($_SESSION['admin_session'])) {
 						</ul>
 					</li>
 
-					<li class="treeview <?php if (($cur_page == 'slider.php')) {
-											echo 'active';
-										} ?>">
-						<a href="slider.php">
-							<i class="fa fa-picture-o"></i> <span>Manage Sliders</span>
+					<li class="treeview <?php if (($cur_page == 'shipment-management.php')) { echo 'active'; } ?>">
+						<a href="shipment-management.php">
+							<i class="fa fa-truck"></i> <span>Shipment Management</span>
 						</a>
 					</li>
 					<!-- Icons to be displayed on Shop -->

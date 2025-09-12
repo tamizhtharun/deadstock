@@ -1,0 +1,66 @@
+[2025-09-11 06:11:11] Test Request to Delhivery API
+URL: https://staging-express.delhivery.com//api/cmu/create.json?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJkLUlNRVRUT09MSU5HSU5ESUFQTFRELWRvLWNkcCIsInBob25lX251bWJlciI6Ijk1MDA2MTIyNzciLCJsYXN0X25hbWUiOiJIIiwidXNlcl90eXBlIjoiQ0wiLCJpYXQiOjE3NTc1MjI2ODYsImlzX2NsaWVudF9hZG1pbiI6dHJ1ZSwidGVuYW50IjoiRGVsaGl2ZXJ5IiwiYXVkIjoiR3ZES3pvZDZhT0lNM0xjeWE5QmpmQmI4YnZGa1lUWHkiLCJmaXJzdF9uYW1lIjoiQXJ1biIsInN1YiI6InVtczo6dXNlcjo6YWI2MWI3NWEtODdiYy0xMWYwLWE2MmUtMGUxNWY3NDdhMzEzIiwiY2xpZW50X3V1aWQiOiJjbXM6OmNsaWVudDo6YWI2MWI3NWItODdiYy0xMWYwLWE2MmUtMGUxNWY3NDdhMzEzIiwiaWRsZSI6MTc1ODEyNzQ4NiwiY2xpZW50X2VtYWlsIjoiYXJ1bmltZXRAZ21haWwuY29tIiwiZXhwIjoxNzU3NjA5MDg2LCJjbGllbnRfbmFtZSI6ImJkLUlNRVRUT09MSU5HSU5ESUFQTFRELWRvLWNkcCIsInRva2VuX2lkIjoiNzA5Nzg3YTUtYmJiYi00NzQ2LWEyODYtMGUxY2Y1MTEyMDE0IiwiZW1haWwiOiJhcnVuaW1ldEBnbWFpbC5jb20iLCJhcGlfdmVyc2lvbiI6InYyIiwidG9lIjoxNzU3NTIyNjg2fQ.iR5R4XD4bL6DkxHEJMMyZrWu54m1foHBCc3csUp0UXQ
+Request: {
+    "shipments": [
+        {
+            "name": "Test Customer",
+            "order": "TEST-1757563871",
+            "payment_mode": "COD",
+            "order_date": "2025-09-11 06:11:11",
+            "total_amount": "1000.00",
+            "cod_amount": "1000.00",
+            "order_type": "COD",
+            "address": "123 Test Street, Test Area",
+            "city": "Chennai",
+            "state": "Tamil Nadu",
+            "country": "India",
+            "pincode": "600001",
+            "phone": "9876543210",
+            "email": "test@example.com"
+        }
+    ],
+    "pickup_location": {
+        "name": "Default Pickup Location",
+        "address": "123 Warehouse St",
+        "city": "Mumbai",
+        "state": "Maharashtra",
+        "pin": "400001",
+        "phone": "9876543210",
+        "country": "India"
+    }
+}
+Response (HTTP 200): {"cash_pickups_count": 0, "package_count": 0, "upload_wbn": null, "replacement_count": 0, "rmk": "format key missing in POST", "pickups_count": 0, "packages": [], "cash_pickups": 0, "cod_count": 0, "success": false, "prepaid_count": 0, "error": true, "cod_amount": 0}
+
+[2025-09-11 06:13:30] Test Request to Delhivery API
+URL: https://staging-express.delhivery.com//api/cmu/create.json?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJkLUlNRVRUT09MSU5HSU5ESUFQTFRELWRvLWNkcCIsInBob25lX251bWJlciI6Ijk1MDA2MTIyNzciLCJsYXN0X25hbWUiOiJIIiwidXNlcl90eXBlIjoiQ0wiLCJpYXQiOjE3NTc1MjI2ODYsImlzX2NsaWVudF9hZG1pbiI6dHJ1ZSwidGVuYW50IjoiRGVsaGl2ZXJ5IiwiYXVkIjoiR3ZES3pvZDZhT0lNM0xjeWE5QmpmQmI4YnZGa1lUWHkiLCJmaXJzdF9uYW1lIjoiQXJ1biIsInN1YiI6InVtczo6dXNlcjo6YWI2MWI3NWEtODdiYy0xMWYwLWE2MmUtMGUxNWY3NDdhMzEzIiwiY2xpZW50X3V1aWQiOiJjbXM6OmNsaWVudDo6YWI2MWI3NWItODdiYy0xMWYwLWE2MmUtMGUxNWY3NDdhMzEzIiwiaWRsZSI6MTc1ODEyNzQ4NiwiY2xpZW50X2VtYWlsIjoiYXJ1bmltZXRAZ21haWwuY29tIiwiZXhwIjoxNzU3NjA5MDg2LCJjbGllbnRfbmFtZSI6ImJkLUlNRVRUT09MSU5HSU5ESUFQTFRELWRvLWNkcCIsInRva2VuX2lkIjoiNzA5Nzg3YTUtYmJiYi00NzQ2LWEyODYtMGUxY2Y1MTEyMDE0IiwiZW1haWwiOiJhcnVuaW1ldEBnbWFpbC5jb20iLCJhcGlfdmVyc2lvbiI6InYyIiwidG9lIjoxNzU3NTIyNjg2fQ.iR5R4XD4bL6DkxHEJMMyZrWu54m1foHBCc3csUp0UXQ
+Request: {
+    "shipments": [
+        {
+            "name": "Test Customer",
+            "order": "TEST-1757564009",
+            "payment_mode": "COD",
+            "order_date": "2025-09-11 06:13:29",
+            "total_amount": "1000.00",
+            "cod_amount": "1000.00",
+            "order_type": "COD",
+            "address": "123 Test Street, Test Area",
+            "city": "Chennai",
+            "state": "Tamil Nadu",
+            "country": "India",
+            "pincode": "600001",
+            "phone": "9876543210",
+            "email": "test@example.com"
+        }
+    ],
+    "pickup_location": {
+        "name": "Default Pickup Location",
+        "address": "123 Warehouse St",
+        "city": "Mumbai",
+        "state": "Maharashtra",
+        "pin": "400001",
+        "phone": "9876543210",
+        "country": "India"
+    }
+}
+Response (HTTP 200): {"cash_pickups_count": 0, "package_count": 0, "upload_wbn": null, "replacement_count": 0, "rmk": "format key missing in POST", "pickups_count": 0, "packages": [], "cash_pickups": 0, "cod_count": 0, "success": false, "prepaid_count": 0, "error": true, "cod_amount": 0}
+
