@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bidding Order JS DOM Test</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 16px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; }
+    .status-processing { background: #ffc107; color: #212529; }
+    .status-shipped { background: #007bff; color: #fff; }
+    .action-buttons button { margin-right: 6px; }
+    .awb-number { font-family: 'Courier New', monospace; background: #e3f2fd; padding: 2px 6px; border-radius: 3px; font-size: 12px; border: 1px solid #bbdefb; }
+  </style>
+  <script>
+    function simulateUpdate(orderId, newStatus, response) {
+      try {
+        const row = document.querySelector(`tr[data-order-id="${orderId}"]`)
+        if (!row) {
+          console.warn('Row not found for order_id:', orderId)
+          alert('Row not found')
+          return
+        }
+
+        const statusCell = row.querySelector('.order-status')
+        const actionCell = row.querySelector('.action-column')
+        const processingTimeCell = row.querySelector('.processing-time')
+        const awbCell = row.querySelector('.awb-number')
+
+        if (statusCell) {
+          statusCell.innerHTML = `<span class="status-badge status-${newStatus}">${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}</span>`
+        }
+        row.setAttribute('data-status', newStatus)
+
+        if (newStatus === 'processing') {
+          if (processingTimeCell) {
+            processingTimeCell.textContent = response.processing_time || '-'
+          }
+          if (actionCell) {
+            actionCell.innerHTML = `<div class="action-buttons"><button onclick="simulateShipped()">Ship</button></div>`
+          }
+        } else if (newStatus === 'shipped') {
+          if (awbCell && response.awb_number) {
+            awbCell.textContent = response.awb_number
+          }
+          if (actionCell) {
+            actionCell.innerHTML = `<div class="action-buttons"><button disabled>No Actions Available</button></div>`
+          }
+        } else {
+          if (actionCell) {
+            actionCell.innerHTML = `<button class="btn-status-update disabled"><i class="fa fa-lock"></i> No Actions Available</button>`
+          }
+        }
+
+        alert(response.message || 'Updated')
+      } catch (e) {
+        console.error('Error in simulateUpdate:', e)
+        alert('Error: ' + e.message)
+      }
+    }
+
+    function simulateProcessing() {
+      simulateUpdate(1, 'processing', { success: true, processing_time: new Date().toISOString(), message: 'Moved to processing' })
+    }
+
+    function simulateShipped() {
+      simulateUpdate(1, 'shipped', { success: true, awb_number: '84665810009999', message: 'Order shipped and AWB saved' })
+    }
+  </script>
+  </head>
+<body>
+  <h2>Bidding Order DOM Update Test</h2>
+
+  <p>
+    Use these buttons to simulate status changes and verify that no null element errors occur. Ensure your real page has cells with classes: <code>.order-status</code>, <code>.processing-time</code>, <code>.awb-number</code>, and <code>.action-column</code>.
+  </p>
+
+  <div style="margin-bottom: 12px;">
+    <button onclick="simulateProcessing()">Simulate Processing</button>
+    <button onclick="simulateShipped()">Simulate Shipped</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Order ID</th>
+        <th>Status</th>
+        <th>Processing Time</th>
+        <th>AWB</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="bid-order-row" data-order-id="1" data-status="pending">
+        <td>1</td>
+        <td><strong>TEST-ORDER-1</strong></td>
+        <td class="order-status"><span class="status-badge status-pending">Pending</span></td>
+        <td class="processing-time">-</td>
+        <td class="awb-number">-</td>
+        <td class="action-column">
+          <div class="action-buttons">
+            <button onclick="simulateProcessing()">Processing</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top:16px; font-size: 12px; color: #666;">
+    Tip: If this test works but your admin page fails, your table row likely misses the <code>.awb-number</code> cell or an inline duplicate update function is overriding updates. Ensure the production table includes that cell and calls the external JS handler.
+  </p>
+</body>
+</html>
+
+
+
+

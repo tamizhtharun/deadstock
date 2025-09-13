@@ -224,11 +224,27 @@ if (!isset($_SESSION['admin_session'])) {
 						</ul>
 					</li>
 
-					<li class="treeview <?php if (($cur_page == 'slider.php')) {
+					<li class="treeview <?php if (($cur_page == '#') || ($cur_page == 'discount-products.php') || ($cur_page == 'seller-discount-approve-status.php') || ($cur_page == 'approved_discounts.php')) {
 											echo 'active';
 										} ?>">
-						<a href="slider.php">
-							<i class="fa fa-picture-o"></i> <span>Manage Sliders</span>
+						<a href="#">
+							<i class="fa fa-percent"></i> <span>Discount Management</span>
+							<span class="pull-right-container">
+								<i class="fa fa-angle-left pull-right"></i>
+							</span>
+						</a>
+						<ul class="treeview-menu">
+							<li><a href="approved_discounts.php"><i class="fa fa-circle-o"></i> Approved Products</a></li>
+							<li><a href="discount-products.php"><i class="fa fa-circle-o"></i> Discount Approval</a></li>
+
+
+						</ul>
+
+					</li>
+
+					<li class="treeview <?php if (($cur_page == 'shipment-management.php')) { echo 'active'; } ?>">
+						<a href="shipment-management.php">
+							<i class="fa fa-truck"></i> <span>Shipment Management</span>
 						</a>
 					</li>
 					<!-- Icons to be displayed on Shop -->

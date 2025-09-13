@@ -158,10 +158,23 @@
                                                 Processing
                                             </button>
                                         </div>
+                                    <?php elseif($row['order_status'] === 'processing'): ?>
+                                        <div class="action-buttons">
+                                            <button class="btn-status-update" onclick="markPackedSeller(<?php echo $row['id']; ?>)">
+                                                <i class="fa fa-box"></i> Packed Ready
+                                            </button>
+                                        </div>
+                                    <?php elseif($row['order_status'] === 'shipped'): ?>
+                                        <div class="action-buttons">
+                                            <a class="btn-status-update" target="_blank" href="print_label.php?order_id=<?php echo $row['id']; ?>">
+                                                <i class="fa fa-print"></i> Print Label
+                                            </a>
+                                            <button class="btn-status-update disabled">
+                                                <i class="fa fa-lock"></i> Status Updated
+                                            </button>
+                                        </div>
                                     <?php elseif($row['order_status'] !== 'delivered' && $row['order_status'] !== 'canceled'): ?>
-                                        <button class="btn-status-update disabled">
-                                            <i class="fa fa-lock"></i> Status Updated
-                                        </button>
+                                        <button class="btn-status-update disabled"><i class="fa fa-lock"></i> Status Updated</button>
                                     <?php else: ?>
                                         <button class="btn-status-update disabled">
                                             <i class="fa fa-lock"></i> No Actions Available
@@ -325,6 +338,17 @@ function updateOrderStatus(orderId, newStatus) {
         console.error('Update error:', error);
         alert(`Failed to update order status: ${error.message}`);
     });
+}
+
+function markPackedSeller(orderId) {
+    fetch('mark_packed.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `order_id=${orderId}`
+    })
+    .then(r => r.json())
+    .then(d => { alert(d.message || (d.success?'Marked packed':'Failed')); if(d.success) location.reload(); })
+    .catch(e => alert('Error: ' + e.message))
 }
 function openImageModal(imgSrc) {
     const modal = document.getElementById('imageModal');

@@ -12,6 +12,87 @@ require_once('header.php');
   </div> -->
 </section>
 
+<style>
+/* Delhivery Status Badge Styles */
+.status-created {
+    background-color: #17a2b8;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-manifested {
+    background-color: #ffc107;
+    color: #212529;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-transit {
+    background-color: #007bff;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-delivered {
+    background-color: #28a745;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-pending {
+    background-color: #6c757d;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.awb-number {
+    font-family: 'Courier New', monospace;
+    background: #e3f2fd;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    border: 1px solid #bbdefb;
+}
+
+/* Delhivery Integration Status Indicator */
+.delhivery-status-indicator {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.delhivery-status-indicator.staging {
+    background: #ffc107;
+    color: #212529;
+}
+
+.delhivery-status-indicator.production {
+    background: #28a745;
+    color: white;
+}
+</style>
+
 <section class="content">
     <div class="row">
         <div class="col-md-12">
@@ -37,6 +118,16 @@ require_once('header.php');
                 </div>
             </div>
 
+            <!-- Delhivery Integration Status Indicator -->
+            <?php
+            require_once('../config/delhivery_config.php');
+            $envClass = (DELHIVERY_ENVIRONMENT === 'staging') ? 'staging' : 'production';
+            $envText = strtoupper(DELHIVERY_ENVIRONMENT);
+            ?>
+            <div class="delhivery-status-indicator <?php echo $envClass; ?>">
+                <i class="fa fa-truck"></i> Delhivery <?php echo $envText; ?>
+            </div>
+
             <div class="box box-info">
                 <div class="box-body table-responsive" id="bidding-order-table-container">
                     <table id="example1" class="table table-bordered table-hover table-striped">
@@ -51,7 +142,7 @@ require_once('header.php');
                                 <th>User Address</th>
                                 <th>Status</th>
                                 <th>Processing Time</th>
-                                <th>Tracking ID</th>
+                                <th>AWB</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -86,7 +177,9 @@ require_once('header.php');
                     o.id AS order_table_id,
                     o.updated_at,
                     o.processing_time,
-                    o.tracking_id
+                    o.tracking_id,
+                    o.delhivery_awb,
+                    o.delhivery_shipment_status
                 FROM 
                     bidding b
                 JOIN 
@@ -173,8 +266,17 @@ require_once('header.php');
                                         }
                                         ?>
                                     </td>
-                                    <td class="tracking-id">
-                                        <?php echo !empty($row['tracking_id']) ? $row['tracking_id'] : '-'; ?>
+                                    <td class="awb-number">
+                                        <?php
+                                        // Prefer Delhivery AWB from orders table if available
+                                        if (!empty($row['delhivery_awb'])) {
+                                            echo htmlspecialchars($row['delhivery_awb']);
+                                        } elseif (!empty($row['tracking_id'])) {
+                                            echo htmlspecialchars($row['tracking_id']);
+                                        } else {
+                                            echo '-';
+                                        }
+                                        ?>
                                     </td>
                                     <td class="action-column">
 <?php if (!empty($row['order_status']) && $row['order_status'] === 'shipped'): ?>
@@ -408,5 +510,6 @@ if (newStatus === 'shipped') {
             }
         });
     }
+
 </script>
 <?php require_once('footer.php'); ?>

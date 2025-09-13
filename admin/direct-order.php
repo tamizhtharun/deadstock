@@ -9,6 +9,96 @@ require_once('header.php');
     </div>
 </section>
 
+<style>
+/* Delhivery Status Badge Styles */
+.status-created {
+    background-color: #17a2b8;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-manifested {
+    background-color: #ffc107;
+    color: #212529;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-transit {
+    background-color: #007bff;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-delivered {
+    background-color: #28a745;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-pending {
+    background-color: #6c757d;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-non-serviceable {
+    background-color: #dc3545;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.awb-number {
+    font-family: 'Courier New', monospace;
+    background: #e3f2fd;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    border: 1px solid #bbdefb;
+}
+
+/* Delhivery Integration Status Indicator */
+.delhivery-status-indicator {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.delhivery-status-indicator.staging {
+    background: #ffc107;
+    color: #212529;
+}
+
+.delhivery-status-indicator.production {
+    background: #28a745;
+    color: white;
+}
+</style>
+
 <section class="content">
 <div class="row">
 <div class="col-md-12">
@@ -34,6 +124,16 @@ require_once('header.php');
         </div>
     </div>
 
+    <!-- Delhivery Integration Status Indicator -->
+    <?php
+    require_once('../config/delhivery_config.php');
+    $envClass = (DELHIVERY_ENVIRONMENT === 'staging') ? 'staging' : 'production';
+    $envText = strtoupper(DELHIVERY_ENVIRONMENT);
+    ?>
+    <div class="delhivery-status-indicator <?php echo $envClass; ?>">
+        <i class="fa fa-truck"></i> Delhivery <?php echo $envText; ?>
+    </div>
+
     <div class="box box-info">
         <div class="box-body table-responsive">
             <table id="example1" class="table table-bordered table-hover table-striped">
@@ -48,7 +148,8 @@ require_once('header.php');
                         <th>Delivery Address</th>
                         <th>Status</th>
                         <th>Processing Time</th>
-                        <th>Tracking ID</th>
+                        <th>Delhivery AWB</th>
+                        <th>Shipment Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -63,6 +164,9 @@ require_once('header.php');
                         o.order_status,
                         o.processing_time,
                         o.tracking_id,
+                        o.delhivery_awb,
+                        o.delhivery_shipment_status,
+                        o.delhivery_created_at,
                         o.address_id,
                         o.created_at,
                         p.id AS product_id,
@@ -163,8 +267,50 @@ require_once('header.php');
                                 }
                             ?>
                         </td>
-                        <td class="tracking-id">
-                            <?php echo !empty($row['tracking_id']) ? $row['tracking_id'] : '-'; ?>
+                        <td class="delhivery-awb">
+                            <?php if (!empty($row['delhivery_awb'])): ?>
+                                <span class="awb-number" style="font-family: monospace; background: #e3f2fd; padding: 2px 6px; border-radius: 3px; font-size: 12px;">
+                                    <?php echo $row['delhivery_awb']; ?>
+                                </span>
+                            <?php else: ?>
+                                <span class="text-muted">-</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="shipment-status">
+                            <?php if (!empty($row['delhivery_shipment_status'])): ?>
+                                <?php 
+                                    $statusClass = '';
+                                    $statusText = ucfirst($row['delhivery_shipment_status']);
+                                    switch($row['delhivery_shipment_status']) {
+                                        case 'created':
+                                            $statusClass = 'status-created';
+                                            break;
+                                        case 'manifested':
+                                            $statusClass = 'status-manifested';
+                                            break;
+                                        case 'in_transit':
+                                            $statusClass = 'status-transit';
+                                            break;
+                                        case 'delivered':
+                                            $statusClass = 'status-delivered';
+                                            break;
+                                        case 'non_serviceable':
+                                            $statusClass = 'status-non-serviceable';
+                                            $statusText = 'Non-Serviceable';
+                                            break;
+                                        default:
+                                            $statusClass = 'status-pending';
+                                    }
+                                ?>
+                                <span class="status-badge <?php echo $statusClass; ?>" style="font-size: 11px;">
+                                    <?php echo $statusText; ?>
+                                </span>
+                                <?php if (!empty($row['delhivery_created_at'])): ?>
+                                    <br><small class="text-muted"><?php echo date('M d, H:i', strtotime($row['delhivery_created_at'])); ?></small>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <span class="text-muted">-</span>
+                            <?php endif; ?>
                         </td>
                         <td class="action-column">
                             <?php if($row['order_status'] === 'pending'): ?>
@@ -196,10 +342,18 @@ require_once('header.php');
             onclick="updateOrderStatus(<?php echo $row['order_id']; ?>, 'canceled')">
             <i class="fa fa-times-circle"></i> Cancelled
         </button>
-<a href="generate_invoice.php?order_id=<?php echo $row['order_id']; ?>" 
-   class="btn btn-sm mt-1" style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;">
-   <i class="fa fa-file-pdf-o"></i> Generate Invoice
-</a>
+        <?php if (!empty($row['delhivery_awb'])): ?>
+            <button 
+                class="btn-status-update" 
+                onclick="trackShipment(<?php echo $row['order_id']; ?>)"
+                style="background: #28a745; color: white; margin: 2px;">
+                <i class="fa fa-search"></i> Track Shipment
+            </button>
+        <?php endif; ?>
+        <a href="generate_invoice.php?order_id=<?php echo $row['order_id']; ?>" 
+           class="btn btn-sm mt-1" style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;">
+           <i class="fa fa-file-pdf-o"></i> Generate Invoice
+        </a>
     </div>
 <?php else: ?>
                                 <button class="btn-status-update disabled">
@@ -411,21 +565,13 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function updateOrderStatus(orderId, newStatus) {
-    let trackingId = null;
-
-    if (newStatus === 'shipped') {
-        trackingId = prompt("Please enter tracking ID:");
-        if (!trackingId) return;
-    }
-
     $.ajax({
         url: 'process_direct_order.php',
         type: 'GET',
         data: {
             action: 'update_status',
             order_id: orderId,
-            status: newStatus,
-            tracking_id: trackingId
+            status: newStatus
         },
         success: function(response) {
             if (response.success) {
@@ -436,16 +582,50 @@ function updateOrderStatus(orderId, newStatus) {
                     const statusCell = row.querySelector('.order-status');
                     statusCell.innerHTML = `<span class='status-badge status-${newStatus}'>${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}</span>`;
 
+                    // Update Delhivery AWB if available
+                    if (response.awb_number) {
+                        const awbCell = row.querySelector('.delhivery-awb');
+                        if (awbCell) {
+                            awbCell.innerHTML = `<span class="awb-number">${response.awb_number}</span>`;
+                        }
+                    }
+
+                    // Update shipment status if available
+                    if (response.shipment_status) {
+                        const shipmentStatusCell = row.querySelector('.shipment-status');
+                        if (shipmentStatusCell) {
+                            const statusClass = `status-${response.shipment_status}`;
+                            shipmentStatusCell.innerHTML = `
+                                <span class="status-badge ${statusClass}" style="font-size: 11px;">
+                                    ${response.shipment_status.charAt(0).toUpperCase() + response.shipment_status.slice(1)}
+                                </span>
+                                <br><small class="text-muted">${new Date().toLocaleDateString()}</small>
+                            `;
+                        }
+                    }
+
                     // Update action column
                     const actionCell = row.querySelector('.action-column');
-if (newStatus === 'shipped') {
-    actionCell.innerHTML = `
-        <div class="action-buttons">
-<a href="generate_invoice.php?order_id=${orderId}" 
-   class="btn btn-sm mt-1" target="_blank" style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;">
-   <i class="fa fa-file-pdf-o"></i> Generate Invoice
-</a>
-        </div>`;
+                    if (newStatus === 'shipped') {
+                        const trackButton = response.awb_number ? 
+                            `<button onclick="trackShipment(${orderId})" class="btn-status-update" style="background: #28a745; color: white; margin: 2px;">
+                                <i class="fa fa-search"></i> Track Shipment
+                            </button>` : '';
+                        
+                        actionCell.innerHTML = `
+                            <div class="action-buttons">
+                                <button class="btn-status-update" onclick="updateOrderStatus(${orderId}, 'delivered')">
+                                    <i class="fa fa-check-circle"></i> Delivered
+                                </button>
+                                <button class="btn-status-update" onclick="updateOrderStatus(${orderId}, 'canceled')">
+                                    <i class="fa fa-times-circle"></i> Cancelled
+                                </button>
+                                ${trackButton}
+                                <a href="generate_invoice.php?order_id=${orderId}" 
+                                   class="btn btn-sm mt-1" target="_blank" style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;">
+                                   <i class="fa fa-file-pdf-o"></i> Generate Invoice
+                                </a>
+                            </div>`;
                     } else if (newStatus === 'delivered' || newStatus === 'canceled') {
                         actionCell.innerHTML = `<button class="btn-status-update disabled"><i class="fa fa-lock"></i> No Actions Available</button>`;
                     } else {
@@ -459,6 +639,67 @@ if (newStatus === 'shipped') {
         },
         error: function() {
             alert('An error occurred while updating the order status.');
+        }
+    });
+}
+
+function markPacked(orderId) {
+    fetch('process_shipments.php?action=mark_packed&order_id=' + orderId)
+        .then(r => r.json())
+        .then(d => {
+            alert(d.message || (d.success ? 'Marked packed' : 'Failed'));
+            if (d.success) location.reload();
+        })
+        .catch(e => alert('Error: ' + e.message));
+}
+
+function trackShipment(orderId) {
+    $.ajax({
+        url: 'process_direct_order.php',
+        type: 'GET',
+        data: {
+            action: 'track_shipment',
+            order_id: orderId
+        },
+        success: function(response) {
+            if (response.success) {
+                // Display tracking information in a modal or alert
+                let trackingInfo = '';
+                if (response.data && response.data.ShipmentData && response.data.ShipmentData.length > 0) {
+                    const shipment = response.data.ShipmentData[0];
+                    trackingInfo = `
+                        <div style="text-align: left;">
+                            <h4>Shipment Tracking Information</h4>
+                            <p><strong>AWB Number:</strong> ${shipment.AWB || 'N/A'}</p>
+                            <p><strong>Status:</strong> ${shipment.Status || 'N/A'}</p>
+                            <p><strong>Location:</strong> ${shipment.Location || 'N/A'}</p>
+                            <p><strong>Last Updated:</strong> ${shipment.StatusDateTime || 'N/A'}</p>
+                            <p><strong>Description:</strong> ${shipment.StatusDescription || 'N/A'}</p>
+                        </div>
+                    `;
+                } else {
+                    trackingInfo = '<p>No tracking information available yet.</p>';
+                }
+                
+                // Create and show modal
+                const modal = document.createElement('div');
+                modal.innerHTML = `
+                    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; justify-content: center; align-items: center;">
+                        <div style="background: white; padding: 20px; border-radius: 8px; max-width: 500px; width: 90%; max-height: 80%; overflow-y: auto;">
+                            ${trackingInfo}
+                            <div style="text-align: center; margin-top: 20px;">
+                                <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            } else {
+                alert('Error tracking shipment: ' + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert('Error tracking shipment: ' + error);
         }
     });
 }

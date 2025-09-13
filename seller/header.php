@@ -254,6 +254,15 @@ if (!isset($_SESSION['seller_session'])) {
 						</ul>
 					</li>
 
+					<li
+						class="treeview <?php if (($cur_page == 'discount.php')) {
+											echo 'active';
+										} ?>">
+						<a href="discount.php">
+							<i class="fa fa-percent"></i> <span>Discount Management</span>
+						</a>
+					</li>
+
 					<li class="treeview <?php if (($cur_page == 'revenue.php')) {
 											echo 'active';
 										} ?>">
