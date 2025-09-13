@@ -114,8 +114,8 @@ unset($_SESSION['success_message']);
         <nav class="ds-nav-container">
             <div class="ds-logo-section">
                 <a href="index.php" class="ds-logo">
-                    <img src="./assets/uploads/<?php echo $logo ?>" alt="Logo" width="30" height="30">
-                    <span>Dead Stock</span>
+                    <img src="./assets/uploads/<?php echo $logo ?>" alt="Logo"  height="60">
+                    <!-- <span>Dead Stock</span> -->
                 </a>
             </div>
 
