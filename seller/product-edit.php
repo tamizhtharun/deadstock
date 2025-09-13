@@ -1,5 +1,4 @@
 <?php require_once('header.php'); ?>
-
 <?php
 if (isset($_POST['form1'])) {
 	$valid = 1;
@@ -73,7 +72,8 @@ if (isset($_POST['form1'])) {
 	// 	$error_message .= "Product Brand should be selected<br>";
 	// }
 
-	if ($_POST['tcat_id'] === 'others') {
+	$product_brand = $_POST['product_brand'];
+	if ($_POST['product_brand'] === 'others') {
 		if (empty($_POST['other_brand'])) {
 			$valid = 0;
 			$error_message .= "You must specify the brand name<br>";
@@ -184,7 +184,7 @@ if (isset($_POST['form1'])) {
 				$_POST['tcat_id'],
 				$_POST['mcat_id'],
 				$_POST['ecat_id'],
-				$_POST['product_brand'],
+				$product_brand,
 				$_POST['hsn_code'],
 				$_POST['gst_percentage'],
 				$_POST['p_old_price'],
@@ -227,7 +227,7 @@ if (isset($_POST['form1'])) {
 				$_POST['tcat_id'],
 				$_POST['mcat_id'],
 				$_POST['ecat_id'],
-				$_POST['product_brand'],
+				$product_brand,
 				$_POST['hsn_code'],
 				$_POST['gst_percentage'],
 				$_POST['p_old_price'],
@@ -449,13 +449,13 @@ foreach ($result as $row) {
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Product Name <span>*</span></label>
 							<div class="col-sm-4">
-								<input type="text" name="p_name" class="form-control" value="<?php echo $p_name; ?>">
+								<input type="text" name="p_name" class="form-control" value="<?php echo htmlspecialchars($p_name); ?>">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Product Brand <span>*</span></label>
 							<div class="col-sm-4">
-								<select name="product_brand" class="form-control select2">
+								<select name="product_brand" class="form-control select2 brand-select">
 									<option value="">Select Brand</option>
 									<?php
 									$seller_id = $_SESSION['seller_session']['seller_id'];
@@ -475,8 +475,14 @@ foreach ($result as $row) {
 									<?php
 									}
 									?>
-									<option value="Others" <?php if ($product_brand == 'Others') echo 'selected'; ?>>Others</option>
+									<option value="others" <?php if ($product_brand == 'others') echo 'selected'; ?>>Others</option>
 								</select>
+							</div>
+						</div>
+						<div class="form-group other-brand-group" style="display: none;">
+							<label for="" class="col-sm-3 control-label">Specify Brand Name <span>*</span></label>
+							<div class="col-sm-4">
+								<input type="text" name="other_brand" class="form-control" value="<?php echo isset($_POST['other_brand']) ? htmlspecialchars($_POST['other_brand']) : ''; ?>">
 							</div>
 						</div>
 						<div class="form-group">
@@ -570,7 +576,7 @@ foreach ($result as $row) {
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Description</label>
 							<div class="col-sm-8">
-								<textarea name="p_description" class="form-control"><?php echo $p_description; ?></textarea>
+								<textarea name="p_description" class="form-control"><?php echo htmlspecialchars($p_description); ?></textarea>
 							</div>
 						</div>
 						<!-- <div class="form-group">
@@ -640,4 +646,79 @@ foreach ($result as $row) {
 
 </section>
 
+<script>
+$(document).ready(function() {
+    // Initialize Select2
+    $('.select2').select2({
+        width: '100%',
+        closeOnSelect: true
+    });
+
+    // Toggle other brand input
+    $('.brand-select').on('change', function() {
+        if ($(this).val() === 'others') {
+            $('.other-brand-group').show();
+        } else {
+            $('.other-brand-group').hide();
+            $('input[name="other_brand"]').val('');
+        }
+    });
+
+    // Check initial state
+    if ($('.brand-select').val() === 'others') {
+        $('.other-brand-group').show();
+    }
+
+    // When top category changes
+    $(document).on('change', '.top-cat', function(e) {
+        var tcat_id = $(this).val();
+        var $midCat = $('.mid-cat');
+        var $endCat = $('.end-cat');
+
+        $.ajax({
+            url: "get_mid_category.php",
+            type: "POST",
+            data: { id: tcat_id },
+            success: function(response) {
+                $midCat.select2('destroy');
+                $midCat.html(response);
+                $midCat.prop('disabled', false);
+                $midCat.select2({ width: '100%' });
+
+                // Reset end category
+                $endCat.select2('destroy');
+                $endCat.html('<option value="">Select End Level Category</option>');
+                $endCat.prop('disabled', true);
+                $endCat.select2({ width: '100%' });
+            }
+        });
+    });
+
+    // When mid category changes
+    $(document).on('change', '.mid-cat', function(e) {
+        var mid_cat_id = $(this).val();
+        var $endCat = $('.end-cat');
+
+        $.ajax({
+            url: "get_end_category.php",
+            type: "POST",
+            data: { id: mid_cat_id },
+            success: function(response) {
+                $endCat.select2('destroy');
+                $endCat.html(response);
+                var hasOptions = $endCat.find('option[value!=""]').length > 0;
+                $endCat.prop('disabled', !hasOptions);
+                $endCat.select2({ width: '100%' });
+            }
+        });
+    });
+
+    // Document click handler for closing dropdowns
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.select2-container').length) {
+            $('.select2').select2('close');
+        }
+    });
+});
+</script>
 <?php require_once('footer.php'); ?>

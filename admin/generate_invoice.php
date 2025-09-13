@@ -235,9 +235,9 @@ function numberToWords($number) {
         th, td { padding: 12px; text-align: left; }
         th { background-color: #f2f2f2; }
         .text-right { text-align: right; }
-        .download-button { margin-bottom: 20px; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        .download-button:hover { background-color: #0056b3; }
-        .section-title { background-color: #007bff; color: white; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+        .download-button { margin-bottom: 20px; padding: 10px 20px; background-color: #F8D057; color: black; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .download-button:hover { background-color: #F8D057; }
+        .section-title {  color: black; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
         .note { color: red; font-style: italic; }
         .flex-container { display: flex; justify-content: space-between; flex-wrap: wrap; }
         .flex-item { flex: 1 1 45%; margin-bottom: 20px; }

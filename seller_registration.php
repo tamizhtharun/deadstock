@@ -41,6 +41,12 @@ function generateUniqueSellerId($conn)
     return "SLR{$year}" . str_pad($next_id, 4, '0', STR_PAD_LEFT);
 }
 
+function isStrongPassword($password)
+{
+    // At least 8 characters, one uppercase, one lowercase, one number, one special character
+    return preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password);
+}
+
 // Process form submission if POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Collect and sanitize input data
@@ -59,6 +65,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Backend validations
     if (empty($seller_name)) {
         $errorMessages[] = "Seller name is required.";
+           
+    }
+    if (empty($seller_password)) {
+        $errorMessages[] = "Password is required.";
+    } elseif (!isStrongPassword($seller_password)) {
+        $errorMessages[] = "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.";
     }
     if (!filter_var($seller_email, FILTER_VALIDATE_EMAIL)) {
         $errorMessages[] = "Invalid email address.";
@@ -68,6 +80,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     if (strlen($seller_zipcode) !== 6 || !ctype_digit($seller_zipcode)) {
         $errorMessages[] = "ZIP code must be a 6-digit number.";
+        
+
     }
 
     // Validate GST format
@@ -75,7 +89,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!preg_match($gstRegex, $seller_gst)) {
         $errorMessages[] = "Invalid GST Number format.";
     }
-
     // Stop processing if there are errors
     if (empty($errorMessages)) {
         // Check if email already exists in sellers or users table
@@ -244,7 +257,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         .input-group {
             position: relative;
-            margin-bottom: 24px;
+            margin-bottom: 60px;
         }
 
         .input-group.full-width {
@@ -300,7 +313,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: var(--error-color);
             font-size: 12px;
             position: absolute;
-            bottom: -20px;
+            bottom: -40px;
             left: 0;
         }
 
@@ -616,6 +629,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
                         errorMessage = 'Invalid email address';
                         break;
+                    case 'seller_password':
+                        isValid = validatePassword(input.value);
+                        errorMessage = 'Password must be at least 8 characters, include uppercase, lowercase, number, and special character';
+                        break;
                 }
 
                 if (!isValid && input.value.length > 0) {
@@ -634,6 +651,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             function validatePhone(phoneNumber) {
                 const phoneRegex = /^(?:(?:\+|0{0,2})91(\s*[-]\s*)?|[0]?)?[6789]\d{9}$/;
                 return phoneRegex.test(phoneNumber);
+            }
+
+            function validatePassword(password) {
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                return passwordRegex.test(password);
             }
 
             form.addEventListener('submit', function(event) {

@@ -459,16 +459,17 @@ function fetchSellerData(sellerId) {
 function updateSellerModal(data) {
   const seller = data.seller
   const defaultImage = "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
+  const photoSrc = seller.seller_photo || defaultImage
 
   document.querySelector("#profile .seller-info-grid").innerHTML = `
         <div class="seller-info-item"><label>Name</label><span>${seller.seller_name}</span></div>
         <div class="seller-info-item">
             <label>Photo</label>
             <div class="seller-photo-container">
-                <img src="${seller.seller_photo || defaultImage}" alt="Seller Photo" class="seller-photo">
+                <img src="${photoSrc}" alt="Seller Photo" class="seller-photo">
             </div>
             <div class="photo-modal">
-                <img src="${seller.seller_photo || defaultImage}" alt="Seller Photo">
+                <img src="${photoSrc}" alt="Seller Photo">
             </div>
         </div>
         <div class="seller-info-item"><label>Seller ID</label><span>${seller.unique_seller_id}</span></div>       
