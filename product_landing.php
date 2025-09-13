@@ -248,15 +248,15 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     <div class="row gx-5 justify-content-center">
       <aside class="col-lg-6 justify-content-center">
         <div class="d-flex justify-content-center mb-3">
-          <!-- Main Image -->
-          <div class="border rounded-4 mb-3 d-flex justify-content-center"
-            style="width: 450px; height: 300px; overflow: hidden; position: relative;">
-            <a data-bs-toggle="modal" id="mainImageLink" class="rounded-4" data-bs-target="#imageModal" href="#">
-              <!-- Default Big Photo -->
-              <img id="mainImage" class="rounded-4 zoom-effect" class="rounded-4"
-                src="assets/uploads/product-photos/<?php echo $p_featured_photo; ?>">
-            </a>
-          </div>
+        <!-- Main Image -->
+        <div class="border rounded-4 mb-3 d-flex justify-content-center"
+          style="width: 450px; height: 300px; overflow: hidden; position: relative;">
+          <a data-bs-toggle="modal" id="mainImageLink" class="rounded-4" data-bs-target="#imageModal" href="#">
+            <!-- Default Big Photo -->
+            <img id="mainImage" class="rounded-4 zoom-effect" class="rounded-4"
+              src="assets/uploads/product-photos/<?php echo $p_featured_photo; ?>">
+          </a>
+        </div>
         </div>
         <!-- Thumbnail Images -->
         <div class="d-flex justify-content-center mb-3">
@@ -423,57 +423,72 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 
             <div class="product-container">
               <div class="product-box">
-                <form method="POST" action="">
-                  <div class="row mb-4">
-                    <div class="col-md-4 col-6 mb-3">
-                      <label class="mb-2 d-block">Quantity</label>
-                      <div class="input-group mb-3" style="width: 170px;">
-                        <input type="number" class="form-control text-center" name="product_quantity" id="quantity-input"
-                          value="1" min="1" />
-                      </div>
+                <!-- Key Section -->
+
+
+                <!-- Quantity Section -->
+                <div class="row mb-4">
+                  <div class="col-md-4 col-6 mb-3">
+                    <label class="mb-2 d-block">Quantity</label>
+                    <div class="input-group mb-3" style="width: 170px;">
+                      <input type="number" class="form-control text-center" name="product_quantity" id="quantity-input"
+                        value="1" min="1" />
                     </div>
                   </div>
+                </div>
 
-                  <!-- Flexbox for buttons to align them horizontally -->
-                  <div class="d-flex align-items-center">
+                <div class="d-flex">
+                  <!-- Buy Now Form -->
+                  <!-- Buy Now Form -->
+                  <!-- <form method="POST" action="checkout-page.php" class="me-3">
+                    <input type="hidden" name="product_id" value="<?php echo $_REQUEST['id']; ?>">
+                    <input type="hidden" name="product_quantity" id="buy-now-quantity" value="1">
+                    <button type="submit" name="buy_now" class="btn btn-warning shadow-0">Buy now</button>
+                </form> -->
+
+                  <!-- Add to Cart Form -->
+                  <form method="POST" action="" class="me-3" >
                     <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
-
-                    <!-- Add to Cart Button -->
-                    <button type="submit" name="add_to_cart" class="btn btn-primary shadow-0 me-2">
+                    <input type="hidden" name="product_quantity" id="cart-quantity" value="1">
+                    <button type="submit" name="add_to_cart" class="btn btn-primary shadow-0">
                       <i class="bi bi-basket me-1"></i> Add to cart
                     </button>
+                  </form>
 
-                    <!-- Place a Bid Button -->
-                    <div class="d-inline-block"
-                      <?php if (!isset($_SESSION['user_session']['id'])) { ?>
-                      data-bs-toggle="tooltip" data-bs-placement="top" title="Please login through your account"
-                      <?php } ?>>
+                  <!-- Request Price Button -->
+                  <div class="d-inline-block"
+                    <?php if (!isset($_SESSION['user_session']['id'])) { ?>
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Please login through your account"
+                    <?php } ?>>
 
-                      <button id="requestPriceBtn" class="request-price-btn btn btn-danger border"
-                        <?php if (!isset($_SESSION['user_session']['id'])) {
-                          echo 'disabled';
-                        } ?>>
-                        <i class="fa fa-gavel"></i> Place a Bid
-                      </button>
-                    </div>
+                    <!-- Request Price Button -->
+                    <button id="requestPriceBtn" class="request-price-btn btn btn-danger border"
+                      <?php if (!isset($_SESSION['user_session']['id'])) {
+                        echo 'disabled';
+                      } ?>>
+                      <i class="fa fa-gavel"></i> Place a Bid
+                    </button>
                   </div>
-                </form>
-
-                <script>
-                  document.addEventListener("DOMContentLoaded", function() {
-                    var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-                    tooltipTriggerList.forEach(function(tooltipTriggerEl) {
-                      new bootstrap.Tooltip(tooltipTriggerEl);
+                  <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                      var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                      tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                        new bootstrap.Tooltip(tooltipTriggerEl);
+                      });
                     });
-                  });
-                </script>
+                  </script>
 
-                <style>
-                  .tooltip-inner {
-                    font-size: 12px !important;
-                    padding: 4px 8px !important;
-                  }
-                </style>
+                  <style>
+                    /* Reduce Tooltip Font Size */
+                    .tooltip-inner {
+                      font-size: 12px !important;
+                      /* Adjust size as needed */
+                      padding: 4px 8px !important;
+                      /* Adjust padding for a smaller box */
+                    }
+                  </style>
+
+                </div>
               </div>
             </div>
           </div>
@@ -603,7 +618,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     } else if (proposedPrice.value <= 0) {
       showMessage('Please enter a valid bid price', 'error');
     } else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
-      showMessage('Bidding too low? Try offering a fair price.', 'error');
+      showMessage('Minimum bid price is ₹' + minAllowedPrice.toFixed(2), 'error');
     } else if (!termsCheckbox.checked) {
       showMessage('You must agree to the Terms and Conditions', 'error');
     } else {
@@ -765,14 +780,14 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
               $file_path = 'assets/uploads/' . $pdf_name;
               $view_url = "pdf_download.php?action=view&id=$product_id";
               $download_url = "pdf_download.php?action=download&id=$product_id";
-              echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank" style="text-decoration:none;"><i class="fa fa-file-pdf-o"></i>View</a>';
+              echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank" style="text-decoration:none;"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
               echo '&nbsp;&nbsp;';
-              echo '<a href="' . $download_url . '" class="btn btn-success" style="text-decoration:none;"><i class="fa fa-download"></i>Download</a>';
+              echo '<a href="' . $download_url . '" class="btn btn-success" style="text-decoration:none;"><i class="fa fa-download"></i> Download Catalogue</a>';
             }
             ?>
           </div>
         </div>
-     </div>
+      </div>
 
 
       <?php
@@ -783,7 +798,6 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
           FROM tbl_product 
           WHERE p_name LIKE :search_term 
           AND id != :current_id
-          AND p_is_approve = 1
           LIMIT 3";
 
       $stmt = $pdo->prepare($sql);
@@ -961,5 +975,5 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 </script>
 
 <div>
-  <?php include 'footer.php'; ?>
+<?php include 'footer.php'; ?>
 </div>
