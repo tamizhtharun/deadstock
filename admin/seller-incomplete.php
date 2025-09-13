@@ -1,10 +1,38 @@
-<?php require_once('header.php'); ?>
+<?php
+session_start();
+require_once('header.php');
+
+// Check for session messages
+$error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : '';
+$success_message = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : '';
+
+// Clear session messages
+unset($_SESSION['error_message']);
+unset($_SESSION['success_message']);
+?>
 
 <section class="content-header">
     <div class="content-header-left">
         <h1>Sellers - Incomplete Profiles</h1>
     </div>
 </section>
+
+<!-- Display messages -->
+<?php if ($error_message): ?>
+<div class="alert alert-danger alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <h4><i class="icon fa fa-ban"></i> Error!</h4>
+    <?php echo htmlspecialchars($error_message); ?>
+</div>
+<?php endif; ?>
+
+<?php if ($success_message): ?>
+<div class="alert alert-success alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <h4><i class="icon fa fa-check"></i> Success!</h4>
+    <?php echo htmlspecialchars($success_message); ?>
+</div>
+<?php endif; ?>
 <style>
     .filter-container {
         display: flex;
@@ -229,13 +257,17 @@
                                         } ?></td>
                                     <td><?php echo $row['registration_date']; ?></td> <!-- Display Registration Date -->
 
-                                    <td>
-                                        <?php if ($row['seller_status'] == 0) { ?>
-                                            <a href="seller-change-status.php?id=<?php echo $row['seller_id']; ?>" class="btn btn-warning btn-xs">Rejected</a>
-                                        <?php } else { ?>
-                                            <a href="seller-change-status.php?id=<?php echo $row['seller_id']; ?>" class="btn btn-success btn-xs">Approved</a>
-                                        <?php } ?>
-                                    </td>
+                            <td>
+                                <?php if ($row['seller_status'] == 0) { ?>
+                                    <form method="post" action="" class="seller-status-form" data-seller-id="<?php echo $row['seller_id']; ?>">
+                                        <button type="submit" class="btn btn-warning btn-xs">Rejected</button>
+                                    </form>
+                                <?php } else { ?>
+                                    <form method="post" action="" class="seller-status-form" data-seller-id="<?php echo $row['seller_id']; ?>">
+                                        <button type="submit" class="btn btn-success btn-xs">Approved</button>
+                                    </form>
+                                <?php } ?>
+                            </td>
 
                                     <td>
                                         <a href="#" class="btn btn-danger btn-xs" data-href="seller-delete.php?id=<?php echo $row['seller_id']; ?>" data-toggle="modal" data-target="#confirm-delete">Delete</a>
@@ -448,6 +480,43 @@
 
         table.on('draw', function() {
             updateSerialNumbers();
+        });
+
+        // Handle seller status form submission via AJAX
+        document.querySelectorAll('.seller-status-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const sellerId = this.getAttribute('data-seller-id');
+                const button = this.querySelector('button');
+                const originalText = button.textContent;
+
+                // Disable button and show loading
+                button.disabled = true;
+                button.textContent = 'Processing...';
+
+                // Send AJAX request
+                fetch('seller-change-status.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'id=' + encodeURIComponent(sellerId)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Reload the page to show updated status and messages
+                        window.location.reload();
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    button.disabled = false;
+                    button.textContent = originalText;
+                    alert('An error occurred while processing your request.');
+                });
+            });
         });
     });
 </script>

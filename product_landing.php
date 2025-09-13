@@ -291,7 +291,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
       <main class="col-lg-6">
         <dclass="ps-lg-3">
           <h4 class="title text-dark">
-            <?php echo $p_name; ?>
+            <?php echo htmlspecialchars($p_name); ?>
           </h4>
 
           <div class="d-flex flex-row my-2">
@@ -602,9 +602,9 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
       showMessage('Please enter a valid quantity', 'error');
     } else if (proposedPrice.value <= 0) {
       showMessage('Please enter a valid bid price', 'error');
-    } else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
-      showMessage('Bidding too low? Try offering a fair price.', 'error');
-    } else if (!termsCheckbox.checked) {
+else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
+  showMessage('Bidding too low? Try offering a fair price.', 'error');
+}
       showMessage('You must agree to the Terms and Conditions', 'error');
     } else {
       openRazorpayModal();
@@ -618,7 +618,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     // showMessage('biting button working, check the razorpay modal');
     // for testing end
 
-    const productId = <?php echo $_REQUEST['id']; ?>;
+    const productId = <?php echo json_encode($_REQUEST['id']); ?>;
 
     // First check if user has already bid
     checkExistingBid(productId)
@@ -639,7 +639,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          product_id: <?php echo $_REQUEST['id']; ?>,
+          product_id: <?php echo json_encode($_REQUEST['id']); ?>,
           quantity: quantity,
           proposed_price: proposedPrice
         })
@@ -678,8 +678,8 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
                 });
             },
             prefill: {
-              name: "<?php echo $_SESSION['user_session']['name'] ?? ''; ?>",
-              email: "<?php echo $_SESSION['user_session']['email'] ?? ''; ?>"
+              name: "<?php echo htmlspecialchars($_SESSION['user_session']['name'] ?? ''); ?>",
+              email: "<?php echo htmlspecialchars($_SESSION['user_session']['email'] ?? ''); ?>"
             },
             theme: {
               color: "#3399cc"
@@ -814,11 +814,11 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
                     </a>
                     <div class="d-flex align-items-center gap-2 mt-1">
                       <p class="text-dark mb-0">
-                        <strong>₹<?php echo $related_product['p_current_price']; ?></strong>
+                        <strong>₹<?php echo htmlspecialchars($related_product['p_current_price']); ?></strong>
                       </p>
                       <?php if ($related_product['p_old_price'] > 0): ?>
                         <span class="text-muted text-decoration-line-through">
-                          ₹<?php echo $related_product['p_old_price']; ?>
+                          ₹<?php echo htmlspecialchars($related_product['p_old_price']); ?>
                         </span>
                         <?php
                         $discount = (($related_product['p_old_price'] - $related_product['p_current_price']) / $related_product['p_old_price']) * 100;

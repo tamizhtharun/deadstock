@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once('header.php');
 
 // Updated paths to go up one more directory level
@@ -20,28 +21,28 @@ try {
     // Check if the id is valid
     $statement = $pdo->prepare("SELECT * FROM sellers WHERE seller_id = ?");
     $statement->execute([$_REQUEST['id']]);
-    
+
     if ($statement->rowCount() === 0) {
         header('location: logout.php');
         exit;
     }
-    
+
     $row = $statement->fetch(PDO::FETCH_ASSOC);
     $seller_status = $row['seller_status'];
     $seller_name = $row['seller_name'];
     $seller_email = $row['seller_email'];
-    
+
     // Toggle status
     $final = $seller_status == 0 ? 1 : 0;
-    
+
     // Update seller status
     $statement = $pdo->prepare("UPDATE sellers SET seller_status = ? WHERE seller_id = ?");
     $statement->execute([$final, $_REQUEST['id']]);
-    
+
     // Send email only if account is activated
     if ($final == 1) {
         $mail = new PHPMailer(true);
-        
+
         // Server settings
         $mail->isSMTP();
         $mail->Host = 'p3plzcpnl508868.prod.phx3.secureserver.net';
@@ -50,11 +51,11 @@ try {
         $mail->Password = 'Deadstock@2025';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port = 465;
-        
+
         // Recipients
         $mail->setFrom('support@thedeadstock.in', 'Deadstock');
         $mail->addAddress($seller_email, $seller_name);
-        
+
         // Content
         $mail->isHTML(true);
         $mail->Subject = 'Account Activation';
@@ -64,20 +65,23 @@ try {
             <br>
             <p>Best regards,<br>Deadstock</p>
 HTML;
-        
+
         $mail->send();
         error_log("Activation email sent successfully to $seller_email");
     }
-    
-    // Redirect back
+
+    // Set success message and redirect back
+    $_SESSION['success_message'] = 'Seller status updated successfully.';
     $referrer = $_SERVER['HTTP_REFERER'] ?? 'index.php';
     header("Location: $referrer");
     exit;
-    
+
 } catch (Exception $e) {
     error_log("Error processing seller activation: " . $e->getMessage());
-    // Redirect to an error page or show error message
-    header("Location: error.php?message=" . urlencode("An error occurred while processing your request."));
+    // Set error message and redirect back to the same page
+    $_SESSION['error_message'] = 'An error occurred while processing your request.';
+    $referrer = $_SERVER['HTTP_REFERER'] ?? 'index.php';
+    header("Location: $referrer");
     exit;
 }
 ?>

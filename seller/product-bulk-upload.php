@@ -45,8 +45,15 @@ if (isset($_POST['form_bulk_upload'])) {
 
             $row_num = 2; // Start from row 2 (after header)
             while (($row = fgetcsv($handle)) !== false) {
+                // Skip completely empty rows
+                if (empty(array_filter($row))) {
+                    $row_num++;
+                    continue;
+                }
+
                 // Validate required fields - only basic fields
                 $product_name = trim($row[0] ?? '');
+                $product_name = htmlspecialchars($product_name, ENT_QUOTES, 'UTF-8'); // Sanitize product name
                 $old_price = trim($row[1] ?? '');
                 $current_price = trim($row[2] ?? '');
                 $quantity = trim($row[3] ?? '');

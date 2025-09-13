@@ -1,9 +1,37 @@
-<?php require_once('header.php'); ?>
+<?php
+session_start();
+require_once('header.php');
+
+// Check for session messages
+$error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : '';
+$success_message = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : '';
+
+// Clear session messages
+unset($_SESSION['error_message']);
+unset($_SESSION['success_message']);
+?>
 <section class="content-header">
     <div class="content-header-left">
         <h1>Seller - Completed Profile</h1>
     </div>
 </section>
+
+<!-- Display messages -->
+<?php if ($error_message): ?>
+<div class="alert alert-danger alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <h4><i class="icon fa fa-ban"></i> Error!</h4>
+    <?php echo htmlspecialchars($error_message); ?>
+</div>
+<?php endif; ?>
+
+<?php if ($success_message): ?>
+<div class="alert alert-success alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <h4><i class="icon fa fa-check"></i> Success!</h4>
+    <?php echo htmlspecialchars($success_message); ?>
+</div>
+<?php endif; ?>
 <style>
     .filter-container {
         display: flex;
@@ -220,9 +248,13 @@
                                     <td><?php echo $row['registration_date']; ?></td> <!-- Display Registration Date -->
                                     <td>
                                         <?php if ($row['seller_status'] == 0) { ?>
-                                            <a href="seller-change-status.php?id=<?php echo $row['seller_id']; ?>" class="btn btn-warning btn-xs">Rejected</a>
+                                            <form method="post" action="" class="seller-status-form" data-seller-id="<?php echo $row['seller_id']; ?>">
+                                                <button type="submit" class="btn btn-warning btn-xs">Rejected</button>
+                                            </form>
                                         <?php } else { ?>
-                                            <a href="seller-change-status.php?id=<?php echo $row['seller_id']; ?>" class="btn btn-success btn-xs">Approved</a>
+                                            <form method="post" action="" class="seller-status-form" data-seller-id="<?php echo $row['seller_id']; ?>">
+                                                <button type="submit" class="btn btn-success btn-xs">Approved</button>
+                                            </form>
                                         <?php } ?>
                                     </td>
 
@@ -267,11 +299,48 @@
         </div>
 
         <div class="seller-tab-content">
-            <div id="profile" class="seller-tab-pane active">
-                <div class="seller-info-grid">
-                    <!-- Profile content will be dynamically inserted here -->
-                </div>
+        <div id="profile" class="seller-tab-pane active">
+            <div class="seller-info-grid">
+                <!-- Profile content will be dynamically inserted here -->
             </div>
+        </div>
+        <style>
+            .seller-photo-container {
+                width: 120px;
+                height: 120px;
+                overflow: hidden;
+                border-radius: 50%;
+                border: 2px solid #ccc;
+                cursor: pointer;
+            }
+            .seller-photo-container img.seller-photo {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+            .photo-modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0,0,0,0.8);
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+            }
+            .photo-modal.active {
+                display: flex;
+            }
+            .photo-modal img {
+                max-width: 90vw;
+                max-height: 90vh;
+                border-radius: 8px;
+                box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            }
+        </style>
 
             <div id="products" class="seller-tab-pane">
                 <div class="seller-stats-grid">
@@ -446,6 +515,43 @@
 
         table.on('draw', function() {
             updateSerialNumbers();
+        });
+
+        // Handle seller status form submission via AJAX
+        document.querySelectorAll('.seller-status-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const sellerId = this.getAttribute('data-seller-id');
+                const button = this.querySelector('button');
+                const originalText = button.textContent;
+
+                // Disable button and show loading
+                button.disabled = true;
+                button.textContent = 'Processing...';
+
+                // Send AJAX request
+                fetch('seller-change-status.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'id=' + encodeURIComponent(sellerId)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Reload the page to show updated status and messages
+                        window.location.reload();
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    button.disabled = false;
+                    button.textContent = originalText;
+                    alert('An error occurred while processing your request.');
+                });
+            });
         });
     });
 </script>
