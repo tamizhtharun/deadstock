@@ -1,0 +1,483 @@
+<?php 
+require_once('header.php');
+
+// Check if seller is logged in
+if (!isset($_SESSION['seller_session'])) {
+    header('location: ../index.php');
+    exit;
+}
+
+$seller_id = $_SESSION['seller_session']['seller_id'];
+$success_message = '';
+$error_message = '';
+
+// Include Delhivery service
+require_once('../services/DelhiveryService.php');
+$delhiveryService = new DelhiveryService();
+
+// Handle form submission for new warehouse
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        // Validate required fields
+        $required_fields = [
+            'registered_name' => 'Warehouse Name',
+            'email' => 'Email',
+            'phone' => 'Phone',
+            'address' => 'Address',
+            'city' => 'City',
+            'state' => 'State',
+            'country' => 'Country',
+            'pincode' => 'Pincode',
+            'contact_person' => 'Contact Person'
+        ];
+        
+        $missing_fields = [];
+        foreach ($required_fields as $field => $label) {
+            if (empty(trim($_POST[$field] ?? ''))) {
+                $missing_fields[] = $label;
+            }
+        }
+        
+        if (!empty($missing_fields)) {
+            throw new Exception('The following fields are required: ' . implode(', ', $missing_fields));
+        }
+        
+        // Prepare warehouse data for Delhivery
+        $warehouseData = [
+            'name' => trim($_POST['registered_name']),
+            'registered_name' => trim($_POST['registered_name']),
+            'email' => trim($_POST['email']),
+            'phone' => preg_replace('/[^0-9]/', '', $_POST['phone']),
+            'address' => trim($_POST['address']),
+            'city' => trim($_POST['city']),
+            'state' => trim($_POST['state']),
+            'country' => trim($_POST['country']),
+            'pin' => trim($_POST['pincode']),
+            'contact_person' => trim($_POST['contact_person']),
+            'is_return' => isset($_POST['is_return']) ? 1 : 0,
+            // 'is_fulfillment' => isset($_POST['is_fulfillment']) ? 1 : 0,
+            // 'is_rto_address' => isset($_POST['is_rto_address']) ? 1 : 0,
+            'address_2' => trim($_POST['address_2'] ?? ''),
+            'landmark' => trim($_POST['landmark'] ?? ''),
+            'gstin' => trim($_POST['gstin'] ?? ''),
+            // Return address fields
+            'return_address' => isset($_POST['is_return']) && $_POST['is_return'] == '1' ? trim($_POST['address']) : trim($_POST['return_address'] ?? ''),
+            'return_city' => isset($_POST['is_return']) && $_POST['is_return'] == '1' ? trim($_POST['city']) : trim($_POST['return_city'] ?? $_POST['city']),
+            'return_state' => isset($_POST['is_return']) && $_POST['is_return'] == '1' ? trim($_POST['state']) : trim($_POST['return_state'] ?? $_POST['state']),
+            'return_country' => isset($_POST['is_return']) && $_POST['is_return'] == '1' ? trim($_POST['country']) : trim($_POST['return_country'] ?? $_POST['country']),
+            'return_pin' => isset($_POST['is_return']) && $_POST['is_return'] == '1' ? trim($_POST['pincode']) : trim($_POST['return_pin'] ?? $_POST['pincode'])
+        ];
+        
+        // Additional validation
+        if (!filter_var($warehouseData['email'], FILTER_VALIDATE_EMAIL)) {
+            throw new Exception('Please enter a valid email address');
+        }
+        
+        if (strlen($warehouseData['phone']) < 10) {
+            throw new Exception('Please enter a valid 10-digit phone number');
+        }
+        
+        if (!preg_match('/^[1-9][0-9]{5}$/', $warehouseData['pin'])) {
+            throw new Exception('Please enter a valid 6-digit pincode');
+        }
+        
+        // Validate return pincode if provided
+        if (!empty($warehouseData['return_pin']) && !preg_match('/^[1-9][0-9]{5}$/', $warehouseData['return_pin'])) {
+            throw new Exception('Please enter a valid 6-digit return pincode');
+        }
+
+        // Check if warehouse name already exists for this seller
+        $stmt = $pdo->prepare("SELECT id FROM seller_warehouses WHERE seller_id = ? AND name = ?");
+        $stmt->execute([$seller_id, $warehouseData['name']]);
+        if ($stmt->fetch()) {
+            throw new Exception('A warehouse with this name already exists. Please choose a different name.');
+        }
+
+        // Create new warehouse in Delhivery
+        $response = $delhiveryService->createWarehouse($warehouseData);
+        
+        if ($response['success'] && !empty($response['data']['wh_id'])) {
+            $warehouseId = $response['data']['wh_id'];
+            
+            // Save to local database
+            $stmt = $pdo->prepare("INSERT INTO seller_warehouses 
+                (seller_id, delhivery_warehouse_id, name, email, phone, address, address_2, landmark, city, 
+                 state, country, pincode, contact_person, is_return, gstin, created_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+            
+            $stmt->execute([
+                $seller_id,
+                $warehouseId,
+                $warehouseData['name'],
+                $warehouseData['email'],
+                $warehouseData['phone'],
+                $warehouseData['address'],
+                $warehouseData['address_2'],
+                $warehouseData['landmark'],
+                $warehouseData['city'],
+                $warehouseData['state'],
+                $warehouseData['country'],
+                $warehouseData['pin'],
+                $warehouseData['contact_person'],
+                (int)($warehouseData['is_return'] ?? 0),
+                $warehouseData['gstin']
+            ]);
+            
+            // Set success message and redirect
+            $_SESSION['success_message'] = 'Warehouse created successfully!';
+            header('Location: list-warehouses.php?created=1');
+            exit;
+            
+        } else {
+            throw new Exception($response['message'] ?? 'Failed to create warehouse. Please try again.');
+        }
+    } catch (Exception $e) {
+        $error_message = $e->getMessage();
+    }
+}
+?>
+
+<!-- Content Wrapper. Contains page content -->
+<!-- <div class="content-wrapper"> -->
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>Warehouse Management</h1>
+        <ol class="breadcrumb">
+            <li><a href="index.php"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Warehouse Management</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <?php if ($success_message): ?>
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-check"></i> Success!</h4>
+                <?php echo $success_message; ?>
+            </div>
+        <?php endif; ?>
+        
+        <?php if ($error_message): ?>
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                <?php echo $error_message; ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Add New Warehouse</h3>
+                        <!-- <div class="box-tools pull-right">
+                            <a href="list-warehouses.php" class="btn btn-default btn-sm">
+                                <i class="fa fa-arrow-left"></i> Back to List
+                            </a>
+                        </div> -->
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <form role="form" method="post" action="" id="warehouseForm">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="registered_name">Warehouse Name <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="registered_name" name="registered_name"
+                                               value="<?php echo isset($_POST['registered_name']) ? htmlspecialchars($_POST['registered_name']) : ''; ?>" 
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="contact_person">Contact Person <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="contact_person" name="contact_person"
+                                               value="<?php echo isset($_POST['contact_person']) ? htmlspecialchars($_POST['contact_person']) : ''; ?>" 
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="email">Email <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" id="email" name="email"
+                                               value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" 
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="phone">Phone <span class="text-danger">*</span></label>
+                                        <input type="tel" class="form-control" id="phone" name="phone"
+                                               value="<?php echo isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : ''; ?>" 
+                                               required minlength="10" maxlength="15">
+                                        <small class="text-muted">Enter 10-digit phone number</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="address">Address <span class="text-danger">*</span></label>
+                                        <textarea class="form-control" id="address" name="address" 
+                                                  rows="2" placeholder="Enter complete address" required><?php echo isset($_POST['address']) ? htmlspecialchars($_POST['address']) : ''; ?></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                           
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="address_2">Address Line 2</label>
+                                        <input type="text" class="form-control" id="address_2" name="address_2"
+                                               value="<?php echo isset($_POST['address_2']) ? htmlspecialchars($_POST['address_2']) : ''; ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="landmark">Landmark</label>
+                                        <input type="text" class="form-control" id="landmark" name="landmark"
+                                               value="<?php echo isset($_POST['landmark']) ? htmlspecialchars($_POST['landmark']) : ''; ?>"
+                                               placeholder="e.g., Near Metro Station">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="city">City <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="city" name="city"
+                                               value="<?php echo isset($_POST['city']) ? htmlspecialchars($_POST['city']) : ''; ?>" 
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="state">State <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="state" name="state"
+                                               value="<?php echo isset($_POST['state']) ? htmlspecialchars($_POST['state']) : ''; ?>" 
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="country">Country <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="country" name="country"
+                                               value="<?php echo isset($_POST['country']) ? htmlspecialchars($_POST['country']) : 'India'; ?>" 
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="pincode">Pincode <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="pincode" name="pincode"
+                                               value="<?php echo isset($_POST['pincode']) ? htmlspecialchars($_POST['pincode']) : ''; ?>" 
+                                               required pattern="[1-9][0-9]{5}" title="Enter 6-digit pincode">
+                                        <small class="text-muted">6-digit pincode</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="gstin">GSTIN</label>
+                                        <input type="text" class="form-control" id="gstin" name="gstin"
+                                               value="<?php echo isset($_POST['gstin']) ? htmlspecialchars($_POST['gstin']) : ''; ?>"
+                                               pattern="^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$"
+                                               title="Enter valid GSTIN (e.g., 22AAAAA0000A1Z5)">
+                                        <small class="text-muted">Format: 22AAAAA0000A1Z5</small>
+                                    </div>
+                                </div>
+                              
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <!-- <label>Warehouse Type:</label><br> -->
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" id="is_return" name="is_return" value="1"
+                                                    <?php echo (isset($_POST['is_return']) && $_POST['is_return'] == '0') ? 'checked' : ''; ?>>
+                                                Use same address for return
+                                            </label>
+                                        </div>
+                                        <!-- <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="is_fulfillment" value="1"
+                                                    <?php// echo (isset($_POST['is_fulfillment']) && $_POST['is_fulfillment'] == '1') ? 'checked' : 'checked'; ?>> 
+                                                Fulfillment Center
+                                            </label>
+                                        </div> -->
+                                        <!-- <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="is_rto_address" value="1"
+                                                    <?php //echo (isset($_POST['is_rto_address']) && $_POST['is_rto_address'] == '1') ? 'checked' : ''; ?>> 
+                                                RTO Address
+                                            </label>
+                                        </div> -->
+                                    </div>
+                                </div>
+                        
+                            </div>
+
+                             <!-- Return Address Section -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="box box-info">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Return Address (if different from above)</h3>
+                                        </div>
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="return_address">Return Address</label>
+                                                        <textarea class="form-control" id="return_address" name="return_address" 
+                                                                  rows="2" placeholder="Enter return address"><?php echo isset($_POST['return_address']) ? htmlspecialchars($_POST['return_address']) : ''; ?></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="return_city">Return City</label>
+                                                        <input type="text" class="form-control" id="return_city" name="return_city"
+                                                               value="<?php echo isset($_POST['return_city']) ? htmlspecialchars($_POST['return_city']) : (isset($_POST['city']) ? htmlspecialchars($_POST['city']) : ''); ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="return_state">Return State</label>
+                                                        <input type="text" class="form-control" id="return_state" name="return_state"
+                                                               value="<?php echo isset($_POST['return_state']) ? htmlspecialchars($_POST['return_state']) : (isset($_POST['state']) ? htmlspecialchars($_POST['state']) : ''); ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="return_country">Return Country</label>
+                                                        <input type="text" class="form-control" id="return_country" name="return_country"
+                                                               value="<?php echo isset($_POST['return_country']) ? htmlspecialchars($_POST['return_country']) : (isset($_POST['country']) ? htmlspecialchars($_POST['country']) : 'India'); ?>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="return_pin">Return Pincode</label>
+                                                        <input type="text" class="form-control" id="return_pin" name="return_pin"
+                                                               value="<?php echo isset($_POST['return_pin']) ? htmlspecialchars($_POST['return_pin']) : (isset($_POST['pincode']) ? htmlspecialchars($_POST['pincode']) : ''); ?>"
+                                                               pattern="[1-9][0-9]{5}" title="Enter 6-digit pincode">
+                                                        <small class="text-muted">6-digit pincode</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                        <!-- /.box-body -->
+
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-save"></i> Save Warehouse
+                            </button>
+                            <button type="reset" class="btn btn-default">Reset</button>
+                            <!-- <a href="list-warehouses.php" class="btn btn-link">Cancel</a> -->
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+<?php require_once('footer.php'); ?>
+
+<!-- Add form validation script -->
+<script>
+$(document).ready(function() {
+    // Phone number formatting
+    $('#phone').on('input', function() {
+        this.value = this.value.replace(/[^0-9+]/g, '');
+    });
+
+    // Pincode validation
+    $('#pincode').on('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '').substring(0, 6);
+    });
+
+    // GSTIN validation
+    $('#gstin').on('input', function() {
+        this.value = this.value.toUpperCase();
+    });
+
+    // Form submission handler
+    $('#warehouseForm').on('submit', function(e) {
+        // Client-side validation
+        let isValid = true;
+        $('.text-danger').remove();
+        
+        // Validate phone number
+        const phone = $('#phone').val().replace(/[^0-9]/g, '');
+        if (phone.length < 10) {
+            $('#phone').after('<div class="text-danger">Please enter a valid 10-digit phone number</div>');
+            isValid = false;
+        }
+        
+        // Validate pincode
+        const pincode = $('#pincode').val();
+        if (!/^[1-9][0-9]{5}$/.test(pincode)) {
+            $('#pincode').after('<div class="text-danger">Please enter a valid 6-digit pincode</div>');
+            isValid = false;
+        }
+        
+        // Validate GSTIN if provided
+        const gstin = $('#gstin').val();
+        if (gstin && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(gstin)) {
+            $('#gstin').after('<div class="text-danger">Please enter a valid GSTIN (e.g., 22AAAAA0000A1Z5)</div>');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            $('html, body').animate({
+                scrollTop: $('.text-danger:first').offset().top - 100
+            }, 500);
+        }
+    });
+});
+</script>
+
+<script>
+$(document).ready(function() {
+    // Toggle Return Address section based on checkbox
+    function toggleReturnAddress() {
+        if ($('#is_return').is(':checked')) {
+            $('.box-info').hide();
+        } else {
+            $('.box-info').show();
+        }
+    }
+
+    toggleReturnAddress();
+
+    $('#is_return').change(function() {
+        toggleReturnAddress();
+    });
+});
+</script>

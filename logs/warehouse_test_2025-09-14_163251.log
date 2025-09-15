@@ -1,0 +1,44 @@
+[2025-09-14 16:32:51] Starting Warehouse API Test
+[2025-09-14 16:32:51] Current Configuration:
+[2025-09-14 16:32:51] - Environment: production
+[2025-09-14 16:32:51] - Auth Type: token
+[2025-09-14 16:32:51] - API Base URL: https://track.delhivery.com/
+[2025-09-14 16:32:51] Test Data:
+[2025-09-14 16:32:51] Array
+(
+    [name] => TestWarehouse_1757860371
+    [registered_name] => Test Warehouse Company 1757860371
+    [email] => test.warehouse@example.com
+    [phone] => 9876543210
+    [address] => 123 Test Street, Test Area
+    [city] => Mumbai
+    [state] => Maharashtra
+    [country] => India
+    [pin] => 400001
+    [contact_person] => Test Manager
+    [is_return] => 1
+    [is_fulfillment] => 1
+    [is_rto_address] => 0
+    [return_address] => 123 Test Street, Test Area
+    [return_pin] => 400001
+    [return_city] => Mumbai
+    [return_state] => Maharashtra
+    [return_country] => India
+    [address_2] => Near Test Landmark
+    [landmark] => Opposite Test Tower
+    [gstin] => 22AAAAA0000A1Z5
+    [gst_company_name] => Test Company
+    [gst_company_address] => 123 Test Street, Test Area
+    [gst_state_code] => 27
+    [gst_city] => Mumbai
+    [gst_pin_code] => 400001
+    [gst_email] => test.gst@example.com
+    [gst_phone] => 9876543210
+)
+
+[2025-09-14 16:32:51] Initiating warehouse creation...
+[2025-09-14 16:32:51] Sending request to create warehouse...
+[2025-09-14 16:33:04] Received response from createWarehouse
+[2025-09-14 16:33:04] ERROR: Error creating warehouse: Error creating warehouse: HTTP Error: 401
+[2025-09-14 16:33:04] Fetching all warehouses...
+[2025-09-14 16:33:04] ERROR: Failed to fetch warehouses: Error getting warehouse details: Warehouse ID is required

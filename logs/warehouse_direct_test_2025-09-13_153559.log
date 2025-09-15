@@ -1,0 +1,79 @@
+[2025-09-13 15:35:59] === Request Details ===
+[2025-09-13 15:35:59] URL: https://staging-express.delhivery.com/api/backend/clientwarehouse/create/
+[2025-09-13 15:35:59] Method: POST
+[2025-09-13 15:35:59] Request Headers: 
+[2025-09-13 15:35:59] Request Body: {
+    "phone": "9999999999",
+    "city": "Kota",
+    "name": "test_name_1757770557",
+    "pin": "110042",
+    "address": "Test Address",
+    "country": "India",
+    "email": "test.warehouse@example.com",
+    "registered_name": "Test Registered Name",
+    "return_address": "Test Return Address",
+    "return_pin": "110042",
+    "return_city": "Kota",
+    "return_state": "Delhi",
+    "return_country": "India"
+}
+[2025-09-13 15:35:59] === Response Details ===
+[2025-09-13 15:35:59] HTTP Status: 201
+[2025-09-13 15:35:59] Response Headers: Array
+(
+    [url] => https://staging-express.delhivery.com/api/backend/clientwarehouse/create/
+    [content_type] => application/json
+    [http_code] => 201
+    [header_size] => 357
+    [request_size] => 1383
+    [filetime] => -1
+    [ssl_verify_result] => 20
+    [redirect_count] => 0
+    [total_time] => 1.827355
+    [namelookup_time] => 1.306603
+    [connect_time] => 1.392032
+    [pretransfer_time] => 1.474549
+    [size_upload] => 332
+    [size_download] => 753
+    [speed_download] => 412
+    [speed_upload] => 181
+    [download_content_length] => -1
+    [upload_content_length] => 332
+    [starttransfer_time] => 1.826831
+    [redirect_time] => 0
+    [redirect_url] => 
+    [primary_ip] => 13.127.9.48
+    [certinfo] => Array
+        (
+        )
+
+    [primary_port] => 443
+    [local_ip] => 10.252.204.128
+    [local_port] => 64320
+    [http_version] => 3
+    [protocol] => 2
+    [ssl_verifyresult] => 0
+    [scheme] => HTTPS
+    [appconnect_time_us] => 1473240
+    [connect_time_us] => 1392032
+    [namelookup_time_us] => 1306603
+    [pretransfer_time_us] => 1474549
+    [redirect_time_us] => 0
+    [starttransfer_time_us] => 1826831
+    [total_time_us] => 1827355
+    [effective_method] => POST
+)
+
+[2025-09-13 15:35:59] Response Body: HTTP/2 201 
+date: Sat, 13 Sep 2025 13:35:59 GMT
+content-type: application/json
+server: nginx
+expires: Sat, 13 Sep 2025 13:35:59 GMT
+vary: Accept, Cookie
+last-modified: Sat, 13 Sep 2025 13:35:59 GMT
+allow: POST, OPTIONS
+cache-control: max-age=0
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+
+{"data": {"business_hours": {"WED": {"start_time": "09:30", "close_time": "18:30"}, "THU": {"start_time": "09:30", "close_time": "18:30"}, "TUE": {"start_time": "09:30", "close_time": "18:30"}, "MON": {"start_time": "09:30", "close_time": "18:30"}, "FRI": {"start_time": "09:30", "close_time": "18:30"}, "SAT": {"start_time": "09:30", "close_time": "18:30"}}, "name": "test_name_1757770557", "business_days": ["MON", "TUE", "WED", "THU", "FRI", "SAT"], "pincode": 110042, "type_of_clientwarehouse": null, "phone": "9999999999", "client": "bd-IMETTOOLINGINDIAPLTD-do-cdp", "address": "Test Address", "active": true, "message": "A new client warehouse has been created in HQ(Delhivery).", "largest_vehicle_constraint": null}, "success": true, "error": ""}

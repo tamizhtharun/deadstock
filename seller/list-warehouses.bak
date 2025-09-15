@@ -1,0 +1,138 @@
+<?php
+require_once('header.php');
+
+// Check if seller is logged in
+if (!isset($_SESSION['seller_session'])) {
+    header('location: ../index.php');
+    exit;
+}
+
+$seller_id = $_SESSION['seller_session']['seller_id'];
+$success_message = '';
+$error_message = '';
+
+// Handle warehouse deletion
+if (isset($_GET['delete_id'])) {
+    try {
+        // First get warehouse ID from local DB
+        $stmt = $pdo->prepare("SELECT warehouse_id FROM seller_warehouses WHERE id = ? AND seller_id = ?");
+        $stmt->execute([$_GET['delete_id'], $seller_id]);
+        $warehouse = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($warehouse) {
+            // Delete from local database first
+            $stmt = $pdo->prepare("DELETE FROM seller_warehouses WHERE id = ? AND seller_id = ?");
+            $stmt->execute([$_GET['delete_id'], $seller_id]);
+            
+            // Note: Delhivery API doesn't support warehouse deletion, so we just remove from local DB
+            $success_message = 'Warehouse removed successfully';
+        } else {
+            throw new Exception('Warehouse not found or access denied');
+        }
+    } catch (Exception $e) {
+        $error_message = $e->getMessage();
+    }
+}
+
+// Fetch all warehouses for this seller
+try {
+    $stmt = $pdo->prepare("SELECT * FROM seller_warehouses WHERE seller_id = ?");
+    $stmt->execute([$seller_id]);
+    $warehouses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $error_message = 'Error fetching warehouses: ' . $e->getMessage();
+    $warehouses = [];
+}
+?>
+
+<!-- Content Wrapper. Contains page content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">My Warehouses</h3>
+                    <div class="box-tools">
+                        <a href="warehouse-management.php" class="btn btn-primary">
+                            <i class="fa fa-plus"></i> Add New Warehouse
+                        </a>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <?php if ($success_message): ?>
+                        <div class="alert alert-success alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4><i class="icon fa fa-check"></i> Success!</h4>
+                            <?php echo $success_message; ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if ($error_message): ?>
+                        <div class="alert alert-danger alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                            <?php echo $error_message; ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if (empty($warehouses)): ?>
+                        <div class="alert alert-info">
+                            No warehouses found. <a href="warehouse-management.php">Add your first warehouse</a>
+                        </div>
+                    <?php else: ?>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Contact Person</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Address</th>
+                                    <th>Info</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($warehouses as $index => $warehouse): ?>
+                                    <tr>
+                                        <td><?php echo $index + 1; ?></td>
+                                        <td><?php echo htmlspecialchars($warehouse['name']); ?></td>
+                                        <td><?php echo htmlspecialchars($warehouse['contact_person']); ?></td>
+                                        <td><?php echo htmlspecialchars($warehouse['email']); ?></td>
+                                        <td><?php echo htmlspecialchars($warehouse['phone']); ?></td>
+                                        <td>
+                                            <?php 
+                                            echo htmlspecialchars($warehouse['address']) . ', ' . 
+                                                 htmlspecialchars($warehouse['city']) . ', ' . 
+                                                 htmlspecialchars($warehouse['state']) . ' - ' . 
+                                                 htmlspecialchars($warehouse['pincode']); 
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-sm btn-primary disabled">
+                                                <i class="fa fa-edit"></i> Contact Support For Edit
+                                            </a>
+                                            <!-- <a href="list-warehouses.php?delete_id=<?php echo $warehouse['id']; ?>" 
+                                               class="btn btn-sm btn-danger"
+                                               onclick="return confirm('Are you sure you want to delete this warehouse?')">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </a> -->
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php endif; ?>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+
+<?php require_once('footer.php'); ?>

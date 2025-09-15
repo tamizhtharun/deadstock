@@ -1,0 +1,86 @@
+[2025-09-13 15:28:43] === Request Details ===
+[2025-09-13 15:28:43] URL: https://staging-express.delhivery.com/api/backend/company/stage/company/register/action/
+[2025-09-13 15:28:43] Method: POST
+[2025-09-13 15:28:43] Request Headers: 
+[2025-09-13 15:28:43] Request Body: {
+    "name": "Test Warehouse 1757770122",
+    "email": "test.warehouse@example.com",
+    "phone": "9876543210",
+    "address": "123 Test Street, Test Area",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "country": "India",
+    "pin": "400001",
+    "contact_person": "Test Manager",
+    "is_return": 1,
+    "is_fulfillment": 1,
+    "is_rto_address": 0,
+    "address_2": "Near Test Landmark",
+    "landmark": "Opposite Test Tower",
+    "gstin": "22AAAAA0000A1Z5",
+    "gst_company_name": "Test Company",
+    "gst_company_address": "123 Test Street, Test Area",
+    "gst_state_code": "27",
+    "gst_city": "Mumbai",
+    "gst_pin_code": "400001",
+    "gst_email": "test.gst@example.com",
+    "gst_phone": "9876543210"
+}
+[2025-09-13 15:28:43] === Response Details ===
+[2025-09-13 15:28:43] HTTP Status: 404
+[2025-09-13 15:28:43] Response Headers: Array
+(
+    [url] => https://staging-express.delhivery.com/api/backend/company/stage/company/register/action/
+    [content_type] => text/html; charset=utf-8
+    [http_code] => 404
+    [header_size] => 262
+    [request_size] => 1657
+    [filetime] => -1
+    [ssl_verify_result] => 20
+    [redirect_count] => 0
+    [total_time] => 1.292022
+    [namelookup_time] => 0.407896
+    [connect_time] => 0.503883
+    [pretransfer_time] => 0.690174
+    [size_upload] => 591
+    [size_download] => 119
+    [speed_download] => 92
+    [speed_upload] => 457
+    [download_content_length] => -1
+    [upload_content_length] => 591
+    [starttransfer_time] => 1.291565
+    [redirect_time] => 0
+    [redirect_url] => 
+    [primary_ip] => 15.206.23.46
+    [certinfo] => Array
+        (
+        )
+
+    [primary_port] => 443
+    [local_ip] => 10.252.204.128
+    [local_port] => 55713
+    [http_version] => 3
+    [protocol] => 2
+    [ssl_verifyresult] => 0
+    [scheme] => HTTPS
+    [appconnect_time_us] => 689344
+    [connect_time_us] => 503883
+    [namelookup_time_us] => 407896
+    [pretransfer_time_us] => 690174
+    [redirect_time_us] => 0
+    [starttransfer_time_us] => 1291565
+    [total_time_us] => 1292022
+    [effective_method] => POST
+)
+
+[2025-09-13 15:28:43] Response Body: HTTP/2 404 
+date: Sat, 13 Sep 2025 13:28:44 GMT
+content-type: text/html; charset=utf-8
+server: nginx
+expires: Sat, 13 Sep 2025 13:28:44 GMT
+vary: Cookie
+last-modified: Sat, 13 Sep 2025 13:28:44 GMT
+cache-control: max-age=0
+x-frame-options: SAMEORIGIN
+
+There has been an error but we were asked to not let you see that.                         Please contact the dev team.

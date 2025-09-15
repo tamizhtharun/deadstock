@@ -88,6 +88,294 @@ class DelhiveryService {
     }
 
     /**
+     * Create a new warehouse in Delhivery
+     *
+     * @param array $warehouseData Warehouse data
+     * @return array API response
+     */
+    public function createWarehouse($warehouseData) {
+        try {
+            $this->log('Creating new warehouse: ' . json_encode($warehouseData));
+            
+ 
+            $endpoint = $this->endpoints['create_warehouse'] ?? $this->baseUrl . 'api/backend/clientwarehouse/create/';
+            
+            // Validate required fields based on the working API format
+            $requiredFields = [
+                'name' => 'Warehouse Name',
+                'email' => 'Email',
+                'phone' => 'Phone',
+                'address' => 'Address',
+                'city' => 'City',
+                'state' => 'State',
+                'country' => 'Country',
+                'pin' => 'Pincode',
+                'registered_name' => 'Registered Business Name'
+            ];
+            
+            $missingFields = [];
+            foreach ($requiredFields as $field => $label) {
+                if (!isset($warehouseData[$field]) || trim($warehouseData[$field]) === '') {
+                    $missingFields[] = $label;
+                }
+            }
+            
+            if (!empty($missingFields)) {
+                throw new Exception('The following required fields are missing or empty: ' . implode(', ', $missingFields));
+            }
+            
+            // Prepare the payload in JSON format as required by Delhivery API
+            $payload = [
+                'name' => $warehouseData['name'],
+                'email' => $warehouseData['email'],
+                'phone' => $warehouseData['phone'],
+                'address' => $warehouseData['address'],
+                'city' => $warehouseData['city'],
+                'state' => $warehouseData['state'],
+                'country' => $warehouseData['country'],
+                'pin' => $warehouseData['pin'],
+                'registered_name' => $warehouseData['registered_name'] ?? $warehouseData['name'],
+                'contact_person' => $warehouseData['contact_person'] ?? $warehouseData['name']
+            ];
+            
+            // Add return address if provided
+            if (isset($warehouseData['return_address'])) {
+                $payload['return_address'] = $warehouseData['return_address'];
+                $payload['return_pin'] = $warehouseData['return_pin'] ?? $warehouseData['pin'];
+                $payload['return_city'] = $warehouseData['return_city'] ?? $warehouseData['city'];
+                $payload['return_state'] = $warehouseData['return_state'] ?? $warehouseData['state'];
+                $payload['return_country'] = $warehouseData['return_country'] ?? $warehouseData['country'];
+            }
+            
+            // Add optional fields if provided
+            $optionalFields = [
+                'address_2', 'landmark', 'gstin', 'gst_company_name', 'gst_company_address',
+                'gst_state_code', 'gst_city', 'gst_pin_code', 'gst_email', 'gst_phone'
+            ];
+            
+            foreach ($optionalFields as $field) {
+                if (isset($warehouseData[$field]) && $warehouseData[$field] !== '') {
+                    $payload[$field] = $warehouseData[$field];
+                }
+            }
+            
+            // Set headers for JSON content
+            $headers = [
+                'Content-Type: application/json',
+                'Accept: application/json'
+            ];
+            
+            // Add authorization header based on configured auth type
+            if ($this->authType === 'bearer' && !empty($this->jwtToken)) {
+                $headers[] = 'Authorization: Bearer ' . $this->jwtToken;
+                $this->log('Using Bearer token for authentication');
+            } elseif (!empty($this->apiToken)) {
+                $headers[] = 'Authorization: Token ' . $this->apiToken;
+                $this->log('Using API token for authentication');
+            } else {
+                throw new Exception('No API credentials available. Please check your API configuration.');
+            }
+            
+            // Log the full request details
+            $this->log('Making API call to: ' . $endpoint);
+            $this->log('Request Method: POST');
+            $this->log('Request Headers: ' . json_encode($headers));
+            $this->log('Request Payload: ' . json_encode($payload, JSON_PRETTY_PRINT));
+            
+            // Log the JSON payload for debugging
+            $jsonPayload = json_encode($payload, JSON_PRETTY_PRINT);
+            $this->log('JSON Request Payload: ' . $jsonPayload);
+            
+            // Make the API call with JSON content
+            $response = $this->makeApiCall($endpoint, $payload, 'POST', 3, true, $headers);
+            
+            // Log the full response for debugging
+            $this->log('API Response: ' . print_r($response, true));
+            
+            // Log the response
+            $this->log('API Response: ' . print_r($response, true));
+            
+            // Process the response
+            if (isset($response['success']) && $response['success']) {
+                $this->log('Warehouse created successfully');
+                
+                // Standardize the response format
+                $responseData = [
+                    'success' => true,
+                    'message' => is_array($response['message'] ?? null) ? implode(', ', $response['message']) : ($response['message'] ?? 'Warehouse created successfully'),
+                    'data' => [
+                        // Delhivery often uses warehouse name as identifier; fallback to request name when API omits an explicit id
+                        'wh_id' => $response['data']['id'] ?? $response['data']['wh_id'] ?? $response['data']['name'] ?? $response['data']['data']['name'] ?? $warehouseData['name'],
+                        'delhivery_warehouse_id' => $response['data']['id'] ?? $response['data']['delhivery_warehouse_id'] ?? $response['data']['name'] ?? $response['data']['data']['name'] ?? $warehouseData['name'],
+                        'name' => $response['data']['name'] ?? $response['data']['data']['name'] ?? $warehouseData['name'],
+                        'address' => $warehouseData['address'],
+                        'city' => $warehouseData['city'],
+                        'state' => $warehouseData['state'],
+                        'country' => $warehouseData['country'],
+                        'pin' => $warehouseData['pin']
+                    ]
+                ];
+                
+                return $responseData;
+            } else {
+                $errorMessage = 'Failed to create warehouse';
+                if (isset($response['message'])) {
+                    if (is_array($response['message'])) {
+                        $errorMessage = implode(', ', $response['message']);
+                    } else {
+                        $errorMessage = $response['message'];
+                    }
+                } elseif (isset($response['error'])) {
+                    if (is_array($response['error'])) {
+                        $errorMessage = implode(', ', $response['error']);
+                    } else {
+                        $errorMessage = $response['error'];
+                    }
+                }
+                // Normalize common error into a concise, user-friendly message
+                if (stripos($errorMessage, 'already exists') !== false) {
+                    $errorMessage = 'A warehouse with this name already exists in Delhivery. Please use a different name or manage the existing warehouse.';
+                }
+                
+                $this->log('Failed to create warehouse: ' . $errorMessage);
+                
+                return [
+                    'success' => false,
+                    'message' => $errorMessage,
+                    'data' => $response['data'] ?? null
+                ];
+            }
+            
+        } catch (Exception $e) {
+            $errorMsg = 'Error creating warehouse: ' . $e->getMessage();
+            $this->log($errorMsg);
+            return [
+                'success' => false,
+                'message' => $errorMsg,
+                'data' => null
+            ];
+        }
+    }
+    
+    /**
+     * Update an existing warehouse in Delhivery
+     *
+     * @param string $warehouseId Delhivery warehouse ID
+     * @param array $warehouseData Updated warehouse data
+     * @return array API response
+     */
+    public function updateWarehouse($warehouseId, $warehouseData) {
+        try {
+            $this->log('Updating warehouse ' . $warehouseId . ': ' . json_encode($warehouseData));
+            
+            if (empty($warehouseId)) {
+                throw new Exception('Warehouse ID is required for update');
+            }
+            
+            $endpoint = str_replace('{delhivery_warehouse_id}', $warehouseId, $this->endpoints['update_warehouse']);
+            
+            // Prepare the payload with only updated fields
+            $payload = [];
+            $updatableFields = [
+                'name', 'email', 'phone', 'address', 'city', 'state', 'country', 'pin',
+                'contact_person', 'address_2', 'landmark', 'gstin', 'gst_company_name',
+                'gst_company_address', 'gst_state_code', 'gst_city', 'gst_pin_code',
+                'gst_email', 'gst_phone', 'is_active'
+            ];
+            
+            foreach ($updatableFields as $field) {
+                if (isset($warehouseData[$field])) {
+                    $payload[$field] = $warehouseData[$field];
+                }
+            }
+            
+            // Handle boolean flags
+            if (isset($warehouseData['is_return'])) {
+                $payload['return_address'] = $warehouseData['is_return'] ? 1 : 0;
+            }
+            // if (isset($warehouseData['is_fulfillment'])) {
+            //     $payload['fulfillment'] = $warehouseData['is_fulfillment'] ? 1 : 0;
+            // }
+            // if (isset($warehouseData['is_rto_address'])) {
+            //     $payload['rto_address'] = $warehouseData['is_rto_address'] ? 1 : 0;
+            // }
+            
+            // Add authorization headers
+            $headers = [];
+            if ($this->authType === 'bearer') {
+                $headers[] = 'Authorization: Bearer ' . $this->jwtToken;
+                $headers[] = 'Content-Type: application/json';
+            } else {
+                $headers[] = 'Authorization: Token '.$this->apiToken;
+                $headers[] = 'Content-Type: application/json';
+            }
+            
+            // Make the API call with JSON content type and proper headers
+            $response = $this->makeApiCall($endpoint, $payload, 'PUT', 3, true, $headers);
+            
+            return $response;
+            
+        } catch (Exception $e) {
+            $errorMsg = 'Error updating warehouse: ' . $e->getMessage();
+            $this->log($errorMsg);
+            return [
+                'success' => false,
+                'message' => $errorMsg,
+                'data' => null
+            ];
+        }
+    }
+    
+    /**
+     * Get warehouse details from Delhivery
+     *
+     * @param string $warehouseId Delhivery warehouse ID
+     * @return array API response
+     */
+    public function getWarehouse($warehouseId) {
+        try {
+            if (empty($warehouseId)) {
+                throw new Exception('Warehouse ID is required');
+            }
+            
+            $endpoint = $this->endpoints['get_warehouse'] . $warehouseId . '/';
+            
+            // Add authorization headers
+            $headers = [];
+            if ($this->authType === 'bearer') {
+                $headers[] = 'Authorization: Bearer ' . $this->jwtToken;
+                $headers[] = 'Accept: application/json';
+            } else {
+                $endpoint .= (strpos($endpoint, '?') === false ? '?' : '&') . 'token=' . urlencode($this->apiToken);
+            }
+            
+            // Make the API call with proper headers
+            $response = $this->makeApiCall($endpoint, [], 'GET', 3, false, $headers);
+            
+            if ($response['success']) {
+                $this->log('Warehouse details retrieved successfully');
+                // Standardize the response format
+                if (!isset($response['data']['wh_id']) && isset($response['data']['delhivery_warehouse_id'])) {
+                    $response['data']['wh_id'] = $response['data']['delhivery_warehouse_id'];
+                }
+            } else {
+                $this->log('Failed to get warehouse details: ' . ($response['message'] ?? 'Unknown error'));
+            }
+            
+            return $response;
+            
+        } catch (Exception $e) {
+            $errorMsg = 'Error getting warehouse details: ' . $e->getMessage();
+            $this->log($errorMsg);
+            return [
+                'success' => false,
+                'message' => $errorMsg,
+                'data' => null
+            ];
+        }
+    }
+    
+    /**
      * Parse pincode serviceability response from Delhivery API
      *
      * @param array $responseData API response data
@@ -516,7 +804,29 @@ class DelhiveryService {
      * @param int $maxRetries Maximum number of retries
      * @return array API response
      */
-    private function makeApiCall($url, $data = null, $method = 'GET', $maxRetries = 3) {
+    /**
+     * Make API call to Delhivery with retry logic
+     * 
+     * @param string $url API endpoint URL
+     * @param array $data Data to send
+     * @param bool $isJson Whether to send data as JSON
+     * @param array $customHeaders Custom headers to include
+     * @return array API response
+     */
+    private function makeApiCall($url, $data = null, $method = 'GET', $maxRetries = 3, $isJson = false, $customHeaders = []) {
+        // Check if we're sending XML data
+        $isXml = false;
+        if (is_string($data) && strpos(trim($data), '<?xml') === 0) {
+            $isXml = true;
+        }
+        // Log the full request details
+        $this->log("\n=== Making API Request ===");
+        $this->log("URL: $url");
+        $this->log("Method: $method");
+        $this->log("Is JSON: " . ($isJson ? 'Yes' : 'No'));
+        $this->log("Request Data: " . print_r($data, true));
+        $this->log("Custom Headers: " . print_r($customHeaders, true));
+
         $attempt = 0;
         $lastException = null;
 
@@ -526,13 +836,22 @@ class DelhiveryService {
                 $ch = curl_init();
 
                 // Prepare headers based on authentication type
-                // Default to accepting JSON responses; we'll set Content-Type per body encoding below
                 $headers = [
-                    'Accept: application/json'
+                    'Accept: application/json',
+                    'Content-Type: ' . ($isJson ? 'application/json' : 'application/x-www-form-urlencoded')
                 ];
 
-                if ($this->authType === 'bearer') {
+                // Add appropriate authentication header
+                if ($this->authType === 'bearer' && !empty($this->jwtToken)) {
                     $headers[] = 'Authorization: Bearer ' . $this->jwtToken;
+                } elseif (!empty($this->apiToken)) {
+                    $headers[] = 'Authorization: Token ' . $this->apiToken;
+                    // For some endpoints, we might need to add the token as a query parameter
+                    if (strpos($url, '?') !== false) {
+                        $url .= '&token=' . urlencode($this->apiToken);
+                    } else {
+                        $url .= '?token=' . urlencode($this->apiToken);
+                    }
                 }
 
                 curl_setopt_array($ch, [
@@ -543,21 +862,48 @@ class DelhiveryService {
                     CURLOPT_SSL_VERIFYPEER => false,
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_MAXREDIRS => 5,
-                    CURLOPT_HTTPHEADER => $headers
+                    CURLOPT_HTTPHEADER => array_merge($headers, $customHeaders)
                 ]);
 
-                if ($method === 'POST' && $data) {
-                    curl_setopt($ch, CURLOPT_POST, true);
+                // Handle different HTTP methods and content types
+                if (in_array($method, ['POST', 'PUT', 'PATCH']) && $data) {
+                    if ($method !== 'POST') {
+                        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+                    } else {
+                        curl_setopt($ch, CURLOPT_POST, true);
+                    }
 
-                    // Delhivery APIs expect form-encoded payload for create shipment/pickup (format=json&data=...)
-                    // So we will send application/x-www-form-urlencoded by default
-                    $postData = http_build_query($data);
-                    $headers[] = 'Content-Type: application/x-www-form-urlencoded';
+                    if ($isJson) {
+                        // Send as JSON
+                        $postData = json_encode($data);
+                        $headers[] = 'Content-Type: application/json';
+                        $headers[] = 'Content-Length: ' . strlen($postData);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+                        $this->log('Request Data (JSON): ' . $postData);
+                    } elseif ($isXml) {
+                        // Send as XML
+                        $postData = $data;
+                        $headers[] = 'Content-Length: ' . strlen($postData);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+                        $this->log('Request Data (XML): ' . $postData);
+                    } else {
+                        // Default to form-encoded
+                        $postData = http_build_query($data);
+                        $headers[] = 'Content-Type: application/x-www-form-urlencoded';
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+                        $this->log('Request Data (Form): ' . $postData);
+                    }
+                } else if ($method === 'GET' && $data) {
+                    // For GET requests, append data as query parameters
+                    $url = $url . (strpos($url, '?') === false ? '?' : '&') . http_build_query($data);
+                    curl_setopt($ch, CURLOPT_URL, $url);
+                    $this->log('GET URL: ' . $url);
                     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-                    $this->log('POST Data (Form): ' . $postData);
                 } else {
-                    // For non-POST or empty body, apply headers now
+                    // For other methods without data or non-POST requests
                     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
                 }
 
@@ -584,58 +930,118 @@ class DelhiveryService {
                     throw new Exception($errorMsg);
                 }
 
-                if ($httpCode !== 200) {
+                // Treat any non-2xx status as an error
+                if ($httpCode < 200 || $httpCode >= 300) {
                     $errorMsg = 'HTTP Error: ' . $httpCode;
                     $this->log($errorMsg);
 
-                    // Retry on server errors (5xx) but not client errors (4xx)
+                    // Log response headers and body for debugging
+                    $responseHeaders = curl_getinfo($ch);
+                    $this->log("=== Raw Response Details ===");
+                    $this->log("HTTP Status: " . $httpCode);
+                    $this->log("Response Headers: " . print_r($responseHeaders, true));
+                    $this->log("Raw Response Body: " . $response);
+
+                    // Try to decode the response for more detailed error information
+                    $decodedError = json_decode($response, true);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($decodedError)) {
+                        $this->log("Decoded Response: " . print_r($decodedError, true));
+
+                        // Extract a helpful message if present
+                        $errorFields = ['message', 'error', 'detail', 'errors', 'error_description'];
+                        $details = [];
+                        foreach ($errorFields as $field) {
+                            if (isset($decodedError[$field])) {
+                                if (is_array($decodedError[$field])) {
+                                    $flat = array_filter($decodedError[$field], 'is_scalar');
+                                    $details = array_merge($details, $flat);
+                                } else if (is_scalar($decodedError[$field])) {
+                                    $details[] = (string)$decodedError[$field];
+                                }
+                            }
+                        }
+                        if (!empty($details)) {
+                            $errorMsg .= ' - ' . implode(', ', array_unique($details));
+                        }
+                    } elseif ($httpCode === 400) {
+                        $errorMsg .= ' - Bad Request';
+                    } elseif ($httpCode === 401) {
+                        $errorMsg .= ' - Unauthorized (check API token/permissions)';
+                    }
+
+                    // Retry on server errors (5xx)
                     if ($httpCode >= 500 && $attempt < $maxRetries - 1) {
                         $attempt++;
                         $this->log('Retrying API call due to HTTP ' . $httpCode . ' in ' . (2 * $attempt) . ' seconds...');
-                        sleep(2 * $attempt);
                         continue;
                     }
 
-                    throw new Exception($errorMsg);
-                }
+                    // For any non-200 response, return a failure immediately
+                    // Normalize duplicate warehouse message
+                    $normalizedMsg = $errorMsg;
+                    if (stripos($normalizedMsg, 'already exists') !== false && stripos($normalizedMsg, 'client-warehouse') !== false) {
+                        $normalizedMsg = 'A warehouse with this name already exists in Delhivery. Please use a different name or manage the existing warehouse.';
+                    }
 
-                $decodedResponse = json_decode($response, true);
-
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    throw new Exception('Invalid JSON response: ' . json_last_error_msg());
-                }
-
-                // Log the full response for debugging
-                $this->log('API Response: ' . json_encode($decodedResponse));
-
-                // Check if response indicates success
-                if (isset($decodedResponse['success']) && $decodedResponse['success'] === false) {
-                    $errorMessage = $decodedResponse['message'] ?? 'API call failed';
-                    $this->log('API Error: ' . $errorMessage);
                     return [
                         'success' => false,
-                        'message' => $errorMessage,
-                        'data' => $decodedResponse
+                        'message' => $normalizedMsg,
+                        'data' => null
                     ];
                 }
 
-                return [
-                    'success' => true,
-                    'data' => $decodedResponse,
-                    'message' => 'API call successful'
-                ];
+            // Process the response
+            $responseData = [];
+            $decodedResponse = null;
 
-            } catch (Exception $e) {
-                $lastException = $e;
-                $this->log('API call attempt ' . ($attempt + 1) . ' failed: ' . $e->getMessage());
-
-                $attempt++;
-                if ($attempt < $maxRetries) {
-                    $this->log('Retrying API call in ' . (2 * $attempt) . ' seconds...');
-                    sleep(2 * $attempt);
+            // Try to parse as XML first
+            libxml_use_internal_errors(true);
+            $xml = simplexml_load_string($response);
+            if ($xml !== false) {
+                // Convert XML to array
+                $json = json_encode($xml);
+                $responseData = json_decode($json, true);
+                $responseData['_raw_xml'] = $response; // Keep original XML
+                $decodedResponse = $responseData;
+            } else {
+                // Try to parse as JSON
+                $decodedResponse = json_decode($response, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $responseData = $decodedResponse;
+                } else {
+                    // If not JSON, return as text
+                    $responseData = ['_raw_response' => $response];
                 }
             }
+
+            // Log the full response for debugging
+            $this->log('API Response: ' . json_encode($responseData));
+
+            // Check if response indicates success=false in body
+            if ($decodedResponse && isset($decodedResponse['success']) && $decodedResponse['success'] === false) {
+                $errorMessage = $decodedResponse['message'] ?? 'API call failed';
+                $this->log('API Error: ' . $errorMessage);
+                throw new Exception($errorMessage);
+            }
+
+            return [
+                'success' => true,
+                'data' => $decodedResponse ?: $responseData,
+                'message' => 'API call successful'
+            ];
+        } catch (Exception $e) {
+            $lastException = $e;
+            $this->log('API call attempt ' . ($attempt + 1) . ' failed: ' . $e->getMessage());
+
+            $attempt++;
+            if ($attempt < $maxRetries) {
+                $this->log('Retrying API call in ' . (2 * $attempt) . ' seconds...');
+                sleep(2 * $attempt);
+                continue;
+            }
+            throw $e;
         }
+    }
 
         // All retries exhausted
         throw $lastException ?? new Exception('API call failed after ' . $maxRetries . ' attempts');

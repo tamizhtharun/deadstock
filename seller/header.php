@@ -182,6 +182,23 @@ if (!isset($_SESSION['seller_session'])) {
 					</li>
 
 
+					<!-- <li class="treeview <?php if (in_array($cur_page, ['warehouse-management.php', 'list-warehouses.php', 'edit-warehouse.php'])) { echo 'active menu-open'; } ?>">
+							<a href="#">
+								<i class="fa fa-warehouse"></i><span>Warehouse Management</span>
+								<span class="pull-right-container">
+									<i class="fa fa-angle-left pull-right"></i>
+								</span>
+							</a>
+							<ul class="treeview-menu">
+								<li class="<?php echo ($cur_page == 'warehouse-management.php') ? 'active' : ''; ?>">
+									<a href="warehouse-management.php"><i class="fa fa-plus-circle"></i> Create New Warehouse</a>
+								</li>
+								<li class="<?php echo (in_array($cur_page, ['list-warehouses.php', 'edit-warehouse.php'])) ? 'active' : ''; ?>">
+									<a href="list-warehouses.php"><i class="fa fa-edit"></i> Manage Warehouses</a>
+								</li>
+							</ul>
+						</li> -->
+
 					<li
 						class="treeview <?php if (($cur_page == 'product.php') || ($cur_page == 'product-add.php') || ($cur_page == 'product-edit.php')) {
 											echo 'active';
@@ -259,7 +276,7 @@ if (!isset($_SESSION['seller_session'])) {
 											echo 'active';
 										} ?>">
 						<a href="discount.php">
-							<i class="fa fa-percent"></i> <span>Discount Management</span>
+							<i class="fa fa-percent"></i><span>Discount Management</span>
 						</a>
 					</li>
 

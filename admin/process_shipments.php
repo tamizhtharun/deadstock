@@ -69,8 +69,9 @@ try {
         if (!$order || empty($order['delhivery_awb'])) throw new Exception('AWB not found for order');
 
         $svc = new DelhiveryService();
-        // Minimal pickup payload; extend as needed
-        $pickupData = [ 'pickup_location' => 'TAMIL WAREHOUSE', 'pickup_date' => date('Y-m-d'), 'pickup_time' => '10:00-18:00' ];
+        // Minimal pickup payload; set pickup location based on environment
+        $pickupLocation = (defined('DELHIVERY_ENVIRONMENT') && DELHIVERY_ENVIRONMENT === 'staging') ? 'TAMIL WAREHOUSE' : 'IMET WAREHOUSE';
+        $pickupData = [ 'pickup_location' => $pickupLocation, 'pickup_date' => date('Y-m-d'), 'pickup_time' => '10:00-18:00' ];
         $res = $svc->createPickup($pickupData);
         if ($res['success']) {
             $up = $pdo->prepare("UPDATE tbl_orders SET delhivery_shipment_status='manifested', updated_at=CURRENT_TIMESTAMP WHERE id=?");

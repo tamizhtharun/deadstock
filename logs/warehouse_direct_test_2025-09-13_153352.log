@@ -1,0 +1,87 @@
+[2025-09-13 15:33:52] === Request Details ===
+[2025-09-13 15:33:52] URL: https://staging-express.delhivery.com/cmu/push/warehouse/
+[2025-09-13 15:33:52] Method: POST
+[2025-09-13 15:33:52] Request Headers: 
+[2025-09-13 15:33:52] Request Body: {
+    "name": "Test Warehouse 1757770431",
+    "email": "test.warehouse@example.com",
+    "phone": "9876543210",
+    "address": "123 Test Street, Test Area",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "country": "India",
+    "pin": "400001",
+    "contact_person": "Test Manager",
+    "is_return": 1,
+    "is_fulfillment": 1,
+    "is_rto_address": 0,
+    "address_2": "Near Test Landmark",
+    "landmark": "Opposite Test Tower",
+    "gstin": "22AAAAA0000A1Z5",
+    "gst_company_name": "Test Company",
+    "gst_company_address": "123 Test Street, Test Area",
+    "gst_state_code": "27",
+    "gst_city": "Mumbai",
+    "gst_pin_code": "400001",
+    "gst_email": "test.gst@example.com",
+    "gst_phone": "9876543210",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJkLUlNRVRUT09MSU5HSU5ESUFQTFRELWRvLWNkcCIsInBob25lX251bWJlciI6Ijk1MDA2MTIyNzciLCJsYXN0X25hbWUiOiJIIiwidXNlcl90eXBlIjoiQ0wiLCJpYXQiOjE3NTc3Njc2NTIsImlzX2NsaWVudF9hZG1pbiI6dHJ1ZSwidGVuYW50IjoiRGVsaGl2ZXJ5IiwiYXVkIjoiR3ZES3pvZDZhT0lNM0xjeWE5QmpmQmI4YnZGa1lUWHkiLCJmaXJzdF9uYW1lIjoiQXJ1biIsInN1YiI6InVtczo6dXNlcjo6YWI2MWI3NWEtODdiYy0xMWYwLWE2MmUtMGUxNWY3NDdhMzEzIiwiY2xpZW50X3V1aWQiOiJjbXM6OmNsaWVudDo6YWI2MWI3NWItODdiYy0xMWYwLWE2MmUtMGUxNWY3NDdhMzEzIiwiaWRsZSI6MTc1ODM3MjQ1MiwiY2xpZW50X2VtYWlsIjoiYXJ1bmltZXRAZ21haWwuY29tIiwiZXhwIjoxNzU3ODU0MDUyLCJjbGllbnRfbmFtZSI6ImJkLUlNRVRUT09MSU5HSU5ESUFQTFRELWRvLWNkcCIsInRva2VuX2lkIjoiNDE5MmUwYzAtN2UzYS00MjczLWE4YzMtZjkwZmM3ZWJhOThhIiwiZW1haWwiOiJhcnVuaW1ldEBnbWFpbC5jb20iLCJhcGlfdmVyc2lvbiI6InYyIiwidG9lIjoxNzU3NzY3NjUyfQ.d-MD10DKkRUkjzvmuX6TQwrUozxwBzxAOBryIVEoQso"
+}
+[2025-09-13 15:33:52] === Response Details ===
+[2025-09-13 15:33:52] HTTP Status: 401
+[2025-09-13 15:33:52] Response Headers: Array
+(
+    [url] => https://staging-express.delhivery.com/cmu/push/warehouse/
+    [content_type] => text/html; charset=utf-8
+    [http_code] => 401
+    [header_size] => 262
+    [request_size] => 1614
+    [filetime] => -1
+    [ssl_verify_result] => 20
+    [redirect_count] => 0
+    [total_time] => 0.690311
+    [namelookup_time] => 0.386479
+    [connect_time] => 0.485183
+    [pretransfer_time] => 0.567377
+    [size_upload] => 1461
+    [size_download] => 119
+    [speed_download] => 172
+    [speed_upload] => 2116
+    [download_content_length] => -1
+    [upload_content_length] => 1461
+    [starttransfer_time] => 0.689317
+    [redirect_time] => 0
+    [redirect_url] => 
+    [primary_ip] => 65.2.66.114
+    [certinfo] => Array
+        (
+        )
+
+    [primary_port] => 443
+    [local_ip] => 10.252.204.128
+    [local_port] => 58687
+    [http_version] => 3
+    [protocol] => 2
+    [ssl_verifyresult] => 0
+    [scheme] => HTTPS
+    [appconnect_time_us] => 566511
+    [connect_time_us] => 485183
+    [namelookup_time_us] => 386479
+    [pretransfer_time_us] => 567377
+    [redirect_time_us] => 0
+    [starttransfer_time_us] => 689317
+    [total_time_us] => 690311
+    [effective_method] => POST
+)
+
+[2025-09-13 15:33:52] Response Body: HTTP/2 401 
+date: Sat, 13 Sep 2025 13:33:53 GMT
+content-type: text/html; charset=utf-8
+server: nginx
+expires: Sat, 13 Sep 2025 13:33:53 GMT
+vary: Cookie
+last-modified: Sat, 13 Sep 2025 13:33:53 GMT
+cache-control: max-age=0
+x-frame-options: SAMEORIGIN
+
+There has been an error but we were asked to not let you see that.                         Please contact the dev team.

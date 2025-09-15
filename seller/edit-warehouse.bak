@@ -1,0 +1,331 @@
+<?php 
+require_once('header.php');
+
+// Check if seller is logged in
+if (!isset($_SESSION['seller_session'])) {
+    header('location: ../index.php');
+    exit;
+}
+
+$seller_id = $_SESSION['seller_session']['seller_id'];
+$success_message = '';
+$error_message = '';
+
+// Include Delhivery service
+require_once('../services/DelhiveryService.php');
+$delhiveryService = new DelhiveryService();
+
+// Get warehouse ID from URL
+$warehouse_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+// Fetch warehouse details
+$warehouse = null;
+if ($warehouse_id > 0) {
+    $stmt = $pdo->prepare("SELECT * FROM seller_warehouses WHERE id = ? AND seller_id = ?");
+    $stmt->execute([$warehouse_id, $seller_id]);
+    $warehouse = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$warehouse) {
+        $_SESSION['error_message'] = 'Warehouse not found or access denied';
+        header('Location: list-warehouses.php');
+        exit;
+    }
+} else {
+    $_SESSION['error_message'] = 'Invalid warehouse ID';
+    header('Location: list-warehouses.php');
+    exit;
+}
+
+// Handle form submission for updating warehouse
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        // Validate required fields
+        $required_fields = [
+            'warehouse_name', 'email', 'phone', 'address', 'city', 
+            'state', 'country', 'pincode', 'contact_person'
+        ];
+        
+        $missing_fields = [];
+        foreach ($required_fields as $field) {
+            if (empty(trim($_POST[$field] ?? ''))) {
+                $missing_fields[] = ucfirst(str_replace('_', ' ', $field));
+            }
+        }
+        
+        if (!empty($missing_fields)) {
+            throw new Exception('The following fields are required: ' . implode(', ', $missing_fields));
+        }
+        
+        // Prepare warehouse data for Delhivery
+        $warehouseData = [
+            'name' => trim($_POST['warehouse_name']),
+            'email' => trim($_POST['email']),
+            'phone' => preg_replace('/[^0-9]/', '', $_POST['phone']),
+            'address' => trim($_POST['address']),
+            'city' => trim($_POST['city']),
+            'state' => trim($_POST['state']),
+            'country' => trim($_POST['country']),
+            'pin' => trim($_POST['pincode']),
+            'contact_person' => trim($_POST['contact_person']),
+            'is_return' => isset($_POST['is_return']) ? 1 : 0,
+            // 'is_fulfillment' => isset($_POST['is_fulfillment']) ? 1 : 0,
+            // 'is_rto_address' => isset($_POST['is_rto_address']) ? 1 : 0,
+            'address_2' => trim($_POST['address_2'] ?? ''),
+            'landmark' => trim($_POST['landmark'] ?? ''),
+            'gstin' => trim($_POST['gstin'] ?? '')
+        ];
+        
+        // Additional validation
+        if (!filter_var($warehouseData['email'], FILTER_VALIDATE_EMAIL)) {
+            throw new Exception('Please enter a valid email address');
+        }
+        
+        if (strlen($warehouseData['phone']) < 10) {
+            throw new Exception('Please enter a valid phone number');
+        }
+        
+        if (!preg_match('/^[1-9][0-9]{5}$/', $warehouseData['pin'])) {
+            throw new Exception('Please enter a valid 6-digit pincode');
+        }
+        
+        // Update warehouse in Delhivery
+        $response = $delhiveryService->updateWarehouse($warehouse['delhivery_warehouse_id'], $warehouseData);
+        
+        if ($response['success']) {
+            // Update local database
+            $stmt = $pdo->prepare("UPDATE seller_warehouses 
+                SET name = ?, email = ?, phone = ?, address = ?, city = ?, 
+                    state = ?, country = ?, pincode = ?, contact_person = ?, 
+                    is_return = ?, 
+                    address_2 = ?, landmark = ?, gstin = ?, updated_at = NOW() 
+                WHERE id = ? AND seller_id = ?");
+            
+            $stmt->execute([
+                $warehouseData['name'],
+                $warehouseData['email'],
+                $warehouseData['phone'],
+                $warehouseData['address'],
+                $warehouseData['city'],
+                $warehouseData['state'],
+                $warehouseData['country'],
+                $warehouseData['pin'],
+                $warehouseData['contact_person'],
+                $warehouseData['is_return'],
+                // $warehouseData['is_fulfillment'],
+                // $warehouseData['is_rto_address'],
+                $warehouseData['address_2'],
+                $warehouseData['landmark'],
+                $warehouseData['gstin'],
+                $warehouse_id,
+                $seller_id
+            ]);
+            
+            $_SESSION['success_message'] = 'Warehouse updated successfully!';
+            header('Location: list-warehouses.php?updated=1');
+            exit;
+            
+        } else {
+            throw new Exception($response['message'] ?? 'Failed to update warehouse in Delhivery');
+        }
+    } catch (Exception $e) {
+        $error_message = $e->getMessage();
+    }
+}
+
+// Display success/error messages from session
+if (isset($_SESSION['success_message'])) {
+    $success_message = $_SESSION['success_message'];
+    unset($_SESSION['success_message']);
+}
+
+if (isset($_SESSION['error_message'])) {
+    $error_message = $_SESSION['error_message'];
+    unset($_SESSION['error_message']);
+}
+?>
+
+<!-- Content Wrapper. Contains page content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Edit Warehouse Details</h3>
+                    <div class="box-tools">
+                        <a href="list-warehouses.php" class="btn btn-default">
+                            <i class="fa fa-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                
+                <?php if ($success_message): ?>
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h4><i class="icon fa fa-check"></i> Success!</h4>
+                        <?php echo $success_message; ?>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if ($error_message): ?>
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                        <?php echo $error_message; ?>
+                    </div>
+                <?php endif; ?>
+                
+                <!-- form start -->
+                <form role="form" method="post" action="">
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="warehouse_name">Warehouse Name*</label>
+                                    <input type="text" class="form-control" id="warehouse_name" name="warehouse_name" 
+                                           value="<?php echo htmlspecialchars($warehouse['name']); ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="contact_person">Contact Person*</label>
+                                    <input type="text" class="form-control" id="contact_person" name="contact_person"
+                                           value="<?php echo htmlspecialchars($warehouse['contact_person']); ?>" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email">Email*</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                           value="<?php echo htmlspecialchars($warehouse['email']); ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="phone">Phone*</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone"
+                                           value="<?php echo htmlspecialchars($warehouse['phone']); ?>" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="address">Address*</label>
+                                    <textarea class="form-control" id="address" name="address" 
+                                              rows="3" required><?php echo htmlspecialchars($warehouse['address']); ?></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="address_2">Address Line 2</label>
+                                    <input type="text" class="form-control" id="address_2" name="address_2"
+                                           value="<?php echo htmlspecialchars($warehouse['address_2'] ?? ''); ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="landmark">Landmark</label>
+                                    <input type="text" class="form-control" id="landmark" name="landmark"
+                                           value="<?php echo htmlspecialchars($warehouse['landmark'] ?? ''); ?>">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="city">City*</label>
+                                    <input type="text" class="form-control" id="city" name="city"
+                                           value="<?php echo htmlspecialchars($warehouse['city']); ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="state">State*</label>
+                                    <input type="text" class="form-control" id="state" name="state"
+                                           value="<?php echo htmlspecialchars($warehouse['state']); ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="country">Country*</label>
+                                    <input type="text" class="form-control" id="country" name="country"
+                                           value="<?php echo htmlspecialchars($warehouse['country']); ?>" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="pincode">Pincode*</label>
+                                    <input type="text" class="form-control" id="pincode" name="pincode"
+                                           value="<?php echo htmlspecialchars($warehouse['pincode']); ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="gstin">GSTIN</label>
+                                    <input type="text" class="form-control" id="gstin" name="gstin"
+                                           value="<?php echo htmlspecialchars($warehouse['gstin'] ?? ''); ?>">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Warehouse Type:</label><br>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="is_return" value="1" 
+                                                <?php echo ($warehouse['is_return'] ? 'checked' : ''); ?>> 
+                                            Return Address
+                                        </label>
+                                    </div>
+                                    <!-- <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="is_fulfillment" value="1" 
+                                                <?php echo ($warehouse['is_fulfillment'] ? 'checked' : ''); ?>> 
+                                            Fulfillment Center
+                                        </label>
+                                    </div> -->
+                                    <!-- <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="is_rto_address" value="1" 
+                                                <?php echo ($warehouse['is_rto_address'] ? 'checked' : ''); ?>> 
+                                            RTO Address
+                                        </label>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-save"></i> Update Warehouse
+                        </button>
+                        <a href="list-warehouses.php" class="btn btn-default">Cancel</a>
+                    </div>
+                </form>
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+
+<?php require_once('footer.php'); ?>
