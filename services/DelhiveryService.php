@@ -718,8 +718,14 @@ class DelhiveryService {
      * @return array Formatted shipment data
      */
     private function prepareShipmentData($shipmentData) {
-        // Determine warehouse name based on environment
-        $warehouseName = ($this->environment === 'staging') ? 'TAMIL WAREHOUSE' : 'IMET WAREHOUSE';
+        // Use provided warehouse name or fallback to environment-based default
+        $warehouseName = '';
+        if (!empty($shipmentData['warehouse_name'])) {
+            $warehouseName = trim($shipmentData['warehouse_name']);
+        } else {
+            // Fallback to environment-based default
+            $warehouseName = ($this->environment === 'staging') ? 'TAMIL WAREHOUSE' : 'IMET WAREHOUSE';
+        }
         
         // Format shipment data according to Delhivery API specification
         $shipment = [

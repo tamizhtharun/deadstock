@@ -16,6 +16,18 @@ try {
     if ($action === 'create_shipment') {
         if (empty($_GET['order_id'])) throw new Exception('Missing order_id');
         $orderId = (int)$_GET['order_id'];
+        
+        // Get warehouse name from request, with validation
+        $warehouseName = '';
+        if (!empty($_GET['warehouse_name'])) {
+            $warehouseName = trim($_GET['warehouse_name']);
+            if (empty($warehouseName)) {
+                throw new Exception('Warehouse name cannot be empty');
+            }
+        } else {
+            // Fallback to default warehouse based on environment
+            $warehouseName = (defined('DELHIVERY_ENVIRONMENT') && DELHIVERY_ENVIRONMENT === 'staging') ? 'TAMIL WAREHOUSE' : 'IMET WAREHOUSE';
+        }
 
         $stmt = $pdo->prepare("SELECT o.*, u.username as customer_name, u.email as customer_email, u.phone_number as customer_phone,
             a.address, a.city, a.state, a.pincode
@@ -38,14 +50,15 @@ try {
             'phone' => $order['customer_phone'],
             'email' => $order['customer_email'] ?: 'customer@example.com',
             'cod_amount' => $order['price'] ?: '0',
-            'declared_value' => $order['price'] ?: '0'
+            'declared_value' => $order['price'] ?: '0',
+            'warehouse_name' => $warehouseName
         ];
         $res = $svc->createShipment($shipmentData);
         if ($res['success']) {
             $awb = $res['awb_number'] ?? ($res['data']['packages'][0]['waybill'] ?? null);
             $up = $pdo->prepare("UPDATE tbl_orders SET delhivery_awb=?, delhivery_shipment_status='created', order_status='shipped', delhivery_created_at=CURRENT_TIMESTAMP, updated_at=CURRENT_TIMESTAMP WHERE id=?");
             $up->execute([$awb, $orderId]);
-            send(['success'=>true,'message'=>'Shipment created','awb_number'=>$awb,'shipment_status'=>'created']);
+            send(['success'=>true,'message'=>'Shipment created with warehouse: ' . $warehouseName,'awb_number'=>$awb,'shipment_status'=>'created']);
         } else {
             send(['success'=>false,'message'=>$res['message'] ?? 'Shipment creation failed','serviceable'=>$res['serviceable'] ?? null]);
         }

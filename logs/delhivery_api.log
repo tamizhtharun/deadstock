@@ -17523,3 +17523,544 @@ Vedasandur
 )
 
 [2025-09-15 16:45:42] Raw Response Body: There has been an error but we were asked to not let you see that.                         Please contact the dev team.
+[2025-09-22 06:02:07] Creating pickup request for: TAMIL WAREHOUSE
+[2025-09-22 06:02:07] 
+=== Making API Request ===
+[2025-09-22 06:02:07] URL: https://staging-express.delhivery.com/api/p/pickup
+[2025-09-22 06:02:07] Method: POST
+[2025-09-22 06:02:07] Is JSON: No
+[2025-09-22 06:02:07] Request Data: Array
+(
+    [format] => json
+    [pickup_location] => TAMIL WAREHOUSE
+    [pickup_date] => 2025-09-22
+    [pickup_time] => 10:00-18:00
+)
+
+[2025-09-22 06:02:07] Custom Headers: Array
+(
+)
+
+[2025-09-22 06:02:07] Making API call to: https://staging-express.delhivery.com/api/p/pickup (Method: POST, Attempt: 1)
+[2025-09-22 06:02:07] Request Data (Form): format=json&pickup_location=TAMIL+WAREHOUSE&pickup_date=2025-09-22&pickup_time=10%3A00-18%3A00
+[2025-09-22 06:02:08] HTTP Error: 404
+[2025-09-22 06:02:08] === Raw Response Details ===
+[2025-09-22 06:02:08] HTTP Status: 404
+[2025-09-22 06:02:08] Response Headers: Array
+(
+    [url] => https://staging-express.delhivery.com/api/p/pickup
+    [content_type] => text/html; charset=utf-8
+    [http_code] => 404
+    [header_size] => 262
+    [request_size] => 1187
+    [filetime] => -1
+    [ssl_verify_result] => 20
+    [redirect_count] => 0
+    [total_time] => 0.87459
+    [namelookup_time] => 0.093241
+    [connect_time] => 0.113652
+    [pretransfer_time] => 0.4149
+    [size_upload] => 94
+    [size_download] => 119
+    [speed_download] => 136
+    [speed_upload] => 107
+    [download_content_length] => -1
+    [upload_content_length] => 94
+    [starttransfer_time] => 0.874378
+    [redirect_time] => 0
+    [redirect_url] => 
+    [primary_ip] => 15.207.5.129
+    [certinfo] => Array
+        (
+        )
+
+    [primary_port] => 443
+    [local_ip] => 10.0.251.9
+    [local_port] => 65270
+    [http_version] => 3
+    [protocol] => 2
+    [ssl_verifyresult] => 0
+    [scheme] => HTTPS
+    [appconnect_time_us] => 411464
+    [connect_time_us] => 113652
+    [namelookup_time_us] => 93241
+    [pretransfer_time_us] => 414900
+    [redirect_time_us] => 0
+    [starttransfer_time_us] => 874378
+    [total_time_us] => 874590
+    [effective_method] => POST
+)
+
+[2025-09-22 06:02:08] Raw Response Body: There has been an error but we were asked to not let you see that.                         Please contact the dev team.
+[2025-09-22 06:02:08] Pickup request creation failed: HTTP Error: 404
+[2025-09-22 06:02:12] Creating pickup request for: TAMIL WAREHOUSE
+[2025-09-22 06:02:12] 
+=== Making API Request ===
+[2025-09-22 06:02:12] URL: https://staging-express.delhivery.com/api/p/pickup
+[2025-09-22 06:02:12] Method: POST
+[2025-09-22 06:02:12] Is JSON: No
+[2025-09-22 06:02:12] Request Data: Array
+(
+    [format] => json
+    [pickup_location] => TAMIL WAREHOUSE
+    [pickup_date] => 2025-09-22
+    [pickup_time] => 10:00-18:00
+)
+
+[2025-09-22 06:02:12] Custom Headers: Array
+(
+)
+
+[2025-09-22 06:02:12] Making API call to: https://staging-express.delhivery.com/api/p/pickup (Method: POST, Attempt: 1)
+[2025-09-22 06:02:12] Request Data (Form): format=json&pickup_location=TAMIL+WAREHOUSE&pickup_date=2025-09-22&pickup_time=10%3A00-18%3A00
+[2025-09-22 06:02:12] HTTP Error: 404
+[2025-09-22 06:02:12] === Raw Response Details ===
+[2025-09-22 06:02:12] HTTP Status: 404
+[2025-09-22 06:02:12] Response Headers: Array
+(
+    [url] => https://staging-express.delhivery.com/api/p/pickup
+    [content_type] => text/html; charset=utf-8
+    [http_code] => 404
+    [header_size] => 262
+    [request_size] => 1187
+    [filetime] => -1
+    [ssl_verify_result] => 20
+    [redirect_count] => 0
+    [total_time] => 0.150042
+    [namelookup_time] => 0.001046
+    [connect_time] => 0.00182
+    [pretransfer_time] => 0.06636
+    [size_upload] => 94
+    [size_download] => 119
+    [speed_download] => 793
+    [speed_upload] => 626
+    [download_content_length] => -1
+    [upload_content_length] => 94
+    [starttransfer_time] => 0.150025
+    [redirect_time] => 0
+    [redirect_url] => 
+    [primary_ip] => 15.207.5.129
+    [certinfo] => Array
+        (
+        )
+
+    [primary_port] => 443
+    [local_ip] => 10.0.251.9
+    [local_port] => 54553
+    [http_version] => 3
+    [protocol] => 2
+    [ssl_verifyresult] => 0
+    [scheme] => HTTPS
+    [appconnect_time_us] => 66174
+    [connect_time_us] => 1820
+    [namelookup_time_us] => 1046
+    [pretransfer_time_us] => 66360
+    [redirect_time_us] => 0
+    [starttransfer_time_us] => 150025
+    [total_time_us] => 150042
+    [effective_method] => POST
+)
+
+[2025-09-22 06:02:12] Raw Response Body: There has been an error but we were asked to not let you see that.                         Please contact the dev team.
+[2025-09-22 06:02:12] Pickup request creation failed: HTTP Error: 404
+[2025-09-22 06:02:15] Tracking shipment: 84665810001702
+[2025-09-22 06:02:15] 
+=== Making API Request ===
+[2025-09-22 06:02:15] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001702
+[2025-09-22 06:02:15] Method: GET
+[2025-09-22 06:02:15] Is JSON: No
+[2025-09-22 06:02:15] Request Data: 
+[2025-09-22 06:02:15] Custom Headers: Array
+(
+)
+
+[2025-09-22 06:02:15] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001702 (Method: GET, Attempt: 1)
+[2025-09-22 06:02:15] HTTP Error: 401
+[2025-09-22 06:02:15] === Raw Response Details ===
+[2025-09-22 06:02:15] HTTP Status: 401
+[2025-09-22 06:02:15] Response Headers: Array
+(
+    [url] => https://staging-express.delhivery.com/api/v1/packages/json/?waybill=84665810001702
+    [content_type] => text/html; charset=utf-8
+    [http_code] => 401
+    [header_size] => 677
+    [request_size] => 2109
+    [filetime] => -1
+    [ssl_verify_result] => 20
+    [redirect_count] => 1
+    [total_time] => 0.176287
+    [namelookup_time] => 0.001085
+    [connect_time] => 0.011622
+    [pretransfer_time] => 0.078541
+    [size_upload] => 0
+    [size_download] => 119
+    [speed_download] => 675
+    [speed_upload] => 0
+    [download_content_length] => -1
+    [upload_content_length] => 0
+    [starttransfer_time] => 0.176245
+    [redirect_time] => 0.126404
+    [redirect_url] => 
+    [primary_ip] => 15.207.5.129
+    [certinfo] => Array
+        (
+        )
+
+    [primary_port] => 443
+    [local_ip] => 10.0.251.9
+    [local_port] => 52966
+    [http_version] => 3
+    [protocol] => 2
+    [ssl_verifyresult] => 0
+    [scheme] => HTTPS
+    [appconnect_time_us] => 76858
+    [connect_time_us] => 11622
+    [namelookup_time_us] => 1085
+    [pretransfer_time_us] => 78541
+    [redirect_time_us] => 126404
+    [starttransfer_time_us] => 176245
+    [total_time_us] => 176287
+    [effective_method] => GET
+)
+
+[2025-09-22 06:02:15] Raw Response Body: There has been an error but we were asked to not let you see that.                         Please contact the dev team.
+[2025-09-22 06:02:15] Shipment tracking failed: HTTP Error: 401 - Unauthorized (check API token/permissions)
+[2025-09-23 06:42:22] Creating shipment for order: order_RKVgBiJaJDOA0m
+[2025-09-23 06:42:22] Prepared shipment data: {"format":"json","data":"{\"shipments\":[{\"name\":\"THARUN\",\"add\":\"4\\\/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.\",\"pin\":\"600001\",\"city\":\"Chennai\",\"state\":\"Tamil Nadu\",\"country\":\"India\",\"phone\":\"9597049879\",\"order\":\"order_RKVgBiJaJDOA0m\",\"payment_mode\":\"Prepaid\",\"return_pin\":\"\",\"return_city\":\"\",\"return_phone\":\"\",\"return_add\":\"\",\"return_state\":\"\",\"return_country\":\"\",\"products_desc\":\"\",\"hsn_code\":\"\",\"cod_amount\":\"281.00\",\"order_date\":null,\"total_amount\":\"281.00\",\"seller_add\":\"\",\"seller_name\":\"\",\"seller_inv\":\"\",\"quantity\":\"\",\"waybill\":\"\",\"shipment_width\":\"100\",\"shipment_height\":\"100\",\"weight\":\"\",\"shipping_mode\":\"Surface\",\"address_type\":\"\"}],\"pickup_location\":{\"name\":\"TAMIL WAREHOUSE\"}}"}
+[2025-09-23 06:42:22] 
+=== Making API Request ===
+[2025-09-23 06:42:22] URL: https://staging-express.delhivery.com/api/cmu/create.json
+[2025-09-23 06:42:22] Method: POST
+[2025-09-23 06:42:22] Is JSON: No
+[2025-09-23 06:42:22] Request Data: Array
+(
+    [format] => json
+    [data] => {"shipments":[{"name":"THARUN","add":"4\/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.","pin":"600001","city":"Chennai","state":"Tamil Nadu","country":"India","phone":"9597049879","order":"order_RKVgBiJaJDOA0m","payment_mode":"Prepaid","return_pin":"","return_city":"","return_phone":"","return_add":"","return_state":"","return_country":"","products_desc":"","hsn_code":"","cod_amount":"281.00","order_date":null,"total_amount":"281.00","seller_add":"","seller_name":"","seller_inv":"","quantity":"","waybill":"","shipment_width":"100","shipment_height":"100","weight":"","shipping_mode":"Surface","address_type":""}],"pickup_location":{"name":"TAMIL WAREHOUSE"}}
+)
+
+[2025-09-23 06:42:22] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:42:22] Making API call to: https://staging-express.delhivery.com/api/cmu/create.json (Method: POST, Attempt: 1)
+[2025-09-23 06:42:22] Request Data (Form): format=json&data=%7B%22shipments%22%3A%5B%7B%22name%22%3A%22THARUN%22%2C%22add%22%3A%224%5C%2F97%2C+Sullerumbu+naalroad%2C+Sullerumbu%28post%29%2C+Vedasandur%2C+Dindigul.%22%2C%22pin%22%3A%22600001%22%2C%22city%22%3A%22Chennai%22%2C%22state%22%3A%22Tamil+Nadu%22%2C%22country%22%3A%22India%22%2C%22phone%22%3A%229597049879%22%2C%22order%22%3A%22order_RKVgBiJaJDOA0m%22%2C%22payment_mode%22%3A%22Prepaid%22%2C%22return_pin%22%3A%22%22%2C%22return_city%22%3A%22%22%2C%22return_phone%22%3A%22%22%2C%22return_add%22%3A%22%22%2C%22return_state%22%3A%22%22%2C%22return_country%22%3A%22%22%2C%22products_desc%22%3A%22%22%2C%22hsn_code%22%3A%22%22%2C%22cod_amount%22%3A%22281.00%22%2C%22order_date%22%3Anull%2C%22total_amount%22%3A%22281.00%22%2C%22seller_add%22%3A%22%22%2C%22seller_name%22%3A%22%22%2C%22seller_inv%22%3A%22%22%2C%22quantity%22%3A%22%22%2C%22waybill%22%3A%22%22%2C%22shipment_width%22%3A%22100%22%2C%22shipment_height%22%3A%22100%22%2C%22weight%22%3A%22%22%2C%22shipping_mode%22%3A%22Surface%22%2C%22address_type%22%3A%22%22%7D%5D%2C%22pickup_location%22%3A%7B%22name%22%3A%22TAMIL+WAREHOUSE%22%7D%7D
+[2025-09-23 06:42:23] API Response: {"cash_pickups_count":0,"package_count":0,"upload_wbn":null,"replacement_count":0,"rmk":"Package creation API error.Package might be saved.Please contact tech.admin@delhivery.com. Error message is 'NoneType' object has no attribute 'end_date' . Quote this error message while reporting.","pickups_count":0,"packages":[],"cash_pickups":0,"cod_count":0,"success":false,"prepaid_count":0,"error":true,"cod_amount":0}
+[2025-09-23 06:42:23] API Error: API call failed
+[2025-09-23 06:42:23] API call attempt 1 failed: API call failed
+[2025-09-23 06:42:23] Retrying API call in 2 seconds...
+[2025-09-23 06:42:25] Making API call to: https://staging-express.delhivery.com/api/cmu/create.json (Method: POST, Attempt: 2)
+[2025-09-23 06:42:25] Request Data (Form): format=json&data=%7B%22shipments%22%3A%5B%7B%22name%22%3A%22THARUN%22%2C%22add%22%3A%224%5C%2F97%2C+Sullerumbu+naalroad%2C+Sullerumbu%28post%29%2C+Vedasandur%2C+Dindigul.%22%2C%22pin%22%3A%22600001%22%2C%22city%22%3A%22Chennai%22%2C%22state%22%3A%22Tamil+Nadu%22%2C%22country%22%3A%22India%22%2C%22phone%22%3A%229597049879%22%2C%22order%22%3A%22order_RKVgBiJaJDOA0m%22%2C%22payment_mode%22%3A%22Prepaid%22%2C%22return_pin%22%3A%22%22%2C%22return_city%22%3A%22%22%2C%22return_phone%22%3A%22%22%2C%22return_add%22%3A%22%22%2C%22return_state%22%3A%22%22%2C%22return_country%22%3A%22%22%2C%22products_desc%22%3A%22%22%2C%22hsn_code%22%3A%22%22%2C%22cod_amount%22%3A%22281.00%22%2C%22order_date%22%3Anull%2C%22total_amount%22%3A%22281.00%22%2C%22seller_add%22%3A%22%22%2C%22seller_name%22%3A%22%22%2C%22seller_inv%22%3A%22%22%2C%22quantity%22%3A%22%22%2C%22waybill%22%3A%22%22%2C%22shipment_width%22%3A%22100%22%2C%22shipment_height%22%3A%22100%22%2C%22weight%22%3A%22%22%2C%22shipping_mode%22%3A%22Surface%22%2C%22address_type%22%3A%22%22%7D%5D%2C%22pickup_location%22%3A%7B%22name%22%3A%22TAMIL+WAREHOUSE%22%7D%7D
+[2025-09-23 06:42:25] API Response: {"cash_pickups_count":0,"package_count":0,"upload_wbn":null,"replacement_count":0,"rmk":"Package creation API error.Package might be saved.Please contact tech.admin@delhivery.com. Error message is 'NoneType' object has no attribute 'end_date' . Quote this error message while reporting.","pickups_count":0,"packages":[],"cash_pickups":0,"cod_count":0,"success":false,"prepaid_count":0,"error":true,"cod_amount":0}
+[2025-09-23 06:42:25] API Error: API call failed
+[2025-09-23 06:42:25] API call attempt 2 failed: API call failed
+[2025-09-23 06:42:25] Retrying API call in 4 seconds...
+[2025-09-23 06:42:29] Making API call to: https://staging-express.delhivery.com/api/cmu/create.json (Method: POST, Attempt: 3)
+[2025-09-23 06:42:29] Request Data (Form): format=json&data=%7B%22shipments%22%3A%5B%7B%22name%22%3A%22THARUN%22%2C%22add%22%3A%224%5C%2F97%2C+Sullerumbu+naalroad%2C+Sullerumbu%28post%29%2C+Vedasandur%2C+Dindigul.%22%2C%22pin%22%3A%22600001%22%2C%22city%22%3A%22Chennai%22%2C%22state%22%3A%22Tamil+Nadu%22%2C%22country%22%3A%22India%22%2C%22phone%22%3A%229597049879%22%2C%22order%22%3A%22order_RKVgBiJaJDOA0m%22%2C%22payment_mode%22%3A%22Prepaid%22%2C%22return_pin%22%3A%22%22%2C%22return_city%22%3A%22%22%2C%22return_phone%22%3A%22%22%2C%22return_add%22%3A%22%22%2C%22return_state%22%3A%22%22%2C%22return_country%22%3A%22%22%2C%22products_desc%22%3A%22%22%2C%22hsn_code%22%3A%22%22%2C%22cod_amount%22%3A%22281.00%22%2C%22order_date%22%3Anull%2C%22total_amount%22%3A%22281.00%22%2C%22seller_add%22%3A%22%22%2C%22seller_name%22%3A%22%22%2C%22seller_inv%22%3A%22%22%2C%22quantity%22%3A%22%22%2C%22waybill%22%3A%22%22%2C%22shipment_width%22%3A%22100%22%2C%22shipment_height%22%3A%22100%22%2C%22weight%22%3A%22%22%2C%22shipping_mode%22%3A%22Surface%22%2C%22address_type%22%3A%22%22%7D%5D%2C%22pickup_location%22%3A%7B%22name%22%3A%22TAMIL+WAREHOUSE%22%7D%7D
+[2025-09-23 06:42:29] API Response: {"cash_pickups_count":0,"package_count":0,"upload_wbn":null,"replacement_count":0,"rmk":"Package creation API error.Package might be saved.Please contact tech.admin@delhivery.com. Error message is 'NoneType' object has no attribute 'end_date' . Quote this error message while reporting.","pickups_count":0,"packages":[],"cash_pickups":0,"cod_count":0,"success":false,"prepaid_count":0,"error":true,"cod_amount":0}
+[2025-09-23 06:42:29] API Error: API call failed
+[2025-09-23 06:42:29] API call attempt 3 failed: API call failed
+[2025-09-23 06:42:29] Error creating shipment: API call failed
+[2025-09-23 06:42:29] Stack trace: #0 C:\xampp\htdocs\deadstock\services\DelhiveryService.php(449): DelhiveryService->makeApiCall('https://staging...', Array, 'POST')
+#1 C:\xampp\htdocs\deadstock\admin\process_shipments.php(56): DelhiveryService->createShipment(Array)
+#2 {main}
+[2025-09-23 06:44:19] Creating shipment for order: order_RKVgBiJaJDOA0m
+[2025-09-23 06:44:19] Prepared shipment data: {"format":"json","data":"{\"shipments\":[{\"name\":\"THARUN\",\"add\":\"4\\\/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.\",\"pin\":\"600001\",\"city\":\"Chennai\",\"state\":\"Tamil Nadu\",\"country\":\"India\",\"phone\":\"9597049879\",\"order\":\"order_RKVgBiJaJDOA0m\",\"payment_mode\":\"Prepaid\",\"return_pin\":\"\",\"return_city\":\"\",\"return_phone\":\"\",\"return_add\":\"\",\"return_state\":\"\",\"return_country\":\"\",\"products_desc\":\"\",\"hsn_code\":\"\",\"cod_amount\":\"281.00\",\"order_date\":null,\"total_amount\":\"281.00\",\"seller_add\":\"\",\"seller_name\":\"\",\"seller_inv\":\"\",\"quantity\":\"\",\"waybill\":\"\",\"shipment_width\":\"100\",\"shipment_height\":\"100\",\"weight\":\"\",\"shipping_mode\":\"Surface\",\"address_type\":\"\"}],\"pickup_location\":{\"name\":\"TAMIL WAREHOUSE\"}}"}
+[2025-09-23 06:44:19] 
+=== Making API Request ===
+[2025-09-23 06:44:19] URL: https://staging-express.delhivery.com/api/cmu/create.json
+[2025-09-23 06:44:19] Method: POST
+[2025-09-23 06:44:19] Is JSON: No
+[2025-09-23 06:44:19] Request Data: Array
+(
+    [format] => json
+    [data] => {"shipments":[{"name":"THARUN","add":"4\/97, Sullerumbu naalroad, Sullerumbu(post), Vedasandur, Dindigul.","pin":"600001","city":"Chennai","state":"Tamil Nadu","country":"India","phone":"9597049879","order":"order_RKVgBiJaJDOA0m","payment_mode":"Prepaid","return_pin":"","return_city":"","return_phone":"","return_add":"","return_state":"","return_country":"","products_desc":"","hsn_code":"","cod_amount":"281.00","order_date":null,"total_amount":"281.00","seller_add":"","seller_name":"","seller_inv":"","quantity":"","waybill":"","shipment_width":"100","shipment_height":"100","weight":"","shipping_mode":"Surface","address_type":""}],"pickup_location":{"name":"TAMIL WAREHOUSE"}}
+)
+
+[2025-09-23 06:44:19] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:44:19] Making API call to: https://staging-express.delhivery.com/api/cmu/create.json (Method: POST, Attempt: 1)
+[2025-09-23 06:44:19] Request Data (Form): format=json&data=%7B%22shipments%22%3A%5B%7B%22name%22%3A%22THARUN%22%2C%22add%22%3A%224%5C%2F97%2C+Sullerumbu+naalroad%2C+Sullerumbu%28post%29%2C+Vedasandur%2C+Dindigul.%22%2C%22pin%22%3A%22600001%22%2C%22city%22%3A%22Chennai%22%2C%22state%22%3A%22Tamil+Nadu%22%2C%22country%22%3A%22India%22%2C%22phone%22%3A%229597049879%22%2C%22order%22%3A%22order_RKVgBiJaJDOA0m%22%2C%22payment_mode%22%3A%22Prepaid%22%2C%22return_pin%22%3A%22%22%2C%22return_city%22%3A%22%22%2C%22return_phone%22%3A%22%22%2C%22return_add%22%3A%22%22%2C%22return_state%22%3A%22%22%2C%22return_country%22%3A%22%22%2C%22products_desc%22%3A%22%22%2C%22hsn_code%22%3A%22%22%2C%22cod_amount%22%3A%22281.00%22%2C%22order_date%22%3Anull%2C%22total_amount%22%3A%22281.00%22%2C%22seller_add%22%3A%22%22%2C%22seller_name%22%3A%22%22%2C%22seller_inv%22%3A%22%22%2C%22quantity%22%3A%22%22%2C%22waybill%22%3A%22%22%2C%22shipment_width%22%3A%22100%22%2C%22shipment_height%22%3A%22100%22%2C%22weight%22%3A%22%22%2C%22shipping_mode%22%3A%22Surface%22%2C%22address_type%22%3A%22%22%7D%5D%2C%22pickup_location%22%3A%7B%22name%22%3A%22TAMIL+WAREHOUSE%22%7D%7D
+[2025-09-23 06:44:20] API Response: {"cash_pickups_count":0,"package_count":1,"upload_wbn":"UPL14287335264604799159","replacement_count":0,"pickups_count":0,"packages":[{"status":"Success","client":"bd-IMETTOOLINGINDIAPLTD-do-cdp","sort_code":null,"remarks":[""],"waybill":"84665810001724","cod_amount":0,"payment":"Pre-paid","serviceable":false,"refnum":"order_RKVgBiJaJDOA0m"}],"cash_pickups":0,"cod_count":0,"success":true,"prepaid_count":1,"cod_amount":0}
+[2025-09-23 06:44:20] Shipment created successfully: {"cash_pickups_count":0,"package_count":1,"upload_wbn":"UPL14287335264604799159","replacement_count":0,"pickups_count":0,"packages":[{"status":"Success","client":"bd-IMETTOOLINGINDIAPLTD-do-cdp","sort_code":null,"remarks":[""],"waybill":"84665810001724","cod_amount":0,"payment":"Pre-paid","serviceable":false,"refnum":"order_RKVgBiJaJDOA0m"}],"cash_pickups":0,"cod_count":0,"success":true,"prepaid_count":1,"cod_amount":0}
+[2025-09-23 06:44:29] Creating pickup request for: TAMIL WAREHOUSE
+[2025-09-23 06:44:29] 
+=== Making API Request ===
+[2025-09-23 06:44:29] URL: https://staging-express.delhivery.com/api/p/pickup
+[2025-09-23 06:44:29] Method: POST
+[2025-09-23 06:44:29] Is JSON: No
+[2025-09-23 06:44:29] Request Data: Array
+(
+    [format] => json
+    [pickup_location] => TAMIL WAREHOUSE
+    [pickup_date] => 2025-09-23
+    [pickup_time] => 10:00-18:00
+)
+
+[2025-09-23 06:44:29] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:44:29] Making API call to: https://staging-express.delhivery.com/api/p/pickup (Method: POST, Attempt: 1)
+[2025-09-23 06:44:29] Request Data (Form): format=json&pickup_location=TAMIL+WAREHOUSE&pickup_date=2025-09-23&pickup_time=10%3A00-18%3A00
+[2025-09-23 06:44:29] HTTP Error: 404
+[2025-09-23 06:44:29] === Raw Response Details ===
+[2025-09-23 06:44:29] HTTP Status: 404
+[2025-09-23 06:44:29] Response Headers: Array
+(
+    [url] => https://staging-express.delhivery.com/api/p/pickup
+    [content_type] => text/html; charset=utf-8
+    [http_code] => 404
+    [header_size] => 262
+    [request_size] => 1187
+    [filetime] => -1
+    [ssl_verify_result] => 20
+    [redirect_count] => 0
+    [total_time] => 0.284725
+    [namelookup_time] => 0.001046
+    [connect_time] => 0.001805
+    [pretransfer_time] => 0.206089
+    [size_upload] => 94
+    [size_download] => 119
+    [speed_download] => 417
+    [speed_upload] => 330
+    [download_content_length] => -1
+    [upload_content_length] => 94
+    [starttransfer_time] => 0.284705
+    [redirect_time] => 0
+    [redirect_url] => 
+    [primary_ip] => 65.0.206.61
+    [certinfo] => Array
+        (
+        )
+
+    [primary_port] => 443
+    [local_ip] => 10.0.251.83
+    [local_port] => 58035
+    [http_version] => 3
+    [protocol] => 2
+    [ssl_verifyresult] => 0
+    [scheme] => HTTPS
+    [appconnect_time_us] => 204413
+    [connect_time_us] => 1805
+    [namelookup_time_us] => 1046
+    [pretransfer_time_us] => 206089
+    [redirect_time_us] => 0
+    [starttransfer_time_us] => 284705
+    [total_time_us] => 284725
+    [effective_method] => POST
+)
+
+[2025-09-23 06:44:29] Raw Response Body: There has been an error but we were asked to not let you see that.                         Please contact the dev team.
+[2025-09-23 06:44:29] Pickup request creation failed: HTTP Error: 404
+[2025-09-23 06:44:37] Tracking shipment: 84665810001724
+[2025-09-23 06:44:37] 
+=== Making API Request ===
+[2025-09-23 06:44:37] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 06:44:37] Method: GET
+[2025-09-23 06:44:37] Is JSON: No
+[2025-09-23 06:44:37] Request Data: 
+[2025-09-23 06:44:37] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:44:37] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 06:44:38] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:44:38] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:51:06] Tracking shipment: 84665810001724
+[2025-09-23 06:51:06] 
+=== Making API Request ===
+[2025-09-23 06:51:06] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 06:51:06] Method: GET
+[2025-09-23 06:51:06] Is JSON: No
+[2025-09-23 06:51:06] Request Data: 
+[2025-09-23 06:51:06] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:51:06] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 06:51:07] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:51:07] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:51:09] Tracking shipment: 84665810001724
+[2025-09-23 06:51:09] 
+=== Making API Request ===
+[2025-09-23 06:51:09] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 06:51:09] Method: GET
+[2025-09-23 06:51:09] Is JSON: No
+[2025-09-23 06:51:09] Request Data: 
+[2025-09-23 06:51:09] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:51:09] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 06:51:10] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:51:10] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:51:11] Tracking shipment: 84665810001724
+[2025-09-23 06:51:11] 
+=== Making API Request ===
+[2025-09-23 06:51:11] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 06:51:11] Method: GET
+[2025-09-23 06:51:11] Is JSON: No
+[2025-09-23 06:51:11] Request Data: 
+[2025-09-23 06:51:11] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:51:11] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 06:51:11] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:51:11] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:51:47] Tracking shipment: 84665810001724
+[2025-09-23 06:51:47] 
+=== Making API Request ===
+[2025-09-23 06:51:47] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 06:51:47] Method: GET
+[2025-09-23 06:51:47] Is JSON: No
+[2025-09-23 06:51:47] Request Data: 
+[2025-09-23 06:51:47] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:51:47] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 06:51:47] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:51:47] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:51:57] Tracking shipment: 84665810001724
+[2025-09-23 06:51:57] 
+=== Making API Request ===
+[2025-09-23 06:51:57] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 06:51:57] Method: GET
+[2025-09-23 06:51:57] Is JSON: No
+[2025-09-23 06:51:57] Request Data: 
+[2025-09-23 06:51:57] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:51:57] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 06:51:57] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:51:57] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:52:20] Tracking shipment: 84665810001724
+[2025-09-23 06:52:20] 
+=== Making API Request ===
+[2025-09-23 06:52:20] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 06:52:20] Method: GET
+[2025-09-23 06:52:20] Is JSON: No
+[2025-09-23 06:52:20] Request Data: 
+[2025-09-23 06:52:20] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:52:20] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 06:52:21] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:52:21] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:52:30] Tracking shipment: 84665810001724
+[2025-09-23 06:52:30] 
+=== Making API Request ===
+[2025-09-23 06:52:30] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 06:52:30] Method: GET
+[2025-09-23 06:52:30] Is JSON: No
+[2025-09-23 06:52:30] Request Data: 
+[2025-09-23 06:52:30] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:52:30] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 06:52:30] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:52:30] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:53:19] Tracking shipment: 84665810001724
+[2025-09-23 06:53:19] 
+=== Making API Request ===
+[2025-09-23 06:53:19] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 06:53:19] Method: GET
+[2025-09-23 06:53:19] Is JSON: No
+[2025-09-23 06:53:19] Request Data: 
+[2025-09-23 06:53:19] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:53:19] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 06:53:19] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:53:19] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:55:07] Tracking shipment: 84665810001724
+[2025-09-23 06:55:07] 
+=== Making API Request ===
+[2025-09-23 06:55:07] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 06:55:07] Method: GET
+[2025-09-23 06:55:07] Is JSON: No
+[2025-09-23 06:55:07] Request Data: 
+[2025-09-23 06:55:07] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:55:07] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 06:55:08] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:55:08] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:55:57] Tracking shipment: 84665810001724
+[2025-09-23 06:55:57] 
+=== Making API Request ===
+[2025-09-23 06:55:57] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 06:55:57] Method: GET
+[2025-09-23 06:55:57] Is JSON: No
+[2025-09-23 06:55:57] Request Data: 
+[2025-09-23 06:55:57] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:55:57] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 06:55:57] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:55:57] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:58:28] Tracking shipment: 84665810001724
+[2025-09-23 06:58:28] 
+=== Making API Request ===
+[2025-09-23 06:58:28] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 06:58:28] Method: GET
+[2025-09-23 06:58:28] Is JSON: No
+[2025-09-23 06:58:28] Request Data: 
+[2025-09-23 06:58:28] Custom Headers: Array
+(
+)
+
+[2025-09-23 06:58:28] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 06:58:29] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 06:58:29] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 07:01:02] Tracking shipment: 84665810001724
+[2025-09-23 07:01:02] 
+=== Making API Request ===
+[2025-09-23 07:01:02] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 07:01:02] Method: GET
+[2025-09-23 07:01:02] Is JSON: No
+[2025-09-23 07:01:02] Request Data: 
+[2025-09-23 07:01:02] Custom Headers: Array
+(
+)
+
+[2025-09-23 07:01:02] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 07:01:03] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 07:01:03] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 07:22:52] Tracking shipment: 84665810001724
+[2025-09-23 07:22:52] 
+=== Making API Request ===
+[2025-09-23 07:22:52] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 07:22:52] Method: GET
+[2025-09-23 07:22:52] Is JSON: No
+[2025-09-23 07:22:52] Request Data: 
+[2025-09-23 07:22:52] Custom Headers: Array
+(
+)
+
+[2025-09-23 07:22:52] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 07:22:52] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 07:22:52] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 07:22:55] Tracking shipment: 84665810001724
+[2025-09-23 07:22:55] 
+=== Making API Request ===
+[2025-09-23 07:22:55] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 07:22:55] Method: GET
+[2025-09-23 07:22:55] Is JSON: No
+[2025-09-23 07:22:55] Request Data: 
+[2025-09-23 07:22:55] Custom Headers: Array
+(
+)
+
+[2025-09-23 07:22:55] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 07:22:55] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 07:22:55] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
