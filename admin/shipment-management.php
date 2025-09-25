@@ -242,7 +242,8 @@ $stmt = $pdo->prepare("SELECT
     o.delhivery_shipment_status,
     o.seller_packed,
     u.username, u.phone_number, u.email,
-    a.address, a.city, a.state, a.pincode
+    a.address, a.city, a.state, a.pincode,
+    a.full_name
 FROM tbl_orders o
 LEFT JOIN users u ON o.user_id = u.id
 LEFT JOIN users_addresses a ON o.address_id = a.id
@@ -256,6 +257,7 @@ foreach ($orders as $row): $i++; ?>
                         <td><?php echo htmlspecialchars($row['order_type']); ?></td>
                         <td><?php echo htmlspecialchars($row['username']); ?><br><?php echo htmlspecialchars($row['phone_number']); ?></td>
                         <td>
+                          <?php echo htmlspecialchars($row['full_name']); ?><br>
                             <?php echo htmlspecialchars($row['address']); ?><br>
                             <?php echo htmlspecialchars($row['city']); ?>, <?php echo htmlspecialchars($row['state']); ?><br>
                             <?php echo htmlspecialchars($row['pincode']); ?>

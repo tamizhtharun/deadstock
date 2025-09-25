@@ -29,11 +29,12 @@ try {
             $warehouseName = (defined('DELHIVERY_ENVIRONMENT') && DELHIVERY_ENVIRONMENT === 'staging') ? 'TAMIL WAREHOUSE' : 'IMET WAREHOUSE';
         }
 
-        $stmt = $pdo->prepare("SELECT o.*, u.username as customer_name, u.email as customer_email, u.phone_number as customer_phone,
-            a.address, a.city, a.state, a.pincode
+        $stmt = $pdo->prepare("SELECT o.*, a.full_name as customer_name, u.email as customer_email, a.phone_number as customer_phone,
+            a.address, a.city, a.state, a.pincode, p.name as product_name
             FROM tbl_orders o
             LEFT JOIN users u ON o.user_id=u.id
             LEFT JOIN users_addresses a ON o.address_id=a.id
+            LEFT JOIN tbl_products p ON o.product_id=p.id
             WHERE o.id=?");
         $stmt->execute([$orderId]);
         $order = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -51,7 +52,8 @@ try {
             'email' => $order['customer_email'] ?: 'customer@example.com',
             'cod_amount' => $order['price'] ?: '0',
             'declared_value' => $order['price'] ?: '0',
-            'warehouse_name' => $warehouseName
+            'warehouse_name' => $warehouseName,
+            'product_description' => $order['product_name']
         ];
         $res = $svc->createShipment($shipmentData);
         if ($res['success']) {
