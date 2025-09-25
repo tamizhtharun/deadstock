@@ -18064,3 +18064,217 @@ Vedasandur
 [2025-09-23 07:22:55] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
 [2025-09-23 07:22:55] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
 [2025-09-23 07:22:55] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 15:10:37] Tracking shipment: 84665810001724
+[2025-09-23 15:10:37] 
+=== Making API Request ===
+[2025-09-23 15:10:37] URL: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724
+[2025-09-23 15:10:37] Method: GET
+[2025-09-23 15:10:37] Is JSON: No
+[2025-09-23 15:10:37] Request Data: 
+[2025-09-23 15:10:37] Custom Headers: Array
+(
+)
+
+[2025-09-23 15:10:37] Making API call to: https://staging-express.delhivery.com/api/v1/packages/json?waybill=84665810001724 (Method: GET, Attempt: 1)
+[2025-09-23 15:10:37] API Response: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-23 15:10:37] Shipment tracking successful: {"ShipmentData":[{"Shipment":{"PickUpDate":"2025-09-23T10:14:19.463","Destination":"Chennai","DestRecieveDate":null,"Scans":[{"ScanDetail":{"ScanDateTime":"2025-09-23T10:14:19.556","ScanType":"UD","Scan":"Manifested","StatusDateTime":"2025-09-23T10:14:19.556","ScannedLocation":"Dindigul_DC (Tamil Nadu)","StatusCode":"X-UCI","Instructions":"Shipment details manifested"}}],"Status":{"Status":"Manifested","StatusLocation":"Dindigul_DC (Tamil Nadu)","StatusDateTime":"2025-09-23T10:14:19.556","RecievedBy":"","StatusCode":"X-UCI","StatusType":"UD","Instructions":"Shipment details manifested"},"ReturnPromisedDeliveryDate":null,"Ewaybill":[],"InvoiceAmount":281,"ChargedWeight":null,"PickedupDate":null,"DeliveryDate":null,"SenderName":"bd-IMETTOOLINGINDIAPLTD-do-cdp","AWB":"84665810001724","DispatchCount":0,"OrderType":"Pre-paid","ReturnedDate":null,"ExpectedDeliveryDate":null,"RTOStartedDate":null,"Extras":"","FirstAttemptDate":null,"ReverseInTransit":false,"Quantity":"","Origin":"Dindigul_DC (Tamil Nadu)","Consignee":{"City":"Chennai","Name":"THARUN","Address1":[],"Address2":[],"Address3":"","PinCode":600001,"State":"Tamil Nadu","Telephone2":"","Country":"India","Telephone1":""},"ReferenceNo":"order_RKVgBiJaJDOA0m","OutDestinationDate":null,"CODAmount":0,"PromisedDeliveryDate":null,"PickupLocation":"TAMIL WAREHOUSE","OriginRecieveDate":null}}]}
+[2025-09-25 06:03:03] Generating shipping label
+[2025-09-25 06:03:04] Error generating label: HTTP Error: 404
+[2025-09-25 06:03:08] Generating shipping label
+[2025-09-25 06:03:09] Error generating label: HTTP Error: 404
+[2025-09-25 07:46:23] Generating shipping label
+[2025-09-25 07:46:24] Error generating label: HTTP Error: 404
+[2025-09-25 16:29:15] Generating shipping label
+[2025-09-25 16:29:15] Error generating label: HTTP Error: 404
+[2025-09-25 16:29:19] Generating shipping label
+[2025-09-25 16:29:19] Error generating label: HTTP Error: 404
+[2025-09-25 16:29:29] Generating shipping label
+[2025-09-25 16:29:29] Error generating label: HTTP Error: 404
+[2025-09-25 16:30:47] Generating shipping label
+[2025-09-25 16:30:48] Error generating label: HTTP Error: 404
+[2025-09-25 16:32:53] Generating shipping label
+[2025-09-25 16:32:53] Error generating label: HTTP Error: 404
+[2025-09-25 16:32:57] Generating shipping label
+[2025-09-25 16:32:57] Error generating label: HTTP Error: 404
+[2025-09-25 16:35:26] Generating shipping label
+[2025-09-25 16:35:26] Error generating label: HTTP Error: 401
+[2025-09-25 16:39:03] Generating shipping label
+[2025-09-25 16:39:03] Error generating label: HTTP Error: 401
+[2025-09-25 16:39:49] Generating shipping label
+[2025-09-25 16:39:49] Error generating label: HTTP Error: 406
+[2025-09-25 16:40:19] Generating shipping label
+[2025-09-25 16:40:19] Error generating label: HTTP Error: 406
+[2025-09-25 16:40:46] Generating shipping label
+[2025-09-25 16:42:08] Generating shipping label
+[2025-09-25 16:42:09] Label API Response - HTTP Code: 200, Content-Type: application/json, Content Length: 42529
+[2025-09-25 16:42:09] Response is not PDF. Content-Type: application/json, Starts with: {"packages": [{"wbn": "84665810001724", "pdf_downl
+[2025-09-25 16:42:09] Error generating label: API did not return PDF content. Content-Type: application/json
+[2025-09-25 16:43:17] Generating shipping label
+[2025-09-25 16:43:19] Label API Response - HTTP Code: 200, Content-Type: application/json, Content Length: 42513
+[2025-09-25 16:43:19] JSON response does not contain download_url. Response: {"packages": [{"wbn": "84665810001724", "pdf_download_link": "https://s3.ap-south-1.amazonaws.com/psi.media.delhivery/tmp/shipping-label-pdf/84665810001724.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-C
+[2025-09-25 16:43:19] Error generating label: API returned JSON but no download URL found
+[2025-09-25 16:43:34] Generating shipping label
+[2025-09-25 16:43:35] Label API Response - HTTP Code: 200, Content-Type: application/json, Content Length: 42477
+[2025-09-25 16:43:35] JSON response does not contain download_url. Response: {"packages": [{"wbn": "84665810001724", "pdf_download_link": "https://s3.ap-south-1.amazonaws.com/psi.media.delhivery/tmp/shipping-label-pdf/84665810001724.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-C
+[2025-09-25 16:43:35] Error generating label: API returned JSON but no download URL found
+[2025-09-25 16:46:09] Generating shipping label
+[2025-09-25 16:46:10] Label API Response - HTTP Code: 200, Content-Type: application/json, Content Length: 42501
+[2025-09-25 16:46:10] JSON response does not contain pdf_download_link. Response: {"packages": [{"wbn": "84665810001724", "pdf_download_link": "https://s3.ap-south-1.amazonaws.com/psi.media.delhivery/tmp/shipping-label-pdf/84665810001724.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-C
+[2025-09-25 16:46:10] Error generating label: API returned JSON but no PDF download link found
+[2025-09-25 16:46:21] Generating shipping label
+[2025-09-25 16:46:22] Label API Response - HTTP Code: 200, Content-Type: application/json, Content Length: 42493
+[2025-09-25 16:46:22] JSON response does not contain pdf_download_link. Response: {"packages": [{"wbn": "84665810001724", "pdf_download_link": "https://s3.ap-south-1.amazonaws.com/psi.media.delhivery/tmp/shipping-label-pdf/84665810001724.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-C
+[2025-09-25 16:46:22] Error generating label: API returned JSON but no PDF download link found
+[2025-09-25 16:47:21] Generating shipping label
+[2025-09-25 16:47:22] Label API Response - HTTP Code: 200, Content-Type: application/json, Content Length: 42525
+[2025-09-25 16:47:22] Received JSON with PDF download link: https://s3.ap-south-1.amazonaws.com/psi.media.delhivery/tmp/shipping-label-pdf/84665810001724.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIARIGS3RKBF6QAQCWR%2F20250925%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250925T144723Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEO%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiRjBEAiBh%2BVZ6ttKGy2n2oEh4dVEgYTDsHhcVsUxJfR5%2FxhgQ8wIgDYayOJgqo7Z1DUjxXgS%2Fix8MPQRfq1j2USkWVbPPMIAqhwMIeBAAGgwwODYzNDE1NTI3NzAiDIw95LW4iVWIqAkCySrkAvZZwxmbxZneRZbwE7Gx8hHQYGhBA2GS918BrWQxQZtbdsc3mL7ez0FSUbhPl2CkqsrM%2FWERi9NBMBEralVeloZo8CkYHOC45oxoFrStvojOi38oo0npKRoWsHivBwx%2FcdufZ5NjXnD8G%2FJm7DP5KGfCNrrA4V8uR3ape%2F6XxGTJHOYY2Fsx3QAXit1%2BQu0CeGdohcABGwFFMwm6wh2sdbueDUe36JVUskHcrT6X0XWzHnsubLudlfDsTnpccCx8itURsBXyGJvwp6pooA%2F3qL7ZPFkywsPxRDand0t5kGis8lD%2F%2BvoMn1ZvvJflWHLMTfbED7U1mNURUmZ8q7kN9vbXM%2Foqjs%2BaS%2Fpzy%2BFBxajE17%2FjkiXDsnugM6uVzkJvsYF%2FisoIF7QtQbXgObLzyAVqSPsI%2FPiFaZ6vvzTiWhy6M09kTMSM4LRYrGDUGt6wV1molMec7%2Fif2pwq6a%2Fy3cYXjPXsMPKo1cYGOp8BFL295uYJdnGoaYJ7yM7amMVIKX2parDeKVBc4saY5oecMCRHCkvCyD%2F8uXFGMG3eej4Wz8C%2BpBPEIJFzaD3ceOUe9TZ0WofmC4oeRtfGA5MqO6uxgcxTyhJoIgiyUoVo6GXwhYAPc2exJn7OkivSScuSn0TsSy2UAyIIvfH9xfUlbjNyuvzTk535FZadK0VuKbsiwBvgCsB1ze2Xbw4K&X-Amz-Signature=93dc7ab67ff81bedea851e2dee3bc79120afb2a19d46c02cba68b89a76b7b0de
+[2025-09-25 16:47:22] Downloading PDF from URL: https://s3.ap-south-1.amazonaws.com/psi.media.delhivery/tmp/shipping-label-pdf/84665810001724.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIARIGS3RKBF6QAQCWR%2F20250925%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250925T144723Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEO%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiRjBEAiBh%2BVZ6ttKGy2n2oEh4dVEgYTDsHhcVsUxJfR5%2FxhgQ8wIgDYayOJgqo7Z1DUjxXgS%2Fix8MPQRfq1j2USkWVbPPMIAqhwMIeBAAGgwwODYzNDE1NTI3NzAiDIw95LW4iVWIqAkCySrkAvZZwxmbxZneRZbwE7Gx8hHQYGhBA2GS918BrWQxQZtbdsc3mL7ez0FSUbhPl2CkqsrM%2FWERi9NBMBEralVeloZo8CkYHOC45oxoFrStvojOi38oo0npKRoWsHivBwx%2FcdufZ5NjXnD8G%2FJm7DP5KGfCNrrA4V8uR3ape%2F6XxGTJHOYY2Fsx3QAXit1%2BQu0CeGdohcABGwFFMwm6wh2sdbueDUe36JVUskHcrT6X0XWzHnsubLudlfDsTnpccCx8itURsBXyGJvwp6pooA%2F3qL7ZPFkywsPxRDand0t5kGis8lD%2F%2BvoMn1ZvvJflWHLMTfbED7U1mNURUmZ8q7kN9vbXM%2Foqjs%2BaS%2Fpzy%2BFBxajE17%2FjkiXDsnugM6uVzkJvsYF%2FisoIF7QtQbXgObLzyAVqSPsI%2FPiFaZ6vvzTiWhy6M09kTMSM4LRYrGDUGt6wV1molMec7%2Fif2pwq6a%2Fy3cYXjPXsMPKo1cYGOp8BFL295uYJdnGoaYJ7yM7amMVIKX2parDeKVBc4saY5oecMCRHCkvCyD%2F8uXFGMG3eej4Wz8C%2BpBPEIJFzaD3ceOUe9TZ0WofmC4oeRtfGA5MqO6uxgcxTyhJoIgiyUoVo6GXwhYAPc2exJn7OkivSScuSn0TsSy2UAyIIvfH9xfUlbjNyuvzTk535FZadK0VuKbsiwBvgCsB1ze2Xbw4K&X-Amz-Signature=93dc7ab67ff81bedea851e2dee3bc79120afb2a19d46c02cba68b89a76b7b0de
+[2025-09-25 16:47:22] PDF Download Response - HTTP Code: 400, Content-Type: application/xml, Content Length: 1347
+[2025-09-25 16:47:22] Error downloading PDF: HTTP Error downloading PDF: 400 - Response: <?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>InvalidArgument</Code><Message>Only one auth mechanism allowed; only the X-Amz-Algorithm query parameter, Signature query string parameter or the Authorization header should be specified</Message><ArgumentName>Authorization</ArgumentName><ArgumentValue>Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJkLUlNRVRUT09MSU5HSU5ESUFQTFRELWRvLWNkcCIsInBob25lX251bWJlciI6Ijk1MDA2MTIyNzciLCJsYXN0X25hbWUiOiJIIiwidXNlcl90eXBlIjoiQ0wiLCJpYXQiOjE
+[2025-09-25 16:47:22] Error generating label: Failed to download PDF from link: HTTP Error downloading PDF: 400 - Response: <?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>InvalidArgument</Code><Message>Only one auth mechanism allowed; only the X-Amz-Algorithm query parameter, Signature query string parameter or the Authorization header should be specified</Message><ArgumentName>Authorization</ArgumentName><ArgumentValue>Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJkLUlNRVRUT09MSU5HSU5ESUFQTFRELWRvLWNkcCIsInBob25lX251bWJlciI6Ijk1MDA2MTIyNzciLCJsYXN0X25hbWUiOiJIIiwidXNlcl90eXBlIjoiQ0wiLCJpYXQiOjE
+[2025-09-25 16:47:39] Generating shipping label
+[2025-09-25 16:47:40] Label API Response - HTTP Code: 200, Content-Type: application/json, Content Length: 42449
+[2025-09-25 16:47:40] Received JSON with PDF download link: https://s3.ap-south-1.amazonaws.com/psi.media.delhivery/tmp/shipping-label-pdf/84665810001724.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIARIGS3RKBF6QAQCWR%2F20250925%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250925T144741Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEO%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiRjBEAiBh%2BVZ6ttKGy2n2oEh4dVEgYTDsHhcVsUxJfR5%2FxhgQ8wIgDYayOJgqo7Z1DUjxXgS%2Fix8MPQRfq1j2USkWVbPPMIAqhwMIeBAAGgwwODYzNDE1NTI3NzAiDIw95LW4iVWIqAkCySrkAvZZwxmbxZneRZbwE7Gx8hHQYGhBA2GS918BrWQxQZtbdsc3mL7ez0FSUbhPl2CkqsrM%2FWERi9NBMBEralVeloZo8CkYHOC45oxoFrStvojOi38oo0npKRoWsHivBwx%2FcdufZ5NjXnD8G%2FJm7DP5KGfCNrrA4V8uR3ape%2F6XxGTJHOYY2Fsx3QAXit1%2BQu0CeGdohcABGwFFMwm6wh2sdbueDUe36JVUskHcrT6X0XWzHnsubLudlfDsTnpccCx8itURsBXyGJvwp6pooA%2F3qL7ZPFkywsPxRDand0t5kGis8lD%2F%2BvoMn1ZvvJflWHLMTfbED7U1mNURUmZ8q7kN9vbXM%2Foqjs%2BaS%2Fpzy%2BFBxajE17%2FjkiXDsnugM6uVzkJvsYF%2FisoIF7QtQbXgObLzyAVqSPsI%2FPiFaZ6vvzTiWhy6M09kTMSM4LRYrGDUGt6wV1molMec7%2Fif2pwq6a%2Fy3cYXjPXsMPKo1cYGOp8BFL295uYJdnGoaYJ7yM7amMVIKX2parDeKVBc4saY5oecMCRHCkvCyD%2F8uXFGMG3eej4Wz8C%2BpBPEIJFzaD3ceOUe9TZ0WofmC4oeRtfGA5MqO6uxgcxTyhJoIgiyUoVo6GXwhYAPc2exJn7OkivSScuSn0TsSy2UAyIIvfH9xfUlbjNyuvzTk535FZadK0VuKbsiwBvgCsB1ze2Xbw4K&X-Amz-Signature=ce4a17e00e544e941cf7d36e398d4e99e689f377d2eafdd8bb6c91967b2d401d
+[2025-09-25 16:47:40] Downloading PDF from URL: https://s3.ap-south-1.amazonaws.com/psi.media.delhivery/tmp/shipping-label-pdf/84665810001724.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIARIGS3RKBF6QAQCWR%2F20250925%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250925T144741Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEO%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiRjBEAiBh%2BVZ6ttKGy2n2oEh4dVEgYTDsHhcVsUxJfR5%2FxhgQ8wIgDYayOJgqo7Z1DUjxXgS%2Fix8MPQRfq1j2USkWVbPPMIAqhwMIeBAAGgwwODYzNDE1NTI3NzAiDIw95LW4iVWIqAkCySrkAvZZwxmbxZneRZbwE7Gx8hHQYGhBA2GS918BrWQxQZtbdsc3mL7ez0FSUbhPl2CkqsrM%2FWERi9NBMBEralVeloZo8CkYHOC45oxoFrStvojOi38oo0npKRoWsHivBwx%2FcdufZ5NjXnD8G%2FJm7DP5KGfCNrrA4V8uR3ape%2F6XxGTJHOYY2Fsx3QAXit1%2BQu0CeGdohcABGwFFMwm6wh2sdbueDUe36JVUskHcrT6X0XWzHnsubLudlfDsTnpccCx8itURsBXyGJvwp6pooA%2F3qL7ZPFkywsPxRDand0t5kGis8lD%2F%2BvoMn1ZvvJflWHLMTfbED7U1mNURUmZ8q7kN9vbXM%2Foqjs%2BaS%2Fpzy%2BFBxajE17%2FjkiXDsnugM6uVzkJvsYF%2FisoIF7QtQbXgObLzyAVqSPsI%2FPiFaZ6vvzTiWhy6M09kTMSM4LRYrGDUGt6wV1molMec7%2Fif2pwq6a%2Fy3cYXjPXsMPKo1cYGOp8BFL295uYJdnGoaYJ7yM7amMVIKX2parDeKVBc4saY5oecMCRHCkvCyD%2F8uXFGMG3eej4Wz8C%2BpBPEIJFzaD3ceOUe9TZ0WofmC4oeRtfGA5MqO6uxgcxTyhJoIgiyUoVo6GXwhYAPc2exJn7OkivSScuSn0TsSy2UAyIIvfH9xfUlbjNyuvzTk535FZadK0VuKbsiwBvgCsB1ze2Xbw4K&X-Amz-Signature=ce4a17e00e544e941cf7d36e398d4e99e689f377d2eafdd8bb6c91967b2d401d
+[2025-09-25 16:47:40] PDF Download Response - HTTP Code: 400, Content-Type: application/xml, Content Length: 1347
+[2025-09-25 16:47:40] Error downloading PDF: HTTP Error downloading PDF: 400 - Response: <?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>InvalidArgument</Code><Message>Only one auth mechanism allowed; only the X-Amz-Algorithm query parameter, Signature query string parameter or the Authorization header should be specified</Message><ArgumentName>Authorization</ArgumentName><ArgumentValue>Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJkLUlNRVRUT09MSU5HSU5ESUFQTFRELWRvLWNkcCIsInBob25lX251bWJlciI6Ijk1MDA2MTIyNzciLCJsYXN0X25hbWUiOiJIIiwidXNlcl90eXBlIjoiQ0wiLCJpYXQiOjE
+[2025-09-25 16:47:40] Error generating label: Failed to download PDF from link: HTTP Error downloading PDF: 400 - Response: <?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>InvalidArgument</Code><Message>Only one auth mechanism allowed; only the X-Amz-Algorithm query parameter, Signature query string parameter or the Authorization header should be specified</Message><ArgumentName>Authorization</ArgumentName><ArgumentValue>Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJkLUlNRVRUT09MSU5HSU5ESUFQTFRELWRvLWNkcCIsInBob25lX251bWJlciI6Ijk1MDA2MTIyNzciLCJsYXN0X25hbWUiOiJIIiwidXNlcl90eXBlIjoiQ0wiLCJpYXQiOjE
+[2025-09-25 16:47:46] Generating shipping label
+[2025-09-25 16:47:47] Label API Response - HTTP Code: 200, Content-Type: application/json, Content Length: 42501
+[2025-09-25 16:47:47] Received JSON with PDF download link: https://s3.ap-south-1.amazonaws.com/psi.media.delhivery/tmp/shipping-label-pdf/84665810001724.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIARIGS3RKBF6QAQCWR%2F20250925%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250925T144748Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEO%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiRjBEAiBh%2BVZ6ttKGy2n2oEh4dVEgYTDsHhcVsUxJfR5%2FxhgQ8wIgDYayOJgqo7Z1DUjxXgS%2Fix8MPQRfq1j2USkWVbPPMIAqhwMIeBAAGgwwODYzNDE1NTI3NzAiDIw95LW4iVWIqAkCySrkAvZZwxmbxZneRZbwE7Gx8hHQYGhBA2GS918BrWQxQZtbdsc3mL7ez0FSUbhPl2CkqsrM%2FWERi9NBMBEralVeloZo8CkYHOC45oxoFrStvojOi38oo0npKRoWsHivBwx%2FcdufZ5NjXnD8G%2FJm7DP5KGfCNrrA4V8uR3ape%2F6XxGTJHOYY2Fsx3QAXit1%2BQu0CeGdohcABGwFFMwm6wh2sdbueDUe36JVUskHcrT6X0XWzHnsubLudlfDsTnpccCx8itURsBXyGJvwp6pooA%2F3qL7ZPFkywsPxRDand0t5kGis8lD%2F%2BvoMn1ZvvJflWHLMTfbED7U1mNURUmZ8q7kN9vbXM%2Foqjs%2BaS%2Fpzy%2BFBxajE17%2FjkiXDsnugM6uVzkJvsYF%2FisoIF7QtQbXgObLzyAVqSPsI%2FPiFaZ6vvzTiWhy6M09kTMSM4LRYrGDUGt6wV1molMec7%2Fif2pwq6a%2Fy3cYXjPXsMPKo1cYGOp8BFL295uYJdnGoaYJ7yM7amMVIKX2parDeKVBc4saY5oecMCRHCkvCyD%2F8uXFGMG3eej4Wz8C%2BpBPEIJFzaD3ceOUe9TZ0WofmC4oeRtfGA5MqO6uxgcxTyhJoIgiyUoVo6GXwhYAPc2exJn7OkivSScuSn0TsSy2UAyIIvfH9xfUlbjNyuvzTk535FZadK0VuKbsiwBvgCsB1ze2Xbw4K&X-Amz-Signature=45a2ecd7c1a16fc5ce6adebf851ef49f3f43b9b9ea2e2c04a17ec8fb6a632fab
+[2025-09-25 16:47:47] Downloading PDF from URL: https://s3.ap-south-1.amazonaws.com/psi.media.delhivery/tmp/shipping-label-pdf/84665810001724.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIARIGS3RKBF6QAQCWR%2F20250925%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250925T144748Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEO%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiRjBEAiBh%2BVZ6ttKGy2n2oEh4dVEgYTDsHhcVsUxJfR5%2FxhgQ8wIgDYayOJgqo7Z1DUjxXgS%2Fix8MPQRfq1j2USkWVbPPMIAqhwMIeBAAGgwwODYzNDE1NTI3NzAiDIw95LW4iVWIqAkCySrkAvZZwxmbxZneRZbwE7Gx8hHQYGhBA2GS918BrWQxQZtbdsc3mL7ez0FSUbhPl2CkqsrM%2FWERi9NBMBEralVeloZo8CkYHOC45oxoFrStvojOi38oo0npKRoWsHivBwx%2FcdufZ5NjXnD8G%2FJm7DP5KGfCNrrA4V8uR3ape%2F6XxGTJHOYY2Fsx3QAXit1%2BQu0CeGdohcABGwFFMwm6wh2sdbueDUe36JVUskHcrT6X0XWzHnsubLudlfDsTnpccCx8itURsBXyGJvwp6pooA%2F3qL7ZPFkywsPxRDand0t5kGis8lD%2F%2BvoMn1ZvvJflWHLMTfbED7U1mNURUmZ8q7kN9vbXM%2Foqjs%2BaS%2Fpzy%2BFBxajE17%2FjkiXDsnugM6uVzkJvsYF%2FisoIF7QtQbXgObLzyAVqSPsI%2FPiFaZ6vvzTiWhy6M09kTMSM4LRYrGDUGt6wV1molMec7%2Fif2pwq6a%2Fy3cYXjPXsMPKo1cYGOp8BFL295uYJdnGoaYJ7yM7amMVIKX2parDeKVBc4saY5oecMCRHCkvCyD%2F8uXFGMG3eej4Wz8C%2BpBPEIJFzaD3ceOUe9TZ0WofmC4oeRtfGA5MqO6uxgcxTyhJoIgiyUoVo6GXwhYAPc2exJn7OkivSScuSn0TsSy2UAyIIvfH9xfUlbjNyuvzTk535FZadK0VuKbsiwBvgCsB1ze2Xbw4K&X-Amz-Signature=45a2ecd7c1a16fc5ce6adebf851ef49f3f43b9b9ea2e2c04a17ec8fb6a632fab
+[2025-09-25 16:47:47] PDF Download Response - HTTP Code: 400, Content-Type: application/xml, Content Length: 1347
+[2025-09-25 16:47:47] Error downloading PDF: HTTP Error downloading PDF: 400 - Response: <?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>InvalidArgument</Code><Message>Only one auth mechanism allowed; only the X-Amz-Algorithm query parameter, Signature query string parameter or the Authorization header should be specified</Message><ArgumentName>Authorization</ArgumentName><ArgumentValue>Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJkLUlNRVRUT09MSU5HSU5ESUFQTFRELWRvLWNkcCIsInBob25lX251bWJlciI6Ijk1MDA2MTIyNzciLCJsYXN0X25hbWUiOiJIIiwidXNlcl90eXBlIjoiQ0wiLCJpYXQiOjE
+[2025-09-25 16:47:47] Error generating label: Failed to download PDF from link: HTTP Error downloading PDF: 400 - Response: <?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>InvalidArgument</Code><Message>Only one auth mechanism allowed; only the X-Amz-Algorithm query parameter, Signature query string parameter or the Authorization header should be specified</Message><ArgumentName>Authorization</ArgumentName><ArgumentValue>Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJkLUlNRVRUT09MSU5HSU5ESUFQTFRELWRvLWNkcCIsInBob25lX251bWJlciI6Ijk1MDA2MTIyNzciLCJsYXN0X25hbWUiOiJIIiwidXNlcl90eXBlIjoiQ0wiLCJpYXQiOjE
+[2025-09-25 16:49:07] Generating shipping label
+[2025-09-25 16:49:08] Label API Response - HTTP Code: 200, Content-Type: application/json, Content Length: 42473
+[2025-09-25 16:49:08] Received JSON with PDF download link: https://s3.ap-south-1.amazonaws.com/psi.media.delhivery/tmp/shipping-label-pdf/84665810001724.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIARIGS3RKBF6QAQCWR%2F20250925%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250925T144909Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEO%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiRjBEAiBh%2BVZ6ttKGy2n2oEh4dVEgYTDsHhcVsUxJfR5%2FxhgQ8wIgDYayOJgqo7Z1DUjxXgS%2Fix8MPQRfq1j2USkWVbPPMIAqhwMIeBAAGgwwODYzNDE1NTI3NzAiDIw95LW4iVWIqAkCySrkAvZZwxmbxZneRZbwE7Gx8hHQYGhBA2GS918BrWQxQZtbdsc3mL7ez0FSUbhPl2CkqsrM%2FWERi9NBMBEralVeloZo8CkYHOC45oxoFrStvojOi38oo0npKRoWsHivBwx%2FcdufZ5NjXnD8G%2FJm7DP5KGfCNrrA4V8uR3ape%2F6XxGTJHOYY2Fsx3QAXit1%2BQu0CeGdohcABGwFFMwm6wh2sdbueDUe36JVUskHcrT6X0XWzHnsubLudlfDsTnpccCx8itURsBXyGJvwp6pooA%2F3qL7ZPFkywsPxRDand0t5kGis8lD%2F%2BvoMn1ZvvJflWHLMTfbED7U1mNURUmZ8q7kN9vbXM%2Foqjs%2BaS%2Fpzy%2BFBxajE17%2FjkiXDsnugM6uVzkJvsYF%2FisoIF7QtQbXgObLzyAVqSPsI%2FPiFaZ6vvzTiWhy6M09kTMSM4LRYrGDUGt6wV1molMec7%2Fif2pwq6a%2Fy3cYXjPXsMPKo1cYGOp8BFL295uYJdnGoaYJ7yM7amMVIKX2parDeKVBc4saY5oecMCRHCkvCyD%2F8uXFGMG3eej4Wz8C%2BpBPEIJFzaD3ceOUe9TZ0WofmC4oeRtfGA5MqO6uxgcxTyhJoIgiyUoVo6GXwhYAPc2exJn7OkivSScuSn0TsSy2UAyIIvfH9xfUlbjNyuvzTk535FZadK0VuKbsiwBvgCsB1ze2Xbw4K&X-Amz-Signature=c6b92e544abc1fdcac3a51a2c84372b9ad55980a62e61f3c2c0856f965c2d552
+[2025-09-25 16:49:08] Downloading PDF from URL: https://s3.ap-south-1.amazonaws.com/psi.media.delhivery/tmp/shipping-label-pdf/84665810001724.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIARIGS3RKBF6QAQCWR%2F20250925%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250925T144909Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEO%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiRjBEAiBh%2BVZ6ttKGy2n2oEh4dVEgYTDsHhcVsUxJfR5%2FxhgQ8wIgDYayOJgqo7Z1DUjxXgS%2Fix8MPQRfq1j2USkWVbPPMIAqhwMIeBAAGgwwODYzNDE1NTI3NzAiDIw95LW4iVWIqAkCySrkAvZZwxmbxZneRZbwE7Gx8hHQYGhBA2GS918BrWQxQZtbdsc3mL7ez0FSUbhPl2CkqsrM%2FWERi9NBMBEralVeloZo8CkYHOC45oxoFrStvojOi38oo0npKRoWsHivBwx%2FcdufZ5NjXnD8G%2FJm7DP5KGfCNrrA4V8uR3ape%2F6XxGTJHOYY2Fsx3QAXit1%2BQu0CeGdohcABGwFFMwm6wh2sdbueDUe36JVUskHcrT6X0XWzHnsubLudlfDsTnpccCx8itURsBXyGJvwp6pooA%2F3qL7ZPFkywsPxRDand0t5kGis8lD%2F%2BvoMn1ZvvJflWHLMTfbED7U1mNURUmZ8q7kN9vbXM%2Foqjs%2BaS%2Fpzy%2BFBxajE17%2FjkiXDsnugM6uVzkJvsYF%2FisoIF7QtQbXgObLzyAVqSPsI%2FPiFaZ6vvzTiWhy6M09kTMSM4LRYrGDUGt6wV1molMec7%2Fif2pwq6a%2Fy3cYXjPXsMPKo1cYGOp8BFL295uYJdnGoaYJ7yM7amMVIKX2parDeKVBc4saY5oecMCRHCkvCyD%2F8uXFGMG3eej4Wz8C%2BpBPEIJFzaD3ceOUe9TZ0WofmC4oeRtfGA5MqO6uxgcxTyhJoIgiyUoVo6GXwhYAPc2exJn7OkivSScuSn0TsSy2UAyIIvfH9xfUlbjNyuvzTk535FZadK0VuKbsiwBvgCsB1ze2Xbw4K&X-Amz-Signature=c6b92e544abc1fdcac3a51a2c84372b9ad55980a62e61f3c2c0856f965c2d552
+[2025-09-25 16:49:08] URL contains auth parameters, skipping authorization header
+[2025-09-25 16:49:09] PDF Download Response - HTTP Code: 200, Content-Type: binary/octet-stream, Content Length: 30763
+[2025-09-25 16:49:09] PDF downloaded successfully
+[2025-09-25 16:52:03] Generating shipping label
+[2025-09-25 16:52:04] Label API Response - HTTP Code: 404, Content-Type: text/html; charset=utf-8, Content Length: 24915
+[2025-09-25 16:52:04] Error generating label: HTTP Error: 404 - Response: 
+
+
+<!---->
+<!---->
+<!--
+
+
+
+<script src="https://static.delhivery.com/js/auth0.min.js"></script>
+<script>
+    function get_legacy_token_name() {
+        var umsTokenName = '';
+        if (!getCookieName(umsTokenName)) {
+            if("prod" === 'prod') {
+                umsTokenName = 'ums_token';
+            } else {
+                umsTokenName = "prod" +'_ums_token';
+            }
+        }
+        return umsTokenName
+    }
+</script>-->
+<!doctype html>
+<script>
+    var unsupported_browser = f
+[2025-09-25 16:54:10] Generating shipping label
+[2025-09-25 16:54:11] Label API Response - HTTP Code: 404, Content-Type: text/html; charset=utf-8, Content Length: 24915
+[2025-09-25 16:54:11] Error generating label: HTTP Error: 404 - Response: 
+
+
+<!---->
+<!---->
+<!--
+
+
+
+<script src="https://static.delhivery.com/js/auth0.min.js"></script>
+<script>
+    function get_legacy_token_name() {
+        var umsTokenName = '';
+        if (!getCookieName(umsTokenName)) {
+            if("prod" === 'prod') {
+                umsTokenName = 'ums_token';
+            } else {
+                umsTokenName = "prod" +'_ums_token';
+            }
+        }
+        return umsTokenName
+    }
+</script>-->
+<!doctype html>
+<script>
+    var unsupported_browser = f
+[2025-09-25 16:54:12] Generating shipping label
+[2025-09-25 16:54:12] Label API Response - HTTP Code: 404, Content-Type: text/html; charset=utf-8, Content Length: 24915
+[2025-09-25 16:54:12] Error generating label: HTTP Error: 404 - Response: 
+
+
+<!---->
+<!---->
+<!--
+
+
+
+<script src="https://static.delhivery.com/js/auth0.min.js"></script>
+<script>
+    function get_legacy_token_name() {
+        var umsTokenName = '';
+        if (!getCookieName(umsTokenName)) {
+            if("prod" === 'prod') {
+                umsTokenName = 'ums_token';
+            } else {
+                umsTokenName = "prod" +'_ums_token';
+            }
+        }
+        return umsTokenName
+    }
+</script>-->
+<!doctype html>
+<script>
+    var unsupported_browser = f
+[2025-09-25 16:54:23] Generating shipping label
+[2025-09-25 16:54:23] Label API Response - HTTP Code: 404, Content-Type: text/html; charset=utf-8, Content Length: 24915
+[2025-09-25 16:54:23] Error generating label: HTTP Error: 404 - Response: 
+
+
+<!---->
+<!---->
+<!--
+
+
+
+<script src="https://static.delhivery.com/js/auth0.min.js"></script>
+<script>
+    function get_legacy_token_name() {
+        var umsTokenName = '';
+        if (!getCookieName(umsTokenName)) {
+            if("prod" === 'prod') {
+                umsTokenName = 'ums_token';
+            } else {
+                umsTokenName = "prod" +'_ums_token';
+            }
+        }
+        return umsTokenName
+    }
+</script>-->
+<!doctype html>
+<script>
+    var unsupported_browser = f
+[2025-09-25 16:56:23] Generating shipping label
+[2025-09-25 16:56:25] Label API Response - HTTP Code: 200, Content-Type: application/json, Content Length: 130243
+[2025-09-25 16:56:25] Received JSON with PDF download link: https://express-hq-prod.s3.ap-south-1.amazonaws.com/packing-slip/43042210000162.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASYPQWAPQ2QMILGGR%2F20250925%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250925T145625Z&X-Amz-Expires=86400&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEO7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiSDBGAiEAgi08AarTD7qaTUJMPwuxCNQN%2Fx64nufloB%2F3RgJH4UICIQC2GxcdC5o9D4MQL5%2FAA%2BEHqwPrReDEOIljsXLSCcRL7Cq2BQh3EAAaDDE5MDAyMDE5MTIwMSIMCoDd9thBmqQsqrQ3KpMFx6HWCBSk2kXmhq2TwJWx8Gs%2Bq3bx8AWnFlCOl9yqelnkjLhVbZuKW4rpvKtiBiQx5rkGBcOYPVttjoNgyPiALE%2BouGVL54MHOIw4ong7PvnYGhJRyiW0t7Sq%2BYpkzA0cTDLEnhmeLoUN8ZVGqSDEuwzhu0OVk%2B3j5J5GHzD17tYThYN6LTIvH0Js3BzmIQ2RPW4ROD%2BStDtEx9CdvJidoaljS9j26DQAfCFofHw677ipElI%2F%2B8E0yjrDjqq0RV97QlsxgcRIxjLrEqSkDcDwjcjSPd767t6guVumDDtjw8cEdJoGdSK%2BOa5Kl13u%2BzXUE18snrOxN%2BpFwXbP%2FILQC3b%2B%2BQ4a3QL0Znhzql0VT2N0ffPN5sAhhORS%2F9HMUW7mBkzb5pnIa%2FUjJScz4KfPy0mIWH5IUY2ULe8jNiPlauPHu7Hk917erweQhLJuGp8Lw79Nc3gLzMrECggMXJGL4lOsKshLigCDO97ATySlVlzVx1hbti%2FU8JM%2BLL4Eg6o2LstwY4vZlCBGePP0kjCX9R5NEIsj9GUWezCqjwQiUquSQ7ertNi4t1jZmyvPdQk%2FxNWusgIpj5Mtni7Yy1uo%2Bi6IR%2FMtXxxe8oYx4aFKpZo18wJwrjIqC8FShbd28mNqkHMegzqY2hw2FPmhRNp%2BOJI9gzr1d0VQ8pm95KiVPxHso9q6FoGVonU6TPX51s3eJHgdGav%2FZ9NNL%2Bf2MEB6y8mgLai%2BP9%2BOG%2FrBnJe%2Bil%2Fwus3p1JqPPMWQnAzHHAC56qJJ9kkWbBM%2F1FVAAPbJGsWWvyJjDzVJD%2FxdhJfyOCatjSILXydY5gLoNUqL793uoPvY3tsU07hyitUwASEGM%2B5QYMIyhdg7ZBms3wUbDoRiFPUw3p7VxgY6sAFLdED4Xg20PHfRfuzLndeIWf%2BtocRaXxZXxSKNMbz6PGsx3WhbENuc6r6zxTVsql%2BqTdLHGnMCHboaQqOqe5i22G9%2B%2B8%2Fs43KzUCwC3B5u%2Foi%2BqjVPFMh3lIqpfhNWXrDxvCv3McNAKJkrzMojnr3ydb%2Fs2VeW7lykyKPlNVp0Js%2FNb1oj659F3zYWXIjSeyGsUtZryGTbtKRZphEDhSu3m6%2BOedhXldvssX1oJVgeRA%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=db7aac9c9e44a325bd18f017b9e4678dc1ce29ee1d399bba752aa7d59daa1162
+[2025-09-25 16:56:25] Downloading PDF from URL: https://express-hq-prod.s3.ap-south-1.amazonaws.com/packing-slip/43042210000162.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASYPQWAPQ2QMILGGR%2F20250925%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250925T145625Z&X-Amz-Expires=86400&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEO7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiSDBGAiEAgi08AarTD7qaTUJMPwuxCNQN%2Fx64nufloB%2F3RgJH4UICIQC2GxcdC5o9D4MQL5%2FAA%2BEHqwPrReDEOIljsXLSCcRL7Cq2BQh3EAAaDDE5MDAyMDE5MTIwMSIMCoDd9thBmqQsqrQ3KpMFx6HWCBSk2kXmhq2TwJWx8Gs%2Bq3bx8AWnFlCOl9yqelnkjLhVbZuKW4rpvKtiBiQx5rkGBcOYPVttjoNgyPiALE%2BouGVL54MHOIw4ong7PvnYGhJRyiW0t7Sq%2BYpkzA0cTDLEnhmeLoUN8ZVGqSDEuwzhu0OVk%2B3j5J5GHzD17tYThYN6LTIvH0Js3BzmIQ2RPW4ROD%2BStDtEx9CdvJidoaljS9j26DQAfCFofHw677ipElI%2F%2B8E0yjrDjqq0RV97QlsxgcRIxjLrEqSkDcDwjcjSPd767t6guVumDDtjw8cEdJoGdSK%2BOa5Kl13u%2BzXUE18snrOxN%2BpFwXbP%2FILQC3b%2B%2BQ4a3QL0Znhzql0VT2N0ffPN5sAhhORS%2F9HMUW7mBkzb5pnIa%2FUjJScz4KfPy0mIWH5IUY2ULe8jNiPlauPHu7Hk917erweQhLJuGp8Lw79Nc3gLzMrECggMXJGL4lOsKshLigCDO97ATySlVlzVx1hbti%2FU8JM%2BLL4Eg6o2LstwY4vZlCBGePP0kjCX9R5NEIsj9GUWezCqjwQiUquSQ7ertNi4t1jZmyvPdQk%2FxNWusgIpj5Mtni7Yy1uo%2Bi6IR%2FMtXxxe8oYx4aFKpZo18wJwrjIqC8FShbd28mNqkHMegzqY2hw2FPmhRNp%2BOJI9gzr1d0VQ8pm95KiVPxHso9q6FoGVonU6TPX51s3eJHgdGav%2FZ9NNL%2Bf2MEB6y8mgLai%2BP9%2BOG%2FrBnJe%2Bil%2Fwus3p1JqPPMWQnAzHHAC56qJJ9kkWbBM%2F1FVAAPbJGsWWvyJjDzVJD%2FxdhJfyOCatjSILXydY5gLoNUqL793uoPvY3tsU07hyitUwASEGM%2B5QYMIyhdg7ZBms3wUbDoRiFPUw3p7VxgY6sAFLdED4Xg20PHfRfuzLndeIWf%2BtocRaXxZXxSKNMbz6PGsx3WhbENuc6r6zxTVsql%2BqTdLHGnMCHboaQqOqe5i22G9%2B%2B8%2Fs43KzUCwC3B5u%2Foi%2BqjVPFMh3lIqpfhNWXrDxvCv3McNAKJkrzMojnr3ydb%2Fs2VeW7lykyKPlNVp0Js%2FNb1oj659F3zYWXIjSeyGsUtZryGTbtKRZphEDhSu3m6%2BOedhXldvssX1oJVgeRA%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=db7aac9c9e44a325bd18f017b9e4678dc1ce29ee1d399bba752aa7d59daa1162
+[2025-09-25 16:56:25] URL contains auth parameters, skipping authorization header
+[2025-09-25 16:56:26] PDF Download Response - HTTP Code: 200, Content-Type: , Content Length: 96241
+[2025-09-25 16:56:26] PDF downloaded successfully

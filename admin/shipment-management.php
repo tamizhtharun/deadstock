@@ -297,6 +297,7 @@ foreach ($orders as $row): $i++; ?>
                                 <button type="button" class="btn-status-update btn-create-shipment" data-order-id="<?php echo $row['id']; ?>" onclick="handleCreateShipment(<?php echo $row['id']; ?>)"><i class="fa fa-truck"></i> Create Shipment</button>
 <?php else: ?>
                                 <button class="btn-status-update" onclick="trackShipmentAdmin(<?php echo $row['id']; ?>)" onmousedown="event.preventDefault();"><i class="fa fa-search"></i> Track</button>
+                                <button class="btn-status-update" onclick="printLabel(<?php echo $row['id']; ?>)" onmousedown="event.preventDefault();"><i class="fa fa-print"></i> Print Label</button>
 <?php endif; ?>
                             </div>
                         </td>
@@ -763,6 +764,20 @@ function handleEscapeKey(e) {
     e.preventDefault();
     closeTrackModal();
   }
+}
+
+// Function to print label
+function printLabel(orderId) {
+    console.log('Print label clicked for order:', orderId);
+
+    // Prevent default behavior
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    // Open the PDF in a new window/tab for printing
+    window.open(`process_shipments.php?action=print_label&order_id=${orderId}`, '_blank');
 }
 
 

@@ -107,6 +107,29 @@ try {
         send($res);
     }
 
+    if ($action === 'print_label') {
+        if (empty($_GET['order_id'])) throw new Exception('Missing order_id');
+        $orderId = (int)$_GET['order_id'];
+        $stmt = $pdo->prepare("SELECT delhivery_awb FROM tbl_orders WHERE id=?");
+        $stmt->execute([$orderId]);
+        $order = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$order || empty($order['delhivery_awb'])) throw new Exception('AWB not found for order');
+
+        $svc = new DelhiveryService();
+        $res = $svc->generateShippingLabel($order['delhivery_awb']);
+
+        if ($res['success']) {
+            // Set headers for PDF download
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment; filename="label_' . $order['delhivery_awb'] . '.pdf"');
+            ob_clean();
+            echo $res['content'];
+            exit;
+        } else {
+            throw new Exception($res['message'] ?? 'Failed to generate label');
+        }
+    }
+
     throw new Exception('Invalid action');
 } catch (Exception $e) {
     error_log('process_shipments: '.$e->getMessage());

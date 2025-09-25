@@ -22,7 +22,16 @@ class DelhiveryService {
     
     public function __construct() {
         $this->environment = DELHIVERY_ENVIRONMENT;
-        $this->authType = DELHIVERY_AUTH_TYPE;
+
+        // Set authType based on environment
+        if ($this->environment === 'staging') {
+            $this->authType = 'bearer';
+        } elseif ($this->environment === 'production') {
+            $this->authType = 'token';
+        } else {
+            $this->authType = DELHIVERY_AUTH_TYPE;
+        }
+
         $this->baseUrl = DELHIVERY_API_BASE_URL;
         $this->endpoints = DELHIVERY_ENDPOINTS;
         $this->defaultSettings = DELHIVERY_DEFAULT_SETTINGS;
@@ -190,9 +199,6 @@ class DelhiveryService {
             $response = $this->makeApiCall($endpoint, $payload, 'POST', 3, true, $headers);
             
             // Log the full response for debugging
-            $this->log('API Response: ' . print_r($response, true));
-            
-            // Log the response
             $this->log('API Response: ' . print_r($response, true));
             
             // Process the response
@@ -583,26 +589,25 @@ class DelhiveryService {
                 throw new Exception('No waybills provided');
             }
 
-            // Typical inputs: waybill(s) and output format; API expects form params
-            $payload = [
-                'waybill' => implode(',', $waybills),
-                'format' => $options['format'] ?? 'pdf'
-            ];
-            if (!empty($options['size'])) { $payload['size'] = $options['size']; }
-            if (!empty($options['orientation'])) { $payload['orientation'] = $options['orientation']; }
+            // Build URL with query parameters for packing slip
+            $url = $this->endpoints['generate_label'] . '?' . http_build_query([
+                'wbns' => implode(',', $waybills),
+                'pdf' => 'true',
+                'pdf_size' => $options['size'] ?? '4R'
+            ]);
 
             // For label we often need to fetch raw PDF bytes. Use cURL directly for binary
             $ch = curl_init();
-            $headers = ['Accept: application/pdf'];
-            if ($this->authType === 'bearer') {
+            $headers = [];
+
+            // Add authorization header based on auth type
+            if ($this->authType === 'bearer' && !empty($this->jwtToken)) {
                 $headers[] = 'Authorization: Bearer ' . $this->jwtToken;
-            } else {
-                // Some token auths accept token as header or param; leave as-is if needed
+            } elseif (!empty($this->apiToken)) {
+                $headers[] = 'Authorization: Token ' . $this->apiToken;
             }
             curl_setopt_array($ch, [
-                CURLOPT_URL => $this->endpoints['generate_label'],
-                CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => http_build_query($payload),
+                CURLOPT_URL => $url,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_TIMEOUT => DELHIVERY_API_TIMEOUT,
                 CURLOPT_CONNECTTIMEOUT => DELHIVERY_CURL_TIMEOUT,
@@ -611,14 +616,44 @@ class DelhiveryService {
             ]);
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
             $err = curl_error($ch);
             curl_close($ch);
 
-            if ($err) { throw new Exception('CURL Error: ' . $err); }
-            if ($httpCode !== 200) { throw new Exception('HTTP Error: ' . $httpCode); }
+            $this->log('Label API Response - HTTP Code: ' . $httpCode . ', Content-Type: ' . $contentType . ', Content Length: ' . strlen($response));
 
-            // Return raw PDF content
-            return [ 'success' => true, 'content' => $response, 'message' => 'Label generated' ];
+            if ($err) { throw new Exception('CURL Error: ' . $err); }
+            if ($httpCode !== 200) { throw new Exception('HTTP Error: ' . $httpCode . ' - Response: ' . substr($response, 0, 500)); }
+
+            // Check if response is PDF content
+            if (strpos($contentType, 'application/pdf') !== false || strpos($response, '%PDF-') === 0) {
+                // Direct PDF content
+                $this->log('Received direct PDF content');
+                return [ 'success' => true, 'content' => $response, 'message' => 'Label generated' ];
+            }
+
+            // Check if response is JSON with download URL
+            if (strpos($contentType, 'application/json') !== false) {
+                $jsonResponse = json_decode($response, true);
+                if (json_last_error() === JSON_ERROR_NONE && isset($jsonResponse['packages'][0]['pdf_download_link'])) {
+                    $this->log('Received JSON with PDF download link: ' . $jsonResponse['packages'][0]['pdf_download_link']);
+
+                    // Fetch the actual PDF from the download link
+                    $pdfResponse = $this->downloadPdfFromUrl($jsonResponse['packages'][0]['pdf_download_link']);
+                    if ($pdfResponse['success']) {
+                        return [ 'success' => true, 'content' => $pdfResponse['content'], 'message' => 'Label generated' ];
+                    } else {
+                        throw new Exception('Failed to download PDF from link: ' . $pdfResponse['message']);
+                    }
+                } else {
+                    $this->log('JSON response does not contain pdf_download_link in packages. Response: ' . substr($response, 0, 200));
+                    throw new Exception('API returned JSON but no PDF download link in packages found');
+                }
+            }
+
+            // Unknown response type
+            $this->log('Unknown response type. Content-Type: ' . $contentType . ', Starts with: ' . substr($response, 0, 50));
+            throw new Exception('API returned unexpected content type: ' . $contentType);
         } catch (Exception $e) {
             $this->log('Error generating label: ' . $e->getMessage());
             return [ 'success' => false, 'message' => $e->getMessage() ];
@@ -724,7 +759,7 @@ class DelhiveryService {
             $warehouseName = trim($shipmentData['warehouse_name']);
         } else {
             // Fallback to environment-based default
-            $warehouseName = ($this->environment === 'staging') ? 'TAMIL WAREHOUSE' : 'IMET WAREHOUSE';
+            $warehouseName = ($this->environment === 'staging') ? 'TAMIL WAREHOUSE' : '';
         }
         
         // Format shipment data according to Delhivery API specification
@@ -1080,22 +1115,92 @@ class DelhiveryService {
     }
     
     /**
+     * Download PDF from a given URL
+     *
+     * @param string $url The URL to download the PDF from
+     * @return array Response with success status and content or error message
+     */
+    private function downloadPdfFromUrl($url) {
+        try {
+            $this->log('Downloading PDF from URL: ' . $url);
+
+            $ch = curl_init();
+            $headers = [];
+
+            // Only add authorization header if the URL doesn't already contain auth parameters
+            // (e.g., signed URLs from S3 or other services)
+            $hasAuthParams = strpos($url, 'X-Amz-') !== false ||
+                             strpos($url, 'Signature=') !== false ||
+                             strpos($url, 'AWSAccessKeyId=') !== false;
+
+            if (!$hasAuthParams) {
+                if ($this->authType === 'bearer' && !empty($this->jwtToken)) {
+                    $headers[] = 'Authorization: Bearer ' . $this->jwtToken;
+                } elseif (!empty($this->apiToken)) {
+                    $headers[] = 'Authorization: Token ' . $this->apiToken;
+                }
+            } else {
+                $this->log('URL contains auth parameters, skipping authorization header');
+            }
+
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => DELHIVERY_API_TIMEOUT,
+                CURLOPT_CONNECTTIMEOUT => DELHIVERY_CURL_TIMEOUT,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_MAXREDIRS => 5,
+                CURLOPT_HTTPHEADER => $headers
+            ]);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+            $err = curl_error($ch);
+            curl_close($ch);
+
+            $this->log('PDF Download Response - HTTP Code: ' . $httpCode . ', Content-Type: ' . $contentType . ', Content Length: ' . strlen($response));
+
+            if ($err) {
+                throw new Exception('CURL Error downloading PDF: ' . $err);
+            }
+            if ($httpCode !== 200) {
+                throw new Exception('HTTP Error downloading PDF: ' . $httpCode . ' - Response: ' . substr($response, 0, 500));
+            }
+
+            // Verify it's actually a PDF
+            if (strpos($contentType, 'application/pdf') === false && strpos($response, '%PDF-') !== 0) {
+                $this->log('Downloaded content is not PDF. Content-Type: ' . $contentType . ', Starts with: ' . substr($response, 0, 50));
+                throw new Exception('Downloaded content is not a valid PDF');
+            }
+
+            $this->log('PDF downloaded successfully');
+            return [ 'success' => true, 'content' => $response ];
+
+        } catch (Exception $e) {
+            $this->log('Error downloading PDF: ' . $e->getMessage());
+            return [ 'success' => false, 'message' => $e->getMessage() ];
+        }
+    }
+
+    /**
      * Log messages to file
-     * 
+     *
      * @param string $message Message to log
      */
     private function log($message) {
         if (DELHIVERY_LOG_ENABLED) {
             $logFile = __DIR__ . '/../' . DELHIVERY_LOG_FILE;
             $logDir = dirname($logFile);
-            
+
             if (!is_dir($logDir)) {
                 mkdir($logDir, 0755, true);
             }
-            
+
             $timestamp = date('Y-m-d H:i:s');
             $logMessage = "[{$timestamp}] {$message}" . PHP_EOL;
-            
+
             file_put_contents($logFile, $logMessage, FILE_APPEND | LOCK_EX);
         }
     }
