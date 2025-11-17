@@ -1,6 +1,34 @@
 <?php
 // shipment-management.php
 require_once('header.php');
+
+// Function to shorten shipment status for display
+function shortenShipmentStatus($status) {
+    if (empty($status)) return '';
+
+    $shortStatuses = [
+        'in_transit' => 'Transit',
+        'delivered' => 'Delivered',
+        'out_for_delivery' => 'Out for Del.',
+        'picked_up' => 'Picked Up',
+        'pending' => 'Pending',
+        'created' => 'Created',
+        'processing' => 'Processing',
+        'cancelled' => 'Cancelled',
+        'failed' => 'Failed',
+        'returned' => 'Returned',
+        'rto' => 'RTO',
+        'undelivered' => 'Undelivered',
+        'manifested' => 'Manifested',
+        'dispatched' => 'Dispatched',
+        'shipped' => 'Shipped',
+        'connected' => 'Connected',
+        'arrived_at_destination' => 'Arrived',
+        'received_at_facility' => 'Received'
+    ];
+
+    return $shortStatuses[$status] ?? ucfirst(str_replace('_', ' ', $status));
+}
 ?>
 
 <section class="content-header">
@@ -10,7 +38,7 @@ require_once('header.php');
 </section>
 
 <style>
-.status-badge { display:inline-block; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:500; }
+.status-badge { display:inline-block; padding:2px 8px; border-radius:12px; font-size:13px; font-weight:500; }
 .status-created { background:#17a2b8; color:#fff; }
 .status-pending { background:#6c757d; color:#fff; }
 .status-non-serviceable { background:#dc3545; color:#fff; }
@@ -141,12 +169,12 @@ require_once('header.php');
 }
 
 #trackModal .tracking-time {
-    font-size: 0.875rem;
+    font-size: 1rem;
     color: #6c757d;
 }
 
 #trackModal .tracking-location {
-    font-size: 0.875rem;
+    font-size: 1rem;
     color: #495057;
     margin-top: 0.25rem;
 }
@@ -221,7 +249,7 @@ require_once('header.php');
                         <th>Type</th>
                         <th>Customer</th>
                         <th>Address</th>
-                        <th>Status</th>
+                        <!-- <th>Status</th> -->
                         <th>AWB</th>
                         <th>Shipment</th>
                         <!-- <th>Seller Packed</th> -->
@@ -262,11 +290,11 @@ foreach ($orders as $row): $i++; ?>
                             <?php echo htmlspecialchars($row['city']); ?>, <?php echo htmlspecialchars($row['state']); ?><br>
                             <?php echo htmlspecialchars($row['pincode']); ?>
                         </td>
-                        <td class="order-status">
+                        <!-- <td class="order-status">
                             <span class="status-badge status-<?php echo htmlspecialchars($row['order_status'] ?: 'pending'); ?>">
                                 <?php echo ucfirst($row['order_status']); ?>
                             </span>
-                        </td>
+                        </td> -->
                         <td class="delhivery-awb">
                             <?php if (!empty($row['delhivery_awb'])): ?>
                                 <span class="awb-number"><?php echo htmlspecialchars($row['delhivery_awb']); ?></span>
@@ -482,19 +510,13 @@ function showError(message, inputElement) {
 
 function trackShipmentAdmin(orderId){
   console.log('Track button clicked for order:', orderId);
-  
+
   // Prevent default behavior
   if (event) {
     event.preventDefault();
     event.stopPropagation();
   }
-  
-  // Test: Show alert first to confirm function is called
-  alert('Track button clicked! Order ID: ' + orderId);
-  
-  // Test: Also log to console
-  console.log('Creating modal for order:', orderId);
-  
+
   // Create a completely new modal element to avoid conflicts
   createAndShowModal(orderId);
 }
@@ -593,15 +615,162 @@ function fetchTrackingData(orderId) {
 function displayTrackingData(data) {
   console.log('Displaying tracking data:', data);
   let html = '<div class="tracking-details">';
-  
-  if (Array.isArray(data) && data.length > 0) {
+
+  // Check if this is the nested Delhivery response structure
+  if (data && data.ShipmentData && Array.isArray(data.ShipmentData) && data.ShipmentData.length > 0) {
+    const shipment = data.ShipmentData[0].Shipment;
+    console.log('Processing Delhivery shipment data:', shipment);
+
+    // Collect all tracking events from both Status and Scans
+    const trackingEvents = [];
+
+    // Add the Status object only if it has meaningful data
+    if (shipment.Status) {
+      const statusObj = shipment.Status;
+      const rawStatus = statusObj.Status || '';
+      const finalStatus = rawStatus || 'Unknown Status';
+
+      // Skip if the status is unknown, empty, or meaningless
+      if (!rawStatus || rawStatus.trim() === '' ||
+          rawStatus.toLowerCase().includes('unknown') ||
+          finalStatus.toLowerCase().includes('unknown')) {
+        // Skip this status entry
+      } else {
+        const statusClass = getStatusClass(rawStatus);
+        const time = statusObj.StatusDateTime || statusObj.Date || 'N/A';
+        const location = statusObj.StatusLocation || statusObj.Location || 'N/A';
+        const instructions = statusObj.Instructions || '';
+
+        trackingEvents.push({
+          status: finalStatus,
+          time,
+          location,
+          statusClass,
+          instructions,
+          timestamp: new Date(time).getTime() || 0,
+          source: 'status'
+        });
+      }
+    }
+
+    // Add all scans, but filter out meaningless ones
+    if (shipment.Scans && Array.isArray(shipment.Scans) && shipment.Scans.length > 0) {
+      shipment.Scans.forEach(scan => {
+        const rawStatus = scan.ScanType || scan.Status || scan.Scan || '';
+        // Skip scans with unknown, empty, or meaningless status
+        if (!rawStatus || rawStatus.trim() === '' ||
+            rawStatus.toLowerCase().includes('unknown') ||
+            rawStatus.toLowerCase().trim() === 'n/a') {
+          return; // Skip this scan
+        }
+
+        const statusClass = getStatusClass(rawStatus);
+        const time = scan.ScanDateTime || scan.Date || scan.Time || 'N/A';
+        const location = scan.ScannedLocation || scan.Location || scan.City || 'N/A';
+        const status = rawStatus;
+        const instructions = scan.Instructions || scan.Remarks || '';
+
+        trackingEvents.push({
+          status,
+          time,
+          location,
+          statusClass,
+          instructions,
+          timestamp: new Date(time).getTime() || 0,
+          source: 'scan'
+        });
+      });
+    }
+
+    // Sort all events by timestamp (chronological order: oldest first)
+    trackingEvents.sort((a, b) => a.timestamp - b.timestamp);
+
+    // Remove duplicates using multiple strategies
+    let uniqueEvents = [];
+
+    // First pass: Remove exact duplicates after normalization
+    const seen = new Set();
+    trackingEvents.forEach(event => {
+      const normalizedStatus = (event.status || '').toLowerCase().trim().replace(/\s+/g, ' ');
+      const normalizedTime = (event.time || '').trim().replace(/\s+/g, ' ');
+      const normalizedLocation = (event.location || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[,;]/g, '');
+      const normalizedInstructions = (event.instructions || '').toLowerCase().trim().replace(/\s+/g, ' ');
+
+      const key = `${normalizedStatus}-${normalizedTime}-${normalizedLocation}-${normalizedInstructions}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniqueEvents.push(event);
+      }
+    });
+
+    // Second pass: Remove near-duplicates (same status/location within 5 minutes)
+    uniqueEvents = uniqueEvents.filter((event, index, arr) => {
+      for (let i = 0; i < index; i++) {
+        const prevEvent = arr[i];
+        const timeDiff = Math.abs(event.timestamp - prevEvent.timestamp);
+        const sameStatus = (event.status || '').toLowerCase().trim() === (prevEvent.status || '').toLowerCase().trim();
+        const sameLocation = (event.location || '').toLowerCase().trim() === (prevEvent.location || '').toLowerCase().trim();
+
+        // If events are within 5 minutes and have same status/location, consider them duplicates
+        if (timeDiff <= 300000 && sameStatus && sameLocation) { // 5 minutes = 300000 ms
+          return false; // Filter out this duplicate
+        }
+      }
+      return true; // Keep this event
+    });
+
+    // Third pass: Remove obviously invalid/default entries that are duplicates
+    uniqueEvents = uniqueEvents.filter((event, index, arr) => {
+      // Skip if this is a default "Unknown Status" with "N/A" values and there's another similar entry
+      const isDefaultEntry = (event.status || '').toLowerCase().includes('unknown') &&
+                            (event.time || '').toLowerCase().includes('n/a') &&
+                            (event.location || '').toLowerCase().includes('n/a');
+
+      if (isDefaultEntry) {
+        // Check if there's another entry with similar characteristics
+        const hasSimilarEntry = arr.some((otherEvent, otherIndex) => {
+          if (otherIndex === index) return false;
+          const otherIsDefault = (otherEvent.status || '').toLowerCase().includes('unknown') &&
+                                (otherEvent.time || '').toLowerCase().includes('n/a') &&
+                                (otherEvent.location || '').toLowerCase().includes('n/a');
+          return otherIsDefault;
+        });
+
+        // If there are multiple default entries, keep only one
+        if (hasSimilarEntry) {
+          return false; // Filter out duplicate default entries
+        }
+      }
+
+      return true; // Keep this event
+    });
+
+    // Mark the latest event as current
+    if (uniqueEvents.length > 0) {
+      uniqueEvents[uniqueEvents.length - 1].isCurrent = true;
+    }
+
+    // Display all unique tracking events in chronological order
+    uniqueEvents.forEach(event => {
+      html += `
+        <div class="tracking-item ${event.statusClass}${event.isCurrent ? ' current' : ''}">
+          <div class="tracking-status">${event.status}</div>
+          <div class="tracking-time">${event.time}</div>
+          <div class="tracking-location">${event.location}</div>
+          ${event.instructions ? `<div class="tracking-instructions" style="font-size: 1rem; color: #6c757d; margin-top: 0.25rem;">${event.instructions}</div>` : ''}
+        </div>
+      `;
+    });
+
+  } else if (Array.isArray(data) && data.length > 0) {
+    // Handle legacy array format
     data.forEach((item, index) => {
-      console.log('Processing tracking item:', item);
+      console.log('Processing legacy tracking item:', item);
       const statusClass = getStatusClass(item.status || item.Status || item.state);
       const time = item.time || item.timestamp || item.Time || item.date || 'N/A';
       const location = item.location || item.city || item.Location || item.City || item.origin || item.destination || 'N/A';
       const status = item.status || item.Status || item.state || item.State || 'Unknown Status';
-      
+
       html += `
         <div class="tracking-item ${statusClass}">
           <div class="tracking-status">${status}</div>
@@ -617,7 +786,7 @@ function displayTrackingData(data) {
     const time = data.time || data.timestamp || data.Time || data.date || 'N/A';
     const location = data.location || data.city || data.Location || data.City || data.origin || data.destination || 'N/A';
     const status = data.status || data.Status || data.state || data.State || 'Unknown Status';
-    
+
     html += `
       <div class="tracking-item ${statusClass}">
         <div class="tracking-status">${status}</div>
@@ -644,7 +813,7 @@ function displayTrackingData(data) {
       </div>
     `;
   }
-  
+
   html += '</div>';
   document.getElementById('trackingContent').innerHTML = html;
 }
@@ -693,42 +862,49 @@ function displayTrackingError(message) {
 
 function getStatusClass(status) {
   if (!status) return 'pending';
-  
+
   const statusLower = status.toLowerCase();
-  
+
   // Completed/Delivered statuses
-  if (statusLower.includes('delivered') || 
-      statusLower.includes('completed') || 
+  if (statusLower.includes('delivered') ||
+      statusLower.includes('completed') ||
       statusLower.includes('delivery completed') ||
       statusLower.includes('successfully delivered') ||
       statusLower.includes('delivered to recipient')) {
     return 'completed';
-  } 
+  }
   // In transit/Processing statuses
-  else if (statusLower.includes('in transit') || 
-           statusLower.includes('out for delivery') || 
+  else if (statusLower.includes('in transit') ||
+           statusLower.includes('out for delivery') ||
            statusLower.includes('processing') ||
            statusLower.includes('picked up') ||
            statusLower.includes('in route') ||
            statusLower.includes('on the way') ||
            statusLower.includes('dispatched') ||
-           statusLower.includes('shipped')) {
+           statusLower.includes('shipped') ||
+           statusLower.includes('manifested') ||
+           statusLower.includes('connected') ||
+           statusLower.includes('arrived at destination') ||
+           statusLower.includes('received at facility')) {
     return 'current';
-  } 
+  }
   // Pending/Initial statuses
   else if (statusLower.includes('pending') ||
            statusLower.includes('created') ||
            statusLower.includes('initiated') ||
            statusLower.includes('booked') ||
-           statusLower.includes('accepted')) {
+           statusLower.includes('accepted') ||
+           statusLower.includes('uploaded')) {
     return 'pending';
-  } 
+  }
   // Error/Failed statuses
   else if (statusLower.includes('failed') ||
            statusLower.includes('error') ||
            statusLower.includes('cancelled') ||
            statusLower.includes('rejected') ||
-           statusLower.includes('returned')) {
+           statusLower.includes('returned') ||
+           statusLower.includes('rto') ||
+           statusLower.includes('undelivered')) {
     return 'error';
   }
   // Default to current for unknown statuses
