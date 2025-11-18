@@ -30,11 +30,11 @@ try {
         }
 
         $stmt = $pdo->prepare("SELECT o.*, a.full_name as customer_name, u.email as customer_email, a.phone_number as customer_phone,
-            a.address, a.city, a.state, a.pincode, p.name as product_name
+            a.address, a.city, a.state, a.pincode, p.p_name as product_name
             FROM tbl_orders o
             LEFT JOIN users u ON o.user_id=u.id
             LEFT JOIN users_addresses a ON o.address_id=a.id
-            LEFT JOIN tbl_products p ON o.product_id=p.id
+            LEFT JOIN tbl_product p ON o.product_id=p.id
             WHERE o.id=?");
         $stmt->execute([$orderId]);
         $order = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -149,7 +149,7 @@ require_once('header.php');
                         <tbody>
                             <?php
                             $i = 0;
-                            $statement = $pdo->prepare("SELECT 
+                            $statement = $pdo->prepare("SELECT
                     b.bid_id,
                     b.bid_price,
                     b.bid_quantity,
@@ -165,6 +165,7 @@ require_once('header.php');
                     u.id AS user_id,
                     u.email,
                     u.phone_number,
+                    ua.id AS address_id,
                     ua.full_name,
                     ua.phone_number as delivery_phone,
                     ua.address,
@@ -180,23 +181,23 @@ require_once('header.php');
                     o.tracking_id,
                     o.delhivery_awb,
                     o.delhivery_shipment_status
-                FROM 
+                FROM
                     bidding b
-                JOIN 
+                JOIN
                     tbl_product p ON b.product_id = p.id
-                JOIN 
+                JOIN
                     sellers s ON p.seller_id = s.seller_id
-                JOIN 
+                JOIN
                     users u ON b.user_id = u.id
-                LEFT JOIN 
+                LEFT JOIN
                     users_addresses ua ON u.id = ua.user_id AND ua.is_default = 1
-                LEFT JOIN 
+                LEFT JOIN
                     tbl_orders o ON b.bid_id = o.bid_id
-                WHERE 
+                WHERE
                     b.bid_status = 2
                   OR
                     o.order_type ='bid'
-                ORDER BY 
+                ORDER BY
                     b.bid_time DESC");
                             $statement->execute();
                             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -294,6 +295,7 @@ require_once('header.php');
                                                 data-seller-id="<?php echo $row['seller_id']; ?>"
                                                 data-quantity="<?php echo $row['bid_quantity']; ?>"
                                                 data-price="<?php echo $row['bid_price']; ?>"
+                                                data-address-id="<?php echo $row['address_id']; ?>"
                                                 data-order-id="<?php echo $row['order_table_id']; ?>"
                                                 onclick="sendOrder(this)">
                                                 Send
@@ -455,6 +457,179 @@ require_once('header.php');
             document.getElementById(tab).classList.add('active');
         });
     });
+
+    // Function to open seller modal
+    function openSellerModal(sellerId) {
+        const modal = document.getElementById('sellerModal');
+        const profileTab = document.getElementById('profile');
+
+        // Reset tabs to profile
+        sellerTabButtons.forEach(b => b.classList.remove('active'));
+        sellerTabPanes.forEach(p => p.classList.remove('active'));
+        document.querySelector('.seller-tab-button[data-tab="profile"]').classList.add('active');
+        profileTab.classList.add('active');
+
+        // Fetch seller data
+        fetch(`get_seller_details.php?seller_id=${sellerId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Populate profile tab
+                    profileTab.innerHTML = `
+                        <div class="seller-info-grid">
+                            <div class="seller-info-item">
+                                <strong>Name:</strong> ${data.seller.seller_name}
+                            </div>
+                            <div class="seller-info-item">
+                                <strong>Company:</strong> ${data.seller.seller_cname}
+                            </div>
+                            <div class="seller-info-item">
+                                <strong>Email:</strong> ${data.seller.seller_email}
+                            </div>
+                            <div class="seller-info-item">
+                                <strong>Phone:</strong> ${data.seller.seller_phone}
+                            </div>
+                            <div class="seller-info-item">
+                                <strong>Address:</strong> ${data.seller.seller_address}
+                            </div>
+                            <div class="seller-info-item">
+                                <strong>Status:</strong> ${data.seller.seller_status}
+                            </div>
+                        </div>
+                    `;
+
+                    // Populate other tabs similarly if needed
+                    // For brevity, assuming profile is main
+
+                    modal.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    alert('Failed to load seller details: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load seller details.');
+            });
+    }
+
+    // Function to close seller modal
+    function closeSellerModal() {
+        const modal = document.getElementById('sellerModal');
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Event listeners for modal close
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('sellerModal');
+        const closeBtn = document.querySelector('.seller-close');
+        const closeFooterBtn = document.getElementById('closeSellerModal');
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal || e.target.classList.contains('seller-modal')) {
+                closeSellerModal();
+            }
+        });
+
+        closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeSellerModal();
+        });
+
+        closeFooterBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeSellerModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSellerModal();
+            }
+        });
+    });
+
+    // Function to open image modal
+    function openImageModal(imgSrc) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+
+        modal.classList.add('show');
+        modalImg.src = imgSrc;
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Function to close image modal
+    function closeImageModal() {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modalImg.src = '';
+        }, 300);
+        document.body.style.overflow = 'auto';
+    }
+
+    // Event listeners for image modal
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('imageModal');
+        const closeBtn = document.querySelector('.close-modal');
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal || e.target.classList.contains('modal-container')) {
+                closeImageModal();
+            }
+        });
+
+        closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeImageModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+
+        document.getElementById('modalImage').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    });
+
+    // sendOrder function to handle sending orders
+    window.sendOrder = function(button) {
+        if (!confirm("Are you sure you want to send this order to seller?")) {
+            return;
+        }
+
+        const data = button.dataset;
+        const url = `process_bid_order.php?action=send&bid_id=${data.bidId}&product_id=${data.productId}&user_id=${data.userId}&seller_id=${data.sellerId}&quantity=${data.quantity}&price=${data.price}&address_id=${data.addressId}`;
+
+        fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    const row = button.closest("tr");
+                    const statusCell = row.querySelector(".order-status");
+                    const actionCell = row.querySelector(".action-column");
+
+                    statusCell.innerHTML = '<span class="status-badge status-pending">Pending</span>';
+                    row.setAttribute("data-status", "pending");
+                    row.setAttribute("data-order-id", data.order_id);
+
+                    alert("Order sent to seller successfully.");
+                    location.reload(); // Reload the page
+                } else {
+                    alert("Failed to send order: " + data.message);
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("Failed to send order. Please try again.");
+            });
+    };
 
     // Update order status function for bidding orders
     function updateOrderStatus(orderId, newStatus) {

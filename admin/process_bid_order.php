@@ -24,7 +24,7 @@ try {
         throw new Exception('Invalid action');
     }
 
-    function createOrderFromBid($bid_id) {
+    function createOrderFromBid($bid_id, $address_id = null) {
         global $pdo;
 
         try {
@@ -33,8 +33,8 @@ try {
             // Get bid details
             $stmt = $pdo->prepare("
                 SELECT b.*, p.seller_id, p.p_current_price, p.p_name
-                FROM bidding b 
-                JOIN tbl_products p ON b.product_id = p.id 
+                FROM bidding b
+                JOIN tbl_product p ON b.product_id = p.id
                 WHERE b.bid_id = ?
             ");
             $stmt->execute([$bid_id]);
@@ -47,44 +47,45 @@ try {
             $product_id = $bidData['product_id'];
             $user_id = $bidData['user_id'];
             $seller_id = $bidData['seller_id'];
-            $quantity = $bidData['quantity'];
-            $price = $bidData['bid_amount'];
-            $order_id = 'ORD' . time() . rand(1000, 9999);
+            $quantity = $bidData['bid_quantity'];
+            $price = $bidData['bid_price'];
+            $order_id = $bidData['order_id'];
+
+            if (empty($order_id)) {
+                throw new Exception('Order ID not found in bidding table');
+            }
 
             // Check if order already exists
             $stmt = $pdo->prepare("SELECT id FROM tbl_orders WHERE bid_id = ?");
             $stmt->execute([$bid_id]);
-            
+
             if ($stmt->rowCount() == 0) {
                 // Insert the order into the orders table
                 $stmt = $pdo->prepare("INSERT INTO tbl_orders (
-                    product_id, user_id, seller_id, quantity, price, 
-                    order_id, order_status, bid_id, payment_id, order_type
-                ) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?, 'bid')");
-                
+                    product_id, user_id, seller_id, quantity, price,
+                    order_id, order_status, bid_id, payment_id, order_type, address_id
+                ) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?, 'bid', ?)");
+
                 $stmt->execute([
-                    $product_id, 
-                    $user_id, 
-                    $seller_id, 
-                    $quantity, 
+                    $product_id,
+                    $user_id,
+                    $seller_id,
+                    $quantity,
                     $price,
                     $order_id,
                     $bid_id,
-                    $bidData['payment_id']
+                    $bidData['payment_id'],
+                    $address_id
                 ]);
-                
+
                 $new_order_id = $pdo->lastInsertId();
 
-                // Update bidding table with order_id if not exists
-                if (!$bidData['order_id']) {
-                    $stmt = $pdo->prepare("UPDATE bidding SET order_id = ? WHERE bid_id = ?");
-                    $stmt->execute([$order_id, $bid_id]);
-                }
+                // No need to update bidding table since order_id is already set
 
                 $pdo->commit();
                 return [
-                    'success' => true, 
-                    'message' => 'Order sent to seller successfully.', 
+                    'success' => true,
+                    'message' => 'Order sent to seller successfully.',
                     'order_id' => $new_order_id,
                     'order_status' => 'pending'
                 ];
@@ -326,6 +327,15 @@ try {
 
     // Route actions based on GET parameters
     switch ($_GET['action']) {
+        case 'send':
+            if (!isset($_GET['bid_id'])) {
+                throw new Exception('Missing bid ID');
+            }
+            $address_id = isset($_GET['address_id']) ? $_GET['address_id'] : null;
+            $result = createOrderFromBid($_GET['bid_id'], $address_id);
+            sendJsonResponse($result);
+            break;
+
         case 'create_order':
             if (!isset($_GET['bid_id'])) {
                 throw new Exception('Missing bid ID');
@@ -341,7 +351,7 @@ try {
             $result = updateOrderStatus($_GET['order_id'], $_GET['status']);
             sendJsonResponse($result);
             break;
-            
+
         case 'track_shipment':
             if (!isset($_GET['order_id'])) {
                 throw new Exception('Missing order ID');

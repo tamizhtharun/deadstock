@@ -7,7 +7,7 @@
  */
 
 // Environment Configuration
-define('DELHIVERY_ENVIRONMENT', 'production'); // Change to 'production' for live environment
+define('DELHIVERY_ENVIRONMENT', 'staging'); // Change to 'production' for live environment
 
 // Delhivery API Configuration
 if (DELHIVERY_ENVIRONMENT === 'staging') {
