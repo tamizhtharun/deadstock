@@ -5,10 +5,60 @@ include 'db_connection.php';
 // Get search query and filters from URL
 $search_query = isset($_GET['search_text']) ? trim($_GET['search_text']) : '';
 $category_type = isset($_GET['type']) ? trim($_GET['type']) : '';
-$category_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$category_slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
+$category_id = 0; // Will be set based on slug
 $selected_category = isset($_GET['category']) ? trim($_GET['category']) : '';
 $price_filter = isset($_GET['price']) ? floatval($_GET['price']) : 0;
 $sort_by = isset($_GET['sort']) ? trim($_GET['sort']) : 'name_asc';
+
+// Convert slug to ID if slug is provided
+if ($category_type && $category_slug) {
+    switch ($category_type) {
+        case 'top-category':
+            $stmt = $pdo->prepare("SELECT tcat_id FROM tbl_top_category WHERE tcat_slug = ?");
+            $stmt->execute([$category_slug]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $category_id = $result ? $result['tcat_id'] : 0;
+            break;
+        case 'mid-category':
+            $stmt = $pdo->prepare("SELECT mcat_id FROM tbl_mid_category WHERE mcat_slug = ?");
+            $stmt->execute([$category_slug]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $category_id = $result ? $result['mcat_id'] : 0;
+            break;
+        case 'end-category':
+            $stmt = $pdo->prepare("SELECT ecat_id FROM tbl_end_category WHERE ecat_slug = ?");
+            $stmt->execute([$category_slug]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $category_id = $result ? $result['ecat_id'] : 0;
+            break;
+    }
+}
+
+// Get the slug for the current category to use in forms and links
+$current_category_slug = '';
+if ($category_type && $category_id) {
+    switch ($category_type) {
+        case 'top-category':
+            $stmt = $pdo->prepare("SELECT tcat_slug FROM tbl_top_category WHERE tcat_id = ?");
+            $stmt->execute([$category_id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $current_category_slug = $result ? $result['tcat_slug'] : '';
+            break;
+        case 'mid-category':
+            $stmt = $pdo->prepare("SELECT mcat_slug FROM tbl_mid_category WHERE mcat_id = ?");
+            $stmt->execute([$category_id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $current_category_slug = $result ? $result['mcat_slug'] : '';
+            break;
+        case 'end-category':
+            $stmt = $pdo->prepare("SELECT ecat_slug FROM tbl_end_category WHERE ecat_id = ?");
+            $stmt->execute([$category_id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $current_category_slug = $result ? $result['ecat_slug'] : '';
+            break;
+    }
+}
 
 // Base query for products with mid-category filtering
 $base_sql = "SELECT p.*, m.mcat_name, s.seller_cname,
@@ -134,7 +184,7 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
                 <form id="filter-form" method="GET">
                     <!-- Hidden fields to preserve original category context -->
                     <input type="hidden" name="type" value="<?php echo htmlspecialchars($category_type); ?>">
-                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($category_id); ?>">
+                    <input type="hidden" name="slug" value="<?php echo htmlspecialchars($current_category_slug); ?>">
                     <input type="hidden" name="search_text" value="<?php echo htmlspecialchars($search_query); ?>">
 
                     <div class="filter-group">
@@ -195,7 +245,7 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
             <div class="search-grid">
                 <?php foreach ($products as $product): ?>
                     <div class="product-card" data-available="<?php echo $product['stock_quantity'] > 0 ? 'true' : 'false'; ?>">
-                        <a href="product_landing.php?id=<?php echo $product['id']; ?>">
+                        <a href="product/<?php echo urlencode($product['p_slug']); ?>">
                             <div class="product-img">
                                 <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($product['p_featured_photo']); ?>"
                                      alt="<?php echo htmlspecialchars($product['p_name']); ?>"

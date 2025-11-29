@@ -5,7 +5,7 @@ include 'header.php';
 include 'db_connection.php';
 
 if (!isset($_SESSION['user_session']['id'])) {
-    header('Location: index.php');
+    header('Location: index');
     exit;
 
 }
@@ -236,10 +236,10 @@ if (isset($_GET['delete_all'])) {
                     $ids_string = implode(',', $recently_viewed);
 
                     $recent_query = mysqli_query($conn, "
-        SELECT id, p_name, p_featured_photo, p_current_price, p_old_price 
-        FROM tbl_product 
+        SELECT id, p_name, p_featured_photo, p_current_price, p_old_price, p_slug
+        FROM tbl_product
         WHERE id IN ($ids_string)
-        ORDER BY FIELD(id, $ids_string) 
+        ORDER BY FIELD(id, $ids_string)
         LIMIT 5
     ");
 
@@ -247,7 +247,7 @@ if (isset($_GET['delete_all'])) {
                         ?>
                         <div class="col">
                             <div class="recently-viewed-item">
-                                <a href="product_landing.php?id=<?php echo $product['id']; ?>" class="text-decoration-none">
+                                <a href="product_landing.php?slug=<?php echo $product['p_slug']; ?>" class="text-decoration-none">
                                     <div class="recently-viewed-image">
                                         <img src="assets/uploads/product-photos/<?php echo $product['p_featured_photo']; ?>"
                                             alt="<?php echo $product['p_name']; ?>">
@@ -278,4 +278,4 @@ if (isset($_GET['delete_all'])) {
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/cart.js"></script>
+<script src="/deadstock/js/cart.js"></script>

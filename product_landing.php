@@ -11,13 +11,72 @@ require_once('config.php');
 if (isset($_SESSION['user_session']['id'])) {
   $user_id = $_SESSION['user_session']['id'];
 }
-if (!isset($_REQUEST['id'])) {
+$product_id = 0;
+$product_slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
+
+if ($product_slug) {
+  // Convert slug to ID
+  $stmt = $pdo->prepare("SELECT id FROM tbl_product WHERE p_slug = ?");
+  $stmt->execute([$product_slug]);
+  $result = $stmt->fetch(PDO::FETCH_ASSOC);
+  $product_id = $result ? $result['id'] : 0;
+} elseif (isset($_GET['id'])) {
+  // Invalid URL page
+  ?>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid URL - Deadstock</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      body {
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .error-container {
+        text-align: center;
+        background: white;
+        padding: 50px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+      .error-icon {
+        font-size: 4rem;
+        color: #dc3545;
+        margin-bottom: 20px;
+      }
+      .btn-home {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="error-container">
+      <div class="error-icon">⚠️</div>
+      <h1 class="display-4">Invalid URL</h1>
+      <p class="lead">The page you're looking for doesn't exist or the URL is incorrect.</p>
+      <p>Please use the correct product slug in the URL.</p>
+      <a href="index.php" class="btn btn-primary btn-home">Go to Home</a>
+    </div>
+  </body>
+  </html>
+  <?php
+  exit;
+}
+
+if (!$product_id) {
   header('location: index.php');
   exit;
 } else {
-  // Check the id is valid or not
+  // Check the id is valid or not (already done for slug, but for safety)
   $statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
-  $statement->execute(array($_REQUEST['id']));
+  $statement->execute(array($product_id));
   $total = $statement->rowCount();
   $result = $statement->fetchAll(PDO::FETCH_ASSOC);
   if ($total == 0) {
@@ -43,18 +102,31 @@ foreach ($result as $row) {
   $gst_percentage = $row['gst_percentage'];
 }
 
-// Getting all categories name for breadcrumb
+// Initialize category variables
+$tcat_id = '';
+$mcat_id = '';
+$ecat_name = '';
+$ecat_slug = '';
+$mcat_name = '';
+$mcat_slug = '';
+$tcat_name = '';
+$tcat_slug = '';
+
+// Getting all categories name and slug for breadcrumb
 $statement = $pdo->prepare("SELECT
                         t1.ecat_id,
                         t1.ecat_name,
+                        t1.ecat_slug,
                         t1.mcat_id,
 
                         t2.mcat_id,
                         t2.mcat_name,
+                        t2.mcat_slug,
                         t2.tcat_id,
 
                         t3.tcat_id,
-                        t3.tcat_name
+                        t3.tcat_name,
+                        t3.tcat_slug
 
                         FROM tbl_end_category t1
                         JOIN tbl_mid_category t2
@@ -67,34 +139,49 @@ $total = $statement->rowCount();
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 foreach ($result as $row) {
   $ecat_name = $row['ecat_name'];
+  $ecat_slug = $row['ecat_slug'];
   $mcat_id = $row['mcat_id'];
   $mcat_name = $row['mcat_name'];
+  $mcat_slug = $row['mcat_slug'];
   $tcat_id = $row['tcat_id'];
   $tcat_name = $row['tcat_name'];
+  $tcat_slug = $row['tcat_slug'];
 }
 
 
 $p_total_view = $p_total_view + 1;
 
 $statement = $pdo->prepare("UPDATE tbl_product SET p_total_view=? WHERE id=?");
-$statement->execute(array($p_total_view, $_REQUEST['id']));
+$statement->execute(array($p_total_view, $product_id));
+
+// Calculate bid settings and prices
+$stmt = $pdo->prepare("SELECT min_bid_pct FROM bid_settings ORDER BY created_at DESC LIMIT 1");
+$stmt->execute();
+$bid_settings = $stmt->fetch(PDO::FETCH_ASSOC);
+$min_bid_pct = $bid_settings ? $bid_settings['min_bid_pct'] : 0;
+
+// Calculate minimum allowed bid price
+$min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
+//gst and discount calculation
+$gst_amount = ($p_current_price * $gst_percentage) / 100;
+$final_price = $p_current_price + $gst_amount;
+$discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_old_price) * 100) : 0;
+
 ?>
 <?php
 $error_message1 = '';
 $success_message1 = '';
-$product_id = isset($_GET['id']) ? $_GET['id'] : '';
-
 
 if (isset($_POST['add_to_cart'])) {
 
   if (isset($_SESSION['user_session']['id'])) {
     $user_id = $_SESSION['user_session']['id'];
-    $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
+    $product_id_cart = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
     $product_quantity = isset($_POST['product_quantity']) ? intval($_POST['product_quantity']) : 1; // Default to 1
 
     // Check if product already exists in the cart
     $stmt = $conn->prepare("SELECT * FROM tbl_cart WHERE id = ? AND user_id = ?");
-    $stmt->bind_param("ii", $product_id, $user_id);
+    $stmt->bind_param("ii", $product_id_cart, $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -102,7 +189,7 @@ if (isset($_POST['add_to_cart'])) {
       MessageSystem::set('Product already added to cart!', 'error');
     } else {
       $stmt = $conn->prepare("INSERT INTO tbl_cart (id, user_id, quantity) VALUES (?, ?, ?)");
-      $stmt->bind_param("iii", $product_id, $user_id, $product_quantity);
+      $stmt->bind_param("iii", $product_id_cart, $user_id, $product_quantity);
       if ($stmt->execute()) {
         // MessageSystem::set('Product added to cart!', 'success');
       } else {
@@ -131,89 +218,6 @@ array_unshift($_SESSION['recently_viewed'], $product_id);
 $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
 
 ?>
-
-<?php
-$select_product = mysqli_query($conn, "SELECT * FROM tbl_product") or die('query failed');
-if (mysqli_num_rows($select_product) > 0) {
-  while ($fetch_product = mysqli_fetch_assoc($select_product)) {
-  }
-}
-?>
-
-<?php
-if ($error_message1 != '') {
-  MessageSystem::set($error_message1, 'error');
-}
-if ($success_message1 != '') {
-  MessageSystem::set($success_message1, 'success');
-  header('location: product.php?id=' . $_REQUEST['id']);
-  exit;
-}
-
-// Get product details first
-$statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
-$statement->execute(array($_REQUEST['id']));
-$total = $statement->rowCount();
-$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-if ($total == 0) {
-  header('location: index.php');
-  exit;
-}
-
-// Initialize category IDs and names
-$tcat_id = $mcat_id = $ecat_id = 0;
-$tcat_name = $mcat_name = $ecat_name = 'Uncategorized';
-
-foreach ($result as $row) {
-  $tcat_id = $row['tcat_id'];
-  $mcat_id = $row['mcat_id'];
-  $ecat_id = $row['ecat_id'];
-}
-
-// Get top category name
-if ($tcat_id) {
-  $statement = $pdo->prepare("SELECT tcat_name FROM tbl_top_category WHERE tcat_id=?");
-  $statement->execute(array($tcat_id));
-  $result = $statement->fetch(PDO::FETCH_ASSOC);
-  if ($result) {
-    $tcat_name = $result['tcat_name'];
-  }
-}
-
-// Get mid category name
-if ($mcat_id) {
-  $statement = $pdo->prepare("SELECT mcat_name FROM tbl_mid_category WHERE mcat_id=?");
-  $statement->execute(array($mcat_id));
-  $result = $statement->fetch(PDO::FETCH_ASSOC);
-  if ($result) {
-    $mcat_name = $result['mcat_name'];
-  }
-}
-
-// Get end category name
-if ($ecat_id) {
-  $statement = $pdo->prepare("SELECT ecat_name FROM tbl_end_category WHERE ecat_id=?");
-  $statement->execute(array($ecat_id));
-  $result = $statement->fetch(PDO::FETCH_ASSOC);
-  if ($result) {
-    $ecat_name = $result['ecat_name'];
-  }
-}
-
-$stmt = $pdo->prepare("SELECT min_bid_pct FROM bid_settings ORDER BY created_at DESC LIMIT 1");
-$stmt->execute();
-$bid_settings = $stmt->fetch(PDO::FETCH_ASSOC);
-$min_bid_pct = $bid_settings ? $bid_settings['min_bid_pct'] : 0;
-
-// Calculate minimum allowed bid price
-$min_allowed_price = $p_current_price * (1 - ($min_bid_pct / 100));
-//gst and discount calculation
-$gst_amount = ($p_current_price * $gst_percentage) / 100;
-$final_price = $p_current_price + $gst_amount;
-$discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_old_price) * 100) : 0;
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -229,12 +233,12 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php" style="text-decoration: none;">Home</a></li>
         <?php if ($tcat_id && $tcat_name !== 'Uncategorized'): ?>
-          <li class="breadcrumb-item"><a href="search-result.php?type=top-category&id=<?php echo $tcat_id; ?>"
+          <li class="breadcrumb-item"><a href="search-result.php?type=top-category&slug=<?php echo urlencode($tcat_slug); ?>"
               style="text-decoration: none;"><?php echo htmlspecialchars($tcat_name); ?></a></li>
         <?php endif; ?>
 
         <?php if ($mcat_id && $mcat_name !== 'Uncategorized'): ?>
-          <li class="breadcrumb-item"><a href="search-result.php?type=mid-category&id=<?php echo $mcat_id; ?>"
+          <li class="breadcrumb-item"><a href="search-result.php?type=mid-category&slug=<?php echo urlencode($mcat_slug); ?>"
               style="text-decoration: none;"><?php echo htmlspecialchars($mcat_name); ?></a></li>
         <?php endif; ?>
 
@@ -289,7 +293,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
       </aside>
 
       <main class="col-lg-6">
-        <dclass="ps-lg-3">
+        <div class="ps-lg-3">
           <h4 class="title text-dark">
             <?php echo htmlspecialchars($p_name); ?>
           </h4>
@@ -355,7 +359,6 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 
             <?php
 
-            $product_id = isset($_GET['id']) ? $_GET['id'] : '';
             $query = "SELECT P, M, K, N, S, H, O FROM tbl_key WHERE id = ?";
             $stmt = $pdo->prepare($query);
             $stmt->execute([$product_id]);
@@ -507,7 +510,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     <!-- Form -->
     <form id="priceRequestForm" method="POST" action="submit_bid.php">
       <input type="hidden" name="product_id"
-        value="<?php echo htmlspecialchars($_REQUEST['id'], ENT_QUOTES, 'UTF-8'); ?>">
+        value="<?php echo htmlspecialchars($product_id, ENT_QUOTES, 'UTF-8'); ?>">
 
       <div class="form-group">
         <label for="quantity">Quantity</label>
@@ -617,9 +620,9 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
       showMessage('Please enter a valid quantity', 'error');
     } else if (proposedPrice.value <= 0) {
       showMessage('Please enter a valid bid price', 'error');
-else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
-  showMessage('Bidding too low? Try offering a fair price.', 'error');
-}
+    } else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
+      showMessage('Bidding too low? Try offering a fair price.', 'error');
+    } else if (!termsCheckbox.checked) {
       showMessage('You must agree to the Terms and Conditions', 'error');
     } else {
       openRazorpayModal();
@@ -744,14 +747,11 @@ else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
             <div class="tab-pane fade show active" id="pills-spec" role="tabpanel">
               <p>
                 <?php
-                $product_id = intval($_GET['id']);
-                $sql = "SELECT p_description
-                     FROM tbl_product 
-                      WHERE tbl_product.id = $product_id";
-                $result = $conn->query($sql);
-                if ($result->num_rows > 0) {
-                  $row = $result->fetch_assoc();
-                  echo '<td class="py-2">' . htmlspecialchars($row['p_description']) . '</td>';
+                $stmt = $pdo->prepare("SELECT p_description FROM tbl_product WHERE id = ?");
+                $stmt->execute([$product_id]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($result) {
+                  echo $result['p_description'];
                 }
                 ?>
               </p>
@@ -766,15 +766,12 @@ else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
 
             </div>
             <?php
-            $product_id = intval($_GET['id']);
-            $sql = "SELECT product_catalogue
-        FROM tbl_product
-        WHERE tbl_product.id = $product_id";
-            $result = $conn->query($sql);
+            $stmt = $pdo->prepare("SELECT product_catalogue FROM tbl_product WHERE id = ?");
+            $stmt->execute([$product_id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($result->num_rows > 0) {
-              $row = $result->fetch_assoc();
-              $pdf_name = $row['product_catalogue'];
+            if ($result && !empty($result['product_catalogue'])) {
+              $pdf_name = $result['product_catalogue'];
 
               // files are stored in the 'assets/uploads/' directory
               $file_path = 'assets/uploads/' . $pdf_name;
@@ -794,9 +791,9 @@ else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
       $search_term = substr($p_name, 0, 4); // Get the first 4 letters of the current product name
       $search_term = htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8'); // Prevent any special character issues
 
-      $sql = "SELECT id, p_name, p_current_price, p_old_price, p_featured_photo 
-          FROM tbl_product 
-          WHERE p_name LIKE :search_term 
+      $sql = "SELECT id, p_name, p_current_price, p_old_price, p_featured_photo, p_slug
+          FROM tbl_product
+          WHERE p_name LIKE :search_term
           AND id != :current_id
           LIMIT 3";
 
@@ -816,13 +813,13 @@ else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
               <h5 class="card-title">Similar items</h5>
               <?php foreach ($related_products as $related_product): ?>
                 <div class="d-flex mb-3">
-                  <a href="product_landing.php?id=<?php echo $related_product['id']; ?>" class="me-3">
+                  <a href="/product/<?php echo urlencode($related_product['p_slug']); ?>" class="me-3">
                     <img src="assets/uploads/product-photos/<?php echo $related_product['p_featured_photo']; ?>"
                       style="width: 100px; height: 96px;" class="img-thumbnail"
                       alt="<?php echo htmlspecialchars($related_product['p_name']); ?>" />
                   </a>
                   <div class="info">
-                    <a href="product_landing.php?id=<?php echo $related_product['id']; ?>"
+                    <a href="/product/<?php echo urlencode($related_product['p_slug']); ?>"
                       class="text-decoration-none mb-1">
                       <?php echo htmlspecialchars($related_product['p_name']); ?>
                     </a>

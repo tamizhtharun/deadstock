@@ -2,7 +2,7 @@
 require_once('track_view.php');
 trackPageView('HP', 'Home page');
 ?>
-<link rel="stylesheet" href="./css/index.css">
+<link rel="stylesheet" href="/deadstock/css/index.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 <div class="category-pad">
     <div class="category-box">
@@ -14,7 +14,7 @@ trackPageView('HP', 'Home page');
             foreach ($result as $row) {
             ?>
                 <li class="category">
-                    <a class="category-link" href="search-result.php?type=top-category&id=<?php echo $row['tcat_id']; ?>">
+                    <a class="category-link" href="search-result.php?type=top-category&slug=<?php echo urlencode($row['tcat_slug']); ?>">
                         <img src="./assets/uploads/top-categories-images/<?php echo $row['photo']; ?>" width="30px" height="30px" alt="<?php echo $row['tcat_name']; ?>">
                         <span><?php echo $row['tcat_name']; ?></span>
                     </a>
@@ -26,7 +26,7 @@ trackPageView('HP', 'Home page');
                         foreach ($result1 as $row1) {
                         ?>
                             <li class="subcategory">
-                                <a class="subcategory-link" href="search-result.php?type=mid-category&id=<?php echo $row1['mcat_id']; ?>">
+                                <a class="subcategory-link" href="search-result.php?type=mid-category&slug=<?php echo urlencode($row1['mcat_slug']); ?>">
                                     <?php echo $row1['mcat_name']; ?>
                                 </a>
                                 <ul class="sub-subcategories">
@@ -37,7 +37,7 @@ trackPageView('HP', 'Home page');
                                     foreach ($result2 as $row2) {
                                     ?>
                                         <li class="sub-subcategory">
-                                            <a href="search-result.php?type=end-category&id=<?php echo $row2['ecat_id']; ?>">
+                                            <a href="search-result.php?type=end-category&slug=<?php echo urlencode($row2['ecat_slug']); ?>">
                                                 <?php echo $row2['ecat_name']; ?>
                                             </a>
                                         </li>
@@ -202,7 +202,7 @@ if (!empty($topCategories)) {
                         <div class="section-header d-flex flex-wrap justify-content-between my-1">
                             <h2 class="section-title"><?php echo htmlspecialchars($topCategory['mcat_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
                             <div class="d-flex align-items-center">
-                                <a href="search-result.php?type=mid-category&id=<?php echo $topCategory['mcat_id'] ?>" class="btn-link text-decoration-none" style="margin-right:20px">View All <?php echo htmlspecialchars($topCategory['mcat_name']) ?> →</a>
+                                <a href="search-result.php?type=mid-category&slug=<?php echo urlencode($topCategory['mcat_slug']) ?>" class="btn-link text-decoration-none" style="margin-right:20px">View All <?php echo htmlspecialchars($topCategory['mcat_name']) ?> →</a>
                                 <div class="swiper-buttons">
                                     <button class="swiper-prev btn btn-primary" id="<?php echo $swiperId; ?>-prev">❮</button>
                                     <button class="swiper-next btn btn-primary" id="<?php echo $swiperId; ?>-next">❯</button>
@@ -217,12 +217,12 @@ if (!empty($topCategories)) {
                                     <?php if ($product['p_is_featured'] == 1): ?>
                                         <div class="product-item swiper-slide">
                                             <figure>
-                                                <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>">
+                                                <a href="product/<?php echo urlencode($product['p_slug']); ?>" style="text-decoration:none !important">
                                                     <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>" class="tab-image">
                                                 </a>
                                             </figure>
                                             <div class="d-flex flex-column text-left">
-                                                <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration:none !important" title="Product Title">
+                                                <a href="product/<?php echo urlencode($product['p_slug']); ?>" style="text-decoration:none !important" title="Product Title">
                                                     <h3 class="fs-6 fw-normal"><?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?></h3>
 
                                                     <!-- <div>
@@ -317,8 +317,10 @@ if (!empty($topCategories)) {
 <script src="js/jquery-1.11.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-<script src="js/plugins.js"></script>
-<script src="js/script.js"></script>
+<script src="/deadstock/js/plugins.js"></script>
+
+
+<script src="/deadstock/js/script.js"></script>
 
 <style>
     .quote-container .quote {
