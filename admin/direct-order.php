@@ -94,7 +94,7 @@ if (isset($_POST['export_csv'])) {
                 $row['full_name'] . ', ' . $row['delivery_phone'] . ', ' . $row['address'] . ', ' . $row['city'] . ', ' . $row['state'] . ', ' . $row['pincode'] :
                 'Address not available';
             $status = ucfirst($row['order_status']);
-            $awb = !empty($row['delhivery_awb']) ? $row['delhivery_awb'] : '-';
+            $awb = !empty($row['delhivery_awb']) ? "'" . $row['delhivery_awb'] : '-';
             $shipment_status = !empty($row['delhivery_shipment_status']) ? ucfirst($row['delhivery_shipment_status']) : '-';
 
             fputcsv($output, array(
