@@ -1,5 +1,128 @@
-<?php 
+<?php
 //direct-order.php
+require_once('../db_connection.php');
+
+// Check if export_csv button is clicked - must be before any output
+if (isset($_POST['export_csv'])) {
+    // Build query with filters
+    $query = "SELECT
+        o.id AS order_id,
+        o.order_id AS order_number,
+        o.price,
+        o.quantity,
+        o.order_status,
+        o.tracking_id,
+        o.delhivery_awb,
+        o.delhivery_shipment_status,
+        o.delhivery_created_at,
+        o.address_id,
+        o.created_at,
+        p.id AS product_id,
+        p.p_name,
+        p.p_featured_photo,
+        p.seller_id,
+        s.seller_name,
+        s.seller_cname,
+        u.username,
+        u.id AS user_id,
+        u.email,
+        u.phone_number,
+        ua.full_name,
+        ua.phone_number as delivery_phone,
+        ua.address,
+        ua.city,
+        ua.state,
+        ua.pincode
+    FROM
+        tbl_orders o
+    JOIN
+        tbl_product p ON o.product_id = p.id
+    JOIN
+        sellers s ON p.seller_id = s.seller_id
+    JOIN
+        users u ON o.user_id = u.id
+    LEFT JOIN
+        users_addresses ua ON o.address_id = ua.id
+    WHERE
+        o.order_type = 'direct'";
+
+    $params = array();
+
+    // Apply status filter
+    if (!empty($_POST['status_filter'])) {
+        $query .= " AND o.order_status = ?";
+        $params[] = $_POST['status_filter'];
+    }
+
+    // Apply date filter
+    if (!empty($_POST['from_date']) && !empty($_POST['to_date'])) {
+        $query .= " AND DATE(o.created_at) BETWEEN ? AND ?";
+        $params[] = $_POST['from_date'];
+        $params[] = $_POST['to_date'];
+    } elseif (!empty($_POST['from_date'])) {
+        $query .= " AND DATE(o.created_at) >= ?";
+        $params[] = $_POST['from_date'];
+    } elseif (!empty($_POST['to_date'])) {
+        $query .= " AND DATE(o.created_at) <= ?";
+        $params[] = $_POST['to_date'];
+    }
+
+    $query .= " ORDER BY o.created_at DESC";
+
+    try {
+        $statement = $pdo->prepare($query);
+        $statement->execute($params);
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        // Set headers for CSV download after successful query
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="direct-orders.csv"');
+
+        // Output CSV data
+        $output = fopen('php://output', 'w');
+
+        // Write headers
+        fputcsv($output, array('#', 'Order ID', 'Product', 'Seller Details', 'Customer Details', 'Amount', 'Quantity', 'Delivery Address', 'Status', 'Delhivery AWB', 'Shipment Status'));
+
+        // Write data
+        $i = 0;
+        foreach ($result as $row) {
+            $i++;
+            $total = $row['price'] * $row['quantity'];
+            $amount = number_format($total, 0);
+            $delivery_address = !empty($row['address']) ?
+                $row['full_name'] . ', ' . $row['delivery_phone'] . ', ' . $row['address'] . ', ' . $row['city'] . ', ' . $row['state'] . ', ' . $row['pincode'] :
+                'Address not available';
+            $status = ucfirst($row['order_status']);
+            $awb = !empty($row['delhivery_awb']) ? $row['delhivery_awb'] : '-';
+            $shipment_status = !empty($row['delhivery_shipment_status']) ? ucfirst($row['delhivery_shipment_status']) : '-';
+
+            fputcsv($output, array(
+                $i,
+                $row['order_number'],
+                $row['p_name'],
+                $row['seller_name'], // Only seller name
+                $row['full_name'], // Only customer name
+                $amount,
+                $row['quantity'],
+                $delivery_address,
+                $status,
+                $awb,
+                $shipment_status
+            ));
+        }
+
+        fclose($output);
+        exit();
+    } catch (Exception $e) {
+        // Log the error
+        error_log("CSV Export Error: " . $e->getMessage());
+        // Redirect back with error message
+        header('Location: ' . $_SERVER['PHP_SELF'] . '?error=export_failed');
+        exit();
+    }
+}
+
 require_once('header.php');
 ?>
 
@@ -122,6 +245,14 @@ require_once('header.php');
                 <option value="canceled">Cancelled</option>
             </select>
         </div>
+        <div class="export-group">
+            <form method="POST" action="" id="exportForm">
+                <input type="hidden" name="status_filter" id="hiddenStatusFilter">
+                <input type="hidden" name="from_date" id="hiddenFromDate">
+                <input type="hidden" name="to_date" id="hiddenToDate">
+                <button type="submit" name="export_csv" class="btn btn-primary btn-xs">Export to CSV</button>
+            </form>
+        </div>
     </div>
 
     <!-- Delhivery Integration Status Indicator -->
@@ -238,7 +369,7 @@ require_once('header.php');
                             <?php echo $row['phone_number']; ?>
                         </td>
                         <td>
-                            Price: ₹<?php echo number_format($row['price'], 2); ?><br>
+                            Price: ₹<?php echo number_format($row['price'], 0); ?><br>
                             Qty: <?php echo $row['quantity']; ?><br>
                         </td>
                         <td>
@@ -561,6 +692,13 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             showAllOrders();
         }
+    });
+
+    // Update hidden form fields for CSV export
+    document.getElementById('exportForm').addEventListener('submit', function() {
+        document.getElementById('hiddenStatusFilter').value = statusFilter.value;
+        document.getElementById('hiddenFromDate').value = fromDate.value;
+        document.getElementById('hiddenToDate').value = toDate.value;
     });
 });
 
