@@ -1,5 +1,80 @@
 <?php
 session_start();
+require_once('../db_connection.php');
+
+// Check if export_csv button is clicked - must be before any output
+if (isset($_POST['export_csv'])) {
+    // Build query with filters
+    $query = "SELECT *, DATE(created_at) as registration_date FROM sellers WHERE seller_name IS NULL OR seller_cname IS NULL OR seller_email IS NULL OR seller_phone IS NULL OR seller_gst IS NULL OR seller_address IS NULL OR seller_state IS NULL OR seller_city IS NULL OR seller_zipcode IS NULL OR seller_password IS NULL OR account_number IS NULL OR ifsc_code IS NULL OR bank_name IS NULL OR bank_branch IS NULL OR bank_address IS NULL OR bank_city IS NULL OR bank_state IS NULL OR account_holder IS NULL";
+
+    $params = array();
+
+    // Apply status filter
+    if (!empty($_POST['status_filter'])) {
+        if ($_POST['status_filter'] == 'Active') {
+            $query .= " AND seller_status = 1";
+        } elseif ($_POST['status_filter'] == 'Inactive') {
+            $query .= " AND seller_status = 0";
+        }
+    }
+
+    // Apply date filter
+    if (!empty($_POST['from_date']) && !empty($_POST['to_date'])) {
+        $query .= " AND DATE(created_at) BETWEEN ? AND ?";
+        $params[] = $_POST['from_date'];
+        $params[] = $_POST['to_date'];
+    } elseif (!empty($_POST['from_date'])) {
+        $query .= " AND DATE(created_at) >= ?";
+        $params[] = $_POST['from_date'];
+    } elseif (!empty($_POST['to_date'])) {
+        $query .= " AND DATE(created_at) <= ?";
+        $params[] = $_POST['to_date'];
+    }
+
+    $query .= " ORDER BY seller_id DESC";
+
+    try {
+        $statement = $pdo->prepare($query);
+        $statement->execute($params);
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        // Set headers for CSV download after successful query
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="incomplete-sellers.csv"');
+
+        // Output CSV data
+        $output = fopen('php://output', 'w');
+
+        // Write headers
+        fputcsv($output, array('#', 'Name', 'Email Address', 'Address', 'Status', 'Registration Date'));
+
+        // Write data
+        $i = 0;
+        foreach ($result as $row) {
+            $i++;
+            $status = ($row['seller_status'] == 1) ? 'Active' : 'Inactive';
+            $registration_date = !empty($row['registration_date']) && $row['registration_date'] != '0000-00-00' ? '="' . date('d/m/Y', strtotime($row['registration_date'])) . '"' : 'N/A';
+            fputcsv($output, array(
+                $i,
+                $row['seller_name'],
+                $row['seller_email'],
+                $row['seller_address'],
+                $status,
+                $registration_date
+            ));
+        }
+
+        fclose($output);
+        exit();
+    } catch (Exception $e) {
+        // Log the error
+        error_log("CSV Export Error: " . $e->getMessage());
+        // Redirect back with error message
+        header('Location: ' . $_SERVER['PHP_SELF'] . '?error=export_failed');
+        exit();
+    }
+}
+
 require_once('header.php');
 
 // Check for session messages
@@ -38,6 +113,11 @@ unset($_SESSION['success_message']);
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
+        align-items: center;
+    }
+
+    .export-group {
+        display: flex;
         align-items: center;
     }
 
@@ -188,6 +268,14 @@ unset($_SESSION['success_message']);
                         </ul>
                     </div>
                 </div>
+                <div class="export-group">
+                    <form method="POST" action="" id="exportForm">
+                        <input type="hidden" name="status_filter" id="hiddenStatusFilter">
+                        <input type="hidden" name="from_date" id="hiddenFromDate">
+                        <input type="hidden" name="to_date" id="hiddenToDate">
+                        <button type="submit" name="export_csv" class="btn btn-primary btn-xs">Export to CSV</button>
+                    </form>
+                </div>
                 <input type="hidden" id="orderTypeFilter">
             </div>
             <div class="box box-info">
@@ -239,11 +327,7 @@ unset($_SESSION['success_message']);
                                                 echo 'bg-r';
                                             } ?>">
                                     <td><?php echo $i; ?></td>
-                                    <td><?php echo $row['seller_name']; ?>
-                                        <div>
-                                            <a href="javascript:void(0);" onclick="openSellerModal(<?php echo $row['seller_id']; ?>)">View Seller Details</a>
-                                        </div>
-                                    </td>
+                                    <td><?php echo $row['seller_name']; ?></td>
                                     <td><?php echo $row['seller_email']; ?></td>
                                     <td>
                                         <?php echo $row['seller_address']; ?><br>
@@ -280,84 +364,16 @@ unset($_SESSION['success_message']);
                     </table>
                 </div>
             </div>
+            <div id="no-bids-message" style="display: none; text-align: center; margin-top: 20px; color: #666;">
+                No sellers found matching the selected filters.
+            </div>
         </div>
     </div>
 
 
 </section>
 
-<div id="sellerModal" class="seller-modal">
-    <div class="seller-modal-content">
-        <div class="seller-modal-header">
-            <h2>Seller Information Dashboard</h2>
-            <span class="seller-close">&times;</span>
-        </div>
 
-        <div class="seller-tabs">
-            <button class="seller-tab-button active" data-tab="profile">Profile</button>
-            <button class="seller-tab-button" data-tab="products">Products</button>
-            <button class="seller-tab-button" data-tab="bidding">Bidding</button>
-            <button class="seller-tab-button" data-tab="orders">Orders</button>
-            <button class="seller-tab-button" data-tab="certification">Certification</button>
-        </div>
-
-        <div class="seller-tab-content">
-            <div id="profile" class="seller-tab-pane active">
-                <div class="seller-info-grid">
-                    <!-- Profile content will be dynamically inserted here -->
-                </div>
-            </div>
-
-            <div id="products" class="seller-tab-pane">
-                <div class="seller-stats-grid">
-                    <!-- Product stats will be dynamically inserted here -->
-                </div>
-                <div class="seller-chart-container">
-                    <canvas id="productsChart"></canvas>
-                </div>
-            </div>
-
-            <div id="bidding" class="seller-tab-pane">
-                <div class="seller-stats-grid">
-                    <!-- Bidding stats will be dynamically inserted here -->
-                </div>
-                <div class="seller-chart-container">
-                    <canvas id="biddingChart"></canvas>
-                </div>
-            </div>
-
-            <div id="orders" class="seller-tab-pane">
-                <div class="seller-stats-grid">
-                    <!-- Order stats will be dynamically inserted here -->
-                </div>
-                <div class="seller-charts-grid">
-                    <div class="seller-chart-container-orders">
-                        <canvas id="ordersChart"></canvas>
-                    </div>
-                    <div class="seller-chart-container-orders">
-                        <canvas id="orderStatusChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div id="certification" class="seller-tab-pane">
-                <div class="seller-certification-container">
-                    <div class="seller-certification-grid" id="certificationGrid">
-                        <!-- Certification cards or no certification message will be dynamically inserted here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="seller-modal-footer">
-            <button class="seller-btn seller-secondary" id="closeSellerModal">Close</button>
-        </div>
-    </div>
-</div>
-
-
-
-<!-- <button class="seller-btn seller-primary">View Full Details</button> -->
 
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -446,9 +462,20 @@ unset($_SESSION['success_message']);
             });
         }
 
+        function updateExportFilters() {
+            const hiddenStatusFilter = document.getElementById('hiddenStatusFilter');
+            const hiddenFromDate = document.getElementById('hiddenFromDate');
+            const hiddenToDate = document.getElementById('hiddenToDate');
+
+            hiddenStatusFilter.value = orderTypeFilter.value;
+            hiddenFromDate.value = fromDate.value;
+            hiddenToDate.value = toDate.value;
+        }
+
         function applyFilters() {
             table.draw();
             updateSerialNumbers();
+            updateExportFilters();
 
             let visibleRows = table.rows({
                 filter: 'applied'
