@@ -1,5 +1,6 @@
 <?php
 //login.php
+session_start();
 include 'db_connection.php';
 
 $error_message = ""; // Variable to store error messages
@@ -59,15 +60,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if ($result_user->num_rows > 0) {
                 $user_details = $result_user->fetch_assoc();
-                
-                // **Check if email is verified (status = 0) before verifying the password**
-                if ($user_details['status'] == 0) {
-                    $error_message = "Your email is not verified. Please check your email.";
-                    $password_verified = false; // Prevent further login attempt
-                } else {
-                    $password_verified = password_verify($password, $user_details['password']);
-                    $user_data_ = $user_details; // Store user details for session
-                }
+
+                $password_verified = password_verify($password, $user_details['password']);
+                $user_data_ = $user_details; // Store user details for session
             } else {
                 $password_verified = false;
             }
@@ -79,45 +74,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // **Ensure error message is properly displayed**
         if (isset($user_details) && $user_details['status'] == 0) {
+            $error_message = "Your email is not verified. Please check your email.";
             $password_verified = false; // Prevents login
         }
 
         if ($password_verified) {
             // Handle user roles
             switch ($user['user_role']) {
-                case 'admin': 
-                    session_start();
+                case 'admin':
                     $_SESSION['admin_session'] = $user;
                     $_SESSION['admin_role'] = 'admin';
                     header("Location: admin/index.php");
                     exit();
                     case 'user':
-                        session_start();
                         $_SESSION['user_session'] = $user_data_;
                         $_SESSION['user_email'] = $user['user_email'];
                         $_SESSION['user_role'] = 'user';
                         $_SESSION['loggedin'] = true;
-                    
-                        // Check if HTTP_REFERER is set; otherwise, use a default page
-                        if (!empty($_SERVER['HTTP_REFERER'])) {
+
+                        // Use redirect_url from form if available, otherwise HTTP_REFERER
+                        if (!empty($_POST['redirect_url'])) {
+                            $referrer = $_POST['redirect_url'];
+                        } elseif (!empty($_SERVER['HTTP_REFERER'])) {
                             $referrer = $_SERVER['HTTP_REFERER'];
-                    
-                            // Remove only 'showLoginModal' query param, keep others
-                            $referrer = preg_replace('/([?&])showLoginModal=true(&|$)/', '$1', $referrer);
-                            $referrer = rtrim($referrer, '?&'); // Clean trailing ? or &
                         } else {
                             $referrer = "index.php"; // Default fallback
                         }
-                    
+
+                        // Remove only 'showLoginModal' query param, keep others
+                        $referrer = preg_replace('/([?&])showLoginModal=true(&|$)/', '$1', $referrer);
+                        $referrer = rtrim($referrer, '?&'); // Clean trailing ? or &
+
                         header("Location: $referrer");
                         exit();
-                    
+
                 case 'seller':
                     // Check seller status
                     if ($seller['seller_status'] == '2') {
                         $error_message = "Your seller account is inactive.";
                     } else {
-                        session_start();
                         $_SESSION['seller_session'] = $seller;
                         $_SESSION['seller_role'] = 'seller';
                         header("Location: seller/index.php");
@@ -143,9 +138,21 @@ $conn->close();
 
 // If there's an error, save it to the session and redirect
 if (!empty($error_message)) {
-    session_start();
     $_SESSION['error_message'] = $error_message;
-    header("Location: index.php?showLoginModal=true"); // Ensure modal is shown
+
+    // Use redirect_url from form if available, otherwise index.php
+    if (!empty($_POST['redirect_url'])) {
+        $referrer = $_POST['redirect_url'];
+    } else {
+        $referrer = "index.php"; // Default fallback
+    }
+
+    // Add showLoginModal=true if not present
+    if (strpos($referrer, 'showLoginModal=true') === false) {
+        $referrer .= (strpos($referrer, '?') === false ? '?' : '&') . 'showLoginModal=true';
+    }
+
+    header("Location: $referrer");
     exit();
 }
 ?>

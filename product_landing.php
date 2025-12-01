@@ -1,11 +1,45 @@
-<?php include 'header.php';
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+include 'db_connection.php';
+
+// Handle add_to_cart POST request before including header to avoid HTML output
+if (isset($_POST['add_to_cart'])) {
+  header('Content-Type: application/json');
+  if (isset($_SESSION['user_session']['id'])) {
+    $user_id = $_SESSION['user_session']['id'];
+    $product_id_cart = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
+    $product_quantity = isset($_POST['product_quantity']) ? intval($_POST['product_quantity']) : 1; // Default to 1
+
+    // Check if product already exists in the cart
+    $stmt = $pdo->prepare("SELECT * FROM tbl_cart WHERE id = ? AND user_id = ?");
+    $stmt->execute([$product_id_cart, $user_id]);
+
+    if ($stmt->rowCount() > 0) {
+      echo json_encode(['status' => 'error', 'message' => 'Product already added to cart!']);
+    } else {
+      $stmt = $pdo->prepare("INSERT INTO tbl_cart (id, user_id, quantity) VALUES (?, ?, ?)");
+      if ($stmt->execute([$product_id_cart, $user_id, $product_quantity])) {
+        echo json_encode(['status' => 'success', 'message' => 'Product added to cart!']);
+      } else {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to add product to cart.']);
+      }
+    }
+  } else {
+    echo json_encode(['status' => 'login_required']);
+  }
+  exit;
+}
+
+include 'header.php';
 include 'db_connection.php';
 require_once 'messages.php';
 require_once('vendor/autoload.php');
 require_once('config.php');
 //product_landing.php
-?>
 
+?>
 
 <?php
 if (isset($_SESSION['user_session']['id'])) {
@@ -71,7 +105,7 @@ if ($product_slug) {
 }
 
 if (!$product_id) {
-  header('location: index.php');
+  header('location: /index');
   exit;
 } else {
   // Check the id is valid or not (already done for slug, but for safety)
@@ -172,44 +206,6 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 $error_message1 = '';
 $success_message1 = '';
 
-if (isset($_POST['add_to_cart'])) {
-
-  if (isset($_SESSION['user_session']['id'])) {
-    $user_id = $_SESSION['user_session']['id'];
-    $product_id_cart = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
-    $product_quantity = isset($_POST['product_quantity']) ? intval($_POST['product_quantity']) : 1; // Default to 1
-
-    // Check if product already exists in the cart
-    $stmt = $conn->prepare("SELECT * FROM tbl_cart WHERE id = ? AND user_id = ?");
-    $stmt->bind_param("ii", $product_id_cart, $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-      MessageSystem::set('Product already added to cart!', 'error');
-    } else {
-      $stmt = $conn->prepare("INSERT INTO tbl_cart (id, user_id, quantity) VALUES (?, ?, ?)");
-      $stmt->bind_param("iii", $product_id_cart, $user_id, $product_quantity);
-      if ($stmt->execute()) {
-        // MessageSystem::set('Product added to cart!', 'success');
-      } else {
-        // MessageSystem::set('Failed to add product to cart.', 'error');
-      }
-    }
-  } else {
-    // User is not logged in, show login modal
-    echo "<script>
-          document.addEventListener('DOMContentLoaded', function() {
-              var loginModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
-                  backdrop: 'static'
-              });
-              loginModal.show();
-              showMessage('Please login to add items to your cart', 'error');
-          });
-      </script>";
-  }
-}
-
 if (!isset($_SESSION['recently_viewed'])) {
   $_SESSION['recently_viewed'] = [];
 }
@@ -218,13 +214,6 @@ array_unshift($_SESSION['recently_viewed'], $product_id);
 $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-
-<link rel="stylesheet" href="css/product_landing.css">
-
-
 <!-- content -->
 <section class="py-5">
   <div class="container" style="margin-top: -30px;">
@@ -258,7 +247,7 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
           <a data-bs-toggle="modal" id="mainImageLink" class="rounded-4" data-bs-target="#imageModal" href="#">
             <!-- Default Big Photo -->
             <img id="mainImage" class="rounded-4 zoom-effect" class="rounded-4"
-              src="assets/uploads/product-photos/<?php echo $p_featured_photo; ?>">
+              src="/assets/uploads/product-photos/<?php echo $p_featured_photo; ?>">
           </a>
         </div>
         </div>
@@ -269,8 +258,8 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
             echo '
             <a class="border mx-1 rounded-2 thumbnail-link" href="javascript:void(0);">
                 <img width="60" height="60" class="rounded-2" 
-                     src="assets/uploads/product-photos/' . $p_featured_photo . '" 
-                     data-full-image="assets/uploads/product-photos/' . $p_featured_photo . '">
+                     src="/assets/uploads/product-photos/' . $p_featured_photo . '" 
+                     data-full-image="/assets/uploads/product-photos/' . $p_featured_photo . '">
             </a>';
             $stmt = $pdo->prepare("SELECT photo FROM tbl_product_photo WHERE p_id = :product_id");
             $stmt->execute([':product_id' => $product_id]);
@@ -282,8 +271,8 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
                 echo '
                     <a class="border mx-1 rounded-2 thumbnail-link" href="javascript:void(0);">
                         <img width="60" height="60" class="rounded-2" 
-                             src="assets/uploads/product-photos/' . $photo_url . '" 
-                             data-full-image="assets/uploads/product-photos/' . $photo_url . '">
+                             src="/assets/uploads/product-photos/' . $photo_url . '" 
+                             data-full-image="/assets/uploads/product-photos/' . $photo_url . '">
                     </a>';
               }
             }
@@ -450,10 +439,11 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
                 </form> -->
 
                   <!-- Add to Cart Form -->
-                  <form method="POST" action="" class="me-3" >
+                  <form method="POST" action="" class="me-3" id="addToCartForm">
                     <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
                     <input type="hidden" name="product_quantity" id="cart-quantity" value="1">
-                    <button type="submit" name="add_to_cart" class="btn btn-primary shadow-0">
+                    <input type="hidden" name="add_to_cart" value="1">
+                    <button type="button" name="add_to_cart_btn" class="btn btn-primary shadow-0" id="addToCartBtn">
                       <i class="bi bi-basket me-1"></i> Add to cart
                     </button>
                   </form>
@@ -774,7 +764,7 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
               $pdf_name = $result['product_catalogue'];
 
               // files are stored in the 'assets/uploads/' directory
-              $file_path = 'assets/uploads/' . $pdf_name;
+              $file_path = '/assets/uploads/' . $pdf_name;
               $view_url = "pdf_download.php?action=view&id=$product_id";
               $download_url = "pdf_download.php?action=download&id=$product_id";
               echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank" style="text-decoration:none;"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
@@ -814,7 +804,7 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
               <?php foreach ($related_products as $related_product): ?>
                 <div class="d-flex mb-3">
                   <a href="/product/<?php echo urlencode($related_product['p_slug']); ?>" class="me-3">
-                    <img src="assets/uploads/product-photos/<?php echo $related_product['p_featured_photo']; ?>"
+                    <img src="/assets/uploads/product-photos/<?php echo $related_product['p_featured_photo']; ?>"
                       style="width: 100px; height: 96px;" class="img-thumbnail"
                       alt="<?php echo htmlspecialchars($related_product['p_name']); ?>" />
                   </a>
@@ -855,7 +845,8 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
 
 
 <!-- Link Bootstrap CSS and Icons -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/css/product_landing.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -950,7 +941,7 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
     });
 
     // Ensure the main image defaults to p_featured_photo
-    mainImage.src = "<?php echo 'assets/uploads/product-photos/' . $p_featured_photo; ?>";
+    mainImage.src = "<?php echo '/assets/uploads/product-photos/' . $p_featured_photo; ?>";
   });
   const img = document.querySelector('.zoom-effect');
 
@@ -969,6 +960,52 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
   img.addEventListener('mouseleave', function() {
     img.style.transformOrigin = 'center center'; // Defaults back to center zoom
   });
+
+  // Handle Add to Cart button click
+  document.getElementById('addToCartBtn').addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent form submission
+
+    const form = document.getElementById('addToCartForm');
+    const formData = new FormData(form);
+
+    fetch('', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'login_required') {
+        // Show login modal
+        var loginModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
+        loginModal.show();
+        showMessage('Please login to add items to cart', 'error');
+      } else if (data.status === 'success') {
+        showMessage(data.message, 'success');
+        // Optionally update cart count
+        updateCartCount();
+      } else {
+        showMessage(data.message, 'error');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showMessage('An error occurred while adding to cart', 'error');
+    });
+  });
+
+  function updateCartCount() {
+    // Fetch and update cart count if needed
+    fetch('cart_count.php')
+      .then(response => response.text())
+      .then(count => {
+        // Update cart count in header or wherever it's displayed
+        const cartCountElement = document.querySelector('.cart-count'); // Adjust selector as needed
+        if (cartCountElement) {
+          cartCountElement.textContent = count;
+        }
+      })
+      .catch(error => console.error('Error updating cart count:', error));
+  }
 </script>
 
 <div>

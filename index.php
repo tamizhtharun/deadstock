@@ -2,7 +2,7 @@
 require_once('track_view.php');
 trackPageView('HP', 'Home page');
 ?>
-<link rel="stylesheet" href="/deadstock/css/index.css">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 <div class="category-pad">
     <div class="category-box">
@@ -64,59 +64,44 @@ trackPageView('HP', 'Home page');
                 <span class="quote-bold"><?php echo htmlspecialchars($quote_span_text); ?></span>
                 <?php echo nl2br(htmlspecialchars($quote_text)); ?>
             </p>
-            <img src="assets/uploads/<?php echo $logo ?>" alt="Logo" class="logo">
+            <img src="assets/uploads/<?php echo $favicon ?>" alt="Logo" class="logo">
         </div>
 
-        <div class="brands">
-            <div class="ind-brand">
-                <a href="#" class="link-body-emphasis link-underline-opacity-0">
-                    <div class="img-category">
-                        <img src="./icons/index milling.png">
-                    </div>
-                    <p class="brand-name">Indexable Milling Tools</p>
-                </a>
+<!-- advertisements section -->
+<div class="advertisements">
+    <div class="ad-column">
+        <a href="#" class="ad-link">
+            <div class="ad-container">
+                <img src="assets/uploads/ads/1.png" alt="Advertisement 1" class="ad-image">
+                <div class="ad-overlay">
+                    <span class="ad-text">Premium Tools Sale</span>
+                </div>
             </div>
-            <div class="ind-brand">
-                <a href="#" class="link-body-emphasis link-underline-opacity-0">
-                    <div class="img-category">
-                        <img src="./icons/endmill.png">
-                    </div>
-                    <p class="brand-name">Solid Carbide Endmills</p>
-                </a>
+        </a>
+    </div>
+    
+    <div class="ad-column">
+        <a href="#" class="ad-link">
+            <div class="ad-container">
+                <img src="assets/uploads/ads/2.png" alt="Advertisement 2" class="ad-image">
+                <div class="ad-overlay">
+                    <span class="ad-text">New Arrivals</span>
+                </div>
             </div>
-            <div class="ind-brand">
-                <a href="#" class="link-body-emphasis link-underline-opacity-0">
-                    <div class="img-category">
-                        <img src="./icons/turning.png">
-                    </div>
-                    <p class="brand-name ">Turning Tools</p>
-                </a>
+        </a>
+    </div>
+    
+    <div class="ad-column">
+        <a href="#" class="ad-link">
+            <div class="ad-container">
+                <img src="assets/uploads/ads/3.png" alt="Advertisement 3" class="ad-image">
+                <div class="ad-overlay">
+                    <span class="ad-text">Special Offers</span>
+                </div>
             </div>
-            <div class="ind-brand">
-                <a href="#" class="link-body-emphasis link-underline-opacity-0">
-                    <div class="img-category">
-                        <img src="./icons/hole.png">
-                    </div>
-                    <p class="brand-name">Holemaking Tools</p>
-                </a>
-            </div>
-            <div class="ind-brand">
-                <a href="#" class="link-body-emphasis link-underline-opacity-0">
-                    <div class="img-category">
-                        <img src="./icons/Threading tools.png">
-                    </div>
-                    <p class="brand-name">Threading Tools</p>
-                </a>
-            </div>
-            <div class="ind-brand">
-                <a href="#" class="link-body-emphasis link-underline-opacity-0">
-                    <div class="img-category">
-                        <img src="./icons/others.png">
-                    </div>
-                    <p class="brand-name">Others</p>
-                </a>
-            </div>
-        </div>
+        </a>
+    </div>
+</div>
     </div>
 </div>
 
