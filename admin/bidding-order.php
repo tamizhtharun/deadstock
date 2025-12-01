@@ -1,5 +1,138 @@
 <?php
 //bidding-order.php
+require_once('../db_connection.php');
+
+// Check if export_csv button is clicked - must be before any output
+if (isset($_POST['export_csv'])) {
+    // Build query with filters
+    $query = "SELECT
+        b.bid_id,
+        b.bid_price,
+        b.bid_quantity,
+        b.order_id,
+        b.payment_id,
+        p.id AS product_id,
+        p.p_name,
+        p.p_featured_photo,
+        p.seller_id,
+        s.seller_name,
+        s.seller_cname,
+        u.username,
+        u.id AS user_id,
+        u.email,
+        u.phone_number,
+        ua.id AS address_id,
+        ua.full_name,
+        ua.phone_number as delivery_phone,
+        ua.address,
+        ua.city,
+        ua.state,
+        ua.pincode,
+        DATE(b.bid_time) as bid_date,
+        b.bid_status,
+        o.order_status,
+        o.id AS order_table_id,
+        o.updated_at,
+        o.processing_time,
+        o.tracking_id,
+        o.delhivery_awb,
+        o.delhivery_shipment_status
+    FROM
+        bidding b
+    JOIN
+        tbl_product p ON b.product_id = p.id
+    JOIN
+        sellers s ON p.seller_id = s.seller_id
+    JOIN
+        users u ON b.user_id = u.id
+    LEFT JOIN
+        users_addresses ua ON u.id = ua.user_id AND ua.is_default = 1
+    LEFT JOIN
+        tbl_orders o ON b.bid_id = o.bid_id
+    WHERE
+        (b.bid_status = 2 OR o.order_type ='bid')";
+
+    $params = array();
+
+    // Apply status filter
+    if (!empty($_POST['status_filter'])) {
+        if ($_POST['status_filter'] == 'not_sent') {
+            $query .= " AND o.order_status IS NULL";
+        } else {
+            $query .= " AND o.order_status = ?";
+            $params[] = $_POST['status_filter'];
+        }
+    }
+
+    // Apply date filter
+    if (!empty($_POST['from_date']) && !empty($_POST['to_date'])) {
+        $query .= " AND DATE(b.bid_time) BETWEEN ? AND ?";
+        $params[] = $_POST['from_date'];
+        $params[] = $_POST['to_date'];
+    } elseif (!empty($_POST['from_date'])) {
+        $query .= " AND DATE(b.bid_time) >= ?";
+        $params[] = $_POST['from_date'];
+    } elseif (!empty($_POST['to_date'])) {
+        $query .= " AND DATE(b.bid_time) <= ?";
+        $params[] = $_POST['to_date'];
+    }
+
+    $query .= " ORDER BY b.bid_time DESC";
+
+    try {
+        $statement = $pdo->prepare($query);
+        $statement->execute($params);
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        // Set headers for CSV download after successful query
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="bidding-orders.csv"');
+
+        // Output CSV data
+        $output = fopen('php://output', 'w');
+
+        // Write headers
+        fputcsv($output, array('#', 'Order ID', 'Product', 'Seller Details', 'Customer Details', 'Amount', 'Quantity', 'Delivery Address', 'Status', 'Delhivery AWB', 'Shipment Status'));
+
+        // Write data
+        $i = 0;
+        foreach ($result as $row) {
+            $i++;
+            $total = $row['bid_price'] * $row['bid_quantity'];
+            $amount = number_format($total, 0);
+            $delivery_address = !empty($row['address']) ?
+                $row['full_name'] . ', ' . $row['delivery_phone'] . ', ' . $row['address'] . ', ' . $row['city'] . ', ' . $row['state'] . ', ' . $row['pincode'] :
+                'Address not available';
+            $status = !empty($row['order_status']) ? ucfirst($row['order_status']) : 'Not sent to seller';
+            $awb = !empty($row['delhivery_awb']) ? "'" . $row['delhivery_awb'] : '-';
+            $shipment_status = !empty($row['delhivery_shipment_status']) ? ucfirst($row['delhivery_shipment_status']) : '-';
+
+            fputcsv($output, array(
+                $i,
+                $row['order_id'],
+                $row['p_name'],
+                $row['seller_name'], // Only seller name
+                $row['full_name'], // Only customer name
+                $amount,
+                $row['bid_quantity'],
+                $delivery_address,
+                $status,
+                $awb,
+                $shipment_status
+            ));
+        }
+
+        fclose($output);
+        exit();
+    } catch (Exception $e) {
+        // Log the error
+        error_log("CSV Export Error: " . $e->getMessage());
+        // Redirect back with error message
+        header('Location: ' . $_SERVER['PHP_SELF'] . '?error=export_failed');
+        exit();
+    }
+}
+
 require_once('header.php');
 ?>
 
@@ -115,6 +248,14 @@ require_once('header.php');
                         <option value="shipped">Shipped</option>
                         <option value="delivered">Delivered</option>
                     </select>
+                </div>
+                <div class="export-group">
+                    <form method="POST" action="" id="exportForm">
+                        <input type="hidden" name="status_filter" id="hiddenStatusFilter">
+                        <input type="hidden" name="from_date" id="hiddenFromDate">
+                        <input type="hidden" name="to_date" id="hiddenToDate">
+                        <button type="submit" name="export_csv" class="btn btn-primary btn-xs">Export to CSV</button>
+                    </form>
                 </div>
             </div>
 
@@ -685,6 +826,14 @@ if (newStatus === 'shipped') {
             }
         });
     }
+
+    // Handle CSV export form submission
+    document.getElementById('exportForm').addEventListener('submit', function(e) {
+        // Populate hidden fields with current filter values
+        document.getElementById('hiddenStatusFilter').value = document.getElementById('statusFilter').value;
+        document.getElementById('hiddenFromDate').value = document.getElementById('fromDate').value;
+        document.getElementById('hiddenToDate').value = document.getElementById('toDate').value;
+    });
 
 </script>
 <?php require_once('footer.php'); ?>
