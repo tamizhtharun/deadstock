@@ -934,3 +934,27 @@ form {
         font-size: calc(18px + 2vw);
     }
 }
+
+/*=============== Banner===============  */
+
+.banner {
+    /* margin-top: 50px; */
+    width: 100%;
+    height: 250px;
+    min-height: 200px;
+    /* border-radius: 12px; */
+    overflow: hidden;
+    box-shadow: 0 4px 20px var(--shadow-copper);
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.carousel-item {
+    width: 100%;
+    /* height: 100%; */
+    /* object-fit: ; */
+    overflow: hidden !important;
+    transition: transform 0.3s ease;
+    align-self: center !important;
+    vertical-align: middle !important;
+}

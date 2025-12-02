@@ -126,6 +126,13 @@ if (!isset($_SESSION['admin_session'])) {
 							<i class="fa fa-sliders"></i> <span>Website Settings</span>
 						</a>
 					</li>
+					<li class="treeview <?php if (($cur_page == 'slider.php') || ($cur_page == 'slider-add.php') || ($cur_page == 'slider-edit.php') || ($cur_page == 'slider-delete.php')) {
+											echo 'active';
+										} ?>">
+						<a href="slider.php">
+							<i class="fa fa-sliders"></i> <span>Manage Sliders</span>
+						</a>
+					</li>
 
 					<li class="treeview <?php if (($cur_page == 'brand-management.php') || ($cur_page == 'brand-edit.php') || ($cur_page == 'brand-add.php') || ($cur_page == 'brand-delete.php')) {
 											echo 'active';

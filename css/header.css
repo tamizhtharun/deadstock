@@ -8,7 +8,7 @@
     --copper-primary: #b87333;
     --copper-light: #d4a574;
     --copper-dark: #8b5a2b;
-    --copper-extra-light: #e6c9a8;
+    /* --copper-extra-light: #e6c9a8; */
     --black-primary: #1a1a1a;
     --black-secondary: #2c2c2c;
     --cream-bg: #faf8f3;
@@ -353,7 +353,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    border: 2px solid var(--copper-light);
+    border: 2px solid transparent;
     background: var(--white);
     color: var(--copper-dark);
     cursor: pointer;
@@ -365,10 +365,10 @@
 }
 
 .ds-icon-button:hover {
-    background: linear-gradient(135deg, var(--copper-primary) 0%, var(--copper-light) 100%);
-    border-color: var(--copper-primary);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(184, 115, 51, 0.3);
+    /* background: linear-gradient(135deg, var(--copper-primary) 0%, var(--copper-light) 100%); */
+    /* border-color: var(--copper-primary); */
+    transform: translateY(-1px);
+    /* box-shadow: 0 6px 16px rgba(184, 115, 51, 0.3); */
 }
 
 .ds-icon-button i {
@@ -439,13 +439,13 @@
     height: 36px;
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid var(--copper-light);
+    /* border: 2px solid var(--copper-light); */
     box-shadow: 0 2px 8px var(--shadow-copper);
     transition: all var(--ds-transition-speed) ease;
 }
 
 .ds-avatar:hover {
-    border-color: var(--copper-primary);
+    /* border-color: var(--copper-primary); */
     box-shadow: 0 4px 12px rgba(184, 115, 51, 0.4);
 }
 
@@ -469,7 +469,7 @@
     visibility: hidden;
     transform: translateY(-10px);
     transition: all var(--ds-transition-speed) ease;
-    border: 2px solid var(--copper-light);
+    /* border: 2px solid var(--copper-light); */
     overflow: hidden;
 }
 
