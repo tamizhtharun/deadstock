@@ -733,13 +733,69 @@ if (isset($_POST['form1'])) {
 				closeOnSelect: true
 			});
 
+
+		// When top-category changes
+		$(document).on('change', '.top-cat', function(e) {
+			var top_cat_id = $(this).val();
+			var $midCat = $('.mid-cat');
+			var $endCat = $('.end-cat');
+
+			if (top_cat_id) {
+				$.ajax({
+					url: "get-mid-category.php",
+					type: "POST",
+					data: {
+						id: top_cat_id
+					},
+					success: function(response) {
+						// Destroy existing select2 instance
+						$midCat.select2('destroy');
+						// Update the HTML
+						$midCat.html(response);
+						// Check for real options (excluding the default option)
+						var hasOptions = $midCat.find('option[value!=""]').length > 0;
+						// Set disabled state based on options
+						$midCat.prop('disabled', !hasOptions);
+						// Reinitialize select2
+						$midCat.select2({
+							width: '100%'
+						});
+
+						// Reset end category dropdown
+						$endCat.select2('destroy');
+						$endCat.html('<option value="">Select End Level Category</option>');
+						$endCat.prop('disabled', true);
+						$endCat.select2({
+							width: '100%'
+						});
+					}
+				});
+			} else {
+				// If no top category selected, reset both mid and end categories
+				$midCat.select2('destroy');
+				$midCat.html('<option value="">Select Mid Level Category</option>');
+				$midCat.prop('disabled', true);
+				$midCat.select2({
+					width: '100%'
+				});
+
+				$endCat.select2('destroy');
+				$endCat.html('<option value="">Select End Level Category</option>');
+				$endCat.prop('disabled', true);
+				$endCat.select2({
+					width: '100%'
+				});
+			}
+		});
+
+
 			// When mid-category changes
 			$(document).on('change', '.mid-cat', function(e) {
 				var mid_cat_id = $(this).val();
 				var $endCat = $('.end-cat');
 
 				$.ajax({
-					url: "get_end_category.php",
+					url: "get-end-category.php",
 					type: "POST",
 					data: {
 						id: mid_cat_id
