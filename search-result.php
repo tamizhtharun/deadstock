@@ -211,13 +211,21 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
 
                     <div class="filter-group">
-                        <label class="filter-label" for="price-range">Maximum Price</label>
-                        <input type="range" id="price-range" name="price" class="filter-select"
-                               min="<?php echo floor($price_range['min_price']); ?>"
-                               max="<?php echo ceil($price_range['max_price']); ?>"
-                               value="<?php echo $price_filter ?: ceil($price_range['max_price']); ?>">
-                        <span id="price-display">₹<?php echo number_format($price_filter ?: $price_range['max_price'], 2); ?></span>
-                    </div>
+    <label class="filter-label" for="price-range">Maximum Price</label>
+    <div class="price-slider-wrapper">
+        <input type="range" 
+               id="price-range" 
+               name="price" 
+               min="<?php echo floor($price_range['min_price']); ?>"
+               max="<?php echo ceil($price_range['max_price']); ?>"
+               value="<?php echo $price_filter ?: ceil($price_range['max_price']); ?>"
+               step="1">
+        <div id="price-display">
+            <span class="price-label">Max</span>
+            <span class="price-value">₹<?php echo number_format($price_filter ?: $price_range['max_price'], 2); ?></span>
+        </div>
+    </div>
+</div>
 
                     <button type="submit" class="btn btn-primary mt-3">Apply Filters</button>
                 </form>
@@ -286,18 +294,45 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
     </div>
 
     <script>
-        // Update price display when range input changes
-        const priceRange = document.getElementById('price-range');
-        const priceDisplay = document.getElementById('price-display');
-        
-        if (priceRange && priceDisplay) {
-            priceRange.addEventListener('input', function() {
-                priceDisplay.textContent = '₹' + parseFloat(this.value).toLocaleString('en-IN', {
-                    maximumFractionDigits: 2,
-                    minimumFractionDigits: 2
-                });
+        document.addEventListener('DOMContentLoaded', function() {
+    const priceRange = document.getElementById('price-range');
+    const priceDisplay = document.getElementById('price-display');
+    
+    if (priceRange && priceDisplay) {
+        // Function to update slider appearance
+        function updateSliderVisual() {
+            const value = parseFloat(priceRange.value);
+            const min = parseFloat(priceRange.min);
+            const max = parseFloat(priceRange.max);
+            const percentage = ((value - min) / (max - min)) * 100;
+            
+            // Update the display text
+            priceDisplay.textContent = '₹' + value.toLocaleString('en-IN', {
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2
             });
+            
+            // Update the slider background gradient
+            priceRange.style.background = `linear-gradient(to right, 
+                #d4a574 0%, 
+                #b87333 ${percentage}%, 
+                #f5f5f5 ${percentage}%, 
+                #f5f5f5 100%)`;
         }
+        
+        // Initialize on page load
+        updateSliderVisual();
+        
+        // Update on input (while dragging)
+        priceRange.addEventListener('input', function() {
+            updateSliderVisual();
+        });
+        
+        // Update on change (when released)
+        priceRange.addEventListener('change', function() {
+            updateSliderVisual();
+        });
+    }});
     </script>
     <?php include 'footer.php' ?>
 </body>

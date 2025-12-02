@@ -753,6 +753,14 @@ body::-webkit-scrollbar-thumb:hover {
     color: var(--copper-primary);
     font-weight: 600;
 }
+/* 
+.products-container{
+    max-height: 300px;
+} */
+
+.swiper-wrapper{
+    max-height: 250px;
+}
 
 /* ==========================================
    ANIMATIONS
@@ -949,7 +957,7 @@ form {
     justify-content: center !important;
 }
 
-.carousel-item {
+.carousel-item img {
     width: 100%;
     /* height: 100%; */
     /* object-fit: ; */
