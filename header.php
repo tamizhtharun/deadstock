@@ -461,7 +461,7 @@ unset($_SESSION['success_message']);
                 let query = $(this).val();
                 if (query.length > 0) {
                     $.ajax({
-                        url: "search_suggestions.php",
+                        url: "../search_suggestions.php",
                         method: "GET",
                         data: { search_text: query },
                         success: function (data) {
@@ -645,7 +645,7 @@ $(document).ready(function() {
             const suggestionsList = document.getElementById('suggestions-list');
             suggestionsList.style.display = 'block';  // Ensure the suggestions dropdown is visible
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'search_automatic.php?search_text=' + searchText, true);
+            xhr.open('GET', '/search_automatic.php?search_text=' + searchText, true);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     suggestionsList.innerHTML = xhr.responseText;  // Populate the suggestion list with response

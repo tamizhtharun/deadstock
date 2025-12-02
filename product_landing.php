@@ -765,8 +765,8 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
 
               // files are stored in the 'assets/uploads/' directory
               $file_path = '/assets/uploads/' . $pdf_name;
-              $view_url = "pdf_download.php?action=view&id=$product_id";
-              $download_url = "pdf_download.php?action=download&id=$product_id";
+              $view_url = "/pdf_download.php?action=view&id=$product_id";
+              $download_url = "/pdf_download.php?action=download&id=$product_id";
               echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank" style="text-decoration:none;"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
               echo '&nbsp;&nbsp;';
               echo '<a href="' . $download_url . '" class="btn btn-success" style="text-decoration:none;"><i class="fa fa-download"></i> Download Catalogue</a>';

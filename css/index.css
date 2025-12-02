@@ -731,6 +731,7 @@ body::-webkit-scrollbar-thumb:hover {
     box-shadow: 0 4px 12px var(--shadow-copper);
     transition: all 0.3s ease;
     border: 2px solid transparent;
+    width: 200px;
 }
 
 .product-item:hover {
@@ -759,7 +760,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 .swiper-wrapper{
-    max-height: 270px;
+    max-height: 100% !important;
 }
 
 /* ==========================================
