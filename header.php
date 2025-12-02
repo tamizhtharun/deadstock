@@ -536,6 +536,8 @@ $(document).ready(function() {
             const errorMessage = "<?php echo addslashes($error_message ?? ''); ?>";
             if (errorMessage) {
                 modal.show(); // Show the modal with error message
+                const modalMessageContainer = document.getElementById('modal-message-container');
+                modalMessageContainer.innerHTML = `<div class="alert alert-danger">${errorMessage}</div>`;
             }
 
             // Handle cleanup when the modal is hidden
