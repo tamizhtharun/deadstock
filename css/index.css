@@ -753,13 +753,13 @@ body::-webkit-scrollbar-thumb:hover {
     color: var(--copper-primary);
     font-weight: 600;
 }
-/* 
+
 .products-container{
-    max-height: 300px;
-} */
+    /* max-height: 250px; */
+}
 
 .swiper-wrapper{
-    max-height: 250px;
+    max-height: 270px;
 }
 
 /* ==========================================
