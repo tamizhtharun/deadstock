@@ -504,7 +504,7 @@ require_once('header.php');
 </div>
 </section>
 
-<?php include('invoice_modal.php'); ?>
+<?php require_once('invoice_modal.php'); ?>
 <div id="sellerModal" class="seller-modal">
     <div class="seller-modal-content">
         <div class="seller-modal-header">
@@ -847,7 +847,7 @@ function trackShipment(orderId) {
 }
 
 </script>
-<script src="/js/bidding-order.js"></script>
+<script src="js/bidding-order.js"></script>
 <script>
 
 const sellerTabButtons = document.querySelectorAll('.seller-tab-button');
