@@ -6,23 +6,10 @@ require_once('../db_connection.php');
 if (isset($_POST['export_csv'])) {
     // Build query with filters
     $query = "SELECT
-        o.id AS order_id,
         o.order_id AS order_number,
-        o.price,
-        o.quantity,
-        o.order_status,
-        o.tracking_id,
-        o.delhivery_awb,
-        o.delhivery_shipment_status,
-        o.delhivery_created_at,
-        o.address_id,
-        o.created_at,
-        p.id AS product_id,
-        p.p_name,
-        p.p_featured_photo,
-        p.seller_id,
-        s.seller_name,
-        s.seller_cname,
+        GROUP_CONCAT(DISTINCT p.p_name ORDER BY p.p_name SEPARATOR ', ') AS product_names,
+        GROUP_CONCAT(DISTINCT s.seller_name ORDER BY s.seller_name SEPARATOR ', ') AS seller_names,
+        GROUP_CONCAT(DISTINCT s.seller_cname ORDER BY s.seller_cname SEPARATOR ', ') AS seller_cnames,
         u.username,
         u.id AS user_id,
         u.email,
@@ -32,7 +19,19 @@ if (isset($_POST['export_csv'])) {
         ua.address,
         ua.city,
         ua.state,
-        ua.pincode
+        ua.pincode,
+        o.order_status,
+        o.processing_time,
+        o.tracking_id,
+        o.delhivery_awb,
+        o.delhivery_shipment_status,
+        o.delhivery_created_at,
+        o.address_id,
+        MAX(o.created_at) AS created_at,
+        SUM(o.price * o.quantity) AS total_amount,
+        GROUP_CONCAT(CONCAT('Price: ₹', FORMAT(o.price, 0), ', Qty: ', o.quantity) ORDER BY p.p_name SEPARATOR '; ') AS price_quantity_details,
+        GROUP_CONCAT(o.id) AS order_ids,
+        GROUP_CONCAT(DISTINCT p.seller_id) AS seller_ids
     FROM
         tbl_orders o
     JOIN
@@ -82,14 +81,12 @@ if (isset($_POST['export_csv'])) {
         $output = fopen('php://output', 'w');
 
         // Write headers
-        fputcsv($output, array('#', 'Order ID', 'Product', 'Seller Details', 'Customer Details', 'Amount', 'Quantity', 'Delivery Address', 'Status', 'Delhivery AWB', 'Shipment Status'));
+        fputcsv($output, array('#', 'Order ID', 'Product', 'Seller Details', 'Customer Details', 'Amount', 'Price & Quantity', 'Delivery Address', 'Status', 'Delhivery AWB', 'Shipment Status'));
 
         // Write data
         $i = 0;
         foreach ($result as $row) {
             $i++;
-            $total = $row['price'] * $row['quantity'];
-            $amount = number_format($total, 0);
             $delivery_address = !empty($row['address']) ?
                 $row['full_name'] . ', ' . $row['delivery_phone'] . ', ' . $row['address'] . ', ' . $row['city'] . ', ' . $row['state'] . ', ' . $row['pincode'] :
                 'Address not available';
@@ -100,11 +97,11 @@ if (isset($_POST['export_csv'])) {
             fputcsv($output, array(
                 $i,
                 $row['order_number'],
-                $row['p_name'],
-                $row['seller_name'], // Only seller name
-                $row['full_name'], // Only customer name
-                $amount,
-                $row['quantity'],
+                $row['product_names'],
+                $row['seller_names'], // Seller names
+                $row['full_name'], // Customer name
+                number_format($row['total_amount'], 0),
+                $row['price_quantity_details'],
                 $delivery_address,
                 $status,
                 $awb,
@@ -315,39 +312,25 @@ function loadInvoiceContent(modal, orderId) {
                         <th>#</th>
                         <th width="120">Order ID</th>
                         <th width="200">Product</th>
-                        <th width="100">Seller Details</th>
+                        <!-- <th width="100">Seller Details</th> -->
                         <th>Customer Details</th>
                         <th width="80">Amount</th>
                         <th>Delivery Address</th>
                         <th>Status</th>
                         <th>Processing Time</th>
                         <th>Delhivery AWB</th>
-                        <th>Shipment Status</th>
+                        <!-- <th>Shipment Status</th> -->
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php
                     $i = 0;
-                    $statement = $pdo->prepare("SELECT 
-                        o.id AS order_id,
+                    $statement = $pdo->prepare("SELECT
                         o.order_id AS order_number,
-                        o.price,
-                        o.quantity,
-                        o.order_status,
-                        o.processing_time,
-                        o.tracking_id,
-                        o.delhivery_awb,
-                        o.delhivery_shipment_status,
-                        o.delhivery_created_at,
-                        o.address_id,
-                        o.created_at,
-                        p.id AS product_id,
-                        p.p_name,
-                        p.p_featured_photo,
-                        p.seller_id,
-                        s.seller_name,
-                        s.seller_cname,
+                        GROUP_CONCAT(DISTINCT p.p_name ORDER BY p.p_name SEPARATOR ', ') AS product_names,
+                        GROUP_CONCAT(DISTINCT s.seller_name ORDER BY s.seller_name SEPARATOR ', ') AS seller_names,
+                        GROUP_CONCAT(DISTINCT s.seller_cname ORDER BY s.seller_cname SEPARATOR ', ') AS seller_cnames,
                         u.username,
                         u.id AS user_id,
                         u.email,
@@ -357,30 +340,47 @@ function loadInvoiceContent(modal, orderId) {
                         ua.address,
                         ua.city,
                         ua.state,
-                        ua.pincode
-                    FROM 
+                        ua.pincode,
+                        o.order_status,
+                        o.created_at,
+                        o.tracking_id,
+                        o.delhivery_awb,
+                        o.delhivery_shipment_status,
+                        o.delhivery_created_at,
+                        o.address_id,
+                        MAX(o.created_at) AS created_at,
+                        SUM(o.price * o.quantity) AS total_amount,
+                        GROUP_CONCAT(CONCAT('Price: ₹', FORMAT(o.price, 0), ', Qty: ', o.quantity) ORDER BY p.p_name SEPARATOR '; ') AS price_quantity_details,
+                        GROUP_CONCAT(o.id) AS order_ids
+                    FROM
                         tbl_orders o
-                    JOIN 
+                    JOIN
                         tbl_product p ON o.product_id = p.id
-                    JOIN 
+                    JOIN
                         sellers s ON p.seller_id = s.seller_id
-                    JOIN 
+                    JOIN
                         users u ON o.user_id = u.id
                     LEFT JOIN
                         users_addresses ua ON o.address_id = ua.id
-                    WHERE 
+                    WHERE
                         o.order_type = 'direct'
-                    ORDER BY 
-                        o.created_at DESC");
+                    GROUP BY
+                        o.order_id, u.id
+                    ORDER BY
+                        MAX(o.created_at) DESC");
                     $statement->execute();
                     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                     
-                    foreach ($result as $row): 
+                    foreach ($result as $row):
                         $i++;
+                        $order_ids = explode(',', $row['order_ids']);
+                        $first_order_id = $order_ids[0];
+                        $seller_ids = explode(',', $row['seller_ids'] ?? '');
+                        $first_seller_id = $seller_ids[0] ?? '';
                 ?>
-                    <tr class="order-row" 
-                        data-order-id="<?php echo $row['order_id']; ?>" 
-                        data-date="<?php echo date('Y-m-d', strtotime($row['created_at'])); ?>" 
+                    <tr class="order-row"
+                        data-order-id="<?php echo $first_order_id; ?>"
+                        data-date="<?php echo date('Y-m-d', strtotime($row['created_at'])); ?>"
                         data-status="<?php echo $row['order_status']; ?>">
                         <td><?php echo $i; ?></td>
                         <td>
@@ -388,31 +388,23 @@ function loadInvoiceContent(modal, orderId) {
                             <small class="text-muted"><?php echo date('M d, Y', strtotime($row['created_at'])); ?></small>
                         </td>
                         <td>
-                            <div class="d-flex align-items-center">
-                                <img src="../assets/uploads/product-photos/<?php echo $row['p_featured_photo']; ?>" 
-                                     alt="Product Photo" 
-                                     style="width:70px;"
-                                     class="product-image">
-                                <div class="ms-3">
-                                    <?php echo $row['p_name']; ?>
-                                </div>
-                            </div>
+                            <?php echo $row['product_names']; ?>
                         </td>
-                        <td>
-                            <?php echo $row['seller_name']; ?><br>
-                            <?php echo $row['seller_cname']; ?>
+                        <!-- <td>
+                            <?php echo $row['seller_names']; ?><br>
+                            <?php echo $row['seller_cnames']; ?>
                             <div>
-                                <a href="javascript:void(0);" onclick="openSellerModal(<?php echo $row['seller_id']; ?>)">View Seller Details</a>
-                            </div>
-                        </td>
+                                <a href="javascript:void(0);" onclick="openSellerModal(<?php echo $first_seller_id; ?>)">View Seller Details</a>
+                            </div> 
+                        </td> -->
                         <td>
                             <?php echo $row['username']; ?><br>
                             <?php echo $row['email']; ?><br>
                             <?php echo $row['phone_number']; ?>
                         </td>
                         <td>
-                            Price: ₹<?php echo number_format($row['price'], 0); ?><br>
-                            Qty: <?php echo $row['quantity']; ?><br>
+                            <!-- <?php echo $row['price_quantity_details']; ?><br> -->
+                            Total: ₹<?php echo number_format($row['total_amount'], 0); ?>
                         </td>
                         <td>
                             <?php if(!empty($row['address'])): ?>
@@ -433,8 +425,8 @@ function loadInvoiceContent(modal, orderId) {
                         </td>
                         <td class="processing-time">
                             <?php
-                                if (!empty($row['processing_time'])) {
-                                    echo date('Y-m-d H:i:s', strtotime($row['processing_time']));
+                                if (!empty($row['created_at'])) {
+                                    echo date('Y-m-d H:i:s', strtotime($row['created_at']));
                                 } else {
                                     echo '-';
                                 }
@@ -449,7 +441,7 @@ function loadInvoiceContent(modal, orderId) {
                                 <span class="text-muted">-</span>
                             <?php endif; ?>
                         </td>
-                        <td class="shipment-status">
+                        <!-- <td class="shipment-status">
                             <?php if (!empty($row['delhivery_shipment_status'])): ?>
                                 <?php 
                                     $statusClass = '';
@@ -484,49 +476,55 @@ function loadInvoiceContent(modal, orderId) {
                             <?php else: ?>
                                 <span class="text-muted">-</span>
                             <?php endif; ?>
-                        </td>
+                        </td> -->
                         <td class="action-column">
                             <?php if($row['order_status'] === 'pending'): ?>
-                                <button class="btn-status-update disabled">
+                                <button class="btn-status-update ">
                                     <i class="fa fa-clock-o"></i> Waiting for Seller
                                 </button>
                             <?php elseif($row['order_status'] === 'processing'): ?>
                                 <div class="action-buttons">
-                                    <button 
-                                        class="btn-status-update" 
-                                        onclick="updateOrderStatus(<?php echo $row['order_id']; ?>, 'shipped')">
+                                    <!-- <button
+                                        class="btn-status-update"
+                                        onclick="updateOrderStatus(<?php echo $first_order_id; ?>, 'shipped')">
                                         <i class="fa fa-truck"></i> Shipped
-                                    </button>
-                                    <button 
-                                        class="btn-status-update" 
-                                        onclick="updateOrderStatus(<?php echo $row['order_id']; ?>, 'canceled')">
+                                    </button> -->
+                                    <!-- <button
+                                        class="btn-status-update"
+                                        onclick="updateOrderStatus(<?php echo $first_order_id; ?>, 'canceled')">
                                         <i class="fa fa-times-circle"></i> Cancelled
-                                    </button>
+                                    </button> -->
+                                    <button
+    class="btn btn-sm mt-1"
+    style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;"
+    onclick="openInvoiceModal(<?php echo $first_order_id; ?>)">
+    <i class="fa fa-file-pdf-o"></i> Generate Invoice
+</button>
                                 </div>
 <?php elseif($row['order_status'] === 'shipped'): ?>
     <div class="action-buttons">
-        <button 
-            class="btn-status-update" 
-            onclick="updateOrderStatus(<?php echo $row['order_id']; ?>, 'delivered')">
+        <!-- <button
+            class="btn-status-update"
+            onclick="updateOrderStatus(<?php echo $first_order_id; ?>, 'delivered')">
             <i class="fa fa-check-circle"></i> Delivered
-        </button>
-        <button 
-            class="btn-status-update" 
-            onclick="updateOrderStatus(<?php echo $row['order_id']; ?>, 'canceled')">
+        </button> -->
+        <!-- <button
+            class="btn-status-update"
+            onclick="updateOrderStatus(<?php echo $first_order_id; ?>, 'canceled')">
             <i class="fa fa-times-circle"></i> Cancelled
-        </button>
+        </button> -->
         <?php if (!empty($row['delhivery_awb'])): ?>
-            <button 
-                class="btn-status-update" 
-                onclick="trackShipment(<?php echo $row['order_id']; ?>)"
+            <button
+                class="btn-status-update"
+                onclick="trackShipment(<?php echo $first_order_id; ?>)"
                 style="background: #28a745; color: white; margin: 2px;">
                 <i class="fa fa-search"></i> Track Shipment
             </button>
         <?php endif; ?>
-        <button 
-    class="btn btn-sm mt-1" 
+        <button
+    class="btn btn-sm mt-1"
     style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;"
-    onclick="openInvoiceModal(<?php echo $row['order_id']; ?>)">
+    onclick="openInvoiceModal(<?php echo $first_order_id; ?>)">
     <i class="fa fa-file-pdf-o"></i> Generate Invoice
 </button>
     </div>

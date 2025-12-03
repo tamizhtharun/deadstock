@@ -71,7 +71,7 @@ if (isset($_GET['delete_all'])) {
                     <div class="card-body">
                         <?php
                         $cart_query = mysqli_query($conn, "
-                                SELECT c.*, p.p_name, p.p_featured_photo, p.p_current_price, p.p_old_price 
+                                SELECT c.*, p.p_name, p.p_featured_photo, p.p_current_price, p.p_old_price, p.gst_percentage
                                 FROM tbl_cart c
                                 INNER JOIN tbl_product p ON c.id = p.id
                                 WHERE c.user_id = '$user_id'
@@ -79,12 +79,15 @@ if (isset($_GET['delete_all'])) {
 
                         $grand_total = 0;
                         $total_savings = 0;
+                        $total_gst = 0;
 
                         if (mysqli_num_rows($cart_query) > 0):
                             while ($item = mysqli_fetch_assoc($cart_query)):
                                 $sub_total = $item['p_current_price'] * $item['quantity'];
+                                $product_gst = $sub_total * ($item['gst_percentage'] / 100);
                                 $savings = ($item['p_old_price'] - $item['p_current_price']) * $item['quantity'];
                                 $grand_total += $sub_total;
+                                $total_gst += $product_gst;
                                 $total_savings += $savings;
                                 ?>
                                 <div class="cart-item" data-id="<?php echo $item['id']; ?>">
@@ -141,8 +144,9 @@ if (isset($_GET['delete_all'])) {
                                         </div>
                                         <div class="col-md-3">
                                             <div class="total-price" style="font-size: 1.3rem; font-weight: bold; color: #000;">
-                                                Total: ₹
-                                                <span class="item-total"><?php echo number_format($sub_total, 2); ?></span>
+                                                Subtotal: ₹<?php echo number_format($sub_total, 2); ?><br>
+                                                <small class="text-muted">GST (<?php echo $item['gst_percentage']; ?>%): ₹<?php echo number_format($product_gst, 2); ?></small><br>
+                                                <strong>Total: ₹<?php echo number_format($sub_total + $product_gst, 2); ?></strong>
                                             </div>
                                             <!-- <button class="bid-btn btn btn-success custom-btn">Bid</button> -->
                                         </div>
@@ -180,11 +184,16 @@ if (isset($_GET['delete_all'])) {
                                 <span>Total Savings</span>
                                 <span class="amount">-₹<?php echo number_format($total_savings, 2); ?></span>
                             </div>
-
                         <?php endif; ?>
+
+                        <div class="summary-item d-flex justify-content-between mb-3">
+                            <span>GST</span>
+                            <span class="amount">₹<?php echo number_format($total_gst, 2); ?></span>
+                        </div>
+
                         <div class="total-amount d-flex justify-content-between mb-4">
                             <span class="fw-bold">Total</span>
-                            <span class="amount fw-bold">₹<?php echo number_format($grand_total); ?></span>
+                            <span class="amount fw-bold">₹<?php echo number_format($grand_total + $total_gst, 2); ?></span>
                         </div>
 
                         <button id="checkout-btn" class="checkout-btn" onclick="proceedToCheckout()" <?php echo ($grand_total == 0) ? 'disabled' : ''; ?>>

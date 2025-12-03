@@ -40,18 +40,24 @@ function calculateOrderSummary($items)
     $summary = [
         'subtotal' => 0,
         'total_items' => 0,
-        'savings' => 0
+        'savings' => 0,
+        'gst_amount' => 0,
+        'total' => 0
     ];
 
     foreach ($items as $item) {
         $current_price = $item['p_current_price'] * $item['quantity'];
         $old_price = $item['p_old_price'] * $item['quantity'];
+        $product_gst = $current_price * ($item['gst_percentage'] / 100);
         $summary['subtotal'] += $current_price;
+        $summary['gst_amount'] += $product_gst;
         $summary['savings'] += max(0, $old_price - $current_price);
         $summary['total_items'] += $item['quantity'];
     }
 
-    $summary['total'] = $summary['subtotal'];
+    // Calculate total including GST
+    $summary['total'] = $summary['subtotal'] + $summary['gst_amount'];
+
     return $summary;
 }
 
@@ -59,12 +65,13 @@ function getOrderItems($pdo)
 {
     $user_id = $_SESSION['user_session']['id'];
     $stmt = $pdo->prepare("
-        SELECT 
+        SELECT
             p.id,
             p.p_name,
             p.p_current_price,
             p.p_old_price,
             p.p_featured_photo,
+            p.gst_percentage,
             c.quantity
         FROM tbl_cart c
         JOIN tbl_product p ON p.id = c.id
@@ -157,7 +164,7 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     $items = getOrderItems($pdo);
                     foreach ($items as $item):
                     ?>
-                        <div class="product-item">
+                        <div class="" id="product-item">
                             <div class="product-image">
                                 <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($item['p_featured_photo']); ?>"
                                     alt="<?php echo htmlspecialchars($item['p_name']); ?>">
@@ -169,12 +176,17 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <div class="product-savings">
                                     ₹<?php echo number_format($item['p_current_price']); ?> ×
                                     <?php echo $item['quantity']; ?>
+                                    <?php
+                                    $item_subtotal = $item['p_current_price'] * $item['quantity'];
+                                    $item_gst = $item_subtotal * ($item['gst_percentage'] / 100);
+                                    $item_total = $item_subtotal + $item_gst;
+                                    ?>
+                                    <br><small class="text-muted">GST (<?php echo $item['gst_percentage']; ?>%): ₹<?php echo number_format($item_gst, 2); ?></small>
                                 </div>
 
                             </div>
                             <div class="product-price">
-                                ₹<?php $total_price = $item['p_current_price'] * $item['quantity'];
-                                echo number_format($total_price, 2); ?>
+                                ₹<?php echo number_format($item_total, 2); ?>
                             </div>
                         </div>
                         <?php
@@ -193,6 +205,10 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <span>-₹<?php echo number_format($summary['savings'], 2); ?></span>
                         </div>
                     <?php endif; ?>
+                    <div class="summary-row">
+                        <span>GST:</span>
+                        <span>₹<?php echo number_format($summary['gst_amount'], 2); ?></span>
+                    </div>
                     <div class="summary-total">
                         <span>Order Total</span>
                         <span>₹<?php echo number_format($summary['total'], 2); ?></span>

@@ -9,11 +9,25 @@ function getSettings($pdo) {
 }
 
 // Helper function to fetch direct order details (with HSN code)
-function getDirectOrderDetails($pdo, $order_id) {
-    $stmt = $pdo->prepare("SELECT 
+function getDirectOrderDetails($pdo, $order_id_param) {
+    // Check if order_id_param is numeric (tbl_orders.id) or string (order_id)
+    if (is_numeric($order_id_param)) {
+        // If numeric, it's tbl_orders.id, get the order_id first
+        $stmt = $pdo->prepare("SELECT order_id FROM tbl_orders WHERE id = ? AND order_type = 'direct'");
+        $stmt->execute([$order_id_param]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$result) return [];
+        $order_id = $result['order_id'];
+    } else {
+        // If string, it's already the order_id
+        $order_id = $order_id_param;
+    }
+
+    // Fetch all products for this order_id
+    $stmt = $pdo->prepare("SELECT
         o.id, o.order_id, o.invoice_number, o.price, o.quantity, o.order_status,
         o.processing_time, o.tracking_id, o.created_at,
-        p.id AS product_id, p.p_name, p.hsn_code, p.p_featured_photo,
+        p.id AS product_id, p.p_name, p.hsn_code, p.p_featured_photo, p.gst_percentage,
         s.seller_name, s.seller_cname, s.seller_email, s.seller_phone, s.seller_address,
         u.username, u.email, u.phone_number,
         ua.full_name, ua.phone_number as delivery_phone, ua.address, ua.city, ua.state, ua.pincode
@@ -22,17 +36,32 @@ function getDirectOrderDetails($pdo, $order_id) {
         JOIN sellers s ON p.seller_id = s.seller_id
         JOIN users u ON o.user_id = u.id
         LEFT JOIN users_addresses ua ON o.address_id = ua.id
-        WHERE o.id = ? AND o.order_type = 'direct' LIMIT 1");
+        WHERE o.order_id = ? AND o.order_type = 'direct'
+        ORDER BY o.created_at ASC");
     $stmt->execute([$order_id]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 // Helper function to fetch bidding order details (with HSN code)
-function getBiddingOrderDetails($pdo, $order_id) {
-    $stmt = $pdo->prepare("SELECT 
+function getBiddingOrderDetails($pdo, $order_id_param) {
+    // Check if order_id_param is numeric (tbl_orders.id) or string (order_id)
+    if (is_numeric($order_id_param)) {
+        // If numeric, it's tbl_orders.id, get the order_id first
+        $stmt = $pdo->prepare("SELECT order_id FROM tbl_orders WHERE id = ? AND order_type = 'bid'");
+        $stmt->execute([$order_id_param]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$result) return [];
+        $order_id = $result['order_id'];
+    } else {
+        // If string, it's already the order_id
+        $order_id = $order_id_param;
+    }
+
+    // Fetch all products for this order_id
+    $stmt = $pdo->prepare("SELECT
         o.id, o.order_id, o.invoice_number, b.bid_price AS price, b.bid_quantity AS quantity,
         o.order_status, o.processing_time, o.tracking_id, o.created_at,
-        p.id AS product_id, p.p_name, p.hsn_code, p.p_featured_photo,
+        p.id AS product_id, p.p_name, p.hsn_code, p.p_featured_photo, p.gst_percentage,
         s.seller_name, s.seller_cname, s.seller_email, s.seller_phone, s.seller_address,
         u.username, u.email, u.phone_number,
         ua.full_name, ua.phone_number as delivery_phone, ua.address, ua.city, ua.state, ua.pincode
@@ -42,29 +71,41 @@ function getBiddingOrderDetails($pdo, $order_id) {
         JOIN sellers s ON p.seller_id = s.seller_id
         JOIN users u ON b.user_id = u.id
         LEFT JOIN users_addresses ua ON u.id = ua.user_id AND ua.is_default = 1
-        WHERE o.id = ? AND o.order_type = 'bid' LIMIT 1");
+        WHERE o.order_id = ? AND o.order_type = 'bid'
+        ORDER BY o.created_at ASC");
     $stmt->execute([$order_id]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-$order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : null;
-if (!$order_id) { echo "<h2>Invalid order ID.</h2>"; exit; }
+$order_id_param = isset($_GET['order_id']) ? $_GET['order_id'] : null;
+if (!$order_id_param) { echo "<h2>Invalid order ID.</h2>"; exit; }
 
-$order = getDirectOrderDetails($pdo, $order_id);
+$orders = getDirectOrderDetails($pdo, $order_id_param);
 $order_type = 'direct';
 
-if (!$order) {
-    $order = getBiddingOrderDetails($pdo, $order_id);
+if (!$orders || empty($orders)) {
+    $orders = getBiddingOrderDetails($pdo, $order_id_param);
     $order_type = 'bid';
+    if (!$orders || empty($orders)) { echo "<h2>Order not found.</h2>"; exit; }
 }
 
-if (!$order) { echo "<h2>Order not found.</h2>"; exit; }
+if (!$orders || empty($orders)) { echo "<h2>Order not found.</h2>"; exit; }
 
 $settings = getSettings($pdo);
-$subtotal = $order['price'] * $order['quantity'];
-$tax_rate = 18;
-$tax_amount = $subtotal * ($tax_rate / 100);
+
+// Calculate totals for all products in the order
+$subtotal = 0;
+$tax_amount = 0;
+foreach ($orders as $order) {
+    $product_subtotal = $order['price'] * $order['quantity'];
+    $product_tax = $product_subtotal * ($order['gst_percentage'] / 100);
+    $subtotal += $product_subtotal;
+    $tax_amount += $product_tax;
+}
 $grand_total = $subtotal + $tax_amount;
+
+// Use the first order for customer and invoice details
+$first_order = $orders[0];
 
 function numberToWords($number) {
     $hyphen = '-'; $conjunction = ' and '; $separator = ', '; $negative = 'negative ';
@@ -106,7 +147,7 @@ function numberToWords($number) {
     return ucfirst($string);
 }
 
-$invoice_number = $order['invoice_number'] ?? $order['order_id'];
+$invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -442,23 +483,23 @@ $invoice_number = $order['invoice_number'] ?? $order['order_id'];
                 <div class="info-box">
                     <h3>Invoice Details</h3>
                     <p><strong>Invoice No:</strong> <?php echo htmlspecialchars($invoice_number); ?></p>
-                    <p><strong>Invoice Date:</strong> <?php echo !empty($order['processing_time']) ? date('d M, Y', strtotime($order['processing_time'])) : date('d M, Y'); ?></p>
-                    <p><strong>Order ID:</strong> <?php echo htmlspecialchars($order['order_id']); ?></p>
+                    <p><strong>Invoice Date:</strong> <?php echo !empty($first_order['processing_time']) ? date('d M, Y', strtotime($first_order['processing_time'])) : date('d M, Y'); ?></p>
+                    <p><strong>Order ID:</strong> <?php echo htmlspecialchars($first_order['order_id']); ?></p>
                     <p><strong>Order Type:</strong> <?php echo ucfirst($order_type); ?></p>
-                    <?php if (!empty($order['tracking_id'])): ?>
-                    <p><strong>Tracking ID:</strong> <?php echo htmlspecialchars($order['tracking_id']); ?></p>
+                    <?php if (!empty($first_order['tracking_id'])): ?>
+                    <p><strong>Tracking ID:</strong> <?php echo htmlspecialchars($first_order['tracking_id']); ?></p>
                     <?php endif; ?>
                 </div>
 
                 <div class="info-box">
                     <h3>Bill To / Ship To</h3>
-                    <p><strong>Name:</strong> <?php echo !empty($order['full_name']) ? htmlspecialchars($order['full_name']) : htmlspecialchars($order['username']); ?></p>
-                    <p><strong>Email:</strong> <?php echo htmlspecialchars($order['email']); ?></p>
-                    <p><strong>Phone:</strong> <?php echo !empty($order['delivery_phone']) ? htmlspecialchars($order['delivery_phone']) : htmlspecialchars($order['phone_number']); ?></p>
-                    <?php if (!empty($order['address'])): ?>
+                    <p><strong>Name:</strong> <?php echo !empty($first_order['full_name']) ? htmlspecialchars($first_order['full_name']) : htmlspecialchars($first_order['username']); ?></p>
+                    <p><strong>Email:</strong> <?php echo htmlspecialchars($first_order['email']); ?></p>
+                    <p><strong>Phone:</strong> <?php echo !empty($first_order['delivery_phone']) ? htmlspecialchars($first_order['delivery_phone']) : htmlspecialchars($first_order['phone_number']); ?></p>
+                    <?php if (!empty($first_order['address'])): ?>
                     <p><strong>Address:</strong><br>
-                        <?php echo htmlspecialchars($order['address']); ?><br>
-                        <?php echo htmlspecialchars($order['city']) . ', ' . htmlspecialchars($order['state']) . ' - ' . htmlspecialchars($order['pincode']); ?>
+                        <?php echo htmlspecialchars($first_order['address']); ?><br>
+                        <?php echo htmlspecialchars($first_order['city']) . ', ' . htmlspecialchars($first_order['state']) . ' - ' . htmlspecialchars($first_order['pincode']); ?>
                     </p>
                     <?php endif; ?>
                 </div>
@@ -474,19 +515,26 @@ $invoice_number = $order['invoice_number'] ?? $order['order_id'];
                             <th class="text-center">Quantity</th>
                             <th class="text-right">Unit Price</th>
                             <th class="text-center">HSN Code</th>
-                            <th class="text-right">Tax (<?php echo $tax_rate; ?>%)</th>
+                            <th class="text-right">Tax (GST)</th>
                             <th class="text-right">Total</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><?php echo htmlspecialchars($order['p_name']); ?></td>
-                            <td class="text-center"><?php echo $order['quantity']; ?></td>
-                            <td class="text-right">₹<?php echo number_format($order['price'], 2); ?></td>
-                            <td class="text-center"><?php echo htmlspecialchars($order['hsn_code'] ?? '1234'); ?></td>
-                            <td class="text-right">₹<?php echo number_format($tax_amount, 2); ?></td>
-                            <td class="text-right"><strong>₹<?php echo number_format($grand_total, 2); ?></strong></td>
-                        </tr>
+                        <?php foreach ($orders as $order): ?>
+                            <?php
+                            $product_subtotal = $order['price'] * $order['quantity'];
+                            $product_tax = $product_subtotal * ($order['gst_percentage'] / 100);
+                            $product_total = $product_subtotal + $product_tax;
+                            ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($order['p_name']); ?></td>
+                                <td class="text-center"><?php echo $order['quantity']; ?></td>
+                                <td class="text-right">₹<?php echo number_format($order['price'], 2); ?></td>
+                                <td class="text-center"><?php echo htmlspecialchars($order['hsn_code'] ?? '1234'); ?></td>
+                                <td class="text-right">₹<?php echo number_format($product_tax, 2); ?> (<?php echo $order['gst_percentage']; ?>%)</td>
+                                <td class="text-right"><strong>₹<?php echo number_format($product_total, 2); ?></strong></td>
+                            </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
@@ -499,7 +547,7 @@ $invoice_number = $order['invoice_number'] ?? $order['order_id'];
                         <span>₹<?php echo number_format($subtotal, 2); ?></span>
                     </div>
                     <div class="summary-row">
-                        <span>Tax (GST <?php echo $tax_rate; ?>%):</span>
+                        <span>Tax (GST):</span>
                         <span>₹<?php echo number_format($tax_amount, 2); ?></span>
                     </div>
                     <div class="summary-row total">
