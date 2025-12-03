@@ -489,7 +489,6 @@ require_once('header.php');
 </button>
     </div>
 <?php else: ?>
-    <?php include('invoice_modal.php'); ?>
                                 <button class="btn-status-update disabled">
                                     <i class="fa fa-lock"></i> No Actions Available
                                 </button>
@@ -504,6 +503,8 @@ require_once('header.php');
 </div>
 </div>
 </section>
+
+<?php include('invoice_modal.php'); ?>
 <div id="sellerModal" class="seller-modal">
     <div class="seller-modal-content">
         <div class="seller-modal-header">
@@ -846,7 +847,7 @@ function trackShipment(orderId) {
 }
 
 </script>
-<script src="./js/bidding-order.js"></script>
+<script src="/js/bidding-order.js"></script>
 <script>
 
 const sellerTabButtons = document.querySelectorAll('.seller-tab-button');
