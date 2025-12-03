@@ -654,9 +654,9 @@ $(document).ready(function() {
             xhr.send();
         }
     </script>
-    <script src="forgot-password.js"></script>
+    <script src="/forgot-password.js"></script>
 
-    <script src="js/index.js"></script>
+    <script src="/js/index.js"></script>
     <script src="/js/validation.js"></script>
 
 </body>

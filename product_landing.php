@@ -553,7 +553,7 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
 </script>
 <script>
   function checkExistingBid(productId) {
-    return fetch('check_bid_status.php', {
+    return fetch('/check_bid_status.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -626,7 +626,7 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
     // showMessage('biting button working, check the razorpay modal');
     // for testing end
 
-    const productId = <?php echo json_encode($_REQUEST['id']); ?>;
+    const productId = <?php echo json_encode($product_id); ?>;
 
     // First check if user has already bid
     checkExistingBid(productId)
@@ -641,13 +641,13 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
     const proposedPrice = document.getElementById('proposedPrice').value;
 
     // First, create the order
-    fetch('submit_bid.php', {
+    fetch('/submit_bid.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          product_id: <?php echo json_encode($_REQUEST['id']); ?>,
+          product_id: <?php echo json_encode($product_id); ?>,
           quantity: quantity,
           proposed_price: proposedPrice
         })
@@ -664,7 +664,7 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
             order_id: data.order_id,
             handler: function(response) {
               // Handle successful payment
-              fetch('submit_bid.php', {
+              fetch('/submit_bid.php', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
