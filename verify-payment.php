@@ -6,6 +6,7 @@ require_once 'config.php';
 // require_once 'header.php';
 require_once 'db_connection.php';
 require_once 'vendor/autoload.php';
+require_once 'admin/invoice_helper.php';
 
 use Razorpay\Api\Api;
 use Razorpay\Api\Errors\SignatureVerificationError;
@@ -53,10 +54,14 @@ try {
     // Begin transaction
     $pdo->beginTransaction();
     
+    // Generate invoice number
+    $invoice_number = generateInvoiceNumber($pdo);
+    
     // Insert orders
     $stmt = $pdo->prepare("
         INSERT INTO tbl_orders (
             order_id,
+            invoice_number,
             product_id,
             user_id,
             seller_id,
@@ -71,6 +76,7 @@ try {
             processing_time
         ) VALUES (
             :order_id,
+            :invoice_number,
             :product_id,
             :user_id,
             :seller_id,
@@ -90,6 +96,7 @@ try {
     foreach ($items as $item) {
         $orderData = [
             'order_id' => $_POST['razorpay_order_id'],
+            'invoice_number' => $invoice_number,
             'product_id' => $item['id'],
             'user_id' => $_SESSION['user_session']['id'],
             'seller_id' => $item['seller_id'],

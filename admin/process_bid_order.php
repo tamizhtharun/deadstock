@@ -19,6 +19,7 @@ function sendJsonResponse($data) {
 try {
     require_once('header.php');
     require_once('../services/DelhiveryService.php');
+    require_once('invoice_helper.php');
 
     if (!isset($_GET['action'])) {
         throw new Exception('Invalid action');
@@ -60,11 +61,14 @@ try {
             $stmt->execute([$bid_id]);
 
             if ($stmt->rowCount() == 0) {
+                // Generate invoice number
+                $invoice_number = generateInvoiceNumber($pdo);
+                
                 // Insert the order into the orders table
                 $stmt = $pdo->prepare("INSERT INTO tbl_orders (
                     product_id, user_id, seller_id, quantity, price,
-                    order_id, order_status, bid_id, payment_id, order_type, address_id
-                ) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?, 'bid', ?)");
+                    order_id, invoice_number, order_status, bid_id, payment_id, order_type, address_id
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, 'bid', ?)");
 
                 $stmt->execute([
                     $product_id,
@@ -73,6 +77,7 @@ try {
                     $quantity,
                     $price,
                     $order_id,
+                    $invoice_number,
                     $bid_id,
                     $bidData['payment_id'],
                     $address_id

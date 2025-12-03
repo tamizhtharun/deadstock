@@ -481,12 +481,15 @@ require_once('header.php');
                 <i class="fa fa-search"></i> Track Shipment
             </button>
         <?php endif; ?>
-        <a href="generate_invoice.php?order_id=<?php echo $row['order_id']; ?>" 
-           class="btn btn-sm mt-1" style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;">
-           <i class="fa fa-file-pdf-o"></i> Generate Invoice
-        </a>
+        <button 
+    class="btn btn-sm mt-1" 
+    style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;"
+    onclick="openInvoiceModal(<?php echo $row['order_id']; ?>)">
+    <i class="fa fa-file-pdf-o"></i> Generate Invoice
+</button>
     </div>
 <?php else: ?>
+    <?php include('invoice_modal.php'); ?>
                                 <button class="btn-status-update disabled">
                                     <i class="fa fa-lock"></i> No Actions Available
                                 </button>
