@@ -126,6 +126,48 @@ if (isset($_POST['export_csv'])) {
 require_once('header.php');
 ?>
 
+<script src="js/invoice_actions.js"></script>
+<script>
+// Define openInvoiceModal globally at the top to ensure it's always available
+window.openInvoiceModal = function(orderId) {
+    // Check if modal exists
+    const modal = document.getElementById('invoiceModal');
+    if (!modal) {
+        console.error('Invoice modal not found in DOM');
+        // Try to find it again in case it was added late
+        const retryModal = document.querySelector('.invoice-modal');
+        if (!retryModal) {
+            alert('Invoice modal component not loaded. Please refresh the page.');
+            return;
+        }
+        // Use the found modal
+        retryModal.style.display = 'block';
+        loadInvoiceContent(retryModal, orderId);
+        return;
+    }
+    
+    modal.style.display = 'block';
+    loadInvoiceContent(modal, orderId);
+};
+
+function loadInvoiceContent(modal, orderId) {
+    const content = modal.querySelector('.invoice-modal-body') || document.getElementById('invoiceContent');
+    if (!content) return;
+    
+    content.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fa fa-spinner fa-spin fa-3x"></i><p>Loading invoice...</p></div>';
+    
+    fetch(`generate_invoice.php?order_id=${orderId}`)
+        .then(response => response.text())
+        .then(html => {
+            content.innerHTML = html;
+        })
+        .catch(error => {
+            content.innerHTML = '<div style="text-align: center; padding: 50px; color: red;"><i class="fa fa-exclamation-triangle fa-3x"></i><p>Error loading invoice</p></div>';
+            console.error('Error:', error);
+        });
+}
+</script>
+
 <section class="content-header">
     <div class="content-header-left">
         <h1>Direct Orders</h1>
@@ -862,6 +904,35 @@ sellerTabButtons.forEach(button => {
     document.getElementById(tab).classList.add('active');
   });
 });
+</script>
+
+<script>
+// Fallback: Ensure openInvoiceModal is globally available
+if (typeof openInvoiceModal === 'undefined') {
+    window.openInvoiceModal = function(orderId) {
+        const modal = document.getElementById('invoiceModal');
+        const content = document.getElementById('invoiceContent');
+        
+        if (!modal) {
+            console.error('Invoice modal not found');
+            alert('Invoice modal not loaded. Please refresh the page.');
+            return;
+        }
+        
+        modal.style.display = 'block';
+        content.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fa fa-spinner fa-spin fa-3x"></i><p>Loading invoice...</p></div>';
+        
+        fetch(`generate_invoice.php?order_id=${orderId}`)
+            .then(response => response.text())
+            .then(html => {
+                content.innerHTML = html;
+            })
+            .catch(error => {
+                content.innerHTML = '<div style="text-align: center; padding: 50px; color: red;"><i class="fa fa-exclamation-triangle fa-3x"></i><p>Error loading invoice</p></div>';
+                console.error('Error:', error);
+            });
+    };
+}
 </script>
 
 <?php require_once('footer.php'); ?>

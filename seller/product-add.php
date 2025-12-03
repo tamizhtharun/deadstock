@@ -166,6 +166,20 @@ if (isset($_POST['form1'])) {
 		move_uploaded_file($path_tmp, '../assets/uploads/product-photos/' . $final_name);
 
 
+
+		// Generate Slug
+		$p_slug = strtolower($_POST['p_name']);
+		$p_slug = preg_replace('/[^a-z0-9\s-]/', '', $p_slug);
+		$p_slug = preg_replace('/[\s-]+/', '-', $p_slug);
+		$p_slug = trim($p_slug, '-');
+		// Check for duplicate slug
+		$statement = $pdo->prepare("SELECT * FROM tbl_product WHERE p_slug=?");
+		$statement->execute(array($p_slug));
+		$total = $statement->rowCount();
+		if($total > 0) {
+			$p_slug = $p_slug . '-' . time(); // Append timestamp if duplicate
+		}
+
 		//Saving data into the waiting products table tbl_waiting_products
 		$statement = $pdo->prepare("INSERT INTO tbl_product(
 			seller_id,
@@ -183,8 +197,9 @@ if (isset($_POST['form1'])) {
 			ecat_id,
 			product_catalogue,
 			product_brand,
-			p_date
-		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			p_date,
+			p_slug
+		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		$statement->execute(array(
 			$seller_id,
@@ -202,7 +217,8 @@ if (isset($_POST['form1'])) {
 			$_POST['ecat_id'],
 			$pdf_final_name,
 			$_POST['product_brand'],
-			date('Y-m-d H:i:s')
+			date('Y-m-d H:i:s'),
+			$p_slug
 		));
 
 		$success_message = 'Product is added successfully, wait for your administrator approval.';
@@ -212,7 +228,6 @@ if (isset($_POST['form1'])) {
 	$keys = ['P', 'M', 'K', 'N', 'S', 'H', 'O'];
 
 	foreach ($keys as $key) {
-		// Check if the key exists in the POST data, otherwise set default value to 0
 		if (isset($_POST[$key])) {
 			// $_POST[$key] is now an array of selected values (checkboxes)
 			// Convert to a comma-separated string or store as needed

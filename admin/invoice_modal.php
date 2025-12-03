@@ -3,7 +3,7 @@
     <div class="invoice-modal-content">
         <div class="invoice-modal-header">
             <h3>Invoice Preview</h3>
-            <button class="invoice-modal-close">&times;</button>
+            <button class="invoice-modal-close" onclick="closeInvoiceModal()">&times;</button>
         </div>
         <div class="invoice-modal-body" id="invoiceContent">
             <div style="text-align: center; padding: 50px;">
@@ -12,10 +12,10 @@
             </div>
         </div>
         <div class="invoice-modal-footer">
-            <button id="downloadInvoiceBtn" class="invoice-action-btn download-btn">
+            <button id="downloadInvoiceBtn" class="invoice-action-btn download-btn" onclick="downloadInvoicePDF()">
                 <i class="fa fa-download"></i> Download PDF
             </button>
-            <button id="printInvoiceBtn" class="invoice-action-btn print-btn">
+            <button id="printInvoiceBtn" class="invoice-action-btn print-btn" onclick="printInvoice()">
                 <i class="fa fa-print"></i> Print
             </button>
         </div>
@@ -139,10 +139,16 @@
 <script>
 let currentOrderId = null;
 
-function openInvoiceModal(orderId) {
+// Make functions global
+window.openInvoiceModal = function(orderId) {
     currentOrderId = orderId;
     const modal = document.getElementById('invoiceModal');
     const content = document.getElementById('invoiceContent');
+    
+    if (!modal || !content) {
+        console.error('Modal elements not found');
+        return;
+    }
     
     modal.style.display = 'block';
     content.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fa fa-spinner fa-spin fa-3x"></i><p>Loading invoice...</p></div>';
@@ -156,7 +162,109 @@ function openInvoiceModal(orderId) {
             content.innerHTML = '<div style="text-align: center; padding: 50px; color: red;"><i class="fa fa-exclamation-triangle fa-3x"></i><p>Error loading invoice</p></div>';
             console.error('Error:', error);
         });
-}
+};
+
+window.downloadInvoicePDF = function() {
+    console.log('Download function called');
+    const downloadBtn = document.getElementById('downloadInvoiceBtn');
+    
+    if (typeof html2pdf === 'undefined') {
+        alert('PDF library is not loaded yet. Please check your internet connection and try again.');
+        return;
+    }
+
+    const invoiceElement = document.querySelector('#invoiceContent .invoice-wrapper');
+    if (!invoiceElement) {
+        alert('Invoice content not found. Please wait for the invoice to load.');
+        return;
+    }
+    
+    // Get invoice number for filename
+    const invoiceNumElement = invoiceElement.querySelector('.info-box p');
+    let filename = 'Invoice.pdf';
+    if (invoiceNumElement) {
+        const text = invoiceNumElement.textContent;
+        const match = text.match(/Invoice No:\s*(.+)/);
+        if (match) {
+            filename = match[1].trim() + '.pdf';
+        }
+    }
+    
+    const opt = {
+        margin: 0,
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+            scale: 2, 
+            useCORS: true, 
+            logging: true,
+            allowTaint: true
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    
+    // Show loading state
+    const originalText = downloadBtn.innerHTML;
+    downloadBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Generating...';
+    downloadBtn.disabled = true;
+    
+    html2pdf().set(opt).from(invoiceElement).save()
+        .then(() => {
+            console.log('PDF generated successfully');
+            downloadBtn.innerHTML = originalText;
+            downloadBtn.disabled = false;
+        })
+        .catch(err => {
+            console.error('PDF Generation Error:', err);
+            alert('Error generating PDF: ' + (err.message || err));
+            downloadBtn.innerHTML = originalText;
+            downloadBtn.disabled = false;
+        });
+};
+
+window.printInvoice = function() {
+    console.log('Print function called');
+    const contentDiv = document.getElementById('invoiceContent');
+    if (!contentDiv) return;
+    
+    // Get raw HTML
+    let invoiceContent = contentDiv.innerHTML;
+    
+    // Open new window
+    const printWindow = window.open('', '_blank', 'height=600,width=800');
+    if (!printWindow) {
+        alert('Please allow popups for this website to print the invoice.');
+        return;
+    }
+
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Print Invoice</title>
+            <style>
+                @page { size: A4; margin: 0; }
+                body { margin: 0; padding: 0; background: white; font-family: Arial, sans-serif; }
+                .invoice-wrapper { width: 100% !important; box-shadow: none !important; margin: 0 !important; }
+                .no-print { display: none !important; }
+            </style>
+        </head>
+        <body>
+            ${invoiceContent}
+            <script>
+                window.onload = function() {
+                    setTimeout(function() {
+                        window.print();
+                        window.close();
+                    }, 500);
+                };
+            <\/script>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+};
 
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('invoiceModal');
@@ -173,78 +281,5 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.style.display = 'none';
         }
     };
-    
-    // Download button - generates PDF
-    const downloadBtn = document.getElementById('downloadInvoiceBtn');
-    if (downloadBtn) {
-        downloadBtn.onclick = function() {
-            const invoiceElement = document.querySelector('#invoiceContent .invoice-wrapper');
-            if (!invoiceElement) {
-                alert('Invoice not loaded');
-                return;
-            }
-            
-            // Get invoice number for filename
-            const invoiceNumElement = invoiceElement.querySelector('.info-box p');
-            let filename = 'Invoice.pdf';
-            if (invoiceNumElement) {
-                const text = invoiceNumElement.textContent;
-                const match = text.match(/Invoice No:\s*(.+)/);
-                if (match) {
-                    filename = match[1].trim() + '.pdf';
-                }
-            }
-            
-            const opt = {
-                margin: 0,
-                filename: filename,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            
-            html2pdf().set(opt).from(invoiceElement).save();
-        };
-    }
-    
-    // Print button - prints directly
-    const printBtn = document.getElementById('printInvoiceBtn');
-    if (printBtn) {
-        printBtn.onclick = function() {
-            const invoiceContent = document.getElementById('invoiceContent').innerHTML;
-            
-            // Create a hidden iframe for printing
-            let printFrame = document.getElementById('printFrame');
-            if (!printFrame) {
-                printFrame = document.createElement('iframe');
-                printFrame.id = 'printFrame';
-                printFrame.style.display = 'none';
-                document.body.appendChild(printFrame);
-            }
-            
-            const frameDoc = printFrame.contentWindow.document;
-            frameDoc.open();
-            frameDoc.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Print Invoice</title>
-                    <style>
-                        @page { size: A4; margin: 0; }
-                        body { margin: 0; padding: 0; }
-                    </style>
-                </head>
-                <body>${invoiceContent}</body>
-                </html>
-            `);
-            frameDoc.close();
-            
-            // Wait for content to load then print
-            printFrame.contentWindow.focus();
-            setTimeout(() => {
-                printFrame.contentWindow.print();
-            }, 100);
-        };
-    }
 });
 </script>
