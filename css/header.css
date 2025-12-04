@@ -317,8 +317,8 @@
     background: linear-gradient(135deg, var(--copper-primary) 0%, var(--copper-light) 100%);
     color: var(--black-primary);
     border: none;
-    box-shadow: 0 4px 12px rgba(184, 115, 51, 0.3);
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+    /* box-shadow: 0 4px 12px rgba(184, 115, 51, 0.3); */
+    /* text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3); */
 }
 
 .ds-btn-primary:hover {

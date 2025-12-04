@@ -1,6 +1,11 @@
 <?php require_once('header.php'); ?>
 <?php
 if (isset($_POST['form1'])) {
+	// Fetch current ecat_id from database
+	$statement = $pdo->prepare("SELECT ecat_id FROM tbl_product WHERE id=?");
+	$statement->execute(array($_REQUEST['id']));
+	$current_ecat_id = $statement->fetchColumn();
+
 	$valid = 1;
 
 	// if(empty($_POST['tcat_id'])) {
@@ -183,7 +188,7 @@ if (isset($_POST['form1'])) {
 				$_POST['p_name'],
 				$_POST['tcat_id'],
 				$_POST['mcat_id'],
-				$_POST['ecat_id'],
+				isset($_POST['ecat_id']) ? $_POST['ecat_id'] : $current_ecat_id,
 				$product_brand,
 				$_POST['hsn_code'],
 				$_POST['gst_percentage'],
@@ -226,7 +231,7 @@ if (isset($_POST['form1'])) {
 				$_POST['p_name'],
 				$_POST['tcat_id'],
 				$_POST['mcat_id'],
-				$_POST['ecat_id'],
+				isset($_POST['ecat_id']) ? $_POST['ecat_id'] : $current_ecat_id,
 				$product_brand,
 				$_POST['hsn_code'],
 				$_POST['gst_percentage'],
@@ -676,7 +681,7 @@ $(document).ready(function() {
         var $endCat = $('.end-cat');
 
         $.ajax({
-            url: "get_mid_category.php",
+            url: "get-mid-category.php",
             type: "POST",
             data: { id: tcat_id },
             success: function(response) {
@@ -700,7 +705,7 @@ $(document).ready(function() {
         var $endCat = $('.end-cat');
 
         $.ajax({
-            url: "get_end_category.php",
+            url: "get-end-category.php",
             type: "POST",
             data: { id: mid_cat_id },
             success: function(response) {
