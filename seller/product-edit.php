@@ -441,23 +441,23 @@ if (isset($_POST['form1'])) {
 
 // Handle keys
 if (isset($_POST['key'])) {
-	$p_value = isset($_POST['key']['P']) ? (in_array('2', $_POST['key']['P']) ? 2 : (in_array('1', $_POST['key']['P']) ? 1 : null)) : null;
-	$m_value = isset($_POST['key']['M']) ? (in_array('2', $_POST['key']['M']) ? 2 : (in_array('1', $_POST['key']['M']) ? 1 : null)) : null;
-	$k_value = isset($_POST['key']['K']) ? (in_array('2', $_POST['key']['K']) ? 2 : (in_array('1', $_POST['key']['K']) ? 1 : null)) : null;
-	$n_value = isset($_POST['key']['N']) ? (in_array('2', $_POST['key']['N']) ? 2 : (in_array('1', $_POST['key']['N']) ? 1 : null)) : null;
-	$s_value = isset($_POST['key']['S']) ? (in_array('2', $_POST['key']['S']) ? 2 : (in_array('1', $_POST['key']['S']) ? 1 : null)) : null;
-	$h_value = isset($_POST['key']['H']) ? (in_array('2', $_POST['key']['H']) ? 2 : (in_array('1', $_POST['key']['H']) ? 1 : null)) : null;
-	$o_value = isset($_POST['key']['O']) ? (in_array('2', $_POST['key']['O']) ? 2 : (in_array('1', $_POST['key']['O']) ? 1 : null)) : null;
-	$statement = $pdo->prepare("UPDATE tbl_key SET P=?, M=?, K=?, N=?, S=?, H=?, O=? WHERE id=?");
+	$p_value = isset($_POST['key']['P']) ? (in_array('2', $_POST['key']['P']) ? 2 : (in_array('1', $_POST['key']['P']) ? 1 : 0)) : 0;
+	$m_value = isset($_POST['key']['M']) ? (in_array('2', $_POST['key']['M']) ? 2 : (in_array('1', $_POST['key']['M']) ? 1 : 0)) : 0;
+	$k_value = isset($_POST['key']['K']) ? (in_array('2', $_POST['key']['K']) ? 2 : (in_array('1', $_POST['key']['K']) ? 1 : 0)) : 0;
+	$n_value = isset($_POST['key']['N']) ? (in_array('2', $_POST['key']['N']) ? 2 : (in_array('1', $_POST['key']['N']) ? 1 : 0)) : 0;
+	$s_value = isset($_POST['key']['S']) ? (in_array('2', $_POST['key']['S']) ? 2 : (in_array('1', $_POST['key']['S']) ? 1 : 0)) : 0;
+	$h_value = isset($_POST['key']['H']) ? (in_array('2', $_POST['key']['H']) ? 2 : (in_array('1', $_POST['key']['H']) ? 1 : 0)) : 0;
+	$o_value = isset($_POST['key']['O']) ? (in_array('2', $_POST['key']['O']) ? 2 : (in_array('1', $_POST['key']['O']) ? 1 : 0)) : 0;
+	$statement = $pdo->prepare("INSERT INTO tbl_key (id, P, M, K, N, S, H, O) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE P=VALUES(P), M=VALUES(M), K=VALUES(K), N=VALUES(N), S=VALUES(S), H=VALUES(H), O=VALUES(O)");
 	$statement->execute(array(
+		$_REQUEST['id'],
 		$p_value,
 		$m_value,
 		$k_value,
 		$n_value,
 		$s_value,
 		$h_value,
-		$o_value,
-		$_REQUEST['id']
+		$o_value
 	));
 }
 
