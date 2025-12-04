@@ -88,11 +88,24 @@ if (isset($_POST['form_bulk_upload'])) {
                         $ai_id = $row[10];
                     }
 
+                    // Generate Slug
+                    $p_slug = strtolower($product_name);
+                    $p_slug = preg_replace('/[^a-z0-9\s-]/', '', $p_slug);
+                    $p_slug = preg_replace('/[\s-]+/', '-', $p_slug);
+                    $p_slug = trim($p_slug, '-');
+                    // Check for duplicate slug
+                    $stmt_slug = $pdo->prepare("SELECT * FROM tbl_product WHERE p_slug=?");
+                    $stmt_slug->execute([$p_slug]);
+                    $total = $stmt_slug->rowCount();
+                    if ($total > 0) {
+                        $p_slug = $p_slug . '-' . time(); // Append timestamp if duplicate
+                    }
+
                     // Insert basic product data only
                     $stmt = $pdo->prepare("INSERT INTO tbl_product (
                         seller_id, p_name, p_old_price, p_current_price, p_qty,
-                        p_total_view, p_date, p_is_approve
-                    ) VALUES (?, ?, ?, ?, ?, 0, ?, 0)");
+                        p_total_view, p_date, p_is_approve, p_slug
+                    ) VALUES (?, ?, ?, ?, ?, 0, ?, 0, ?)");
 
                     $stmt->execute([
                         $seller_id,
@@ -100,7 +113,8 @@ if (isset($_POST['form_bulk_upload'])) {
                         $old_price ?: NULL,
                         $current_price ?: NULL,
                         $quantity ?: NULL,
-                        date('Y-m-d H:i:s')
+                        date('Y-m-d H:i:s'),
+                        $p_slug
                     ]);
 
                     $success_count++;
