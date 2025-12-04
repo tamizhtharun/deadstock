@@ -278,7 +278,7 @@ if (isset($_POST['form1'])) {
 		$p_slug = $p_slug . '-' . time(); // Append timestamp if duplicate
 	}
 
-	$pdf_final_name = 'product-catalogue-' . $p_slug . '.pdf';
+	$pdf_final_name = $p_slug . '.pdf';
 
 	// Move the uploaded PDF file to the server
 	move_uploaded_file($pdf_path_tmp, '../assets/uploads/product-catalogues/' . $pdf_final_name);
@@ -367,7 +367,7 @@ if (isset($_POST['form1'])) {
 				unlink($current_photo_path);
 			}
 
-			$final_name = 'product-featured-' . $_REQUEST['id'] . '.' . $ext;
+			$final_name = time() . '.' . $ext;
 			move_uploaded_file($path_tmp, '../assets/uploads/product-photos/' . $final_name);
 
 
