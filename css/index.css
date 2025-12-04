@@ -956,6 +956,7 @@ form {
     box-shadow: 0 4px 20px var(--shadow-copper);
     align-items: center !important;
     justify-content: center !important;
+    margin-bottom:50px;
 }
 
 .carousel-item img {

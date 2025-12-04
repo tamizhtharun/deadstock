@@ -288,7 +288,7 @@ if (!empty($topCategories)) {
                 <style>
                     /* Clean Professional Product Carousel */
                     .products-section {
-                        padding: 50px 0;
+                        padding-bottom: 50px;
                         background: #faf8f3;
                     }
 
