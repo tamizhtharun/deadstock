@@ -19,9 +19,9 @@ $user_id = $_SESSION['user_session']['id'] ?? null;
 ?>
 <?php
 // Check if the 'showLoginModal' query parameter exists
-if (isset($_GET['showLoginModal']) && $_GET['showLoginModal'] == 'true') {
-    echo "<script>window.addEventListener('DOMContentLoaded', function() { $('#staticBackdrop').modal('show'); });</script>";
-}
+// if (isset($_GET['showLoginModal']) && $_GET['showLoginModal'] == 'true') {
+//     echo "<script>window.addEventListener('DOMContentLoaded', function() { $('#staticBackdrop').modal('show'); });</script>";
+// }
 $error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : null;
 unset($_SESSION['error_message']);
 

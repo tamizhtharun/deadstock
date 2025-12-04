@@ -265,15 +265,20 @@ if (isset($_POST['form1'])) {
 		}
 	}
 
-	$statement = $pdo->prepare("SHOW TABLE STATUS LIKE 'tbl_product'");
-	$statement->execute();
-	$result = $statement->fetchAll();
-	foreach ($result as $row) {
-		$ai_id = $row[10];
+	// Generate Slug for PDF
+	$p_slug = strtolower($_POST['p_name']);
+	$p_slug = preg_replace('/[^a-z0-9\s-]/', '', $p_slug);
+	$p_slug = preg_replace('/[\s-]+/', '-', $p_slug);
+	$p_slug = trim($p_slug, '-');
+	// Check for duplicate slug
+	$statement_slug = $pdo->prepare("SELECT * FROM tbl_product WHERE p_slug=? AND id != ?");
+	$statement_slug->execute(array($p_slug, $_REQUEST['id']));
+	$total = $statement_slug->rowCount();
+	if($total > 0) {
+		$p_slug = $p_slug . '-' . time(); // Append timestamp if duplicate
 	}
-	// Assuming $_REQUEST['id'] contains the current product ID
-	$current_product_id = $_REQUEST['id'];
-	$pdf_final_name = 'product-catalogue-' . $current_product_id . '.pdf';
+
+	$pdf_final_name = 'product-catalogue-' . $p_slug . '.pdf';
 
 	// Move the uploaded PDF file to the server
 	move_uploaded_file($pdf_path_tmp, '../assets/uploads/product-catalogues/' . $pdf_final_name);
@@ -305,22 +310,13 @@ if (isset($_POST['form1'])) {
 			$photo_temp = $_FILES['photo']["tmp_name"];
 			$photo_temp = array_values(array_filter($photo_temp));
 
-			$statement = $pdo->prepare("SHOW TABLE STATUS LIKE 'tbl_product_photo'");
-			$statement->execute();
-			$result = $statement->fetchAll();
-			foreach ($result as $row) {
-				$next_id1 = $row[10];
-			}
-			$z = $next_id1;
-
 			$m = 0;
 			for ($i = 0; $i < count($photo); $i++) {
 				$my_ext1 = pathinfo($photo[$i], PATHINFO_EXTENSION);
 				if ($my_ext1 == 'jpg' || $my_ext1 == 'png' || $my_ext1 == 'jpeg' || $my_ext1 == 'gif') {
-					$final_name1[$m] = $z . '.' . $my_ext1;
+					$final_name1[$m] = time() . '-' . $m . '.' . $my_ext1;
 					move_uploaded_file($photo_temp[$i], "../assets/uploads/product-photos/" . $final_name1[$m]);
 					$m++;
-					$z++;
 				}
 			}
 

@@ -18894,3 +18894,6 @@ Vedasandur
 [2025-12-01 05:03:03] Generating shipping label
 [2025-12-01 05:03:04] Label API Response - HTTP Code: 401, Content-Type: text/html; charset=utf-8, Content Length: 119
 [2025-12-01 05:03:04] Error generating label: HTTP Error: 401 - Response: There has been an error but we were asked to not let you see that.                         Please contact the dev team.
+[2025-12-04 11:38:58] Generating shipping label
+[2025-12-04 11:38:58] Label API Response - HTTP Code: 401, Content-Type: text/html; charset=utf-8, Content Length: 119
+[2025-12-04 11:38:58] Error generating label: HTTP Error: 401 - Response: There has been an error but we were asked to not let you see that.                         Please contact the dev team.

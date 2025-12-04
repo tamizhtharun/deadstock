@@ -861,8 +861,8 @@ foreach ($result as $row) {
     $favicon = $row['favicon'];
     $running_text = $row['running_text'];
     $footer_about = $row['footer_about'];
-    $footer_copyright = $row['footer_copyright'];
-    $contact_address = $row['contact_address'];
+    // $footer_copyright = $row['footer_copyright'];
+    // $contact_address = $row['contact_address'];
     $contact_email = $row['contact_email'];
     $contact_phone = $row['contact_phone'];
     // $contact_fax                     = $row['contact_fax'];

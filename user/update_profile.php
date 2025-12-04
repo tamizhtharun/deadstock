@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     
         // Generate the unique filename based on the user ID
-        $profileImageFilename = 'profile-' . $userId . '.' . $ext;
+        $profileImageFilename = 'profile-' . $userId . '-' . time() . '.' . $ext;
     
         // Define the upload directory (relative to this file)
         $uploadDir = __DIR__ . '/uploads/profile-photos/';
