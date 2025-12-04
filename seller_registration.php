@@ -2,7 +2,7 @@
 <?php
 //seller_registration.php
 // Include database connection and PHPMailer files
-require 'db_connection.php'; // Update with actual DB connection code if inline is needed
+require 'db_connection.php';
 require 'PHPMailer/src/PHPMailer.php';
 require 'PHPMailer/src/SMTP.php';
 require 'PHPMailer/src/Exception.php';
@@ -41,6 +41,11 @@ function generateUniqueSellerId($conn)
     return "SLR{$year}" . str_pad($next_id, 4, '0', STR_PAD_LEFT);
 }
 
+function isStrongPassword($password)
+{
+    return preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password);
+}
+
 // Process form submission if POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Collect and sanitize input data
@@ -54,11 +59,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $seller_city = trim($_POST['seller_city']);
     $seller_zipcode = trim($_POST['seller_zipcode']);
     $seller_password = $_POST['seller_password'];
-    $seller_status = 0; // Default status (inactive)
+    $seller_status = 0;
 
     // Backend validations
     if (empty($seller_name)) {
         $errorMessages[] = "Seller name is required.";
+    }
+    if (empty($seller_password)) {
+        $errorMessages[] = "Password is required.";
+    } elseif (!isStrongPassword($seller_password)) {
+        $errorMessages[] = "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.";
     }
     if (!filter_var($seller_email, FILTER_VALIDATE_EMAIL)) {
         $errorMessages[] = "Invalid email address.";
@@ -75,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!preg_match($gstRegex, $seller_gst)) {
         $errorMessages[] = "Invalid GST Number format.";
     }
-
+    
     // Stop processing if there are errors
     if (empty($errorMessages)) {
         // Check if email already exists in sellers or users table
@@ -87,13 +97,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($stmt->num_rows > 0) {
             $errorMessages[] = "Email already exists. Please use a different email.";
         } else {
-            // Hash the password for security
             $hashed_password = password_hash($seller_password, PASSWORD_DEFAULT);
-
-
-            // Generate a unique verification token
             $verification_token = bin2hex(random_bytes(32));
-            // Insert seller data into `sellers` table
+            
             $stmt = $conn->prepare("INSERT INTO sellers (seller_name, seller_cname, seller_email, seller_phone, seller_gst, seller_address, seller_state, seller_city, seller_zipcode, seller_password, seller_status, seller_verification_token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $unique_seller_id = generateUniqueSellerId($conn);
             $stmt->bind_param("ssssssssssss", $seller_name, $seller_cname, $seller_email, $seller_phone, $seller_gst, $seller_address, $seller_state, $seller_city, $seller_zipcode, $hashed_password, $seller_status, $verification_token);
@@ -101,13 +107,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($stmt->execute()) {
                 $seller_id = $stmt->insert_id;
 
-                // Update the seller record with the unique seller ID
                 $update_stmt = $conn->prepare("UPDATE sellers SET unique_seller_id = ? WHERE seller_id = ?");
                 $update_stmt->bind_param("si", $unique_seller_id, $seller_id);
                 $update_stmt->execute();
                 $update_stmt->close();
 
-                // Insert login credentials into `user_login` table
                 $stmt_login = $conn->prepare("INSERT INTO user_login (user_name, user_email, user_password, user_role) VALUES (?, ?, ?, ?)");
                 $user_role = 'seller';
                 $stmt_login->bind_param("ssss", $seller_name, $seller_email, $hashed_password, $user_role);
@@ -115,7 +119,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($stmt_login->execute()) {
                     $successMessage = "New seller registered successfully! Please verify your email address to complete the registration.";
 
-                    // Sending email logic...
                     try {
                         $mail = new PHPMailer(true);
                         $mail->isSMTP();
@@ -182,275 +185,326 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Registration</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
-            --primary-color: #0071e3;
-            --error-color: #ff3b30;
-            --success-color: #34c759;
-            --text-color: #1d1d1f;
-            --secondary-text: #86868b;
-            --background-color: #fbfbfd;
-            --input-background: #ffffff;
-            --border-color: #d2d2d7;
+            --copper-primary: #b87333;
+            --copper-light: #d4a574;
+            --copper-dark: #8b5a2b;
+            --black: #1a1a1a;
+            --cream: #faf8f3;
+            --white: #ffffff;
+            --error: #dc2626;
+            --success: #16a34a;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.5;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--cream) 0%, #f0ebe3 100%);
+            color: var(--black);
+            /* line-height: 1.6;
+            min-height: 100vh;
+            padding: 40px 20px; */
         }
 
         .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
-        .registration-wrapper {
-            background: var(--input-background);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+        .registration-card {
+            background: var(--white);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(184, 115, 51, 0.08);
         }
 
-        .form-header {
+        .card-header {
+            background: linear-gradient(135deg, var(--copper-primary) 0%, var(--copper-dark) 100%);
+            padding: 48px 40px;
             text-align: center;
-            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .form-header h1 {
-            font-size: 32px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: var(--text-color);
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 15s infinite;
         }
 
-        .success-message {
-            background-color: var(--success-color);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-top: 16px;
-            animation: fadeIn 0.3s ease-in-out;
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .card-header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.5px;
+        }
+
+        .card-header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-body {
+            padding: 48px 40px;
+        }
+
+        .message {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            font-size: 14px;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-success {
+            background: #dcfce7;
+            color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+
+        .message-error {
+            background: #fee2e2;
+            color: var(--error);
+            border-left: 4px solid var(--error);
+        }
+
+        .message ul {
+            margin: 8px 0 0 20px;
+        }
+
+        .message li {
+            margin: 4px 0;
         }
 
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
+            gap: 28px;
         }
 
         .input-group {
             position: relative;
-            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
         }
 
         .input-group.full-width {
             grid-column: 1 / -1;
         }
 
-        .input-group .icon {
-            position: absolute;
-            top: 50%;
-            left: 12px;
-            transform: translateY(-50%);
-            color: #86868b;
-            font-size: 16px;
+        .input-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--copper-dark);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .input-group .icon-address {
+        .input-wrapper {
+            position: relative;
+            top:10px;
+            left:0px;
+        }
+
+        .input-icon {
             position: absolute;
-            top: 25%;
-            left: 12px;
+            left: 16px;
+            top: 50%;
             transform: translateY(-50%);
-            color: #86868b;
-            font-size: 16px;
-            grid-column: 1 / -1;
+            color: var(--copper-light);
+            font-size: 18px;
+            pointer-events: none;
+            z-index: 1;
+            transition: color 0.3s ease;
+        }
+
+        .input-wrapper.textarea-wrapper .input-icon {
+            top: 20px;
+            transform: translateY(0);
         }
 
         .input-group input,
         .input-group textarea {
             width: 100%;
-            padding: 12px 16px;
-            padding-left: 40px;
-            font-size: 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: var(--input-background);
+            padding: 14px 16px 14px 48px;
+            font-size: 15px;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            background: var(--white);
+            color: var(--black);
             transition: all 0.3s ease;
-            box-sizing: border-box;
+            font-family: inherit;
+            display: block;
         }
 
         .input-group textarea {
-            min-height: 100px;
+            min-height: 120px;
             resize: vertical;
+            line-height: 1.6;
         }
 
         .input-group input:focus,
         .input-group textarea:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.2);
             outline: none;
+            border-color: var(--copper-primary);
+            box-shadow: 0 0 0 4px rgba(184, 115, 51, 0.1);
+        }
+
+        .input-group input:focus ~ .input-icon,
+        .input-group textarea:focus ~ .input-icon {
+            color: var(--copper-primary);
         }
 
         .error-message {
             display: none;
-            color: var(--error-color);
+            color: var(--error);
             font-size: 12px;
-            position: absolute;
-            bottom: -20px;
-            left: 0;
+            margin-top: 6px;
+            animation: fadeIn 0.2s ease-in;
         }
 
         .error-message.active {
             display: block;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .terms-container {
+            margin: 32px 0;
+            padding: 20px;
+            background: var(--cream);
+            border-radius: 12px;
+            border: 2px solid rgba(184, 115, 51, 0.15);
+        }
+
+        .terms-container label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--black);
+        }
+
+        .terms-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: var(--copper-primary);
+        }
+
+        .terms-link {
+            color: var(--copper-primary);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        .terms-link:hover {
+            border-bottom-color: var(--copper-primary);
+        }
+
         .form-footer {
-            margin-top: 32px;
             text-align: center;
+            margin-top: 32px;
         }
 
         .submit-btn {
-            background-color: var(--primary-color);
-            color: white;
+            background: linear-gradient(135deg, var(--copper-primary) 0%, var(--copper-dark) 100%);
+            color: var(--white);
             border: none;
-            padding: 14px 28px;
+            padding: 16px 48px;
             font-size: 16px;
             font-weight: 600;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-width: 160px;
+            box-shadow: 0 4px 16px rgba(184, 115, 51, 0.3);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .submit-btn:hover {
-            background-color: #0077ed;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(184, 115, 51, 0.4);
         }
 
         .submit-btn:active {
             transform: translateY(0);
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         @media (max-width: 768px) {
+            body {
+                padding: 20px 16px;
+            }
+
+            .card-header {
+                padding: 32px 24px;
+            }
+
+            .card-header h1 {
+                font-size: 28px;
+            }
+
+            .card-body {
+                padding: 32px 24px;
+            }
+
             .form-grid {
                 grid-template-columns: 1fr;
+                gap: 24px;
             }
 
-            .registration-wrapper {
-                padding: 24px;
-            }
-        }
-
-        .form-header {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .form-header h1 {
-            color: #1a1a1a;
-            font-size: 28px;
-            margin-bottom: 24px;
-            text-align: center;
-        }
-
-        .message {
-            padding: 16px 20px;
-            border-radius: 8px;
-            margin: 16px 0;
-            margin-top: -10px;
-            margin-bottom: 30px;
-            position: relative;
-            animation: slideDown 0.3s ease-out;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .message-success {
-            background-color: #ecfdf5;
-            color: #065f46;
-        }
-
-        .message-error {
-            background-color: #fef2f2;
-            color: #991b1b;
-        }
-
-        .message ul {
-            margin: 8px 0 0 0;
-            padding-left: 20px;
-        }
-
-        .message li {
-            margin: 4px 0;
-            font-size: 14px;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
+            .submit-btn {
+                width: 100%;
             }
         }
 
-        /* Terms and Conditions Styles */
-        .terms-checkbox-container {
-            margin: 20px 0;
-            text-align: left;
-            padding: 0 20px;
-        }
+        @media (max-width: 480px) {
+            .card-header h1 {
+                font-size: 24px;
+            }
 
-        .terms-checkbox-container label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            color: var(--text-color);
-        }
-
-        .terms-checkbox-container input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            border: 2px solid var(--border-color);
-            border-radius: 0;
-        }
-
-        .terms-link {
-            color: var(--primary-color);
-            text-decoration: underline;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .terms-link:hover {
-            color: #005bbf;
-        }
-
-        @media (max-width: 768px) {
-            .terms-checkbox-container {
-                padding: 0 16px;
+            .card-header p {
+                font-size: 14px;
             }
         }
     </style>
@@ -458,123 +512,142 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
     <div class="container">
-        <div class="registration-wrapper">
-            <div class="form-header">
-                <h1>Seller Registration</h1>
+        <div class="registration-card">
+            <div class="card-header">
+                <h1>Become a Seller</h1>
+                <p>Join our platform and start selling today</p>
             </div>
 
-            <!-- Display messages -->
-            <?php if (!empty($successMessage)): ?>
-                <div class="message message-success">
-                    <?= htmlspecialchars($successMessage) ?>
-                </div>
-            <?php endif; ?>
+            <div class="card-body">
+                <?php if (!empty($successMessage)): ?>
+                    <div class="message message-success">
+                        <?= htmlspecialchars($successMessage) ?>
+                    </div>
+                <?php endif; ?>
 
-            <?php if (!empty($errorMessages)): ?>
-                <div class="message message-error">
-                    <ul>
-                        <?php foreach ($errorMessages as $message): ?>
-                            <li><?= htmlspecialchars($message) ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
+                <?php if (!empty($errorMessages)): ?>
+                    <div class="message message-error">
+                        <ul>
+                            <?php foreach ($errorMessages as $message): ?>
+                                <li><?= htmlspecialchars($message) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
 
-            <form class="registration-form" method="POST" action="">
-                <div class="form-grid">
-                    <div class="input-group">
-                        <span class="icon">
-                            <i class="fa-sharp-duotone fa-solid fa-user"></i>
-                        </span>
-                        <input type="text" id="seller_name" name="seller_name" placeholder="Full Name"
-                            value="<?= htmlspecialchars($seller_name) ?>" required>
+                <form class="registration-form" method="POST" action="">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label class="input-label">Full Name</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="seller_name" name="seller_name" placeholder="Enter your full name"
+                                    value="<?= htmlspecialchars($seller_name) ?>" required>
+                                <i class="fa-sharp-duotone fa-solid fa-user input-icon"></i>
+                            </div>
+                            <span class="error-message"></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Company Name</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="seller_cname" name="seller_cname" placeholder="Enter company name"
+                                    value="<?= htmlspecialchars($seller_cname) ?>" required>
+                                <i class="fa-regular fa-building input-icon"></i>
+                            </div>
+                            <span class="error-message"></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Email Address</label>
+                            <div class="input-wrapper">
+                                <input type="email" id="seller_email" name="seller_email" placeholder="your@email.com"
+                                    value="<?= htmlspecialchars($seller_email) ?>" required>
+                                <i class="fa-sharp-duotone fa-solid fa-envelope input-icon"></i>
+                            </div>
+                            <span class="error-message"></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Phone Number</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="seller_phone" name="seller_phone" placeholder="10-digit number"
+                                    value="<?= htmlspecialchars($seller_phone) ?>" required>
+                                <i class="fa-sharp-duotone fa-solid fa-phone input-icon"></i>
+                            </div>
+                            <span class="error-message"></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">GST Number</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="seller_gst" name="seller_gst" placeholder="GST identification"
+                                    value="<?= htmlspecialchars($seller_gst) ?>" required>
+                                <i class="fa-solid fa-scale-balanced input-icon"></i>
+                            </div>
+                            <span class="error-message"></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Password</label>
+                            <div class="input-wrapper">
+                                <input type="password" id="seller_password" name="seller_password" placeholder="Create strong password" required>
+                                <i class="fa-solid fa-lock input-icon"></i>
+                            </div>
+                            <span class="error-message"></span>
+                        </div>
+
+                        <div class="input-group full-width">
+                            <label class="input-label">Address</label>
+                            <div class="input-wrapper textarea-wrapper">
+                                <textarea id="seller_address" name="seller_address" placeholder="Enter your complete address" required><?= htmlspecialchars($seller_address) ?></textarea>
+                                <i class="fa-sharp-duotone fa-solid fa-location-dot input-icon"></i>
+                            </div>
+                            <span class="error-message"></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">State</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="seller_state" name="seller_state" placeholder="Enter state"
+                                    value="<?= htmlspecialchars($seller_state) ?>" required>
+                                <i class="fa-solid fa-globe input-icon"></i>
+                            </div>
+                            <span class="error-message"></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">City</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="seller_city" name="seller_city" placeholder="Enter city"
+                                    value="<?= htmlspecialchars($seller_city) ?>" required>
+                                <i class="fa-solid fa-city input-icon"></i>
+                            </div>
+                            <span class="error-message"></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">ZIP Code</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="seller_zipcode" name="seller_zipcode" placeholder="6-digit code"
+                                    value="<?= htmlspecialchars($seller_zipcode) ?>" required maxlength="6">
+                                <i class="fa-solid fa-truck input-icon"></i>
+                            </div>
+                            <span class="error-message"></span>
+                        </div>
                     </div>
 
-                    <div class="input-group">
-                        <span class="icon">
-                            <i class="fa-regular fa-building"></i>
-                        </span>
-                        <input type="text" id="seller_cname" name="seller_cname" placeholder="Company Name"
-                            value="<?= htmlspecialchars($seller_cname) ?>" required>
+                    <div class="terms-container">
+                        <label>
+                            <input type="checkbox" id="terms-checkbox" name="terms_accepted" required>
+                            <span>I agree to the <a href="#" class="terms-link" onclick="openTermsPage(event)">Terms and Conditions</a> and acknowledge that I have read the privacy policy</span>
+                        </label>
                     </div>
 
-                    <div class="input-group">
-                        <span class="icon">
-                            <i class="fa-sharp-duotone fa-solid fa-envelope"></i>
-                        </span>
-                        <input type="email" id="seller_email" name="seller_email" placeholder="Email Address"
-                            value="<?= htmlspecialchars($seller_email) ?>" required>
+                    <div class="form-footer">
+                        <button type="submit" class="submit-btn">Create Account</button>
                     </div>
-
-                    <div class="input-group">
-                        <span class="icon">
-                            <i class="fa-sharp-duotone fa-solid fa-phone"></i>
-                        </span>
-                        <input type="text" id="seller_phone" name="seller_phone" placeholder="Phone Number"
-                            value="<?= htmlspecialchars($seller_phone) ?>" required>
-                    </div>
-
-                    <div class="input-group">
-                        <span class="icon">
-                            <i class="fa-solid fa-scale-balanced"></i>
-                        </span>
-                        <input type="text" id="seller_gst" name="seller_gst" placeholder="GST Number"
-                            value="<?= htmlspecialchars($seller_gst) ?>" required>
-                    </div>
-
-                    <div class="input-group">
-                        <span class="icon">
-                            <i class="fa-solid fa-lock"></i>
-                        </span>
-                        <input type="password" id="seller_password" name="seller_password" placeholder="Password"
-                            required>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <span class="icon-address">
-                            <i class="fa-sharp-duotone fa-solid fa-location-dot"></i>
-                        </span>
-                        <textarea id="seller_address" name="seller_address" placeholder="Address"
-                            required><?= htmlspecialchars($seller_address) ?></textarea>
-                    </div>
-
-                    <div class="input-group">
-                        <span class="icon">
-                            <i class="fa-solid fa-globe"></i>
-                        </span>
-                        <input type="text" id="seller_state" name="seller_state" placeholder="State"
-                            value="<?= htmlspecialchars($seller_state) ?>" required>
-                    </div>
-
-                    <div class="input-group">
-                        <span class="icon">
-                            <i class="fa-solid fa-city"></i>
-                        </span>
-                        <input type="text" id="seller_city" name="seller_city" placeholder="City"
-                            value="<?= htmlspecialchars($seller_city) ?>" required>
-                    </div>
-
-                    <div class="input-group">
-                        <span class="icon">
-                            <i class="fa-solid fa-truck"></i>
-                        </span>
-                        <input type="text" id="seller_zipcode" name="seller_zipcode" placeholder="ZIP Code"
-                            value="<?= htmlspecialchars($seller_zipcode) ?>" required maxlength="6">
-                    </div>
-                </div>
-
-                <div class="terms-checkbox-container">
-                    <label>
-                        <input type="checkbox" id="terms-checkbox" name="terms_accepted" required>
-                        <span>I agree to the <span class="terms-link" onclick="openTermsPage(event)">Terms and
-                                Conditions</span></span>
-                    </label>
-                </div>
-
-                <div class="form-footer">
-                    <button type="submit" class="submit-btn">Register</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -585,19 +658,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             const inputs = form.querySelectorAll('input, textarea');
 
             inputs.forEach(input => {
-                const errorElement = document.createElement('span');
-                errorElement.className = 'error-message';
-                input.parentNode.appendChild(errorElement);
+                const errorElement = input.parentElement.nextElementSibling;
 
                 input.addEventListener('input', function() {
-                    validateInput(this);
+                    validateInput(this, errorElement);
+                });
+
+                input.addEventListener('blur', function() {
+                    validateInput(this, errorElement);
                 });
             });
 
-            function validateInput(input) {
-                const errorElement = input.parentNode.querySelector('.error-message');
+            function validateInput(input, errorElement) {
                 let isValid = true;
                 let errorMessage = '';
+
+                if (input.value.trim() === '' && input.hasAttribute('required')) {
+                    return;
+                }
 
                 switch (input.id) {
                     case 'seller_gst':
@@ -616,13 +694,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
                         errorMessage = 'Invalid email address';
                         break;
+                    case 'seller_password':
+                        isValid = validatePassword(input.value);
+                        errorMessage = 'Password must be at least 8 characters, include uppercase, lowercase, number, and special character';
+                        break;
                 }
 
                 if (!isValid && input.value.length > 0) {
                     errorElement.textContent = errorMessage;
                     errorElement.classList.add('active');
+                    input.style.borderColor = 'var(--error)';
                 } else {
                     errorElement.classList.remove('active');
+                    input.style.borderColor = '';
                 }
             }
 
@@ -636,11 +720,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 return phoneRegex.test(phoneNumber);
             }
 
+            function validatePassword(password) {
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                return passwordRegex.test(password);
+            }
+
             form.addEventListener('submit', function(event) {
                 let hasError = false;
                 inputs.forEach(input => {
-                    validateInput(input);
-                    if (input.parentNode.querySelector('.error-message.active')) {
+                    const errorElement = input.parentElement.nextElementSibling;
+                    validateInput(input, errorElement);
+                    if (errorElement.classList.contains('active')) {
                         hasError = true;
                     }
                 });

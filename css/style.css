@@ -872,7 +872,7 @@ a.btn-link.text-light:after {
 }
 
 .modal-body {
-  padding: 1rem;
+  /* padding: 1rem; */
   height: auto !important;
   min-height: 0 !important;
 }

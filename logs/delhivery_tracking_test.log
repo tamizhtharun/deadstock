@@ -1,0 +1,386 @@
+[2025-09-11 06:12:47] Test Tracking API for AWB: 1234567890
+Response: {
+    "success": true,
+    "data": {
+        "rmk": "Some error has occurred. Please contact client.support@delhivery.com with error message- Data does not exists for provided Waybill(s)",
+        "Success": false,
+        "Error": "Data does not exists for provided Waybill(s)"
+    },
+    "message": "Shipment tracking successful"
+}
+
+[2025-09-11 06:14:26] Test Tracking API for AWB: 84665810001540
+Response: {
+    "success": true,
+    "data": {
+        "ShipmentData": [
+            {
+                "Shipment": {
+                    "PickUpDate": "2025-09-11T09:43:51.912",
+                    "Destination": "Chennai",
+                    "DestRecieveDate": null,
+                    "Scans": [
+                        {
+                            "ScanDetail": {
+                                "ScanDateTime": "2025-09-11T09:43:51.936",
+                                "ScanType": "UD",
+                                "Scan": "Manifested",
+                                "StatusDateTime": "2025-09-11T09:43:51.936",
+                                "ScannedLocation": "Dindigul_DC (Tamil Nadu)",
+                                "StatusCode": "X-UCI",
+                                "Instructions": "Shipment details manifested"
+                            }
+                        }
+                    ],
+                    "Status": {
+                        "Status": "Manifested",
+                        "StatusLocation": "Dindigul_DC (Tamil Nadu)",
+                        "StatusDateTime": "2025-09-11T09:43:51.936",
+                        "RecievedBy": "",
+                        "StatusCode": "X-UCI",
+                        "StatusType": "UD",
+                        "Instructions": "Shipment details manifested"
+                    },
+                    "ReturnPromisedDeliveryDate": null,
+                    "Ewaybill": [],
+                    "InvoiceAmount": 1000,
+                    "ChargedWeight": null,
+                    "PickedupDate": null,
+                    "DeliveryDate": null,
+                    "SenderName": "bd-IMETTOOLINGINDIAPLTD-do-cdp",
+                    "AWB": "84665810001540",
+                    "DispatchCount": 0,
+                    "OrderType": "Pre-paid",
+                    "ReturnedDate": null,
+                    "ExpectedDeliveryDate": null,
+                    "RTOStartedDate": null,
+                    "Extras": "",
+                    "FirstAttemptDate": null,
+                    "ReverseInTransit": false,
+                    "Quantity": "",
+                    "Origin": "Dindigul_DC (Tamil Nadu)",
+                    "Consignee": {
+                        "City": "Chennai",
+                        "Name": "Test Customer",
+                        "Address1": [],
+                        "Address2": [],
+                        "Address3": "",
+                        "PinCode": 600001,
+                        "State": "Tamil Nadu",
+                        "Telephone2": "",
+                        "Country": "India",
+                        "Telephone1": ""
+                    },
+                    "ReferenceNo": "TEST-1757564030",
+                    "OutDestinationDate": null,
+                    "CODAmount": 0,
+                    "PromisedDeliveryDate": null,
+                    "PickupLocation": "TAMIL WAREHOUSE",
+                    "OriginRecieveDate": null
+                }
+            }
+        ]
+    },
+    "message": "Shipment tracking successful"
+}
+
+[2025-09-11 06:16:57] Test Tracking API for AWB: 84665810001540
+Response: {
+    "success": true,
+    "data": {
+        "ShipmentData": [
+            {
+                "Shipment": {
+                    "PickUpDate": "2025-09-11T09:43:51.912",
+                    "Destination": "Chennai",
+                    "DestRecieveDate": null,
+                    "Scans": [
+                        {
+                            "ScanDetail": {
+                                "ScanDateTime": "2025-09-11T09:43:51.936",
+                                "ScanType": "UD",
+                                "Scan": "Manifested",
+                                "StatusDateTime": "2025-09-11T09:43:51.936",
+                                "ScannedLocation": "Dindigul_DC (Tamil Nadu)",
+                                "StatusCode": "X-UCI",
+                                "Instructions": "Shipment details manifested"
+                            }
+                        }
+                    ],
+                    "Status": {
+                        "Status": "Manifested",
+                        "StatusLocation": "Dindigul_DC (Tamil Nadu)",
+                        "StatusDateTime": "2025-09-11T09:43:51.936",
+                        "RecievedBy": "",
+                        "StatusCode": "X-UCI",
+                        "StatusType": "UD",
+                        "Instructions": "Shipment details manifested"
+                    },
+                    "ReturnPromisedDeliveryDate": null,
+                    "Ewaybill": [],
+                    "InvoiceAmount": 1000,
+                    "ChargedWeight": null,
+                    "PickedupDate": null,
+                    "DeliveryDate": null,
+                    "SenderName": "bd-IMETTOOLINGINDIAPLTD-do-cdp",
+                    "AWB": "84665810001540",
+                    "DispatchCount": 0,
+                    "OrderType": "Pre-paid",
+                    "ReturnedDate": null,
+                    "ExpectedDeliveryDate": null,
+                    "RTOStartedDate": null,
+                    "Extras": "",
+                    "FirstAttemptDate": null,
+                    "ReverseInTransit": false,
+                    "Quantity": "",
+                    "Origin": "Dindigul_DC (Tamil Nadu)",
+                    "Consignee": {
+                        "City": "Chennai",
+                        "Name": "Test Customer",
+                        "Address1": [],
+                        "Address2": [],
+                        "Address3": "",
+                        "PinCode": 600001,
+                        "State": "Tamil Nadu",
+                        "Telephone2": "",
+                        "Country": "India",
+                        "Telephone1": ""
+                    },
+                    "ReferenceNo": "TEST-1757564030",
+                    "OutDestinationDate": null,
+                    "CODAmount": 0,
+                    "PromisedDeliveryDate": null,
+                    "PickupLocation": "TAMIL WAREHOUSE",
+                    "OriginRecieveDate": null
+                }
+            }
+        ]
+    },
+    "message": "Shipment tracking successful"
+}
+
+[2025-09-11 06:26:59] Test Tracking API for AWB: 84665810001540
+Response: {
+    "success": true,
+    "data": {
+        "ShipmentData": [
+            {
+                "Shipment": {
+                    "PickUpDate": "2025-09-11T09:43:51.912",
+                    "Destination": "Chennai",
+                    "DestRecieveDate": null,
+                    "Scans": [
+                        {
+                            "ScanDetail": {
+                                "ScanDateTime": "2025-09-11T09:43:51.936",
+                                "ScanType": "UD",
+                                "Scan": "Manifested",
+                                "StatusDateTime": "2025-09-11T09:43:51.936",
+                                "ScannedLocation": "Dindigul_DC (Tamil Nadu)",
+                                "StatusCode": "X-UCI",
+                                "Instructions": "Shipment details manifested"
+                            }
+                        }
+                    ],
+                    "Status": {
+                        "Status": "Manifested",
+                        "StatusLocation": "Dindigul_DC (Tamil Nadu)",
+                        "StatusDateTime": "2025-09-11T09:43:51.936",
+                        "RecievedBy": "",
+                        "StatusCode": "X-UCI",
+                        "StatusType": "UD",
+                        "Instructions": "Shipment details manifested"
+                    },
+                    "ReturnPromisedDeliveryDate": null,
+                    "Ewaybill": [],
+                    "InvoiceAmount": 1000,
+                    "ChargedWeight": null,
+                    "PickedupDate": null,
+                    "DeliveryDate": null,
+                    "SenderName": "bd-IMETTOOLINGINDIAPLTD-do-cdp",
+                    "AWB": "84665810001540",
+                    "DispatchCount": 0,
+                    "OrderType": "Pre-paid",
+                    "ReturnedDate": null,
+                    "ExpectedDeliveryDate": null,
+                    "RTOStartedDate": null,
+                    "Extras": "",
+                    "FirstAttemptDate": null,
+                    "ReverseInTransit": false,
+                    "Quantity": "",
+                    "Origin": "Dindigul_DC (Tamil Nadu)",
+                    "Consignee": {
+                        "City": "Chennai",
+                        "Name": "Test Customer",
+                        "Address1": [],
+                        "Address2": [],
+                        "Address3": "",
+                        "PinCode": 600001,
+                        "State": "Tamil Nadu",
+                        "Telephone2": "",
+                        "Country": "India",
+                        "Telephone1": ""
+                    },
+                    "ReferenceNo": "TEST-1757564030",
+                    "OutDestinationDate": null,
+                    "CODAmount": 0,
+                    "PromisedDeliveryDate": null,
+                    "PickupLocation": "TAMIL WAREHOUSE",
+                    "OriginRecieveDate": null
+                }
+            }
+        ]
+    },
+    "message": "Shipment tracking successful"
+}
+
+[2025-09-11 06:27:53] Test Tracking API for AWB: 84665810001540
+Response: {
+    "success": true,
+    "data": {
+        "ShipmentData": [
+            {
+                "Shipment": {
+                    "PickUpDate": "2025-09-11T09:43:51.912",
+                    "Destination": "Chennai",
+                    "DestRecieveDate": null,
+                    "Scans": [
+                        {
+                            "ScanDetail": {
+                                "ScanDateTime": "2025-09-11T09:43:51.936",
+                                "ScanType": "UD",
+                                "Scan": "Manifested",
+                                "StatusDateTime": "2025-09-11T09:43:51.936",
+                                "ScannedLocation": "Dindigul_DC (Tamil Nadu)",
+                                "StatusCode": "X-UCI",
+                                "Instructions": "Shipment details manifested"
+                            }
+                        }
+                    ],
+                    "Status": {
+                        "Status": "Manifested",
+                        "StatusLocation": "Dindigul_DC (Tamil Nadu)",
+                        "StatusDateTime": "2025-09-11T09:43:51.936",
+                        "RecievedBy": "",
+                        "StatusCode": "X-UCI",
+                        "StatusType": "UD",
+                        "Instructions": "Shipment details manifested"
+                    },
+                    "ReturnPromisedDeliveryDate": null,
+                    "Ewaybill": [],
+                    "InvoiceAmount": 1000,
+                    "ChargedWeight": null,
+                    "PickedupDate": null,
+                    "DeliveryDate": null,
+                    "SenderName": "bd-IMETTOOLINGINDIAPLTD-do-cdp",
+                    "AWB": "84665810001540",
+                    "DispatchCount": 0,
+                    "OrderType": "Pre-paid",
+                    "ReturnedDate": null,
+                    "ExpectedDeliveryDate": null,
+                    "RTOStartedDate": null,
+                    "Extras": "",
+                    "FirstAttemptDate": null,
+                    "ReverseInTransit": false,
+                    "Quantity": "",
+                    "Origin": "Dindigul_DC (Tamil Nadu)",
+                    "Consignee": {
+                        "City": "Chennai",
+                        "Name": "Test Customer",
+                        "Address1": [],
+                        "Address2": [],
+                        "Address3": "",
+                        "PinCode": 600001,
+                        "State": "Tamil Nadu",
+                        "Telephone2": "",
+                        "Country": "India",
+                        "Telephone1": ""
+                    },
+                    "ReferenceNo": "TEST-1757564030",
+                    "OutDestinationDate": null,
+                    "CODAmount": 0,
+                    "PromisedDeliveryDate": null,
+                    "PickupLocation": "TAMIL WAREHOUSE",
+                    "OriginRecieveDate": null
+                }
+            }
+        ]
+    },
+    "message": "Shipment tracking successful"
+}
+
+[2025-09-11 06:28:04] Test Tracking API for AWB: 84665810001573
+Response: {
+    "success": true,
+    "data": {
+        "ShipmentData": [
+            {
+                "Shipment": {
+                    "PickUpDate": "2025-09-11T09:57:03.811",
+                    "Destination": "Chennai",
+                    "DestRecieveDate": null,
+                    "Scans": [
+                        {
+                            "ScanDetail": {
+                                "ScanDateTime": "2025-09-11T09:57:03.837",
+                                "ScanType": "UD",
+                                "Scan": "Manifested",
+                                "StatusDateTime": "2025-09-11T09:57:03.837",
+                                "ScannedLocation": "Dindigul_DC (Tamil Nadu)",
+                                "StatusCode": "X-UCI",
+                                "Instructions": "Shipment details manifested"
+                            }
+                        }
+                    ],
+                    "Status": {
+                        "Status": "Manifested",
+                        "StatusLocation": "Dindigul_DC (Tamil Nadu)",
+                        "StatusDateTime": "2025-09-11T09:57:03.837",
+                        "RecievedBy": "",
+                        "StatusCode": "X-UCI",
+                        "StatusType": "UD",
+                        "Instructions": "Shipment details manifested"
+                    },
+                    "ReturnPromisedDeliveryDate": null,
+                    "Ewaybill": [],
+                    "InvoiceAmount": 1000,
+                    "ChargedWeight": null,
+                    "PickedupDate": null,
+                    "DeliveryDate": null,
+                    "SenderName": "bd-IMETTOOLINGINDIAPLTD-do-cdp",
+                    "AWB": "84665810001573",
+                    "DispatchCount": 0,
+                    "OrderType": "Pre-paid",
+                    "ReturnedDate": null,
+                    "ExpectedDeliveryDate": null,
+                    "RTOStartedDate": null,
+                    "Extras": "",
+                    "FirstAttemptDate": null,
+                    "ReverseInTransit": false,
+                    "Quantity": "",
+                    "Origin": "Dindigul_DC (Tamil Nadu)",
+                    "Consignee": {
+                        "City": "Chennai",
+                        "Name": "Test Customer",
+                        "Address1": [],
+                        "Address2": [],
+                        "Address3": "",
+                        "PinCode": 600001,
+                        "State": "Tamil Nadu",
+                        "Telephone2": "",
+                        "Country": "India",
+                        "Telephone1": ""
+                    },
+                    "ReferenceNo": "TEST-1757564822",
+                    "OutDestinationDate": null,
+                    "CODAmount": 0,
+                    "PromisedDeliveryDate": null,
+                    "PickupLocation": "TAMIL WAREHOUSE",
+                    "OriginRecieveDate": null
+                }
+            }
+        ]
+    },
+    "message": "Shipment tracking successful"
+}
+

@@ -72,8 +72,8 @@ if (!isset($_SESSION['seller_session'])) {
 	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css"> -->
-	<!-- <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script> -->
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+	<script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
 
 
 </head>
@@ -105,26 +105,34 @@ if (!isset($_SESSION['seller_session'])) {
 
 				<!-- Top Bar ... User Information .. Login/Log out Area -->
 				<div class="navbar-custom-menu">
-					<div class="dropdown profile-dropdown">
-						<div id="profile-btn" class="d-flex align-items-center profile-hover">
-							<?php
-							// Check if the profile photo exists; if not, use the Font Awesome user icon
-							if (!empty($_SESSION['seller_session']['seller_photo'])) {
-								$profile_photo = $_SESSION['seller_session']['seller_photo'];
-								echo '<img src="../assets/uploads/profile-pictures/' . $profile_photo . '" style="width: 35px; height: 35px; border-radius: 50%; margin-right: 8px;">';
-							} else {
-								echo '<i class="fa fa-user" style="font-size: 20px; margin-right: 8px;"></i>';
-							}
-							?>
-							<span style="font-weight:800; margin-right: 6px;"><?php echo $_SESSION['seller_session']['seller_name']; ?></span>
-							<i class="fa fa-chevron-down dropdown-icon"></i> <!-- Dropdown Icon -->
-						</div>
-						<div class="dropdown-menu dropdown-menu-end profile-menu">
-							<a class="dropdown-item" href="profile-edit.php">Edit Profile</a>
-							<a class="dropdown-item text-danger" href="logout.php">Log out</a>
-						</div>
-					</div>
-				</div>
+    <div class="dropdown profile-dropdown">
+        <button class="btn d-flex align-items-center profile-hover" 
+                type="button" 
+                id="newProfileDropdown" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false" 
+                style="background:none; border:none; padding:0;">
+            <?php
+            // Check if the profile photo exists; if not, use the Font Awesome user icon
+            if (!empty($_SESSION['seller_session']['seller_photo'])) {
+                $profile_photo = $_SESSION['seller_session']['seller_photo'];
+                echo '<img src="../assets/uploads/profile-pictures/' . $profile_photo . '" style="width:35px; height:35px; border-radius:50%; margin-right:8px;">';
+            } else {
+                echo '<i class="fa fa-user" style="font-size:20px; margin-right:8px;"></i>';
+            }
+            ?>
+            <span style="font-weight:800; margin-right:6px;">
+                <?php echo $_SESSION['seller_session']['seller_name']; ?>
+            </span>
+            <i class="fa fa-chevron-down"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="newProfileDropdown">
+            <li><a class="dropdown-item" href="profile-edit.php">Edit Profile</a></li>
+            <li><a class="dropdown-item text-danger" href="logout.php">Log out</a></li>
+        </ul>
+    </div>
+</div>
+
 			</nav>
 		</header>
 
@@ -173,6 +181,23 @@ if (!isset($_SESSION['seller_session'])) {
 						</ul>
 					</li>
 
+
+					<!-- <li class="treeview <?php if (in_array($cur_page, ['warehouse-management.php', 'list-warehouses.php', 'edit-warehouse.php'])) { echo 'active menu-open'; } ?>">
+							<a href="#">
+								<i class="fa fa-warehouse"></i><span>Warehouse Management</span>
+								<span class="pull-right-container">
+									<i class="fa fa-angle-left pull-right"></i>
+								</span>
+							</a>
+							<ul class="treeview-menu">
+								<li class="<?php echo ($cur_page == 'warehouse-management.php') ? 'active' : ''; ?>">
+									<a href="warehouse-management.php"><i class="fa fa-plus-circle"></i> Create New Warehouse</a>
+								</li>
+								<li class="<?php echo (in_array($cur_page, ['list-warehouses.php', 'edit-warehouse.php'])) ? 'active' : ''; ?>">
+									<a href="list-warehouses.php"><i class="fa fa-edit"></i> Manage Warehouses</a>
+								</li>
+							</ul>
+						</li> -->
 
 					<li
 						class="treeview <?php if (($cur_page == 'product.php') || ($cur_page == 'product-add.php') || ($cur_page == 'product-edit.php')) {
@@ -244,6 +269,15 @@ if (!isset($_SESSION['seller_session'])) {
 							<li><a href="bidding-order.php"><i class="fa fa-circle-o"></i> Bid-Based Orders </a></li>
 							<li><a href="order-history.php"><i class="fa fa-circle-o"></i> All Orders History </a></li>
 						</ul>
+					</li>
+
+					<li
+						class="treeview <?php if (($cur_page == 'discount.php')) {
+											echo 'active';
+										} ?>">
+						<a href="discount.php">
+							<i class="fa fa-percent"></i><span>Discount Management</span>
+						</a>
 					</li>
 
 					<li class="treeview <?php if (($cur_page == 'revenue.php')) {

@@ -18,6 +18,7 @@ if(isset($_POST['form1'])) {
         $valid = 0;
         $error_message .= "End level category name can not be empty<br>";
     }
+	
 
     if($valid == 1) {
 
@@ -26,8 +27,7 @@ if(isset($_POST['form1'])) {
 		$statement->execute(array($_POST['ecat_name'],$_POST['mcat_id']));
 	
     	$success_message = 'End Level Category is added successfully.';
-    }
-}
+    }}
 ?>
 
 <section class="content-header">

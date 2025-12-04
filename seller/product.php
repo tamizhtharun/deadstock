@@ -19,8 +19,10 @@ echo "</pre>";
 	<div class="content-header-right">
 		<?php if($seller_status == 1){?>
 			<a href="product-add.php" class="btn btn-primary btn-sm" >Add Product</a>
+			<a href="product-bulk-upload.php" class="btn btn-success btn-sm" >Bulk Upload</a>
 			<?php }else{ ?>
 				<a href="profile-edit.php" class="btn btn-primary btn-sm disabled" >Add Product</a>
+				<a href="product-bulk-upload.php" class="btn btn-success btn-sm disabled" >Bulk Upload</a>
 		<?php } ?>
 	</div>
 </section>
@@ -96,9 +98,9 @@ echo "</pre>";
 								?>
 								<tr>
 										<td><?php echo $i; ?></td>
-										<td style="width:82px;"><img src="../assets/uploads/product-photos/<?php echo $row['p_featured_photo']; ?>" alt="<?php echo $row['p_name']; ?>" style="width:80px;"></td>
-										<td><?php echo $row['brand_name']; ?></td>
-										<td><?php echo $row['p_name']; ?></td>
+										<td style="width:82px;"><img src="../assets/uploads/product-photos/<?php echo $row['p_featured_photo']; ?>" alt="<?php echo htmlspecialchars($row['p_name']); ?>" style="width:80px;"></td>
+										<td><?php echo htmlspecialchars($row['brand_name']); ?></td>
+										<td><?php echo htmlspecialchars($row['p_name']); ?></td>
 										<td>₹<?php echo $row['p_old_price']; ?></td>
 										<td>₹<?php echo $row['p_current_price']; ?></td>
 										<td><?php echo $row['p_qty']; ?></td>
@@ -106,18 +108,18 @@ echo "</pre>";
 												<?php if($row['p_is_featured'] == 1) {echo '<span class="badge badge-success" style="background-color:green;">Yes</span>';} else {echo '<span class="badge badge-success" style="background-color:red;">No</span>';} ?>
 										</td>
 										<td>
-												<?php if($row['p_is_approve'] == 1) {echo '<span class="badge badge-success" style="background-color:green;">Approved</span>';} else {echo '<span class="badge badge-danger" style="background-color:red;">Not Approved</span>';} ?>
+												<?php if($row['p_is_approve'] == 1) {echo '<span class="badge badge-success" style="background-color:green;">Approved</span>';} else {echo '<span class="badge badge-danger" style="background-color:red;">Rejected</span>';} ?>
 										</td>
 										<td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?></td>
 										<td><a href="../assets/uploads/product-catalogues/<?php echo $row['product_catalogue']?>">View Uploaded catalogue</a> </td>
-										<td>										
+										<td>
 												<a href="product-edit.php?id=<?php echo $row['id']; ?>" class="btn btn-primary btn-xs">Edit</a>
-												<a href="#" class="btn btn-danger btn-xs" data-href="product-delete.php?id=<?php echo $row['id']; ?>" data-toggle="modal" data-target="#confirm-delete">Delete</a>  
+												<a href="#" class="btn btn-danger btn-xs" data-href="product-delete.php?id=<?php echo $row['id']; ?>" data-toggle="modal" data-target="#confirm-delete">Delete</a>
 										</td>
 								</tr>
 								<?php
 						}
-						?>				
+						?>
 						</tbody>
 					</table>
 				</div>

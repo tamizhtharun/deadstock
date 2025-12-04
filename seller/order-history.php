@@ -1,4 +1,94 @@
-<?php require_once('header.php'); ?>
+<?php
+require_once('../db_connection.php');
+session_start();
+
+// Check if export_csv button is clicked - must be before any output
+if (isset($_POST['export_csv'])) {
+    $seller_id = $_SESSION['seller_session']['seller_id'] ?? null;
+
+    // Build query with filters
+    $query = "SELECT o.id, o.order_id, p.p_name,
+               o.quantity, (o.price * o.quantity) AS total_price,
+               o.order_status AS status, DATE(o.created_at) AS order_date,
+               o.order_type
+        FROM tbl_orders o
+        JOIN tbl_product p ON o.product_id = p.id
+        WHERE o.seller_id = :seller_id";
+
+    $params = array(':seller_id' => $seller_id);
+
+    // Apply status filter
+    if (!empty($_POST['status_filter'])) {
+        $query .= " AND o.order_status = :status";
+        $params[':status'] = $_POST['status_filter'];
+    }
+
+    // Apply order type filter
+    if (!empty($_POST['order_type_filter'])) {
+        $query .= " AND o.order_type = :order_type";
+        $params[':order_type'] = $_POST['order_type_filter'];
+    }
+
+    // Apply date filter
+    if (!empty($_POST['from_date']) && !empty($_POST['to_date'])) {
+        $query .= " AND DATE(o.created_at) BETWEEN :fromDate AND :toDate";
+        $params[':fromDate'] = $_POST['from_date'];
+        $params[':toDate'] = $_POST['to_date'];
+    } elseif (!empty($_POST['from_date'])) {
+        $query .= " AND DATE(o.created_at) >= :fromDate";
+        $params[':fromDate'] = $_POST['from_date'];
+    } elseif (!empty($_POST['to_date'])) {
+        $query .= " AND DATE(o.created_at) <= :toDate";
+        $params[':toDate'] = $_POST['to_date'];
+    }
+
+    $query .= " ORDER BY o.created_at DESC";
+
+    try {
+        $statement = $pdo->prepare($query);
+        $statement->execute($params);
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        // Set headers for CSV download after successful query
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="seller-order-history.csv"');
+
+        // Output CSV data
+        $output = fopen('php://output', 'w');
+
+        // Write headers
+        fputcsv($output, array('#', 'Product', 'Order ID', 'Quantity', 'Price', 'Status', 'Date', 'Order Type'));
+
+        // Write data
+        $i = 0;
+        foreach ($result as $row) {
+            $i++;
+            $order_date = !empty($row['order_date']) && $row['order_date'] != '0000-00-00' ? '="' . date('d/m/Y', strtotime($row['order_date'])) . '"' : 'N/A';
+            fputcsv($output, array(
+                $i,
+                $row['p_name'],
+                $row['order_id'],
+                $row['quantity'],
+                number_format($row['total_price'], 2),
+                $row['status'],
+                $order_date,
+                $row['order_type']
+            ));
+        }
+
+        fclose($output);
+        exit();
+    } catch (Exception $e) {
+        // Log the error
+        error_log("CSV Export Error: " . $e->getMessage());
+        // Redirect back with error message
+        header('Location: ' . $_SERVER['PHP_SELF'] . '?error=export_failed');
+        exit();
+    }
+}
+
+require_once('header.php');
+?>
 <section class="content-header">
     <div class="content-header-left">
         <h1>Order History</h1>
@@ -179,6 +269,15 @@
                     </div>
                 </div>
                 <input type="hidden" id="statusFilter">
+                <div class="export-group">
+                    <form method="POST" action="" id="exportForm">
+                        <input type="hidden" name="status_filter" id="hiddenStatusFilter">
+                        <input type="hidden" name="order_type_filter" id="hiddenOrderTypeFilter">
+                        <input type="hidden" name="from_date" id="hiddenFromDate">
+                        <input type="hidden" name="to_date" id="hiddenToDate">
+                        <button type="submit" name="export_csv" class="btn btn-primary btn-xs">Export to CSV</button>
+                    </form>
+                </div>
             </div>
             <div class="box box-info">
                 <div class="box-body table-responsive" id="bidding-order-table-container">
@@ -218,14 +317,14 @@
                                         data-status="<?php echo $order['status']; ?>">
                                         <td><?php echo $serialNumber++; ?></td>
                                         <td>
-                                            <img src="assets/uploads/<?php echo htmlspecialchars($order['p_featured_photo']); ?>" width="50" height="50" alt="Product Image">
+                                            <img src="../assets/uploads/<?php echo htmlspecialchars($order['p_featured_photo']); ?>" width="50" height="50" alt="Product Image">
                                             <span><?php echo htmlspecialchars($order['p_name']); ?></span>
                                         </td>
                                         <td><?php echo htmlspecialchars($order['order_id']); ?></td>
                                         <td><?php echo number_format($order['quantity']); ?></td>
                                         <td>₹<?php echo number_format($order['total_price'], 2); ?></td>
                                         <td><?php echo htmlspecialchars($order['status']); ?></td>
-                                        <td><?php echo $order['order_date']; ?></td>
+                                        <td><?php echo (!empty($order['order_date']) && $order['order_date'] != '0000-00-00') ? date('d-m-Y', strtotime($order['order_date'])) : 'N/A'; ?></td>
                                         <td><?php echo $order['order_type']; ?></td>
                                     </tr>
                             <?php endforeach;
@@ -379,6 +478,15 @@
         // Update serial numbers after table is redrawn
         table.on('draw', function() {
             updateSerialNumbers();
+        });
+
+        // Handle CSV export form submission
+        document.getElementById('exportForm').addEventListener('submit', function(e) {
+            // Populate hidden fields with current filter values
+            document.getElementById('hiddenStatusFilter').value = document.getElementById('statusFilter').value;
+            document.getElementById('hiddenOrderTypeFilter').value = document.getElementById('orderTypeFilter').value;
+            document.getElementById('hiddenFromDate').value = document.getElementById('fromDate').value;
+            document.getElementById('hiddenToDate').value = document.getElementById('toDate').value;
         });
     });
 </script>

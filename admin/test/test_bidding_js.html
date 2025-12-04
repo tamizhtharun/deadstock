@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bidding JS Test Harness</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 16px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; }
+    .status-pending { background: #6c757d; color: #fff; }
+    .status-processing { background: #0d6efd; color: #fff; }
+    .status-shipped { background: #17a2b8; color: #fff; }
+    .status-delivered { background: #28a745; color: #fff; }
+    .status-canceled { background: #dc3545; color: #fff; }
+    .awb-number { font-family: monospace; background: #e3f2fd; padding: 2px 6px; border-radius: 3px; border: 1px solid #bbdefb; }
+    .action-buttons { display: flex; gap: 8px; }
+    .btn-status-update { padding: 6px 10px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>Bidding Orders JS Test</h2>
+  <div id="bidding-order-table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Order ID</th>
+          <th>Status</th>
+          <th>Processing Time</th>
+          <th>AWB</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="bid-order-row" data-order-id="999" data-date="2025-09-12" data-status="processing">
+          <td>1</td>
+          <td><strong>TEST-ORDER-999</strong></td>
+          <td class="order-status"><span class="status-badge status-processing">Processing</span></td>
+          <td class="processing-time">-</td>
+          <td><span class="awb-number">-</span></td>
+          <td class="action-column">
+            <div class="action-buttons">
+              <button class="btn-status-update" onclick="updateOrderStatus(999, 'shipped')"><i class="fa fa-truck"></i> Shipped</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:16px;">
+    <button id="btnShip" class="btn-status-update">Simulate Ship (999)</button>
+    <button id="btnProcess" class="btn-status-update">Simulate Processing (999)</button>
+  </div>
+
+  <script>
+    // Minimal DOM elements expected by bidding-order.js filters
+    document.body.insertAdjacentHTML('beforeend', `
+      <input type="date" id="fromDate" style="display:none;" />
+      <input type="date" id="toDate" style="display:none;" />
+      <button id="clearDates" style="display:none;">Clear</button>
+      <select id="statusFilter" style="display:none;"></select>
+      <div id="no-bids-message" style="display:none;"></div>
+    `)
+
+    // Stub fetch to return a success JSON for update_status action
+    const originalFetch = window.fetch
+    window.fetch = function(input, init) {
+      const url = typeof input === 'string' ? input : (input && input.url) || ''
+      if (url.includes('process_bid_order.php') && url.includes('action=update_status')) {
+        const params = new URLSearchParams(url.split('?')[1])
+        const status = params.get('status') || 'processing'
+        const body = {
+          success: true,
+          message: `Order status updated successfully to ${status}`,
+          new_status: status,
+          processing_time: status === 'processing' ? new Date().toISOString() : null,
+          awb_number: status === 'shipped' ? '84665810009999' : null,
+          shipment_status: status === 'shipped' ? 'created' : null
+        }
+        return Promise.resolve(new Response(JSON.stringify(body), { status: 200, headers: { 'Content-Type': 'application/json' } }))
+      }
+      return originalFetch.apply(this, arguments)
+    }
+
+    // Helper buttons
+    document.getElementById('btnShip').addEventListener('click', () => updateOrderStatus(999, 'shipped'))
+    document.getElementById('btnProcess').addEventListener('click', () => updateOrderStatus(999, 'processing'))
+  </script>
+
+  <script src="../js/bidding-order.js"></script>
+</body>
+</html>
+
+
+
+
+

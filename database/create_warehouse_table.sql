@@ -1,0 +1,25 @@
+-- Create seller_warehouses table
+CREATE TABLE IF NOT EXISTS `seller_warehouses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `seller_id` int(11) NOT NULL,
+  `delhivery_warehouse_id` varchar(100) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `address` text NOT NULL,
+  `address_2` varchar(255) DEFAULT NULL,
+  `landmark` varchar(255) DEFAULT NULL,
+  `city` varchar(100) NOT NULL,
+  `state` varchar(100) NOT NULL,
+  `country` varchar(100) NOT NULL,
+  `pincode` varchar(20) NOT NULL,
+  `contact_person` varchar(255) NOT NULL,
+  `is_return` tinyint(1) NOT NULL DEFAULT '0',
+  `gstin` varchar(20) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_seller_name` (`seller_id`,`name`),
+  KEY `idx_seller_id` (`seller_id`),
+  KEY `idx_delhivery_warehouse_id` (`delhivery_warehouse_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

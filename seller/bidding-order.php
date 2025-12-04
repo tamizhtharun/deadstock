@@ -1,4 +1,100 @@
-<?php require_once('header.php'); ?>
+<?php
+require_once('../db_connection.php');
+session_start();
+
+// Check if export_csv button is clicked - must be before any output
+if (isset($_POST['export_csv'])) {
+
+    $seller_id = $_SESSION['seller_session']['seller_id'] ?? null;
+
+    // Build query with filters
+    $query = "SELECT
+                o.id,
+                o.order_id,
+                o.price,
+                o.quantity,
+                o.order_status,
+                o.created_at,
+                o.processing_time,
+                p.p_name
+            FROM
+                tbl_orders o
+            JOIN
+                tbl_product p ON o.product_id = p.id
+            WHERE
+                o.seller_id = :seller_id
+            AND
+                o.order_type = 'bid'";
+
+    $bindings = ['seller_id' => $seller_id];
+
+    // Apply date filter
+    if (!empty($_POST['from_date']) && !empty($_POST['to_date'])) {
+        $query .= " AND DATE(o.created_at) BETWEEN :fromDate AND :toDate";
+        $bindings['fromDate'] = $_POST['from_date'];
+        $bindings['toDate'] = $_POST['to_date'];
+    } elseif (!empty($_POST['from_date'])) {
+        $query .= " AND DATE(o.created_at) >= :fromDate";
+        $bindings['fromDate'] = $_POST['from_date'];
+    } elseif (!empty($_POST['to_date'])) {
+        $query .= " AND DATE(o.created_at) <= :toDate";
+        $bindings['toDate'] = $_POST['to_date'];
+    }
+
+    // Apply status filter
+    if (!empty($_POST['status_filter'])) {
+        $query .= " AND o.order_status = :status";
+        $bindings['status'] = $_POST['status_filter'];
+    }
+
+    $query .= " ORDER BY o.created_at DESC";
+
+    try {
+        $statement = $pdo->prepare($query);
+        $statement->execute($bindings);
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        // Set headers for CSV download after successful query
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="bidding-orders.csv"');
+
+        // Output CSV data
+        $output = fopen('php://output', 'w');
+
+        // Write headers
+        fputcsv($output, array('#', 'Order ID', 'Product Name', 'Price', 'Quantity', 'Status', 'Order Date', 'Processing Time'));
+
+        // Write data
+        $i = 0;
+        foreach ($result as $row) {
+            $i++;
+            $order_date = !empty($row['created_at']) && $row['created_at'] != '0000-00-00 00:00:00' ? '="' . date('d/m/Y', strtotime($row['created_at'])) . '"' : 'N/A';
+            $processing_time = !empty($row['processing_time']) ? date('d/m/Y H:i:s', strtotime($row['processing_time'])) : 'N/A';
+            fputcsv($output, array(
+                $i,
+                $row['order_id'],
+                $row['p_name'],
+                number_format($row['price'], 2),
+                $row['quantity'],
+                ucfirst($row['order_status']),
+                $order_date,
+                $processing_time
+            ));
+        }
+
+        fclose($output);
+        exit();
+    } catch (Exception $e) {
+        // Log the error
+        error_log("CSV Export Error: " . $e->getMessage());
+        // Redirect back with error message
+        header('Location: ' . $_SERVER['PHP_SELF'] . '?error=export_failed');
+        exit();
+    }
+}
+
+require_once('header.php');
+?>
 
 <section class="content-header">
     <div class="content-header-left">
@@ -28,6 +124,15 @@
                     <option value="delivered">Delivered</option>
                     <option value="canceled">Canceled</option>
                 </select>
+            </div>
+
+            <div class="export-group">
+                <form method="POST" action="" id="exportForm">
+                    <input type="hidden" name="from_date" id="hiddenFromDate">
+                    <input type="hidden" name="to_date" id="hiddenToDate">
+                    <input type="hidden" name="status_filter" id="hiddenStatusFilter">
+                    <button type="submit" name="export_csv" id="exportCsvBtn" class="btn btn-primary btn-xs">Export to CSV</button>
+                </form>
             </div>
         </div>
 
@@ -158,10 +263,23 @@
                                                 Processing
                                             </button>
                                         </div>
+                                    <?php elseif($row['order_status'] === 'processing'): ?>
+                                        <div class="action-buttons">
+                                            <button class="btn-status-update" onclick="markPackedSeller(<?php echo $row['id']; ?>)">
+                                                <i class="fa fa-box"></i> Packed Ready
+                                            </button>
+                                        </div>
+                                    <?php elseif($row['order_status'] === 'shipped'): ?>
+                                        <div class="action-buttons">
+                                            <a class="btn-status-update" target="_blank" href="print_label.php?order_id=<?php echo $row['id']; ?>">
+                                                <i class="fa fa-print"></i> Print Label
+                                            </a>
+                                            <button class="btn-status-update disabled">
+                                                <i class="fa fa-lock"></i> Status Updated
+                                            </button>
+                                        </div>
                                     <?php elseif($row['order_status'] !== 'delivered' && $row['order_status'] !== 'canceled'): ?>
-                                        <button class="btn-status-update disabled">
-                                            <i class="fa fa-lock"></i> Status Updated
-                                        </button>
+                                        <button class="btn-status-update disabled"><i class="fa fa-lock"></i> Status Updated</button>
                                     <?php else: ?>
                                         <button class="btn-status-update disabled">
                                             <i class="fa fa-lock"></i> No Actions Available
@@ -268,6 +386,13 @@ document.addEventListener('DOMContentLoaded', function() {
             showAllOrders();
         }
     });
+
+    // Handle CSV export button click
+    exportCsvBtn.addEventListener('click', function() {
+        document.getElementById('hiddenFromDate').value = fromDate.value;
+        document.getElementById('hiddenToDate').value = toDate.value;
+        document.getElementById('hiddenStatusFilter').value = statusFilter.value;
+    });
 });
 
 function updateOrderStatus(orderId, newStatus) {
@@ -325,6 +450,17 @@ function updateOrderStatus(orderId, newStatus) {
         console.error('Update error:', error);
         alert(`Failed to update order status: ${error.message}`);
     });
+}
+
+function markPackedSeller(orderId) {
+    fetch('mark_packed.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `order_id=${orderId}`
+    })
+    .then(r => r.json())
+    .then(d => { alert(d.message || (d.success?'Marked packed':'Failed')); if(d.success) location.reload(); })
+    .catch(e => alert('Error: ' + e.message))
 }
 function openImageModal(imgSrc) {
     const modal = document.getElementById('imageModal');

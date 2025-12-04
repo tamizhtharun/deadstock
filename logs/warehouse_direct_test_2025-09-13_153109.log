@@ -1,0 +1,30 @@
+[2025-09-13 15:31:09] Test Data: {
+    "name": "Test Warehouse 1757770269",
+    "email": "test.warehouse@example.com",
+    "phone": "9876543210",
+    "address": "123 Test Street, Test Area",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "country": "India",
+    "pin": "400001",
+    "contact_person": "Test Manager",
+    "is_return": 1,
+    "is_fulfillment": 1,
+    "is_rto_address": 0,
+    "address_2": "Near Test Landmark",
+    "landmark": "Opposite Test Tower",
+    "gstin": "22AAAAA0000A1Z5",
+    "gst_company_name": "Test Company",
+    "gst_company_address": "123 Test Street, Test Area",
+    "gst_state_code": "27",
+    "gst_city": "Mumbai",
+    "gst_pin_code": "400001",
+    "gst_email": "test.gst@example.com",
+    "gst_phone": "9876543210"
+}
+[2025-09-13 15:31:09] API URL: https://staging-express.delhivery.com/c/api/push/warehouse/
+[2025-09-13 15:31:09] Request Headers: [
+    "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJkLUlNRVRUT09MSU5HSU5ESUFQTFRELWRvLWNkcCIsInBob25lX251bWJlciI6Ijk1MDA2MTIyNzciLCJsYXN0X25hbWUiOiJIIiwidXNlcl90eXBlIjoiQ0wiLCJpYXQiOjE3NTc3Njc2NTIsImlzX2NsaWVudF9hZG1pbiI6dHJ1ZSwidGVuYW50IjoiRGVsaGl2ZXJ5IiwiYXVkIjoiR3ZES3pvZDZhT0lNM0xjeWE5QmpmQmI4YnZGa1lUWHkiLCJmaXJzdF9uYW1lIjoiQXJ1biIsInN1YiI6InVtczo6dXNlcjo6YWI2MWI3NWEtODdiYy0xMWYwLWE2MmUtMGUxNWY3NDdhMzEzIiwiY2xpZW50X3V1aWQiOiJjbXM6OmNsaWVudDo6YWI2MWI3NWItODdiYy0xMWYwLWE2MmUtMGUxNWY3NDdhMzEzIiwiaWRsZSI6MTc1ODM3MjQ1MiwiY2xpZW50X2VtYWlsIjoiYXJ1bmltZXRAZ21haWwuY29tIiwiZXhwIjoxNzU3ODU0MDUyLCJjbGllbnRfbmFtZSI6ImJkLUlNRVRUT09MSU5HSU5ESUFQTFRELWRvLWNkcCIsInRva2VuX2lkIjoiNDE5MmUwYzAtN2UzYS00MjczLWE4YzMtZjkwZmM3ZWJhOThhIiwiZW1haWwiOiJhcnVuaW1ldEBnbWFpbC5jb20iLCJhcGlfdmVyc2lvbiI6InYyIiwidG9lIjoxNzU3NzY3NjUyfQ.d-MD10DKkRUkjzvmuX6TQwrUozxwBzxAOBryIVEoQso",
+    "Content-Type: application\/json",
+    "Accept: application\/json"
+]

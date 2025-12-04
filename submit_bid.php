@@ -4,6 +4,8 @@ include 'config.php';
 require 'vendor/autoload.php';
 session_start();
 
+date_default_timezone_set('Asia/Kolkata');
+// $bid_time = date("Y-m-d H:i:s");
 use Razorpay\Api\Api;
 use Razorpay\Api\Errors\SignatureVerificationError;
 
@@ -111,20 +113,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     throw new Exception("You have already submitted a bid for this product");
                 }
                 $check_stmt->close();
-                
+                $bid_time = date("Y-m-d H:i:s");
                 $stmt = $conn->prepare(
-                    "INSERT INTO bidding (product_id, user_id, bid_price, bid_quantity, payment_id, order_id, bid_status) 
-                     VALUES (?, ?, ?, ?, ?, ?, '0')"
+                    "INSERT INTO bidding (product_id, user_id, bid_price, bid_quantity, payment_id, order_id, bid_status,bid_time) 
+                     VALUES (?, ?, ?, ?, ?, ?, '0', ?)"
                 );
 
                 $stmt->bind_param(
-                    "iidiss",
+                    "iidisss",
                     $bid['product_id'],
                     $_SESSION['user_session']['id'],
                     $bid['price'],
                     $bid['quantity'],
                     $postData['razorpay_payment_id'],
-                    $postData['razorpay_order_id']
+                    $postData['razorpay_order_id'],
+                    $bid_time
                 );
 
                 if ($stmt->execute()) {

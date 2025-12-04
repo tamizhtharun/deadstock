@@ -1,13 +1,265 @@
-<?php 
+<?php
 //direct-order.php
+require_once('../db_connection.php');
+
+// Check if export_csv button is clicked - must be before any output
+if (isset($_POST['export_csv'])) {
+    // Build query with filters
+    $query = "SELECT
+        o.order_id AS order_number,
+        GROUP_CONCAT(DISTINCT p.p_name ORDER BY p.p_name SEPARATOR ', ') AS product_names,
+        GROUP_CONCAT(DISTINCT s.seller_name ORDER BY s.seller_name SEPARATOR ', ') AS seller_names,
+        GROUP_CONCAT(DISTINCT s.seller_cname ORDER BY s.seller_cname SEPARATOR ', ') AS seller_cnames,
+        u.username,
+        u.id AS user_id,
+        u.email,
+        u.phone_number,
+        ua.full_name,
+        ua.phone_number as delivery_phone,
+        ua.address,
+        ua.city,
+        ua.state,
+        ua.pincode,
+        o.order_status,
+        o.processing_time,
+        o.tracking_id,
+        o.delhivery_awb,
+        o.delhivery_shipment_status,
+        o.delhivery_created_at,
+        o.address_id,
+        MAX(o.created_at) AS created_at,
+        SUM(o.price * o.quantity) AS total_amount,
+        GROUP_CONCAT(CONCAT('Price: ₹', FORMAT(o.price, 0), ', Qty: ', o.quantity) ORDER BY p.p_name SEPARATOR '; ') AS price_quantity_details,
+        GROUP_CONCAT(o.id) AS order_ids,
+        GROUP_CONCAT(DISTINCT p.seller_id) AS seller_ids
+    FROM
+        tbl_orders o
+    JOIN
+        tbl_product p ON o.product_id = p.id
+    JOIN
+        sellers s ON p.seller_id = s.seller_id
+    JOIN
+        users u ON o.user_id = u.id
+    LEFT JOIN
+        users_addresses ua ON o.address_id = ua.id
+    WHERE
+        o.order_type = 'direct'";
+
+    $params = array();
+
+    // Apply status filter
+    if (!empty($_POST['status_filter'])) {
+        $query .= " AND o.order_status = ?";
+        $params[] = $_POST['status_filter'];
+    }
+
+    // Apply date filter
+    if (!empty($_POST['from_date']) && !empty($_POST['to_date'])) {
+        $query .= " AND DATE(o.created_at) BETWEEN ? AND ?";
+        $params[] = $_POST['from_date'];
+        $params[] = $_POST['to_date'];
+    } elseif (!empty($_POST['from_date'])) {
+        $query .= " AND DATE(o.created_at) >= ?";
+        $params[] = $_POST['from_date'];
+    } elseif (!empty($_POST['to_date'])) {
+        $query .= " AND DATE(o.created_at) <= ?";
+        $params[] = $_POST['to_date'];
+    }
+
+    $query .= " ORDER BY o.created_at DESC";
+
+    try {
+        $statement = $pdo->prepare($query);
+        $statement->execute($params);
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        // Set headers for CSV download after successful query
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="direct-orders.csv"');
+
+        // Output CSV data
+        $output = fopen('php://output', 'w');
+
+        // Write headers
+        fputcsv($output, array('#', 'Order ID', 'Product', 'Seller Details', 'Customer Details', 'Amount', 'Price & Quantity', 'Delivery Address', 'Status', 'Delhivery AWB', 'Shipment Status'));
+
+        // Write data
+        $i = 0;
+        foreach ($result as $row) {
+            $i++;
+            $delivery_address = !empty($row['address']) ?
+                $row['full_name'] . ', ' . $row['delivery_phone'] . ', ' . $row['address'] . ', ' . $row['city'] . ', ' . $row['state'] . ', ' . $row['pincode'] :
+                'Address not available';
+            $status = ucfirst($row['order_status']);
+            $awb = !empty($row['delhivery_awb']) ? "'" . $row['delhivery_awb'] : '-';
+            $shipment_status = !empty($row['delhivery_shipment_status']) ? ucfirst($row['delhivery_shipment_status']) : '-';
+
+            fputcsv($output, array(
+                $i,
+                $row['order_number'],
+                $row['product_names'],
+                $row['seller_names'], // Seller names
+                $row['full_name'], // Customer name
+                number_format($row['total_amount'], 0),
+                $row['price_quantity_details'],
+                $delivery_address,
+                $status,
+                $awb,
+                $shipment_status
+            ));
+        }
+
+        fclose($output);
+        exit();
+    } catch (Exception $e) {
+        // Log the error
+        error_log("CSV Export Error: " . $e->getMessage());
+        // Redirect back with error message
+        header('Location: ' . $_SERVER['PHP_SELF'] . '?error=export_failed');
+        exit();
+    }
+}
+
 require_once('header.php');
 ?>
+
+<script src="js/invoice_actions.js"></script>
+<script>
+// Define openInvoiceModal globally at the top to ensure it's always available
+window.openInvoiceModal = function(orderId) {
+    // Check if modal exists
+    const modal = document.getElementById('invoiceModal');
+    if (!modal) {
+        console.error('Invoice modal not found in DOM');
+        // Try to find it again in case it was added late
+        const retryModal = document.querySelector('.invoice-modal');
+        if (!retryModal) {
+            alert('Invoice modal component not loaded. Please refresh the page.');
+            return;
+        }
+        // Use the found modal
+        retryModal.style.display = 'block';
+        loadInvoiceContent(retryModal, orderId);
+        return;
+    }
+    
+    modal.style.display = 'block';
+    loadInvoiceContent(modal, orderId);
+};
+
+function loadInvoiceContent(modal, orderId) {
+    const content = modal.querySelector('.invoice-modal-body') || document.getElementById('invoiceContent');
+    if (!content) return;
+    
+    content.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fa fa-spinner fa-spin fa-3x"></i><p>Loading invoice...</p></div>';
+    
+    fetch(`generate_invoice.php?order_id=${orderId}`)
+        .then(response => response.text())
+        .then(html => {
+            content.innerHTML = html;
+        })
+        .catch(error => {
+            content.innerHTML = '<div style="text-align: center; padding: 50px; color: red;"><i class="fa fa-exclamation-triangle fa-3x"></i><p>Error loading invoice</p></div>';
+            console.error('Error:', error);
+        });
+}
+</script>
 
 <section class="content-header">
     <div class="content-header-left">
         <h1>Direct Orders</h1>
     </div>
 </section>
+
+<style>
+/* Delhivery Status Badge Styles */
+.status-created {
+    background-color: #17a2b8;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-manifested {
+    background-color: #ffc107;
+    color: #212529;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-transit {
+    background-color: #007bff;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-delivered {
+    background-color: #28a745;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-pending {
+    background-color: #6c757d;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-non-serviceable {
+    background-color: #dc3545;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.awb-number {
+    font-family: 'Courier New', monospace;
+    background: #e3f2fd;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    border: 1px solid #bbdefb;
+}
+
+/* Delhivery Integration Status Indicator */
+.delhivery-status-indicator {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.delhivery-status-indicator.staging {
+    background: #ffc107;
+    color: #212529;
+}
+
+.delhivery-status-indicator.production {
+    background: #28a745;
+    color: white;
+}
+</style>
 
 <section class="content">
 <div class="row">
@@ -32,6 +284,24 @@ require_once('header.php');
                 <option value="canceled">Cancelled</option>
             </select>
         </div>
+        <div class="export-group">
+            <form method="POST" action="" id="exportForm">
+                <input type="hidden" name="status_filter" id="hiddenStatusFilter">
+                <input type="hidden" name="from_date" id="hiddenFromDate">
+                <input type="hidden" name="to_date" id="hiddenToDate">
+                <button type="submit" name="export_csv" class="btn btn-primary btn-xs">Export to CSV</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delhivery Integration Status Indicator -->
+    <?php
+    require_once('../config/delhivery_config.php');
+    $envClass = (DELHIVERY_ENVIRONMENT === 'staging') ? 'staging' : 'production';
+    $envText = strtoupper(DELHIVERY_ENVIRONMENT);
+    ?>
+    <div class="delhivery-status-indicator <?php echo $envClass; ?>">
+        <i class="fa fa-truck"></i> Delhivery <?php echo $envText; ?>
     </div>
 
     <div class="box box-info">
@@ -42,35 +312,25 @@ require_once('header.php');
                         <th>#</th>
                         <th width="120">Order ID</th>
                         <th width="200">Product</th>
-                        <th width="100">Seller Details</th>
+                        <!-- <th width="100">Seller Details</th> -->
                         <th>Customer Details</th>
                         <th width="80">Amount</th>
                         <th>Delivery Address</th>
                         <th>Status</th>
                         <th>Processing Time</th>
-                        <th>Tracking ID</th>
+                        <th>Delhivery AWB</th>
+                        <!-- <th>Shipment Status</th> -->
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php
                     $i = 0;
-                    $statement = $pdo->prepare("SELECT 
-                        o.id AS order_id,
+                    $statement = $pdo->prepare("SELECT
                         o.order_id AS order_number,
-                        o.price,
-                        o.quantity,
-                        o.order_status,
-                        o.processing_time,
-                        o.tracking_id,
-                        o.address_id,
-                        o.created_at,
-                        p.id AS product_id,
-                        p.p_name,
-                        p.p_featured_photo,
-                        p.seller_id,
-                        s.seller_name,
-                        s.seller_cname,
+                        GROUP_CONCAT(DISTINCT p.p_name ORDER BY p.p_name SEPARATOR ', ') AS product_names,
+                        GROUP_CONCAT(DISTINCT s.seller_name ORDER BY s.seller_name SEPARATOR ', ') AS seller_names,
+                        GROUP_CONCAT(DISTINCT s.seller_cname ORDER BY s.seller_cname SEPARATOR ', ') AS seller_cnames,
                         u.username,
                         u.id AS user_id,
                         u.email,
@@ -80,30 +340,47 @@ require_once('header.php');
                         ua.address,
                         ua.city,
                         ua.state,
-                        ua.pincode
-                    FROM 
+                        ua.pincode,
+                        o.order_status,
+                        o.created_at,
+                        o.tracking_id,
+                        o.delhivery_awb,
+                        o.delhivery_shipment_status,
+                        o.delhivery_created_at,
+                        o.address_id,
+                        MAX(o.created_at) AS created_at,
+                        SUM(o.price * o.quantity) AS total_amount,
+                        GROUP_CONCAT(CONCAT('Price: ₹', FORMAT(o.price, 0), ', Qty: ', o.quantity) ORDER BY p.p_name SEPARATOR '; ') AS price_quantity_details,
+                        GROUP_CONCAT(o.id) AS order_ids
+                    FROM
                         tbl_orders o
-                    JOIN 
+                    JOIN
                         tbl_product p ON o.product_id = p.id
-                    JOIN 
+                    JOIN
                         sellers s ON p.seller_id = s.seller_id
-                    JOIN 
+                    JOIN
                         users u ON o.user_id = u.id
                     LEFT JOIN
                         users_addresses ua ON o.address_id = ua.id
-                    WHERE 
+                    WHERE
                         o.order_type = 'direct'
-                    ORDER BY 
-                        o.created_at DESC");
+                    GROUP BY
+                        o.order_id, u.id
+                    ORDER BY
+                        MAX(o.created_at) DESC");
                     $statement->execute();
                     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                     
-                    foreach ($result as $row): 
+                    foreach ($result as $row):
                         $i++;
+                        $order_ids = explode(',', $row['order_ids']);
+                        $first_order_id = $order_ids[0];
+                        $seller_ids = explode(',', $row['seller_ids'] ?? '');
+                        $first_seller_id = $seller_ids[0] ?? '';
                 ?>
-                    <tr class="order-row" 
-                        data-order-id="<?php echo $row['order_id']; ?>" 
-                        data-date="<?php echo date('Y-m-d', strtotime($row['created_at'])); ?>" 
+                    <tr class="order-row"
+                        data-order-id="<?php echo $first_order_id; ?>"
+                        data-date="<?php echo date('Y-m-d', strtotime($row['created_at'])); ?>"
                         data-status="<?php echo $row['order_status']; ?>">
                         <td><?php echo $i; ?></td>
                         <td>
@@ -111,31 +388,23 @@ require_once('header.php');
                             <small class="text-muted"><?php echo date('M d, Y', strtotime($row['created_at'])); ?></small>
                         </td>
                         <td>
-                            <div class="d-flex align-items-center">
-                                <img src="../assets/uploads/product-photos/<?php echo $row['p_featured_photo']; ?>" 
-                                     alt="Product Photo" 
-                                     style="width:70px;"
-                                     class="product-image">
-                                <div class="ms-3">
-                                    <?php echo $row['p_name']; ?>
-                                </div>
-                            </div>
+                            <?php echo $row['product_names']; ?>
                         </td>
-                        <td>
-                            <?php echo $row['seller_name']; ?><br>
-                            <?php echo $row['seller_cname']; ?>
+                        <!-- <td>
+                            <?php echo $row['seller_names']; ?><br>
+                            <?php echo $row['seller_cnames']; ?>
                             <div>
-                                <a href="javascript:void(0);" onclick="openSellerModal(<?php echo $row['seller_id']; ?>)">View Seller Details</a>
-                            </div>
-                        </td>
+                                <a href="javascript:void(0);" onclick="openSellerModal(<?php echo $first_seller_id; ?>)">View Seller Details</a>
+                            </div> 
+                        </td> -->
                         <td>
                             <?php echo $row['username']; ?><br>
                             <?php echo $row['email']; ?><br>
                             <?php echo $row['phone_number']; ?>
                         </td>
                         <td>
-                            Price: ₹<?php echo number_format($row['price'], 2); ?><br>
-                            Qty: <?php echo $row['quantity']; ?><br>
+                            <!-- <?php echo $row['price_quantity_details']; ?><br> -->
+                            Total: ₹<?php echo number_format($row['total_amount'], 0); ?>
                         </td>
                         <td>
                             <?php if(!empty($row['address'])): ?>
@@ -156,36 +425,85 @@ require_once('header.php');
                         </td>
                         <td class="processing-time">
                             <?php
-                                if (!empty($row['processing_time'])) {
-                                    echo date('Y-m-d H:i:s', strtotime($row['processing_time']));
+                                if (!empty($row['created_at'])) {
+                                    echo date('Y-m-d H:i:s', strtotime($row['created_at']));
                                 } else {
                                     echo '-';
                                 }
                             ?>
                         </td>
-                        <td class="tracking-id">
-                            <?php echo !empty($row['tracking_id']) ? $row['tracking_id'] : '-'; ?>
+                        <td class="delhivery-awb">
+                            <?php if (!empty($row['delhivery_awb'])): ?>
+                                <span class="awb-number" style="font-family: monospace; background: #e3f2fd; padding: 2px 6px; border-radius: 3px; font-size: 12px;">
+                                    <?php echo $row['delhivery_awb']; ?>
+                                </span>
+                            <?php else: ?>
+                                <span class="text-muted">-</span>
+                            <?php endif; ?>
                         </td>
+                        <!-- <td class="shipment-status">
+                            <?php if (!empty($row['delhivery_shipment_status'])): ?>
+                                <?php 
+                                    $statusClass = '';
+                                    $statusText = ucfirst($row['delhivery_shipment_status']);
+                                    switch($row['delhivery_shipment_status']) {
+                                        case 'created':
+                                            $statusClass = 'status-created';
+                                            break;
+                                        case 'manifested':
+                                            $statusClass = 'status-manifested';
+                                            break;
+                                        case 'in_transit':
+                                            $statusClass = 'status-transit';
+                                            break;
+                                        case 'delivered':
+                                            $statusClass = 'status-delivered';
+                                            break;
+                                        case 'non_serviceable':
+                                            $statusClass = 'status-non-serviceable';
+                                            $statusText = 'Non-Serviceable';
+                                            break;
+                                        default:
+                                            $statusClass = 'status-pending';
+                                    }
+                                ?>
+                                <span class="status-badge <?php echo $statusClass; ?>" style="font-size: 11px;">
+                                    <?php echo $statusText; ?>
+                                </span>
+                                <?php if (!empty($row['delhivery_created_at'])): ?>
+                                    <br><small class="text-muted"><?php echo date('M d, H:i', strtotime($row['delhivery_created_at'])); ?></small>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <span class="text-muted">-</span>
+                            <?php endif; ?>
+                        </td> -->
                         <td class="action-column">
                             <?php if($row['order_status'] === 'pending'): ?>
-                                <button class="btn-status-update disabled">
+                                <button class="btn-status-update ">
                                     <i class="fa fa-clock-o"></i> Waiting for Seller
                                 </button>
                             <?php elseif($row['order_status'] === 'processing'): ?>
                                 <div class="action-buttons">
-                                    <button 
-                                        class="btn-status-update" 
-                                        onclick="updateOrderStatus(<?php echo $row['order_id']; ?>, 'shipped')">
+                                    <!-- <button
+                                        class="btn-status-update"
+                                        onclick="updateOrderStatus(<?php echo $first_order_id; ?>, 'shipped')">
                                         <i class="fa fa-truck"></i> Shipped
-                                    </button>
-                                    <button 
-                                        class="btn-status-update" 
-                                        onclick="updateOrderStatus(<?php echo $row['order_id']; ?>, 'canceled')">
+                                    </button> -->
+                                    <!-- <button
+                                        class="btn-status-update"
+                                        onclick="updateOrderStatus(<?php echo $first_order_id; ?>, 'canceled')">
                                         <i class="fa fa-times-circle"></i> Cancelled
-                                    </button>
+                                    </button> -->
+                                    <button
+    class="btn btn-sm mt-1"
+    style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;"
+    onclick="openInvoiceModal(<?php echo $first_order_id; ?>)">
+    <i class="fa fa-file-pdf-o"></i> Generate Invoice
+</button>
                                 </div>
 <?php elseif($row['order_status'] === 'shipped'): ?>
     <div class="action-buttons">
+<<<<<<< HEAD
         <button 
             class="btn-status-update" 
             onclick="updateOrderStatus(<?php echo $row['order_id']; ?>, 'delivered')">
@@ -200,6 +518,32 @@ require_once('header.php');
    class="btn btn-sm mt-1" style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;">
    <i class="fa fa-file-pdf-o"></i> Generate Invoice
 </a>
+=======
+        <!-- <button
+            class="btn-status-update"
+            onclick="updateOrderStatus(<?php echo $first_order_id; ?>, 'delivered')">
+            <i class="fa fa-check-circle"></i> Delivered
+        </button> -->
+        <!-- <button
+            class="btn-status-update"
+            onclick="updateOrderStatus(<?php echo $first_order_id; ?>, 'canceled')">
+            <i class="fa fa-times-circle"></i> Cancelled
+        </button> -->
+        <?php if (!empty($row['delhivery_awb'])): ?>
+            <button
+                class="btn-status-update"
+                onclick="trackShipment(<?php echo $first_order_id; ?>)"
+                style="background: #28a745; color: white; margin: 2px;">
+                <i class="fa fa-search"></i> Track Shipment
+            </button>
+        <?php endif; ?>
+        <button
+    class="btn btn-sm mt-1"
+    style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;"
+    onclick="openInvoiceModal(<?php echo $first_order_id; ?>)">
+    <i class="fa fa-file-pdf-o"></i> Generate Invoice
+</button>
+>>>>>>> main
     </div>
 <?php else: ?>
                                 <button class="btn-status-update disabled">
@@ -216,6 +560,8 @@ require_once('header.php');
 </div>
 </div>
 </section>
+
+<?php require_once('invoice_modal.php'); ?>
 <div id="sellerModal" class="seller-modal">
     <div class="seller-modal-content">
         <div class="seller-modal-header">
@@ -408,9 +754,17 @@ document.addEventListener('DOMContentLoaded', function() {
             showAllOrders();
         }
     });
+
+    // Update hidden form fields for CSV export
+    document.getElementById('exportForm').addEventListener('submit', function() {
+        document.getElementById('hiddenStatusFilter').value = statusFilter.value;
+        document.getElementById('hiddenFromDate').value = fromDate.value;
+        document.getElementById('hiddenToDate').value = toDate.value;
+    });
 });
 
 function updateOrderStatus(orderId, newStatus) {
+<<<<<<< HEAD
     let trackingId = null;
 
     if (newStatus === 'shipped') {
@@ -418,14 +772,15 @@ function updateOrderStatus(orderId, newStatus) {
         if (!trackingId) return;
     }
 
+=======
+>>>>>>> main
     $.ajax({
         url: 'process_direct_order.php',
         type: 'GET',
         data: {
             action: 'update_status',
             order_id: orderId,
-            status: newStatus,
-            tracking_id: trackingId
+            status: newStatus
         },
         success: function(response) {
             if (response.success) {
@@ -436,6 +791,7 @@ function updateOrderStatus(orderId, newStatus) {
                     const statusCell = row.querySelector('.order-status');
                     statusCell.innerHTML = `<span class='status-badge status-${newStatus}'>${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}</span>`;
 
+<<<<<<< HEAD
                     // Update action column
                     const actionCell = row.querySelector('.action-column');
 if (newStatus === 'shipped') {
@@ -446,6 +802,52 @@ if (newStatus === 'shipped') {
    <i class="fa fa-file-pdf-o"></i> Generate Invoice
 </a>
         </div>`;
+=======
+                    // Update Delhivery AWB if available
+                    if (response.awb_number) {
+                        const awbCell = row.querySelector('.delhivery-awb');
+                        if (awbCell) {
+                            awbCell.innerHTML = `<span class="awb-number">${response.awb_number}</span>`;
+                        }
+                    }
+
+                    // Update shipment status if available
+                    if (response.shipment_status) {
+                        const shipmentStatusCell = row.querySelector('.shipment-status');
+                        if (shipmentStatusCell) {
+                            const statusClass = `status-${response.shipment_status}`;
+                            shipmentStatusCell.innerHTML = `
+                                <span class="status-badge ${statusClass}" style="font-size: 11px;">
+                                    ${response.shipment_status.charAt(0).toUpperCase() + response.shipment_status.slice(1)}
+                                </span>
+                                <br><small class="text-muted">${new Date().toLocaleDateString()}</small>
+                            `;
+                        }
+                    }
+
+                    // Update action column
+                    const actionCell = row.querySelector('.action-column');
+                    if (newStatus === 'shipped') {
+                        const trackButton = response.awb_number ? 
+                            `<button onclick="trackShipment(${orderId})" class="btn-status-update" style="background: #28a745; color: white; margin: 2px;">
+                                <i class="fa fa-search"></i> Track Shipment
+                            </button>` : '';
+                        
+                        actionCell.innerHTML = `
+                            <div class="action-buttons">
+                                <button class="btn-status-update" onclick="updateOrderStatus(${orderId}, 'delivered')">
+                                    <i class="fa fa-check-circle"></i> Delivered
+                                </button>
+                                <button class="btn-status-update" onclick="updateOrderStatus(${orderId}, 'canceled')">
+                                    <i class="fa fa-times-circle"></i> Cancelled
+                                </button>
+                                ${trackButton}
+                                <a href="generate_invoice.php?order_id=${orderId}" 
+                                   class="btn btn-sm mt-1" target="_blank" style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;">
+                                   <i class="fa fa-file-pdf-o"></i> Generate Invoice
+                                </a>
+                            </div>`;
+>>>>>>> main
                     } else if (newStatus === 'delivered' || newStatus === 'canceled') {
                         actionCell.innerHTML = `<button class="btn-status-update disabled"><i class="fa fa-lock"></i> No Actions Available</button>`;
                     } else {
@@ -463,8 +865,69 @@ if (newStatus === 'shipped') {
     });
 }
 
+function markPacked(orderId) {
+    fetch('process_shipments.php?action=mark_packed&order_id=' + orderId)
+        .then(r => r.json())
+        .then(d => {
+            alert(d.message || (d.success ? 'Marked packed' : 'Failed'));
+            if (d.success) location.reload();
+        })
+        .catch(e => alert('Error: ' + e.message));
+}
+
+function trackShipment(orderId) {
+    $.ajax({
+        url: 'process_direct_order.php',
+        type: 'GET',
+        data: {
+            action: 'track_shipment',
+            order_id: orderId
+        },
+        success: function(response) {
+            if (response.success) {
+                // Display tracking information in a modal or alert
+                let trackingInfo = '';
+                if (response.data && response.data.ShipmentData && response.data.ShipmentData.length > 0) {
+                    const shipment = response.data.ShipmentData[0];
+                    trackingInfo = `
+                        <div style="text-align: left;">
+                            <h4>Shipment Tracking Information</h4>
+                            <p><strong>AWB Number:</strong> ${shipment.AWB || 'N/A'}</p>
+                            <p><strong>Status:</strong> ${shipment.Status || 'N/A'}</p>
+                            <p><strong>Location:</strong> ${shipment.Location || 'N/A'}</p>
+                            <p><strong>Last Updated:</strong> ${shipment.StatusDateTime || 'N/A'}</p>
+                            <p><strong>Description:</strong> ${shipment.StatusDescription || 'N/A'}</p>
+                        </div>
+                    `;
+                } else {
+                    trackingInfo = '<p>No tracking information available yet.</p>';
+                }
+                
+                // Create and show modal
+                const modal = document.createElement('div');
+                modal.innerHTML = `
+                    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; justify-content: center; align-items: center;">
+                        <div style="background: white; padding: 20px; border-radius: 8px; max-width: 500px; width: 90%; max-height: 80%; overflow-y: auto;">
+                            ${trackingInfo}
+                            <div style="text-align: center; margin-top: 20px;">
+                                <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            } else {
+                alert('Error tracking shipment: ' + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert('Error tracking shipment: ' + error);
+        }
+    });
+}
+
 </script>
-<script src="./js/bidding-order.js"></script>
+<script src="js/bidding-order.js"></script>
 <script>
 
 const sellerTabButtons = document.querySelectorAll('.seller-tab-button');
@@ -479,6 +942,35 @@ sellerTabButtons.forEach(button => {
     document.getElementById(tab).classList.add('active');
   });
 });
+</script>
+
+<script>
+// Fallback: Ensure openInvoiceModal is globally available
+if (typeof openInvoiceModal === 'undefined') {
+    window.openInvoiceModal = function(orderId) {
+        const modal = document.getElementById('invoiceModal');
+        const content = document.getElementById('invoiceContent');
+        
+        if (!modal) {
+            console.error('Invoice modal not found');
+            alert('Invoice modal not loaded. Please refresh the page.');
+            return;
+        }
+        
+        modal.style.display = 'block';
+        content.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fa fa-spinner fa-spin fa-3x"></i><p>Loading invoice...</p></div>';
+        
+        fetch(`generate_invoice.php?order_id=${orderId}`)
+            .then(response => response.text())
+            .then(html => {
+                content.innerHTML = html;
+            })
+            .catch(error => {
+                content.innerHTML = '<div style="text-align: center; padding: 50px; color: red;"><i class="fa fa-exclamation-triangle fa-3x"></i><p>Error loading invoice</p></div>';
+                console.error('Error:', error);
+            });
+    };
+}
 </script>
 
 <?php require_once('footer.php'); ?>

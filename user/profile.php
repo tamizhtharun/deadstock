@@ -98,26 +98,27 @@ try {
 
     // Orders Query
     $orderQuery = "
-        SELECT 
-            o.id, 
-            o.order_id, 
-            o.quantity, 
-            o.price, 
-            o.order_status, 
+        SELECT
+            o.id,
+            o.order_id,
+            o.quantity,
+            o.price,
+            o.order_status,
             o.created_at,
             p_name AS product_name,
             p_featured_photo AS product_image,
             p.id AS p_id,
+            p.p_slug AS p_slug,
             o.order_type,
             o.tracking_id,
             o.payment_id
-        FROM 
+        FROM
             tbl_orders o
-        JOIN 
+        JOIN
             tbl_product p ON o.product_id = p.id
-        WHERE 
+        WHERE
             o.user_id = :user_id
-        ORDER BY 
+        ORDER BY
             o.created_at DESC
     ";
     
@@ -134,25 +135,26 @@ try {
 }
 
 $biddingQuery = "
-    SELECT 
-        b.bid_id, 
-        b.bid_price, 
-        b.bid_quantity, 
-        b.bid_time, 
+    SELECT
+        b.bid_id,
+        b.bid_price,
+        b.bid_quantity,
+        b.bid_time,
         b.bid_status,
         b.payment_id AS bid_payment_id,
         b.refund_id AS bid_refund_id,
         p.p_name AS product_name,
         p.p_featured_photo AS product_image,
         p.id AS p_id,
+        p.p_slug AS p_slug,
         p.p_current_price AS current_price
-    FROM 
+    FROM
         bidding b
-    JOIN 
+    JOIN
         tbl_product p ON b.product_id = p.id
-    WHERE 
+    WHERE
         b.user_id = :user_id
-    ORDER BY 
+    ORDER BY
         b.bid_time DESC
 ";
 
@@ -403,7 +405,7 @@ $active_tab = $_GET['tab'] ?? 'profile';
 </span>
                     </div>
                     <div class="bidding-details">
-                    <a href="../product_landing.php?id=<?php echo $bid['p_id']; ?>">
+                    <a href="../product/<?php echo urlencode($bid['p_slug']); ?>">
                         <div class="product-info">
                         <img src="../assets/uploads/product-photos/<?php echo htmlspecialchars($bid['product_image']); ?>" alt="Product Image" class="product-thumbnail">
                         <div class="product-details">
@@ -412,7 +414,8 @@ $active_tab = $_GET['tab'] ?? 'profile';
                         <p>Quantity: <?php echo htmlspecialchars($bid['bid_quantity']); ?></p>
                         <p>Bid Time: <?php echo date('M d, Y H:i', strtotime($bid['bid_time'])); ?></p>
                     </div>
-</div></a>
+</div>
+</a>
 </div>
                     <button class="button view-bid-details" data-bid-id="<?php echo $bid['bid_id']; ?>">View Details</button>
                 </div>
@@ -439,7 +442,7 @@ $active_tab = $_GET['tab'] ?? 'profile';
                         </span> -->
                     </div>
                     <div class="order-details" >
-                        <a href="../product_landing.php?id=<?php echo $order['p_id']; ?>">
+                        <a href="../product/<?php echo urlencode($order['p_slug']); ?>">
                         <div class="product-info">
                             <img src="../assets/uploads/product-photos/<?php echo htmlspecialchars($order['product_image']); ?>" alt="Product Image" class="product-thumbnail">
                             <div class="product-details">

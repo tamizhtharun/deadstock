@@ -1,0 +1,43 @@
+[2025-09-13 15:25:40] Starting Warehouse API Test
+[2025-09-13 15:25:40] Current Configuration:
+[2025-09-13 15:25:40] - Environment: staging
+[2025-09-13 15:25:40] - Auth Type: bearer
+[2025-09-13 15:25:40] - API Base URL: https://staging-express.delhivery.com/
+[2025-09-13 15:25:40] Test Data:
+[2025-09-13 15:25:40] Array
+(
+    [name] => Test Warehouse 1757769940
+    [email] => test.warehouse@example.com
+    [phone] => 9876543210
+    [address] => 123 Test Street, Test Area
+    [city] => Mumbai
+    [state] => Maharashtra
+    [country] => India
+    [pin] => 400001
+    [contact_person] => Test Manager
+    [is_return] => 1
+    [is_fulfillment] => 1
+    [is_rto_address] => 0
+    [address_2] => Near Test Landmark
+    [landmark] => Opposite Test Tower
+    [gstin] => 22AAAAA0000A1Z5
+    [gst_company_name] => Test Company
+    [gst_company_address] => 123 Test Street, Test Area
+    [gst_state_code] => 27
+    [gst_city] => Mumbai
+    [gst_pin_code] => 400001
+    [gst_email] => test.gst@example.com
+    [gst_phone] => 9876543210
+)
+
+[2025-09-13 15:25:40] Initiating warehouse creation...
+[2025-09-13 15:25:48] Raw API Response: Array
+(
+    [success] => 
+    [message] => Error creating warehouse: HTTP Error: 400 - Array
+    [data] => 
+)
+
+[2025-09-13 15:25:48] ERROR: Failed to create warehouse: Error creating warehouse: HTTP Error: 400 - Array
+[2025-09-13 15:25:48] Fetching all warehouses...
+[2025-09-13 15:25:48] ERROR: Failed to fetch warehouses: Error getting warehouse details: Warehouse ID is required

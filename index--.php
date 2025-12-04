@@ -1,5 +1,5 @@
 <?php require_once( 'header.php');?>
-<link rel="stylesheet" href="./css/index.css">
+<link rel="stylesheet" href="/deadstock/css/index.css">
 <div class="category-pad">
     <div class="category-box">
         <ul class="categories">

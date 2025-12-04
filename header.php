@@ -1,6 +1,8 @@
 <?php
 ob_start();
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 require_once 'messages.php';
 include 'db_connection.php';
 $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
@@ -26,6 +28,13 @@ unset($_SESSION['error_message']);
 $success_message = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
 unset($_SESSION['success_message']);
 
+// Prevent redirect loop on index.php
+// $current_page = basename($_SERVER['PHP_SELF']);
+// if (!isset($_SESSION['user_session']['id']) && $current_page !== 'index.php') {
+//     header("Location: index.php?showLoginModal=true");
+//     exit();
+// }
+
 ?>
 
 <!DOCTYPE html>
@@ -36,28 +45,30 @@ unset($_SESSION['success_message']);
     <!-- <meta name="theme-color" content="#your-brand-color"> -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dead Stock Processing</title>
-    <link rel="icon" href="assets\uploads\<?php echo $favicon; ?>">
+    <title>Buy Machinary Tools at your desired price</title>
+    <link rel="icon" href="/assets/uploads/<?php echo $favicon; ?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="./css/index.css">
-    <link rel="stylesheet" href="./css/responsive.css">
-    <link rel="stylesheet" href="./css/header.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="stylesheet" href="/css/header.css">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Link Disply the featured categories in home page slider  -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="css/vendor.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="stylesheet" type="text/css" href="css/messages.css">
-    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous"> -->
+    <link rel="stylesheet" type="text/css" href="/css/vendor.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/messages.css">
+    <!-- <?php if (basename($_SERVER['PHP_SELF']) == 'product_landing.php'): ?>
+        <link rel="stylesheet" href="/css/product_landing.css">
+    <?php endif; ?> -->
         <defs>
             <symbol xmlns="http://www.w3.org/2000/svg" id="cart" viewBox="0 0 24 24">
                 <path fill="currentColor"
@@ -113,23 +124,25 @@ unset($_SESSION['success_message']);
         ?>
         <nav class="ds-nav-container">
             <div class="ds-logo-section">
-                <a href="index.php" class="ds-logo">
-                    <img src="./assets/uploads/<?php echo $logo ?>" alt="Logo" width="30" height="30">
-                    <span>Dead Stock</span>
+                <a href="../index" class="ds-logo">
+                    <img src="../assets/uploads/<?php echo $logo ?>" alt="Logo"  height="60">
+                    <!-- <span>Dead Stock</span> -->
                 </a>
             </div>
 
             <div class="ds-search-section">
-                <div class="ds-search-wrapper">
-                    <form action="search-result.php" method="GET" id="search-form">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="search-bar" name="search_text" placeholder="Search products..."
-                            class="ds-search-input" autocomplete="off" required aria-label="Search products">
-                        <button type="submit" style="display: none;">Search</button>
-                    </form>
-                    <ul id="suggestions-list" class="suggestions-dropdown"></ul>
-                </div>
-            </div>
+    <div class="ds-search-wrapper">
+        <form action="search-result.php" method="GET" id="search-form">
+            <!-- <i class="fas fa-search"></i> -->
+            <input type="text" id="search-bar" name="search_text" placeholder="Search products..."
+                class="ds-search-input" autocomplete="off" required aria-label="Search products">
+            <button type="submit" class="ds-search-btn">
+                <span>Search</span>
+            </button>
+        </form>
+        <ul id="suggestions-list" class="suggestions-dropdown"></ul>
+    </div>
+</div>
 
 
             <div class="ds-actions-section">
@@ -140,7 +153,7 @@ unset($_SESSION['success_message']);
                     <div class="ds-user-controls">
                         <!-- Cart Icon -->
                         <button class="ds-icon-button cart-button" title="Shopping Cart"
-                            onclick="window.location.href='cart.php';">
+                            onclick="window.location.href='/cart.php';">
                             <i class="fas fa-shopping-cart"></i>
                             <span class="ds-cart-badge" id="cart-count" style="display: none;"></span>
 </button>
@@ -154,7 +167,7 @@ unset($_SESSION['success_message']);
                         <?php if ($current_page !== 'notification.php'): ?>
 
                             <button class="notification-trigger ds-icon-button" title="Notifications"
-                                onclick="window.location.href='notification.php';">
+                                onclick="window.location.href='/notification.php';">
                                 <i class="fas fa-bell"></i>
                                 <?php if ($notification_count > 0): ?>
                                 <span class="ds-notification-badge"
@@ -188,25 +201,25 @@ unset($_SESSION['success_message']);
                                             class="ds-user-name"><?php echo $_SESSION['user_session']['username'] ?></span>
                                         <span class="ds-user-email"><?php echo $_SESSION['user_session']['email'] ?></span>
                                     </div>
-                                </div>
+                                </div>  
                                 <div class="ds-menu-items">
-                                    <a href="user/profile.php" class="ds-menu-item"
+                                    <a href="/user/profile.php" class="ds-menu-item"
                                         style="text-decoration: none !important;">
                                         <i class="fas fa-user"></i>
                                         <span>Account</span>
                                     </a>
-                                    <a href="user/profile.php?tab=orders" class="ds-menu-item"
+                                    <a href="/user/profile.php?tab=orders" class="ds-menu-item"
                                         style="text-decoration: none !important;">
                                         <i class="fas fa-shopping-bag"></i>
                                         <span>Orders</span>
                                     </a>
-                                    <a href="user/profile.php?tab=bidding" class="ds-menu-item"
+                                    <a href="/user/profile.php?tab=bidding" class="ds-menu-item"
                                         style="text-decoration: none !important;">
                                         <i class="fas fa-gavel"></i>
                                         <span>Bidding</span>
                                     </a>
                                     <div class="ds-menu-divider"></div>
-                                    <a href="logout.php" class="ds-menu-item ds-logout"
+                                    <a href="/logout.php" class="ds-menu-item ds-logout"
                                         style="text-decoration: none !important;">
                                         <i class="fas fa-sign-out-alt"></i>
                                         <span>Logout</span>
@@ -242,11 +255,11 @@ unset($_SESSION['success_message']);
     </div>
     </div>
 
-    <script src="js/messages.js"></script>
+    <script src="/js/messages.js"></script>
     <?php MessageSystem::display(); ?>
 
     <!-- Login Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="true" tabindex="-1"
+   <div class="modal fade" id="staticBackdrop" data-bs-backdrop="true" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -258,48 +271,35 @@ unset($_SESSION['success_message']);
                 <div id="modal-body" class="modal-body">
                     <!-- Message container for displaying errors and success messages -->
                     <div id="modal-message-container"></div>
-                    <!-- Error Message HTML -->
-                    <?php if (!empty($error_message) || !empty($success_message)): ?>
-                        <div class="premium-alert <?php echo !empty($success_message) ? 'alert-success' : 'alert-error'; ?>"
-                            id="premium-alert">
-                            <div class="alert-content">
-                                <div class="alert-icon">
-                                    <?php if (!empty($success_message)): ?>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                            fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path d="M20 6L9 17l-5-5" />
-                                        </svg>
-                                    <?php else: ?>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                                        </svg>
-                                    <?php endif; ?>
-                                </div>
-                                <span
-                                    class="alert-message"><?php echo htmlspecialchars(!empty($success_message) ? $success_message : $error_message); ?></span>
-                                <button class="alert-close" onclick="closeAlert()">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                    </svg>
-                                </button>
+                    
+                    <!-- Example Alert (you can remove this in production) -->
+                    <div class="premium-alert alert-success" id="premium-alert" style="display: none;">
+                        <div class="alert-content">
+                            <div class="alert-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="#667eea" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M20 6L9 17l-5-5" />
+                                </svg>
                             </div>
+                            <span class="alert-message">Success message here</span>
+                            <button class="alert-close" onclick="closeAlert()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="#667eea" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
                         </div>
-                    <?php endif; ?>
-
+                    </div>
 
                     <!-- Login Form -->
-                    <form id="signin-form" method="POST" action="login.php">
-                        <h1 class="modal-title fs-5" id="box-header">Login</h1>
+                    <form id="signin-form" method="POST" action="/login.php">
+                        <input type="hidden" name="redirect_url" value="">
+                        <h1 class="modal-title fs-5" id="box-header">Welcome Back</h1>
                         <div class="input-box">
-                            <input type="email" id="mail" class="input-field" placeholder="Email" name="email"
+                            <input type="email" id="mail" class="input-field" placeholder="Email Address" name="email"
                                 autocomplete="off" required>
                         </div>
                         <div class="input-box">
@@ -322,18 +322,19 @@ unset($_SESSION['success_message']);
                     </form>
 
                     <!-- Sign Up Form -->
-                    <form id="signup-form" method="POST" action="register.php" style="display: none;">
-                        <h1 class="modal-title fs-5" id="box-header">SignUp</h1>
+                    <form id="signup-form" method="POST" action="/register.php" style="display: none;">
+                        <input type="hidden" name="redirect_url" value="">
+                        <h1 class="modal-title fs-5" id="box-header">Create Account</h1>
                         <div class="input-box">
                             <input type="text" class="input-field" placeholder="Username" name="username"
                                 autocomplete="off" required>
                         </div>
                         <div class="input-box">
-                            <input type="tel" id="phone-number" class="input-field" placeholder="Phone"
+                            <input type="tel" id="phone-number" class="input-field" placeholder="Phone Number"
                                 name="phone_number" autocomplete="off" required pattern="[0-9]{10}">
                         </div>
                         <div class="input-box">
-                            <input type="email" id="email" class="input-field" placeholder="Email" name="email"
+                            <input type="email" id="email" class="input-field" placeholder="Email Address" name="email"
                                 autocomplete="off" required>
                         </div>
                         <div class="input-box">
@@ -346,7 +347,7 @@ unset($_SESSION['success_message']);
                         </div>
                         <div class="input-submit">
                             <button class="submit-btn" id="signup-btn" name="register">
-                                <label for="submit">Sign Up</label>
+                                <label for="submit">Create Account</label>
                             </button>
                         </div>
                         <div class="sign-in-link">
@@ -355,15 +356,15 @@ unset($_SESSION['success_message']);
                     </form>
 
                     <!-- Forgot Password Form -->
-                    <form id="forgot-password-form" method="POST" action="forgot_password.php" style="display: none;">
-                        <h1 class="modal-title fs-5" id="box-header">Forgot Password</h1>
+                    <form id="forgot-password-form" method="POST" action="/forgot_password.php" style="display: none;">
+                        <h1 class="modal-title fs-5" id="box-header">Reset Password</h1>
                         <div class="input-box">
-                            <input type="email" class="input-field" placeholder="Email" name="email" autocomplete="off"
+                            <input type="email" class="input-field" placeholder="Email Address" name="email" autocomplete="off"
                                 required>
                         </div>
                         <div class="input-submit">
                             <button type="submit" class="submit-btn" id="forgot-password-btn" name="forgot_password">
-                                <label for="submit">Reset Password</label>
+                                <label for="submit">Send Reset Link</label>
                             </button>
                         </div>
                         <div class="back-to-login-link">
@@ -384,12 +385,83 @@ unset($_SESSION['success_message']);
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
     <script>
+        // JavaScript for alert functionality
+        function closeAlert() {
+            const alert = document.getElementById('premium-alert');
+            alert.style.animation = 'fadeOut 0.3s ease forwards';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 300);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const modalElement = document.getElementById('staticBackdrop');
+            let modal = new bootstrap.Modal(modalElement, {
+                backdrop: 'true',
+                keyboard: false
+            });
+
+            // Handle cleanup when the modal is hidden
+            modalElement.addEventListener('hidden.bs.modal', () => {
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) {
+                    backdrop.remove();
+                }
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = "";
+                document.body.style.paddingRight = "";
+            });
+
+            const signinForm = document.getElementById('signin-form');
+            const signupForm = document.getElementById('signup-form');
+            const forgotPasswordForm = document.getElementById('forgot-password-form');
+            const forgotPasswordLink = document.getElementById('forgot-password-link');
+            const backToLoginLink = document.getElementById('back-to-login-link');
+
+            forgotPasswordLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                signinForm.style.display = 'none';
+                forgotPasswordForm.style.display = 'block';
+            });
+
+            backToLoginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                forgotPasswordForm.style.display = 'none';
+                signinForm.style.display = 'block';
+            });
+
+            document.getElementById('signup-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                signinForm.style.display = 'none';
+                forgotPasswordForm.style.display = 'none';
+                signupForm.style.display = 'block';
+            });
+
+            document.getElementById('signin-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                signupForm.style.display = 'none';
+                forgotPasswordForm.style.display = 'none';
+                signinForm.style.display = 'block';
+            });
+
+            // Set redirect_url on form submit
+            signinForm.addEventListener('submit', function() {
+                this.elements['redirect_url'].value = window.location.href;
+            });
+            
+            signupForm.addEventListener('submit', function() {
+                this.elements['redirect_url'].value = window.location.href;
+            });
+        });
+    </script>
+
+    <script>
         $(document).ready(function () {
             $("#search-bar").on("keyup", function () {
                 let query = $(this).val();
                 if (query.length > 0) {
                     $.ajax({
-                        url: "search_suggestions.php",
+                        url: "../search_suggestions.php",
                         method: "GET",
                         data: { search_text: query },
                         success: function (data) {
@@ -427,7 +499,7 @@ unset($_SESSION['success_message']);
         }
         function updateCartBadge() {
     $.ajax({
-        url: 'cart_count.php', // Fetch only cart count
+        url: '/cart_count.php', // Fetch only cart count
         method: 'GET',
         success: function (response) {
             var cartBadge = $('.ds-cart-badge');
@@ -444,10 +516,13 @@ unset($_SESSION['success_message']);
     });
 }
 
-// Fetch on page load and refresh every 5 seconds
+// Fetch on page load and refresh every 30 seconds
+let cartUpdateInterval;
 $(document).ready(function() {
     updateCartBadge();
-    setInterval(updateCartBadge, 5000);
+    if (!cartUpdateInterval) {
+        cartUpdateInterval = setInterval(updateCartBadge, 30000);
+    }
 });
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -461,6 +536,8 @@ $(document).ready(function() {
             const errorMessage = "<?php echo addslashes($error_message ?? ''); ?>";
             if (errorMessage) {
                 modal.show(); // Show the modal with error message
+                const modalMessageContainer = document.getElementById('modal-message-container');
+                modalMessageContainer.innerHTML = `<div class="alert alert-danger">${errorMessage}</div>`;
             }
 
             // Handle cleanup when the modal is hidden
@@ -551,6 +628,14 @@ $(document).ready(function() {
 `;
         document.head.appendChild(style);
 
+        // Set redirect_url on form submit to ensure it's the current page
+        document.getElementById('signin-form').addEventListener('submit', function() {
+            this.elements['redirect_url'].value = window.location.href;
+        });
+        document.getElementById('signup-form').addEventListener('submit', function() {
+            this.elements['redirect_url'].value = window.location.href;
+        });
+
         document.getElementById('search-bar').addEventListener('focus', function () {
             fetchSuggestions('');  // Empty string to show top 5 most viewed products immediately
         });
@@ -560,7 +645,7 @@ $(document).ready(function() {
             const suggestionsList = document.getElementById('suggestions-list');
             suggestionsList.style.display = 'block';  // Ensure the suggestions dropdown is visible
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'search_automatic.php?search_text=' + searchText, true);
+            xhr.open('GET', '/search_automatic.php?search_text=' + searchText, true);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     suggestionsList.innerHTML = xhr.responseText;  // Populate the suggestion list with response
@@ -569,17 +654,10 @@ $(document).ready(function() {
             xhr.send();
         }
     </script>
-    <script src="forgot-password.js"></script>
+    <script src="/forgot-password.js"></script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    <script src="js/index.js"></script>
-    <script src="js/validation.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/validation.js"></script>
 
 </body>
 

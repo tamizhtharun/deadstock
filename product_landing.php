@@ -1,23 +1,116 @@
-<?php include 'header.php';
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+include 'db_connection.php';
+
+// Handle add_to_cart POST request before including header to avoid HTML output
+if (isset($_POST['add_to_cart'])) {
+  header('Content-Type: application/json');
+  if (isset($_SESSION['user_session']['id'])) {
+    $user_id = $_SESSION['user_session']['id'];
+    $product_id_cart = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
+    $product_quantity = isset($_POST['product_quantity']) ? intval($_POST['product_quantity']) : 1; // Default to 1
+
+    // Check if product already exists in the cart
+    $stmt = $pdo->prepare("SELECT * FROM tbl_cart WHERE id = ? AND user_id = ?");
+    $stmt->execute([$product_id_cart, $user_id]);
+
+    if ($stmt->rowCount() > 0) {
+      echo json_encode(['status' => 'error', 'message' => 'Product already added to cart!']);
+    } else {
+      $stmt = $pdo->prepare("INSERT INTO tbl_cart (id, user_id, quantity) VALUES (?, ?, ?)");
+      if ($stmt->execute([$product_id_cart, $user_id, $product_quantity])) {
+        echo json_encode(['status' => 'success', 'message' => 'Product added to cart!']);
+      } else {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to add product to cart.']);
+      }
+    }
+  } else {
+    echo json_encode(['status' => 'login_required']);
+  }
+  exit;
+}
+
+include 'header.php';
 include 'db_connection.php';
 require_once 'messages.php';
 require_once('vendor/autoload.php');
 require_once('config.php');
 //product_landing.php
-?>
 
+?>
 
 <?php
 if (isset($_SESSION['user_session']['id'])) {
   $user_id = $_SESSION['user_session']['id'];
 }
-if (!isset($_REQUEST['id'])) {
-  header('location: index.php');
+$product_id = 0;
+$product_slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
+
+if ($product_slug) {
+  // Convert slug to ID
+  $stmt = $pdo->prepare("SELECT id FROM tbl_product WHERE p_slug = ?");
+  $stmt->execute([$product_slug]);
+  $result = $stmt->fetch(PDO::FETCH_ASSOC);
+  $product_id = $result ? $result['id'] : 0;
+} elseif (isset($_GET['id'])) {
+  // Invalid URL page
+  ?>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid URL - Deadstock</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      body {
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .error-container {
+        text-align: center;
+        background: white;
+        padding: 50px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+      .error-icon {
+        font-size: 4rem;
+        color: #dc3545;
+        margin-bottom: 20px;
+      }
+      .btn-home {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="error-container">
+      <div class="error-icon">⚠️</div>
+      <h1 class="display-4">Invalid URL</h1>
+      <p class="lead">The page you're looking for doesn't exist or the URL is incorrect.</p>
+      <p>Please use the correct product slug in the URL.</p>
+      <a href="index.php" class="btn btn-primary btn-home">Go to Home</a>
+    </div>
+  </body>
+  </html>
+  <?php
+  exit;
+}
+
+if (!$product_id) {
+  header('location: /index');
   exit;
 } else {
-  // Check the id is valid or not
+  // Check the id is valid or not (already done for slug, but for safety)
   $statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
-  $statement->execute(array($_REQUEST['id']));
+  $statement->execute(array($product_id));
   $total = $statement->rowCount();
   $result = $statement->fetchAll(PDO::FETCH_ASSOC);
   if ($total == 0) {
@@ -43,18 +136,31 @@ foreach ($result as $row) {
   $gst_percentage = $row['gst_percentage'];
 }
 
-// Getting all categories name for breadcrumb
+// Initialize category variables
+$tcat_id = '';
+$mcat_id = '';
+$ecat_name = '';
+$ecat_slug = '';
+$mcat_name = '';
+$mcat_slug = '';
+$tcat_name = '';
+$tcat_slug = '';
+
+// Getting all categories name and slug for breadcrumb
 $statement = $pdo->prepare("SELECT
                         t1.ecat_id,
                         t1.ecat_name,
+                        t1.ecat_slug,
                         t1.mcat_id,
 
                         t2.mcat_id,
                         t2.mcat_name,
+                        t2.mcat_slug,
                         t2.tcat_id,
 
                         t3.tcat_id,
-                        t3.tcat_name
+                        t3.tcat_name,
+                        t3.tcat_slug
 
                         FROM tbl_end_category t1
                         JOIN tbl_mid_category t2
@@ -67,140 +173,22 @@ $total = $statement->rowCount();
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 foreach ($result as $row) {
   $ecat_name = $row['ecat_name'];
+  $ecat_slug = $row['ecat_slug'];
   $mcat_id = $row['mcat_id'];
   $mcat_name = $row['mcat_name'];
+  $mcat_slug = $row['mcat_slug'];
   $tcat_id = $row['tcat_id'];
   $tcat_name = $row['tcat_name'];
+  $tcat_slug = $row['tcat_slug'];
 }
 
 
 $p_total_view = $p_total_view + 1;
 
 $statement = $pdo->prepare("UPDATE tbl_product SET p_total_view=? WHERE id=?");
-$statement->execute(array($p_total_view, $_REQUEST['id']));
-?>
-<?php
-$error_message1 = '';
-$success_message1 = '';
-$product_id = isset($_GET['id']) ? $_GET['id'] : '';
+$statement->execute(array($p_total_view, $product_id));
 
-
-if (isset($_POST['add_to_cart'])) {
-
-  if (isset($_SESSION['user_session']['id'])) {
-    $user_id = $_SESSION['user_session']['id'];
-    $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
-    $product_quantity = isset($_POST['product_quantity']) ? intval($_POST['product_quantity']) : 1; // Default to 1
-
-    // Check if product already exists in the cart
-    $stmt = $conn->prepare("SELECT * FROM tbl_cart WHERE id = ? AND user_id = ?");
-    $stmt->bind_param("ii", $product_id, $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-      MessageSystem::set('Product already added to cart!', 'error');
-    } else {
-      $stmt = $conn->prepare("INSERT INTO tbl_cart (id, user_id, quantity) VALUES (?, ?, ?)");
-      $stmt->bind_param("iii", $product_id, $user_id, $product_quantity);
-      if ($stmt->execute()) {
-        // MessageSystem::set('Product added to cart!', 'success');
-      } else {
-        // MessageSystem::set('Failed to add product to cart.', 'error');
-      }
-    }
-  } else {
-    // User is not logged in, show login modal
-    echo "<script>
-          document.addEventListener('DOMContentLoaded', function() {
-              var loginModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
-                  backdrop: 'static'
-              });
-              loginModal.show();
-              showMessage('Please login to add items to your cart', 'error');
-          });
-      </script>";
-  }
-}
-
-if (!isset($_SESSION['recently_viewed'])) {
-  $_SESSION['recently_viewed'] = [];
-}
-$_SESSION['recently_viewed'] = array_diff($_SESSION['recently_viewed'], [$product_id]);
-array_unshift($_SESSION['recently_viewed'], $product_id);
-$_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
-
-?>
-
-<?php
-$select_product = mysqli_query($conn, "SELECT * FROM tbl_product") or die('query failed');
-if (mysqli_num_rows($select_product) > 0) {
-  while ($fetch_product = mysqli_fetch_assoc($select_product)) {
-  }
-}
-?>
-
-<?php
-if ($error_message1 != '') {
-  MessageSystem::set($error_message1, 'error');
-}
-if ($success_message1 != '') {
-  MessageSystem::set($success_message1, 'success');
-  header('location: product.php?id=' . $_REQUEST['id']);
-  exit;
-}
-
-// Get product details first
-$statement = $pdo->prepare("SELECT * FROM tbl_product WHERE id=?");
-$statement->execute(array($_REQUEST['id']));
-$total = $statement->rowCount();
-$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-if ($total == 0) {
-  header('location: index.php');
-  exit;
-}
-
-// Initialize category IDs and names
-$tcat_id = $mcat_id = $ecat_id = 0;
-$tcat_name = $mcat_name = $ecat_name = 'Uncategorized';
-
-foreach ($result as $row) {
-  $tcat_id = $row['tcat_id'];
-  $mcat_id = $row['mcat_id'];
-  $ecat_id = $row['ecat_id'];
-}
-
-// Get top category name
-if ($tcat_id) {
-  $statement = $pdo->prepare("SELECT tcat_name FROM tbl_top_category WHERE tcat_id=?");
-  $statement->execute(array($tcat_id));
-  $result = $statement->fetch(PDO::FETCH_ASSOC);
-  if ($result) {
-    $tcat_name = $result['tcat_name'];
-  }
-}
-
-// Get mid category name
-if ($mcat_id) {
-  $statement = $pdo->prepare("SELECT mcat_name FROM tbl_mid_category WHERE mcat_id=?");
-  $statement->execute(array($mcat_id));
-  $result = $statement->fetch(PDO::FETCH_ASSOC);
-  if ($result) {
-    $mcat_name = $result['mcat_name'];
-  }
-}
-
-// Get end category name
-if ($ecat_id) {
-  $statement = $pdo->prepare("SELECT ecat_name FROM tbl_end_category WHERE ecat_id=?");
-  $statement->execute(array($ecat_id));
-  $result = $statement->fetch(PDO::FETCH_ASSOC);
-  if ($result) {
-    $ecat_name = $result['ecat_name'];
-  }
-}
-
+// Calculate bid settings and prices
 $stmt = $pdo->prepare("SELECT min_bid_pct FROM bid_settings ORDER BY created_at DESC LIMIT 1");
 $stmt->execute();
 $bid_settings = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -214,13 +202,18 @@ $final_price = $p_current_price + $gst_amount;
 $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_old_price) * 100) : 0;
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
+<?php
+$error_message1 = '';
+$success_message1 = '';
 
+if (!isset($_SESSION['recently_viewed'])) {
+  $_SESSION['recently_viewed'] = [];
+}
+$_SESSION['recently_viewed'] = array_diff($_SESSION['recently_viewed'], [$product_id]);
+array_unshift($_SESSION['recently_viewed'], $product_id);
+$_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
 
-<link rel="stylesheet" href="css/product_landing.css">
-
-
+?>
 <!-- content -->
 <section class="py-5">
   <div class="container" style="margin-top: -30px;">
@@ -229,12 +222,12 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php" style="text-decoration: none;">Home</a></li>
         <?php if ($tcat_id && $tcat_name !== 'Uncategorized'): ?>
-          <li class="breadcrumb-item"><a href="search-result.php?type=top-category&id=<?php echo $tcat_id; ?>"
+          <li class="breadcrumb-item"><a href="search-result.php?type=top-category&slug=<?php echo urlencode($tcat_slug); ?>"
               style="text-decoration: none;"><?php echo htmlspecialchars($tcat_name); ?></a></li>
         <?php endif; ?>
 
         <?php if ($mcat_id && $mcat_name !== 'Uncategorized'): ?>
-          <li class="breadcrumb-item"><a href="search-result.php?type=mid-category&id=<?php echo $mcat_id; ?>"
+          <li class="breadcrumb-item"><a href="search-result.php?type=mid-category&slug=<?php echo urlencode($mcat_slug); ?>"
               style="text-decoration: none;"><?php echo htmlspecialchars($mcat_name); ?></a></li>
         <?php endif; ?>
 
@@ -254,7 +247,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
           <a data-bs-toggle="modal" id="mainImageLink" class="rounded-4" data-bs-target="#imageModal" href="#">
             <!-- Default Big Photo -->
             <img id="mainImage" class="rounded-4 zoom-effect" class="rounded-4"
-              src="assets/uploads/product-photos/<?php echo $p_featured_photo; ?>">
+              src="/assets/uploads/product-photos/<?php echo $p_featured_photo; ?>">
           </a>
         </div>
         </div>
@@ -265,8 +258,8 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
             echo '
             <a class="border mx-1 rounded-2 thumbnail-link" href="javascript:void(0);">
                 <img width="60" height="60" class="rounded-2" 
-                     src="assets/uploads/product-photos/' . $p_featured_photo . '" 
-                     data-full-image="assets/uploads/product-photos/' . $p_featured_photo . '">
+                     src="/assets/uploads/product-photos/' . $p_featured_photo . '" 
+                     data-full-image="/assets/uploads/product-photos/' . $p_featured_photo . '">
             </a>';
             $stmt = $pdo->prepare("SELECT photo FROM tbl_product_photo WHERE p_id = :product_id");
             $stmt->execute([':product_id' => $product_id]);
@@ -278,8 +271,8 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
                 echo '
                     <a class="border mx-1 rounded-2 thumbnail-link" href="javascript:void(0);">
                         <img width="60" height="60" class="rounded-2" 
-                             src="assets/uploads/product-photos/' . $photo_url . '" 
-                             data-full-image="assets/uploads/product-photos/' . $photo_url . '">
+                             src="/assets/uploads/product-photos/' . $photo_url . '" 
+                             data-full-image="/assets/uploads/product-photos/' . $photo_url . '">
                     </a>';
               }
             }
@@ -289,9 +282,9 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
       </aside>
 
       <main class="col-lg-6">
-        <dclass="ps-lg-3">
+        <div class="ps-lg-3">
           <h4 class="title text-dark">
-            <?php echo $p_name; ?>
+            <?php echo htmlspecialchars($p_name); ?>
           </h4>
 
           <div class="d-flex flex-row my-2">
@@ -355,7 +348,6 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 
             <?php
 
-            $product_id = isset($_GET['id']) ? $_GET['id'] : '';
             $query = "SELECT P, M, K, N, S, H, O FROM tbl_key WHERE id = ?";
             $stmt = $pdo->prepare($query);
             $stmt->execute([$product_id]);
@@ -422,60 +414,76 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
             <!-- <button class="btn btn-warning shadow-0"> Buy now </button> -->
 
             <div class="product-container">
-  <div class="product-box">
-    <form method="POST" action="">
-      <div class="row mb-4">
-        <div class="col-md-4 col-6 mb-3">
-          <label class="mb-2 d-block">Quantity</label>
-          <div class="input-group mb-3" style="width: 170px;">
-            <input type="number" class="form-control text-center" name="product_quantity" id="quantity-input"
-              value="1" min="1" />
-          </div>
-        </div>
-      </div>
+              <div class="product-box">
+                <!-- Key Section -->
 
-      <!-- Flexbox for buttons to align them horizontally -->
-      <div class="d-flex align-items-center">
-        <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
-        
-        <!-- Add to Cart Button -->
-        <button type="submit" name="add_to_cart" class="btn btn-primary shadow-0 me-2">
-          <i class="bi bi-basket me-1"></i> Add to cart
-        </button>
 
-        <!-- Place a Bid Button -->
-        <div class="d-inline-block"
-          <?php if (!isset($_SESSION['user_session']['id'])) { ?>
-          data-bs-toggle="tooltip" data-bs-placement="top" title="Please login through your account"
-          <?php } ?>>
-          
-          <button id="requestPriceBtn" class="request-price-btn btn btn-danger border"
-            <?php if (!isset($_SESSION['user_session']['id'])) {
-              echo 'disabled';
-            } ?>>
-            <i class="fa fa-gavel"></i> Place a Bid
-          </button>
-        </div>
-      </div>
-    </form>
+                <!-- Quantity Section -->
+                <div class="row mb-4">
+                  <div class="col-md-4 col-6 mb-3">
+                    <label class="mb-2 d-block">Quantity</label>
+                    <div class="input-group mb-3" style="width: 170px;">
+                      <input type="number" class="form-control text-center" name="product_quantity" id="quantity-input"
+                        value="1" min="1" />
+                    </div>
+                  </div>
+                </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-          new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-      });
-    </script>
+                <div class="d-flex">
+                  <!-- Buy Now Form -->
+                  <!-- Buy Now Form -->
+                  <!-- <form method="POST" action="checkout-page.php" class="me-3">
+                    <input type="hidden" name="product_id" value="<?php echo $_REQUEST['id']; ?>">
+                    <input type="hidden" name="product_quantity" id="buy-now-quantity" value="1">
+                    <button type="submit" name="buy_now" class="btn btn-warning shadow-0">Buy now</button>
+                </form> -->
 
-    <style>
-      .tooltip-inner {
-        font-size: 12px !important;
-        padding: 4px 8px !important;
-      }
-    </style>
-  </div>
-</div>
+                  <!-- Add to Cart Form -->
+                  <form method="POST" action="" class="me-3" id="addToCartForm">
+                    <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+                    <input type="hidden" name="product_quantity" id="cart-quantity" value="1">
+                    <input type="hidden" name="add_to_cart" value="1">
+                    <button type="button" name="add_to_cart_btn" class="btn btn-primary shadow-0" id="addToCartBtn">
+                      <i class="bi bi-basket me-1"></i> Add to cart
+                    </button>
+                  </form>
+
+                  <!-- Request Price Button -->
+                  <div class="d-inline-block"
+                    <?php if (!isset($_SESSION['user_session']['id'])) { ?>
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Please login through your account"
+                    <?php } ?>>
+
+                    <!-- Request Price Button -->
+                    <button id="requestPriceBtn" class="request-price-btn btn btn-danger border"
+                      <?php if (!isset($_SESSION['user_session']['id'])) {
+                        echo 'disabled';
+                      } ?>>
+                      <i class="fa fa-gavel"></i> Place a Bid
+                    </button>
+                  </div>
+                  <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                      var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                      tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                        new bootstrap.Tooltip(tooltipTriggerEl);
+                      });
+                    });
+                  </script>
+
+                  <style>
+                    /* Reduce Tooltip Font Size */
+                    .tooltip-inner {
+                      font-size: 12px !important;
+                      /* Adjust size as needed */
+                      padding: 4px 8px !important;
+                      /* Adjust padding for a smaller box */
+                    }
+                  </style>
+
+                </div>
+              </div>
+            </div>
           </div>
     </div>
   </div>
@@ -492,7 +500,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     <!-- Form -->
     <form id="priceRequestForm" method="POST" action="submit_bid.php">
       <input type="hidden" name="product_id"
-        value="<?php echo htmlspecialchars($_REQUEST['id'], ENT_QUOTES, 'UTF-8'); ?>">
+        value="<?php echo htmlspecialchars($product_id, ENT_QUOTES, 'UTF-8'); ?>">
 
       <div class="form-group">
         <label for="quantity">Quantity</label>
@@ -545,7 +553,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 </script>
 <script>
   function checkExistingBid(productId) {
-    return fetch('check_bid_status.php', {
+    return fetch('/check_bid_status.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -603,7 +611,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     } else if (proposedPrice.value <= 0) {
       showMessage('Please enter a valid bid price', 'error');
     } else if (parseFloat(proposedPrice.value) < minAllowedPrice) {
-      showMessage('Bidding too low? Try offering a fair price.', 'error');    
+      showMessage('Bidding too low? Try offering a fair price.', 'error');
     } else if (!termsCheckbox.checked) {
       showMessage('You must agree to the Terms and Conditions', 'error');
     } else {
@@ -618,7 +626,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     // showMessage('biting button working, check the razorpay modal');
     // for testing end
 
-    const productId = <?php echo $_REQUEST['id']; ?>;
+    const productId = <?php echo json_encode($product_id); ?>;
 
     // First check if user has already bid
     checkExistingBid(productId)
@@ -633,13 +641,13 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     const proposedPrice = document.getElementById('proposedPrice').value;
 
     // First, create the order
-    fetch('submit_bid.php', {
+    fetch('/submit_bid.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          product_id: <?php echo $_REQUEST['id']; ?>,
+          product_id: <?php echo json_encode($product_id); ?>,
           quantity: quantity,
           proposed_price: proposedPrice
         })
@@ -656,7 +664,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
             order_id: data.order_id,
             handler: function(response) {
               // Handle successful payment
-              fetch('submit_bid.php', {
+              fetch('/submit_bid.php', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -678,8 +686,8 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
                 });
             },
             prefill: {
-              name: "<?php echo $_SESSION['user_session']['name'] ?? ''; ?>",
-              email: "<?php echo $_SESSION['user_session']['email'] ?? ''; ?>"
+              name: "<?php echo htmlspecialchars($_SESSION['user_session']['name'] ?? ''); ?>",
+              email: "<?php echo htmlspecialchars($_SESSION['user_session']['email'] ?? ''); ?>"
             },
             theme: {
               color: "#3399cc"
@@ -729,14 +737,11 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
             <div class="tab-pane fade show active" id="pills-spec" role="tabpanel">
               <p>
                 <?php
-                $product_id = intval($_GET['id']);
-                $sql = "SELECT p_description
-                     FROM tbl_product 
-                      WHERE tbl_product.id = $product_id";
-                $result = $conn->query($sql);
-                if ($result->num_rows > 0) {
-                  $row = $result->fetch_assoc();
-                  echo '<td class="py-2">' . htmlspecialchars($row['p_description']) . '</td>';
+                $stmt = $pdo->prepare("SELECT p_description FROM tbl_product WHERE id = ?");
+                $stmt->execute([$product_id]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($result) {
+                  echo $result['p_description'];
                 }
                 ?>
               </p>
@@ -751,20 +756,17 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 
             </div>
             <?php
-            $product_id = intval($_GET['id']);
-            $sql = "SELECT product_catalogue
-        FROM tbl_product
-        WHERE tbl_product.id = $product_id";
-            $result = $conn->query($sql);
+            $stmt = $pdo->prepare("SELECT product_catalogue FROM tbl_product WHERE id = ?");
+            $stmt->execute([$product_id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($result->num_rows > 0) {
-              $row = $result->fetch_assoc();
-              $pdf_name = $row['product_catalogue'];
+            if ($result && !empty($result['product_catalogue'])) {
+              $pdf_name = $result['product_catalogue'];
 
               // files are stored in the 'assets/uploads/' directory
-              $file_path = 'assets/uploads/' . $pdf_name;
-              $view_url = "pdf_download.php?action=view&id=$product_id";
-              $download_url = "pdf_download.php?action=download&id=$product_id";
+              $file_path = '/assets/uploads/' . $pdf_name;
+              $view_url = "/pdf_download.php?action=view&id=$product_id";
+              $download_url = "/pdf_download.php?action=download&id=$product_id";
               echo '<a href="' . $view_url . '" class="btn btn-warning" target="_blank" style="text-decoration:none;"><i class="fa fa-file-pdf-o"></i> View Catalogue</a>';
               echo '&nbsp;&nbsp;';
               echo '<a href="' . $download_url . '" class="btn btn-success" style="text-decoration:none;"><i class="fa fa-download"></i> Download Catalogue</a>';
@@ -779,9 +781,9 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
       $search_term = substr($p_name, 0, 4); // Get the first 4 letters of the current product name
       $search_term = htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8'); // Prevent any special character issues
 
-      $sql = "SELECT id, p_name, p_current_price, p_old_price, p_featured_photo 
-          FROM tbl_product 
-          WHERE p_name LIKE :search_term 
+      $sql = "SELECT id, p_name, p_current_price, p_old_price, p_featured_photo, p_slug
+          FROM tbl_product
+          WHERE p_name LIKE :search_term
           AND id != :current_id
           LIMIT 3";
 
@@ -801,23 +803,23 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
               <h5 class="card-title">Similar items</h5>
               <?php foreach ($related_products as $related_product): ?>
                 <div class="d-flex mb-3">
-                  <a href="product_landing.php?id=<?php echo $related_product['id']; ?>" class="me-3">
-                    <img src="assets/uploads/product-photos/<?php echo $related_product['p_featured_photo']; ?>"
+                  <a href="/product/<?php echo urlencode($related_product['p_slug']); ?>" class="me-3">
+                    <img src="/assets/uploads/product-photos/<?php echo $related_product['p_featured_photo']; ?>"
                       style="width: 100px; height: 96px;" class="img-thumbnail"
                       alt="<?php echo htmlspecialchars($related_product['p_name']); ?>" />
                   </a>
                   <div class="info">
-                    <a href="product_landing.php?id=<?php echo $related_product['id']; ?>"
+                    <a href="/product/<?php echo urlencode($related_product['p_slug']); ?>"
                       class="text-decoration-none mb-1">
                       <?php echo htmlspecialchars($related_product['p_name']); ?>
                     </a>
                     <div class="d-flex align-items-center gap-2 mt-1">
                       <p class="text-dark mb-0">
-                        <strong>₹<?php echo $related_product['p_current_price']; ?></strong>
+                        <strong>₹<?php echo htmlspecialchars($related_product['p_current_price']); ?></strong>
                       </p>
                       <?php if ($related_product['p_old_price'] > 0): ?>
                         <span class="text-muted text-decoration-line-through">
-                          ₹<?php echo $related_product['p_old_price']; ?>
+                          ₹<?php echo htmlspecialchars($related_product['p_old_price']); ?>
                         </span>
                         <?php
                         $discount = (($related_product['p_old_price'] - $related_product['p_current_price']) / $related_product['p_old_price']) * 100;
@@ -843,7 +845,8 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
 
 
 <!-- Link Bootstrap CSS and Icons -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/css/product_landing.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -938,7 +941,7 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
     });
 
     // Ensure the main image defaults to p_featured_photo
-    mainImage.src = "<?php echo 'assets/uploads/product-photos/' . $p_featured_photo; ?>";
+    mainImage.src = "<?php echo '/assets/uploads/product-photos/' . $p_featured_photo; ?>";
   });
   const img = document.querySelector('.zoom-effect');
 
@@ -957,6 +960,52 @@ $discount = ($p_old_price > 0) ? round((($p_old_price - $p_current_price) / $p_o
   img.addEventListener('mouseleave', function() {
     img.style.transformOrigin = 'center center'; // Defaults back to center zoom
   });
+
+  // Handle Add to Cart button click
+  document.getElementById('addToCartBtn').addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent form submission
+
+    const form = document.getElementById('addToCartForm');
+    const formData = new FormData(form);
+
+    fetch('', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'login_required') {
+        // Show login modal
+        var loginModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
+        loginModal.show();
+        showMessage('Please login to add items to cart', 'error');
+      } else if (data.status === 'success') {
+        showMessage(data.message, 'success');
+        // Optionally update cart count
+        updateCartCount();
+      } else {
+        showMessage(data.message, 'error');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showMessage('An error occurred while adding to cart', 'error');
+    });
+  });
+
+  function updateCartCount() {
+    // Fetch and update cart count if needed
+    fetch('cart_count.php')
+      .then(response => response.text())
+      .then(count => {
+        // Update cart count in header or wherever it's displayed
+        const cartCountElement = document.querySelector('.cart-count'); // Adjust selector as needed
+        if (cartCountElement) {
+          cartCountElement.textContent = count;
+        }
+      })
+      .catch(error => console.error('Error updating cart count:', error));
+  }
 </script>
 
 <div>

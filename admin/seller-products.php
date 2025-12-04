@@ -1,3 +1,107 @@
+<?php
+include("../db_connection.php");
+// Check if export_csv button is clicked - must be before any output
+if (isset($_POST['export_csv'])) {
+    $seller_id = isset($_POST['seller_id']) ? intval($_POST['seller_id']) : 0;
+    // Build query with filters
+    $query = "SELECT
+                t1.id,
+                t1.p_name,
+                t1.p_old_price,
+                t1.p_current_price,
+                t1.p_qty,
+                t1.p_featured_photo,
+                t1.p_is_featured,
+                t1.p_is_approve,
+                t1.product_catalogue,
+                t1.product_brand,
+                t1.p_date,
+                t1.seller_id,
+                t2.ecat_id,
+                t2.ecat_name,
+                t3.mcat_id,
+                t3.mcat_name,
+                t4.tcat_id,
+                t4.tcat_name,
+                t5.brand_id,
+                t5.brand_name
+            FROM tbl_product t1
+            LEFT JOIN tbl_end_category t2 ON t1.ecat_id = t2.ecat_id
+            LEFT JOIN tbl_mid_category t3 ON t1.mcat_id = t3.mcat_id
+            LEFT JOIN tbl_top_category t4 ON t1.tcat_id = t4.tcat_id
+            LEFT JOIN tbl_brands t5 ON t1.product_brand=t5.brand_id
+            WHERE t1.seller_id = ?";
+
+    $params = array($seller_id);
+
+    // Apply date filter
+    if (!empty($_POST['from_date']) && !empty($_POST['to_date'])) {
+        $query .= " AND DATE(t1.p_date) BETWEEN ? AND ?";
+        $params[] = $_POST['from_date'];
+        $params[] = $_POST['to_date'];
+    } elseif (!empty($_POST['from_date'])) {
+        $query .= " AND DATE(t1.p_date) >= ?";
+        $params[] = $_POST['from_date'];
+    } elseif (!empty($_POST['to_date'])) {
+        $query .= " AND DATE(t1.p_date) <= ?";
+        $params[] = $_POST['to_date'];
+    }
+
+    // Apply status filter
+    if (!empty($_POST['status_filter'])) {
+        if ($_POST['status_filter'] == 'approved') {
+            $query .= " AND t1.p_is_approve = 1";
+        } elseif ($_POST['status_filter'] == 'rejected') {
+            $query .= " AND t1.p_is_approve = 0";
+        }
+    }
+
+    $query .= " ORDER BY t1.id DESC";
+
+    try {
+        $statement = $pdo->prepare($query);
+        $statement->execute($params);
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        // Set headers for CSV download after successful query
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="seller_products.csv"');
+
+        // Output CSV data
+        $output = fopen('php://output', 'w');
+
+        // Write headers
+        fputcsv($output, array('#', 'Product Brand', 'Product Name', 'Old Price', 'Current Price', 'Quantity', 'Approval Status', 'Upload Date'));
+
+        // Write data
+        $i = 0;
+        foreach ($result as $row) {
+            $i++;
+            $upload_date = !empty($row['p_date']) && $row['p_date'] != '0000-00-00' ? '="' . date('d/m/Y', strtotime($row['p_date'])) . '"' : 'N/A';
+            fputcsv($output, array(
+                $i,
+                $row['brand_name'],
+                $row['p_name'],
+                $row['p_old_price'],
+                $row['p_current_price'],
+                $row['p_qty'],
+                $row['p_is_approve'] ? 'Approved' : 'Rejected',
+                $upload_date
+            ));
+        }
+
+        fclose($output);
+        exit();
+    } catch (Exception $e) {
+        // Log the error
+        error_log("CSV Export Error: " . $e->getMessage());
+        // Redirect back with error message
+        header('Location: ' . $_SERVER['PHP_SELF'] . '?seller_id=' . $seller_id . '&error=export_failed');
+        exit();
+    }
+}
+?>
+
 <?php require_once('header.php'); ?>
 
 <?php
@@ -30,8 +134,8 @@ if (isset($_POST['approve_all'])) {
 // Check if reject_all button is clicked
 if (isset($_POST['reject_all'])) {
     try {
-        // Prepare the SQL statement to update all products to rejected
-        $stmt = $pdo->prepare("UPDATE tbl_product SET p_is_approve = 0 WHERE seller_id = :seller_id");
+        // Prepare the SQL statement to update all products to rejected and remove featured status
+        $stmt = $pdo->prepare("UPDATE tbl_product SET p_is_approve = 0, p_is_featured = 0 WHERE seller_id = :seller_id");
         $stmt->bindParam(':seller_id', $seller_id, PDO::PARAM_INT);
         $stmt->execute();
         echo '<script>
@@ -61,17 +165,43 @@ if (isset($_POST['reject_all'])) {
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
-            <div class="box-header">
-                <h3 class="box-title"></h3>
-                <div class="box-tools pull-right">
-                    <form method="POST" action="" class="d-flex flex-wrap gap-2 justify-content-end">
-                        <input type="hidden" name="seller_id" value="<?php echo $seller_id; ?>">
-                        <button type="submit" name="approve_all" class="btn btn-success btn-xs">Approve All</button>
-                        <button type="submit" name="reject_all" class="btn btn-danger btn-xs">Reject All</button>
-                    </form>
+            <div class="filter-container" style="margin-left :-12px; display: flex; justify-content: space-between; align-items: center;">
+                <div class="date-filter-group">
+                    <label class="date-filter-label">Filter by date range:</label>
+                    <input type="date" class="form-control input-sm" id="fromDate" style="display: inline-block; width: auto; margin: 0 10px;">
+                    <label>to</label>
+                    <input type="date" class="form-control input-sm" id="toDate" style="display: inline-block; width: auto; margin: 0 10px;">
+                    <button id="clearDates" class="btn btn-default btn-sm">Clear Dates</button>
+                </div>
+
+                <div class="status-filter-group">
+                    <label>Filter by status:</label>
+                    <select id="statusFilter" class="form-control input-sm" style="display: inline-block; width: auto; margin-left: 10px;padding-top:0;">
+                        <option value="">All Products</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header">
+                    <h3 class="box-title"></h3>
+                    <div class="box-tools pull-right">
+                        <form method="POST" action="" id="actionForm">
+                            <input type="hidden" name="seller_id" value="<?php echo $seller_id; ?>">
+                            <input type="hidden" name="from_date" id="hiddenFromDate">
+                            <input type="hidden" name="to_date" id="hiddenToDate">
+                            <input type="hidden" name="status_filter" id="hiddenStatusFilter">
+                            <button type="submit" name="approve_all" class="btn btn-success btn-xs">Approve All</button>
+                            <button type="submit" name="reject_all" class="btn btn-danger btn-xs">Reject All</button>
+                            <button type="submit" name="export_csv" class="btn btn-primary btn-xs" id="exportCsvBtn">Export to CSV</button>
+                        </form>
+                    </div>
+                </div>
 
                 <div class="box-body table-responsive">
                     <table id="example1" class="table table-bordered table-hover table-striped">
@@ -80,15 +210,16 @@ if (isset($_POST['reject_all'])) {
                                 <th width="10">#</th>
                                 <th>Photo</th>
                                 <th>Product Brand</th>
-                                <th >Product Name</th>
-                                <th >Old Price</th>
-                                <th >(C) Price</th>
-                                <th >Quantity</th>
+                                <th>Product Name</th>
+                                <th>Old Price</th>
+                                <th>(C) Price</th>
+                                <th>Quantity</th>
                                 <th>Featured?</th>
                                 <th>Category</th>
                                 <th>Product Catalogue</th>
-                                <th >Approval Status</th>
-                                <th >Action</th>
+                                <th>Approval Status</th>
+                                <th width="100">Upload Date</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -108,6 +239,7 @@ if (isset($_POST['reject_all'])) {
                                                         t1.p_is_approve,
                                                         t1.product_catalogue,
                                                         t1.product_brand,
+                                                        t1.p_date,
                                                         t2.ecat_id,
                                                         t2.ecat_name,
                                                         t3.mcat_id,
@@ -129,7 +261,7 @@ if (isset($_POST['reject_all'])) {
                         foreach ($result as $row) {
                             $i++;
                             ?>
-                            <tr>
+                            <tr data-date="<?php echo date('Y-m-d', strtotime($row['p_date'])); ?>" data-status="<?php echo $row['p_is_approve'] == 1 ? 'approved' : 'rejected'; ?>">
                                 <td><?php echo $i; ?></td>
                                 <td style="width:82px;"><img src="../assets/uploads/product-photos/<?php echo $row['p_featured_photo']; ?>" alt="<?php echo $row['p_name']; ?>" style="width:80px;"></td>
                                 <td><?php echo $row['brand_name']; ?></td>
@@ -139,7 +271,7 @@ if (isset($_POST['reject_all'])) {
                                 <td><?php echo $row['p_qty']; ?></td>
                                 <!-- Update the Featured column -->
                                 <td>
-                                    <select class="form-control" style="width:auto;" onchange="updateFeatured(<?php echo $row['id']; ?>, this.value)">
+                                    <select class="form-control" style="width:auto;" onchange="updateFeatured(<?php echo $row['id']; ?>, this.value)" <?php echo $row['p_is_approve'] == 0 ? 'disabled' : ''; ?>>
                                         <option value="0" <?php echo $row['p_is_featured'] == 0 ? 'selected' : ''; ?>>No</option>
                                         <option value="1" <?php echo $row['p_is_featured'] == 1 ? 'selected' : ''; ?>>Yes</option>
                                     </select>
@@ -147,6 +279,7 @@ if (isset($_POST['reject_all'])) {
                                 <td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?></td>
                                 <td><a href="../assets/uploads/product-catalogues/<?php echo $row['product_catalogue']?>">View catalogue</a> </td>
                                 <td><?php echo $row['p_is_approve'] == 1 ? '<span class="badge badge-success" style="background-color:green;">Approved</span>' : '<span class="badge badge-danger" style="background-color:red;">Rejected</span>'; ?></td>
+                                <td><?php echo (!empty($row['p_date']) && $row['p_date'] != '0000-00-00') ? date('d-m-Y', strtotime($row['p_date'])) : 'N/A'; ?></td>
                                 <td>
                                     <?php if ($row['p_is_approve'] == 1) { ?>
                                         <a href="seller-product-approve-status.php?id=<?php echo $row['id']; ?>&status=0&seller_id=<?php echo $seller_id; ?>" class="btn btn-warning btn-xs">Reject</a>
@@ -177,6 +310,76 @@ function updateFeatured(productId, value) {
     };
     xhr.send("id=" + productId + "&p_is_featured=" + value);
 }
+
+// Filter functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const fromDateInput = document.getElementById('fromDate');
+    const toDateInput = document.getElementById('toDate');
+    const clearDatesBtn = document.getElementById('clearDates');
+    const statusFilter = document.getElementById('statusFilter');
+    const hiddenFromDate = document.getElementById('hiddenFromDate');
+    const hiddenToDate = document.getElementById('hiddenToDate');
+    const hiddenStatusFilter = document.getElementById('hiddenStatusFilter');
+    const tableRows = document.querySelectorAll('#example1 tbody tr');
+
+    function filterRows() {
+        const fromDate = fromDateInput.value;
+        const toDate = toDateInput.value;
+        const status = statusFilter.value;
+
+        tableRows.forEach(row => {
+            const rowDate = row.getAttribute('data-date');
+            const rowStatus = row.getAttribute('data-status');
+            let showRow = true;
+
+            // Date filter
+            if (fromDate && rowDate < fromDate) {
+                showRow = false;
+            }
+            if (toDate && rowDate > toDate) {
+                showRow = false;
+            }
+
+            // Status filter
+            if (status && rowStatus !== status) {
+                showRow = false;
+            }
+
+            row.style.display = showRow ? '' : 'none';
+        });
+    }
+
+    function updateHiddenFields() {
+        hiddenFromDate.value = fromDateInput.value;
+        hiddenToDate.value = toDateInput.value;
+        hiddenStatusFilter.value = statusFilter.value;
+    }
+
+    fromDateInput.addEventListener('change', function() {
+        filterRows();
+        updateHiddenFields();
+    });
+
+    toDateInput.addEventListener('change', function() {
+        filterRows();
+        updateHiddenFields();
+    });
+
+    statusFilter.addEventListener('change', function() {
+        filterRows();
+        updateHiddenFields();
+    });
+
+    clearDatesBtn.addEventListener('click', function() {
+        fromDateInput.value = '';
+        toDateInput.value = '';
+        filterRows();
+        updateHiddenFields();
+    });
+
+    // Initial filter update
+    updateHiddenFields();
+});
 </script>
 
 

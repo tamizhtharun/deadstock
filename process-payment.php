@@ -41,10 +41,18 @@ try {
     }
 
     function calculateTotal($items) {
-        $total = 0;
+        $subtotal = 0;
+        $total_gst = 0;
+        $gst_rate = 18; // GST rate in percentage
+
         foreach ($items as $item) {
-            $total += $item['p_current_price'] * $item['quantity'];
+            $item_total = $item['p_current_price'] * $item['quantity'];
+            $product_gst = $item_total * ($gst_rate / 100);
+            $subtotal += $item_total;
+            $total_gst += $product_gst;
         }
+
+        $total = $subtotal + $total_gst;
         return $total;
     }
 

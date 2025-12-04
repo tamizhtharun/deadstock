@@ -46,6 +46,13 @@ if (!isset($_SESSION['admin_session'])) {
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+	<style>
+		/* Make dropdown icon always visible */
+		.dropdown-icon {
+			opacity: 1 !important;
+			visibility: visible !important;
+		}
+	</style>
 
 </head>
 
@@ -56,7 +63,8 @@ if (!isset($_SESSION['admin_session'])) {
 		<header class="main-header">
 
 			<a href="index.php" class="logo">
-				<span class="logo-lg">DeadStock</span>
+				<!-- <span class="logo-lg">DeadStock</span> -->
+				<span class="logo-lg"><img src="../icons/dead stock.png" alt="Logo" style="height:40px; margin-top:5px;"></span>
 			</a>
 
 			<nav class="navbar navbar-static-top d-flex justify-content-between px-3">
@@ -74,7 +82,7 @@ if (!isset($_SESSION['admin_session'])) {
 				<!-- Top Bar ... User Information .. Login/Log out Area -->
 				<div class="navbar-custom-menu">
 					<div class="dropdown profile-dropdown">
-						<div id="profile-btn" class="d-flex align-items-center profile-hover">
+						<button class="btn btn-secondary dropdown-toggle d-flex align-items-center profile-hover" type="button" id="newProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none; padding: 0;">
 							<?php
 							if (!empty($_SESSION['admin_session']['user_photo'])) {
 								$profile_photo = $_SESSION['admin_session']['user_photo'];
@@ -84,12 +92,11 @@ if (!isset($_SESSION['admin_session'])) {
 							}
 							?>
 							<span style="font-weight:800; margin-right: 6px;"><?php echo $_SESSION['admin_session']['user_name']; ?></span>
-							<i class="fa fa-chevron-down dropdown-icon"></i> <!-- Dropdown Icon -->
-						</div>
-						<div class="dropdown-menu dropdown-menu-end profile-menu">
-							<a class="dropdown-item" href="profile-edit.php">Edit Profile</a>
-							<a class="dropdown-item text-danger" href="logout.php">Log out</a>
-						</div>
+						</button>
+						<ul class="dropdown-menu dropdown-menu-end profile-menu" aria-labelledby="newProfileDropdown">
+							<li><a class="dropdown-item" href="profile-edit.php">Edit Profile</a></li>
+							<li><a class="dropdown-item text-danger" href="logout.php">Log out</a></li>
+						</ul>
 					</div>
 				</div>
 
@@ -117,6 +124,13 @@ if (!isset($_SESSION['admin_session'])) {
 										} ?>">
 						<a href="settings.php">
 							<i class="fa fa-sliders"></i> <span>Website Settings</span>
+						</a>
+					</li>
+					<li class="treeview <?php if (($cur_page == 'slider.php') || ($cur_page == 'slider-add.php') || ($cur_page == 'slider-edit.php') || ($cur_page == 'slider-delete.php')) {
+											echo 'active';
+										} ?>">
+						<a href="slider.php">
+							<i class="fa fa-sliders"></i> <span>Manage Sliders</span>
 						</a>
 					</li>
 
@@ -218,11 +232,27 @@ if (!isset($_SESSION['admin_session'])) {
 						</ul>
 					</li>
 
-					<li class="treeview <?php if (($cur_page == 'slider.php')) {
+					<li class="treeview <?php if (($cur_page == '#') || ($cur_page == 'discount-products.php') || ($cur_page == 'seller-discount-approve-status.php') || ($cur_page == 'approved_discounts.php')) {
 											echo 'active';
 										} ?>">
-						<a href="slider.php">
-							<i class="fa fa-picture-o"></i> <span>Manage Sliders</span>
+						<a href="#">
+							<i class="fa fa-percent"></i> <span>Discount Management</span>
+							<span class="pull-right-container">
+								<i class="fa fa-angle-left pull-right"></i>
+							</span>
+						</a>
+						<ul class="treeview-menu">
+							<li><a href="approved_discounts.php"><i class="fa fa-circle-o"></i> Approved Products</a></li>
+							<li><a href="discount-products.php"><i class="fa fa-circle-o"></i> Discount Approval</a></li>
+
+
+						</ul>
+
+					</li>
+
+					<li class="treeview <?php if (($cur_page == 'shipment-management.php')) { echo 'active'; } ?>">
+						<a href="shipment-management.php">
+							<i class="fa fa-truck"></i> <span>Shipment Management</span>
 						</a>
 					</li>
 					<!-- Icons to be displayed on Shop -->

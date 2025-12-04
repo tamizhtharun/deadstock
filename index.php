@@ -2,7 +2,7 @@
 require_once('track_view.php');
 trackPageView('HP', 'Home page');
 ?>
-<link rel="stylesheet" href="./css/index.css">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 <div class="category-pad">
     <div class="category-box">
@@ -14,7 +14,7 @@ trackPageView('HP', 'Home page');
             foreach ($result as $row) {
             ?>
                 <li class="category">
-                    <a class="category-link" href="search-result.php?type=top-category&id=<?php echo $row['tcat_id']; ?>">
+                    <a class="category-link" href="search-result.php?type=top-category&slug=<?php echo urlencode($row['tcat_slug']); ?>">
                         <img src="./assets/uploads/top-categories-images/<?php echo $row['photo']; ?>" width="30px" height="30px" alt="<?php echo $row['tcat_name']; ?>">
                         <span><?php echo $row['tcat_name']; ?></span>
                     </a>
@@ -26,7 +26,7 @@ trackPageView('HP', 'Home page');
                         foreach ($result1 as $row1) {
                         ?>
                             <li class="subcategory">
-                                <a class="subcategory-link" href="search-result.php?type=mid-category&id=<?php echo $row1['mcat_id']; ?>">
+                                <a class="subcategory-link" href="search-result.php?type=mid-category&slug=<?php echo urlencode($row1['mcat_slug']); ?>">
                                     <?php echo $row1['mcat_name']; ?>
                                 </a>
                                 <ul class="sub-subcategories">
@@ -37,7 +37,7 @@ trackPageView('HP', 'Home page');
                                     foreach ($result2 as $row2) {
                                     ?>
                                         <li class="sub-subcategory">
-                                            <a href="search-result.php?type=end-category&id=<?php echo $row2['ecat_id']; ?>">
+                                            <a href="search-result.php?type=end-category&slug=<?php echo urlencode($row2['ecat_slug']); ?>">
                                                 <?php echo $row2['ecat_name']; ?>
                                             </a>
                                         </li>
@@ -64,59 +64,44 @@ trackPageView('HP', 'Home page');
                 <span class="quote-bold"><?php echo htmlspecialchars($quote_span_text); ?></span>
                 <?php echo nl2br(htmlspecialchars($quote_text)); ?>
             </p>
-            <img src="assets/uploads/<?php echo $logo ?>" alt="Logo" class="logo">
+            <img src="assets/uploads/<?php echo $favicon ?>" alt="Logo" class="logo">
         </div>
 
-        <div class="brands">
-            <div class="ind-brand">
-                <a href="#" class="link-body-emphasis link-underline-opacity-0">
-                    <div class="img-category">
-                        <img src="./icons/index milling.png">
-                    </div>
-                    <p class="brand-name">Indexable Milling Tools</p>
-                </a>
+<!-- advertisements section -->
+<div class="advertisements">
+    <div class="ad-column">
+        <a href="#" class="ad-link">
+            <div class="ad-container">
+                <img src="assets/uploads/ads/1.png" alt="Advertisement 1" class="ad-image">
+                <div class="ad-overlay">
+                    <span class="ad-text">Premium Tools Sale</span>
+                </div>
             </div>
-            <div class="ind-brand">
-                <a href="#" class="link-body-emphasis link-underline-opacity-0">
-                    <div class="img-category">
-                        <img src="./icons/endmill.png">
-                    </div>
-                    <p class="brand-name">Solid Carbide Endmills</p>
-                </a>
+        </a>
+    </div>
+    
+    <div class="ad-column">
+        <a href="#" class="ad-link">
+            <div class="ad-container">
+                <img src="assets/uploads/ads/2.png" alt="Advertisement 2" class="ad-image">
+                <div class="ad-overlay">
+                    <span class="ad-text">New Arrivals</span>
+                </div>
             </div>
-            <div class="ind-brand">
-                <a href="#" class="link-body-emphasis link-underline-opacity-0">
-                    <div class="img-category">
-                        <img src="./icons/turning.png">
-                    </div>
-                    <p class="brand-name ">Turning Tools</p>
-                </a>
+        </a>
+    </div>
+    
+    <div class="ad-column">
+        <a href="#" class="ad-link">
+            <div class="ad-container">
+                <img src="assets/uploads/ads/3.png" alt="Advertisement 3" class="ad-image">
+                <div class="ad-overlay">
+                    <span class="ad-text">Special Offers</span>
+                </div>
             </div>
-            <div class="ind-brand">
-                <a href="#" class="link-body-emphasis link-underline-opacity-0">
-                    <div class="img-category">
-                        <img src="./icons/hole.png">
-                    </div>
-                    <p class="brand-name">Holemaking Tools</p>
-                </a>
-            </div>
-            <div class="ind-brand">
-                <a href="#" class="link-body-emphasis link-underline-opacity-0">
-                    <div class="img-category">
-                        <img src="./icons/Threading tools.png">
-                    </div>
-                    <p class="brand-name">Threading Tools</p>
-                </a>
-            </div>
-            <div class="ind-brand">
-                <a href="#" class="link-body-emphasis link-underline-opacity-0">
-                    <div class="img-category">
-                        <img src="./icons/others.png">
-                    </div>
-                    <p class="brand-name">Others</p>
-                </a>
-            </div>
-        </div>
+        </a>
+    </div>
+</div>
     </div>
 </div>
 
@@ -164,8 +149,10 @@ trackPageView('HP', 'Home page');
 <!-- Live Bidding -->
 
 <!-- Display the product -->
-<?php
-$topCategories = []; // Initialize as an empty array
+ <?php
+// Replace your existing product carousel section with this code
+
+$topCategories = [];
 $statement = $pdo->prepare("SELECT * FROM tbl_mid_category");
 $statement->execute();
 $topCategories = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -194,109 +181,346 @@ if (!empty($topCategories)) {
             }
 
             if ($hasFeaturedProducts) {
-                // Create unique identifier for this category's swiper
                 $swiperId = 'featured-swiper-' . $tcat_id;
 ?>
-                <section id="featured-products-<?php echo $tcat_id; ?>" class="products-carousel my-10">
-                    <div class="container-lg overflow-hidden py-5">
-                        <div class="section-header d-flex flex-wrap justify-content-between my-1">
+                <section id="featured-products-<?php echo $tcat_id; ?>" class="products-section">
+                    <div class="products-container">
+                        <div class="section-header">
                             <h2 class="section-title"><?php echo htmlspecialchars($topCategory['mcat_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
-                            <div class="d-flex align-items-center">
-                                <a href="search-result.php?type=mid-category&id=<?php echo $topCategory['mcat_id'] ?>" class="btn-link text-decoration-none" style="margin-right:20px">View All <?php echo htmlspecialchars($topCategory['mcat_name']) ?> →</a>
-                                <div class="swiper-buttons">
-                                    <button class="swiper-prev btn btn-primary" id="<?php echo $swiperId; ?>-prev">❮</button>
-                                    <button class="swiper-next btn btn-primary" id="<?php echo $swiperId; ?>-next">❯</button>
+                            <div class="header-actions">
+                                <a href="search-result.php?type=mid-category&slug=<?php echo urlencode($topCategory['mcat_slug']) ?>" class="view-all-link">
+                                    View All
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </a>
+                                <div class="nav-controls">
+                                    <button class="nav-button" id="<?php echo $swiperId; ?>-prev">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                            <path d="M12 16L6 10L12 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </button>
+                                    <button class="nav-button" id="<?php echo $swiperId; ?>-next">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                            <path d="M8 4L14 10L8 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
                         <div class="swiper" id="<?php echo $swiperId; ?>">
                             <div class="swiper-wrapper">
-
                                 <?php foreach ($products as $product): ?>
                                     <?php if ($product['p_is_featured'] == 1): ?>
-                                        <div class="product-item swiper-slide">
-                                            <figure>
-                                                <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>">
-                                                    <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" width="130px" height="100px" alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>" class="tab-image">
-                                                </a>
-                                            </figure>
-                                            <div class="d-flex flex-column text-left">
-                                                <a href="product_landing.php?id=<?php echo htmlspecialchars($product['id'], ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration:none !important" title="Product Title">
-                                                    <h3 class="fs-6 fw-normal"><?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?></h3>
-
-                                                    <!-- <div>
-                                                <span class="rating">
-                                                    <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                                                    <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                                                    <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                                                    <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                                                    <svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>
-                                                </span>
-                                                <span><?php echo $product['p_current_price'] ?></span>
-                                            </div> -->
-                                                    <div class="d-flex justify-content-left align-items-left gap-1">
-                                                        <span class="text-dark fw-semibold h6" style="margin-bottom:0px">₹<?php echo number_format($product['p_current_price'], 2); ?></span>
-                                                    </div>
-                                                    <div class="d-flex justify-content-left align-items-left gap-1">
+                                        <div class="swiper-slide">
+                                            <div class="product-card">
+                                                <a href="product/<?php echo urlencode($product['p_slug']); ?>" class="product-link">
+                                                    <div class="product-image-box">
                                                         <?php if (!empty($product['p_old_price'])): ?>
-                                                            <del>₹<?php echo number_format($product['p_old_price'], 2); ?></del>
-                                                            <div class="cat-product-discount">
+                                                            <span class="discount-tag">
                                                                 <?php
                                                                 $discount = (($product['p_old_price'] - $product['p_current_price']) / $product['p_old_price']) * 100;
-                                                                echo round($discount) . '% OFF';
+                                                                echo round($discount) . '%';
                                                                 ?>
-                                                            </div>
+                                                            </span>
                                                         <?php endif; ?>
+                                                        <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($product['p_featured_photo'], ENT_QUOTES, 'UTF-8'); ?>" 
+                                                             alt="<?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?>" 
+                                                             class="product-img">
                                                     </div>
-                                                    <!-- <div class="button-area p-3 pt-0">
-                                                <div class="row g-1 mt-2">
-                                                    <div class="col-3"></div>
-                                                    <div class="col-7" style="margin-left:-12px"><a href="cart.php" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart" style="text-decoration:none !important"><svg width="18" height="18"><use xlink:href="#cart"></use></svg> Add to Cart</a></div>
-                                                    <div class="col-2"></div>
-                                                </div>
-                                            </div> -->
+                                                    <div class="product-info">
+                                                        <h3 class="product-name"><?php echo htmlspecialchars($product['p_name'], ENT_QUOTES, 'UTF-8'); ?></h3>
+                                                        <div class="product-price">
+                                                            <span class="price-current">₹<?php echo number_format($product['p_current_price'], 0); ?></span>
+                                                            <?php if (!empty($product['p_old_price'])): ?>
+                                                                <span class="price-old">₹<?php echo number_format($product['p_old_price'], 0); ?></span>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+                                                </a>
                                             </div>
                                         </div>
-                                        </a>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             </div>
                         </div>
                     </div>
                 </section>
+
                 <script>
-                    // Initialize Swiper for this category
-                    new Swiper('#<?php echo $swiperId; ?>', {
-                        slidesPerView: 1,
-                        spaceBetween: 10,
-                        navigation: {
-                            nextEl: '#<?php echo $swiperId; ?>-next',
-                            prevEl: '#<?php echo $swiperId; ?>-prev',
-                        },
-                        watchOverflow: true, // Automatically disable navigation if not enough slides
-                        breakpoints: {
-                            640: {
-                                slidesPerView: 2,
+                    document.addEventListener('DOMContentLoaded', function() {
+                        new Swiper('#<?php echo $swiperId; ?>', {
+                            slidesPerView: 2,
+                            spaceBetween: 16,
+                            navigation: {
+                                nextEl: '#<?php echo $swiperId; ?>-next',
+                                prevEl: '#<?php echo $swiperId; ?>-prev',
                             },
-                            768: {
-                                slidesPerView: 6,
+                            breakpoints: {
+                                640: {
+                                    slidesPerView: 3,
+                                    spaceBetween: 20,
+                                },
+                                768: {
+                                    slidesPerView: 4,
+                                    spaceBetween: 20,
+                                },
+                                1024: {
+                                    slidesPerView: 5,
+                                    spaceBetween: 24,
+                                },
+                                1280: {
+                                    slidesPerView: 6,
+                                    spaceBetween: 24,
+                                },
                             },
-                            1024: {
-                                slidesPerView: 4,
+                            loop: false,
+                            autoplay: {
+                                delay: 5000,
+                                disableOnInteraction: false,
+                                pauseOnMouseEnter: true,
                             },
-                        },
+                        });
                     });
                 </script>
 
+                <style>
+                    /* Clean Professional Product Carousel */
+                    .products-section {
+                        padding: 50px 0;
+                        background: #faf8f3;
+                    }
+
+                    .products-container {
+                        max-width: 100%;
+                        margin: 0 auto;
+                        padding: 0 20px;
+                    }
+
+                    /* Header */
+                    .section-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 32px;
+                        padding-bottom: 16px;
+                        border-bottom: 1px solid #e5e5e5;
+                    }
+
+                    .section-title {
+                        font-size: 28px;
+                        font-weight: 600;
+                        color: #1a1a1a;
+                        margin: 0;
+                    }
+
+                    .header-actions {
+                        display: flex;
+                        align-items: center;
+                        gap: 45px;
+                    }
+
+                    .view-all-link {
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        color: #b87333;
+                        text-decoration: none;
+                        font-weight: 500;
+                        font-size: 15px;
+                        transition: color 0.2s;
+                    }
+
+                    .view-all-link:hover {
+                        color: #8b5a2b;
+                    }
+
+                    .nav-controls {
+                        display: flex;
+                        gap: 8px;
+                    }
+
+                    .nav-button {
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 8px;
+                        background: #ffffff;
+                        border: 1px solid #d4a574;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        color: #b87333;
+                    }
+
+                    .nav-button:hover:not(.swiper-button-disabled) {
+                        background: #b87333;
+                        border-color: #b87333;
+                        color: #ffffff;
+                    }
+
+                    .nav-button.swiper-button-disabled {
+                        opacity: 0.3;
+                        cursor: not-allowed;
+                    }
+
+                    /* Product Card */
+                    .product-card {
+                        background: #ffffff;
+                        border-radius: 12px;
+                        overflow: hidden;
+                        transition: all 0.3s;
+                        border: 1px solid #e5e5e5;
+                        height: 100%;
+                        /* margin-right:5px !important; */
+                    }
+
+                    .product-card:hover {
+                        box-shadow: 0 4px 12px rgba(184, 115, 51, 0.12);
+                        border-color: #d4a574;
+                        transform: translateY(-4px);
+                    }
+
+                    .product-link {
+                        text-decoration: none;
+                        color: inherit;
+                        display: block;
+                    }
+
+                    .product-image-box {
+                        position: relative;
+                        width: 100%;
+                        padding-top: 75%;
+                        background: #ffffffff;
+                        overflow: hidden;
+                    }
+
+                    .product-img {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        transition: transform 0.3s;
+                    }
+
+                    .product-card:hover .product-img {
+                        transform: scale(1.05);
+                    }
+
+                    .discount-tag {
+                        position: absolute;
+                        top: 8px;
+                        left: 8px;
+                        background: #8b5a2b;
+                        color: #ffffff;
+                        padding: 3px 8px;
+                        border-radius: 4px;
+                        font-size: 11px;
+                        font-weight: 600;
+                        z-index: 1;
+                    }
+
+                    .product-info {
+                        padding: 12px;
+                    }
+
+                    .product-name {
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: #1a1a1a;
+                        margin: 0 0 8px 0;
+                        line-height: 1.3;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                        min-height: 36px;
+                    }
+
+                    .product-price {
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                    }
+
+                    .price-current {
+                        font-size: 18px;
+                        font-weight: 600;
+                        color: #b87333;
+                    }
+
+                    .price-old {
+                        font-size: 13px;
+                        color: #999;
+                        text-decoration: line-through;
+                    }
+
+                    /* Responsive */
+                    @media (max-width: 768px) {
+                        .products-section {
+                            padding: 40px 0;
+                        }
+
+                        .section-header {
+                            flex-wrap: wrap;
+                            gap: 16px;
+                        }
+
+                        .section-title {
+                            font-size: 24px;
+                            width: 100%;
+                        }
+
+                        .nav-controls {
+                            display: none;
+                        }
+
+                        .product-name {
+                            font-size: 14px;
+                            min-height: 40px;
+                        }
+
+                        .price-current {
+                            font-size: 18px;
+                        }
+
+                        .price-old {
+                            font-size: 14px;
+                        }
+                    }
+
+                    @media (max-width: 480px) {
+                        .products-container {
+                            padding: 0 16px;
+                        }
+
+                        .section-title {
+                            font-size: 20px;
+                        }
+
+                        .product-info {
+                            padding: 12px;
+                        }
+
+                        .discount-tag {
+                            font-size: 11px;
+                            padding: 3px 8px;
+                        }
+                    }
+                </style>
 <?php
             }
-        } else {
-            error_log("Database query failed: " . implode(", ", $statement->errorInfo()));
         }
     }
 }
 ?>
+
+
+
 <!-- End Display the product -->
 
 <!-- Display the Best selling Product -->
@@ -317,8 +541,10 @@ if (!empty($topCategories)) {
 <script src="js/jquery-1.11.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-<script src="js/plugins.js"></script>
-<script src="js/script.js"></script>
+<script src="/deadstock/js/plugins.js"></script>
+
+
+<script src="/deadstock/js/script.js"></script>
 
 <style>
     .quote-container .quote {
@@ -333,5 +559,6 @@ if (!empty($topCategories)) {
         /* Bold "Buy" text slightly larger */
     }
 </style>
+
 
 <?php require_once('footer.php'); ?>

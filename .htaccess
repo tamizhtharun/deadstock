@@ -1,0 +1,23 @@
+RewriteEngine On
+
+# Redirect old URLs to new clean URLs (optional, for SEO)
+# RewriteRule ^search-result\.php\?type=top-category&id=([0-9]+)$ /category/top-category/$1 [R=301,L]
+# RewriteRule ^search-result\.php\?type=mid-category&id=([0-9]+)$ /category/mid-category/$1 [R=301,L]
+# RewriteRule ^search-result\.php\?type=end-category&id=([0-9]+)$ /category/end-category/$1 [R=301,L]
+# RewriteRule ^product_landing\.php\?id=([0-9]+)$ /product/$1 [R=301,L]
+
+# Rewrite clean URLs to PHP files with slug parameters
+RewriteRule ^category/top-category/([^/]+)$ search-result.php?type=top-category&slug=$1 [L]
+RewriteRule ^category/mid-category/([^/]+)$ search-result.php?type=mid-category&slug=$1 [L]
+RewriteRule ^category/end-category/([^/]+)$ search-result.php?type=end-category&slug=$1 [L]
+RewriteRule ^product/([^/]+)$ product_landing.php?slug=$1 [L]
+
+# Hide .php extensions
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+# Handle other PHP files normally
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php [L]

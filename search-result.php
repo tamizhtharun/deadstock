@@ -5,10 +5,60 @@ include 'db_connection.php';
 // Get search query and filters from URL
 $search_query = isset($_GET['search_text']) ? trim($_GET['search_text']) : '';
 $category_type = isset($_GET['type']) ? trim($_GET['type']) : '';
-$category_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$category_slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
+$category_id = 0; // Will be set based on slug
 $selected_category = isset($_GET['category']) ? trim($_GET['category']) : '';
 $price_filter = isset($_GET['price']) ? floatval($_GET['price']) : 0;
 $sort_by = isset($_GET['sort']) ? trim($_GET['sort']) : 'name_asc';
+
+// Convert slug to ID if slug is provided
+if ($category_type && $category_slug) {
+    switch ($category_type) {
+        case 'top-category':
+            $stmt = $pdo->prepare("SELECT tcat_id FROM tbl_top_category WHERE tcat_slug = ?");
+            $stmt->execute([$category_slug]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $category_id = $result ? $result['tcat_id'] : 0;
+            break;
+        case 'mid-category':
+            $stmt = $pdo->prepare("SELECT mcat_id FROM tbl_mid_category WHERE mcat_slug = ?");
+            $stmt->execute([$category_slug]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $category_id = $result ? $result['mcat_id'] : 0;
+            break;
+        case 'end-category':
+            $stmt = $pdo->prepare("SELECT ecat_id FROM tbl_end_category WHERE ecat_slug = ?");
+            $stmt->execute([$category_slug]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $category_id = $result ? $result['ecat_id'] : 0;
+            break;
+    }
+}
+
+// Get the slug for the current category to use in forms and links
+$current_category_slug = '';
+if ($category_type && $category_id) {
+    switch ($category_type) {
+        case 'top-category':
+            $stmt = $pdo->prepare("SELECT tcat_slug FROM tbl_top_category WHERE tcat_id = ?");
+            $stmt->execute([$category_id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $current_category_slug = $result ? $result['tcat_slug'] : '';
+            break;
+        case 'mid-category':
+            $stmt = $pdo->prepare("SELECT mcat_slug FROM tbl_mid_category WHERE mcat_id = ?");
+            $stmt->execute([$category_id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $current_category_slug = $result ? $result['mcat_slug'] : '';
+            break;
+        case 'end-category':
+            $stmt = $pdo->prepare("SELECT ecat_slug FROM tbl_end_category WHERE ecat_id = ?");
+            $stmt->execute([$category_id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $current_category_slug = $result ? $result['ecat_slug'] : '';
+            break;
+    }
+}
 
 // Base query for products with mid-category filtering
 $base_sql = "SELECT p.*, m.mcat_name, s.seller_cname,
@@ -134,7 +184,7 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
                 <form id="filter-form" method="GET">
                     <!-- Hidden fields to preserve original category context -->
                     <input type="hidden" name="type" value="<?php echo htmlspecialchars($category_type); ?>">
-                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($category_id); ?>">
+                    <input type="hidden" name="slug" value="<?php echo htmlspecialchars($current_category_slug); ?>">
                     <input type="hidden" name="search_text" value="<?php echo htmlspecialchars($search_query); ?>">
 
                     <div class="filter-group">
@@ -161,13 +211,21 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
 
                     <div class="filter-group">
-                        <label class="filter-label" for="price-range">Maximum Price</label>
-                        <input type="range" id="price-range" name="price" class="filter-select"
-                               min="<?php echo floor($price_range['min_price']); ?>"
-                               max="<?php echo ceil($price_range['max_price']); ?>"
-                               value="<?php echo $price_filter ?: ceil($price_range['max_price']); ?>">
-                        <span id="price-display">₹<?php echo number_format($price_filter ?: $price_range['max_price'], 2); ?></span>
-                    </div>
+    <label class="filter-label" for="price-range">Maximum Price</label>
+    <div class="price-slider-wrapper">
+        <input type="range" 
+               id="price-range" 
+               name="price" 
+               min="<?php echo floor($price_range['min_price']); ?>"
+               max="<?php echo ceil($price_range['max_price']); ?>"
+               value="<?php echo $price_filter ?: ceil($price_range['max_price']); ?>"
+               step="1">
+        <div id="price-display">
+            <span class="price-label">Max</span>
+            <span class="price-value">₹<?php echo number_format($price_filter ?: $price_range['max_price'], 2); ?></span>
+        </div>
+    </div>
+</div>
 
                     <button type="submit" class="btn btn-primary mt-3">Apply Filters</button>
                 </form>
@@ -195,7 +253,7 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
             <div class="search-grid">
                 <?php foreach ($products as $product): ?>
                     <div class="product-card" data-available="<?php echo $product['stock_quantity'] > 0 ? 'true' : 'false'; ?>">
-                        <a href="product_landing.php?id=<?php echo $product['id']; ?>">
+                        <a href="product/<?php echo urlencode($product['p_slug']); ?>">
                             <div class="product-img">
                                 <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($product['p_featured_photo']); ?>"
                                      alt="<?php echo htmlspecialchars($product['p_name']); ?>"
@@ -236,18 +294,45 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
     </div>
 
     <script>
-        // Update price display when range input changes
-        const priceRange = document.getElementById('price-range');
-        const priceDisplay = document.getElementById('price-display');
-        
-        if (priceRange && priceDisplay) {
-            priceRange.addEventListener('input', function() {
-                priceDisplay.textContent = '₹' + parseFloat(this.value).toLocaleString('en-IN', {
-                    maximumFractionDigits: 2,
-                    minimumFractionDigits: 2
-                });
+        document.addEventListener('DOMContentLoaded', function() {
+    const priceRange = document.getElementById('price-range');
+    const priceDisplay = document.getElementById('price-display');
+    
+    if (priceRange && priceDisplay) {
+        // Function to update slider appearance
+        function updateSliderVisual() {
+            const value = parseFloat(priceRange.value);
+            const min = parseFloat(priceRange.min);
+            const max = parseFloat(priceRange.max);
+            const percentage = ((value - min) / (max - min)) * 100;
+            
+            // Update the display text
+            priceDisplay.textContent = '₹' + value.toLocaleString('en-IN', {
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2
             });
+            
+            // Update the slider background gradient
+            priceRange.style.background = `linear-gradient(to right, 
+                #d4a574 0%, 
+                #b87333 ${percentage}%, 
+                #f5f5f5 ${percentage}%, 
+                #f5f5f5 100%)`;
         }
+        
+        // Initialize on page load
+        updateSliderVisual();
+        
+        // Update on input (while dragging)
+        priceRange.addEventListener('input', function() {
+            updateSliderVisual();
+        });
+        
+        // Update on change (when released)
+        priceRange.addEventListener('change', function() {
+            updateSliderVisual();
+        });
+    }});
     </script>
     <?php include 'footer.php' ?>
 </body>
