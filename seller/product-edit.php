@@ -1,4 +1,169 @@
-<?php require_once('header.php'); ?>
+ <?php require_once('header.php'); ?>
+<style>
+	.grid-wrapper {
+		display: flex;
+		align-items: flex-start;
+	}
+
+	.product-grid {
+		display: grid;
+		grid-template-columns: repeat(7, 30px);
+		/* 7 columns for each category */
+		gap: 1px;
+		/* Space between cells */
+		margin-bottom: 1rem;
+
+		/* Space below the grid */
+	}
+
+	.material-suitability-icon-container {
+		text-align: center;
+		margin: 5px;
+	}
+
+	/* Common styles for icons */
+	.material-suitability-icon {
+		width: 30px;
+		height: 30px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 14px;
+		/* Text size inside headers */
+		font-weight: bold;
+		/* Text emphasis */
+		border: 1px solid #ddd;
+		margin-bottom: 5px;
+		/* Border for better visibility */
+	}
+
+	/* Header styles */
+	.material-suitability-icon.header {
+		background-color: #f0f0f0;
+		/* Neutral background for headers */
+	}
+
+	/* Background colors for each column */
+	.p {
+		background-color: #E6F3FF;
+		/* Light blue */
+	}
+
+	.m {
+		background-color: #FFFDE6;
+		/* Light yellow */
+	}
+
+	.k {
+		background-color: #FFE6F7;
+		/* Light pink */
+	}
+
+	.n {
+		background-color: #E6FFE6;
+		/* Light green */
+	}
+
+	.s {
+		background-color: #E6E6E6;
+		/* Light gray */
+	}
+
+	.h {
+		background-color: #E6F3FF;
+		/* Light blue (repeated intentionally) */
+	}
+
+	.o {
+		background-color: #F0F0F0;
+		/* Neutral gray */
+	}
+
+	.radio-group {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.radio-group label {
+		margin: 2px 0;
+	}
+
+	.l-info-icons-container {
+		position: relative;
+		margin-left: 20px;
+		/* Distance from the grid */
+		padding: 12px;
+		background-color: rgb(253, 253, 253);
+		border-radius: 4px;
+		/* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); */
+		z-index: 1000;
+		min-width: 200px;
+
+	}
+
+	.l-info-icons-container.show {
+		display: block;
+	}
+
+	/* Info Row Styling */
+	.info-row {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		/* Space between icon and description */
+		margin-bottom: 8px;
+		/* Space between rows */
+	}
+
+	/* Icon Styling */
+	.icon.small {
+		background-color: rgb(240, 236, 236);
+		border-radius: 4px;
+		box-shadow: 0 2px 8px rgba(16, 15, 15, 0.15);
+		width: 24px;
+		/* Adjust size as needed */
+		height: 24px;
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		position: relative;
+	}
+
+	/* Rank-Specific Icons */
+	.icon-rank-2::before,
+	.icon-rank-1::before {
+		content: "";
+		position: absolute;
+		width: 6px;
+		height: 6px;
+		background-color: #000;
+		/* Dot color */
+		border-radius: 50%;
+	}
+
+	/* Main Application (2 Dots) */
+	.icon-rank-2::before {
+		left: 5px;
+	}
+
+	.icon-rank-2::after {
+		content: "";
+		position: absolute;
+		width: 6px;
+		height: 6px;
+		background-color: #000;
+		/* Dot color */
+		border-radius: 50%;
+		right: 5px;
+	}
+
+	/* Additional Application (1 Dot) */
+	.icon-rank-1::before {
+		left: 50%;
+		transform: translateX(-50%);
+	}
+</style>
 <?php
 if (isset($_POST['form1'])) {
 	// Fetch current ecat_id from database
@@ -274,6 +439,28 @@ if (isset($_POST['form1'])) {
 		// 	$statement->execute(array($_REQUEST['id']));
 		// }
 
+// Handle keys
+if (isset($_POST['key'])) {
+	$p_value = isset($_POST['key']['P']) ? (in_array('2', $_POST['key']['P']) ? 2 : (in_array('1', $_POST['key']['P']) ? 1 : null)) : null;
+	$m_value = isset($_POST['key']['M']) ? (in_array('2', $_POST['key']['M']) ? 2 : (in_array('1', $_POST['key']['M']) ? 1 : null)) : null;
+	$k_value = isset($_POST['key']['K']) ? (in_array('2', $_POST['key']['K']) ? 2 : (in_array('1', $_POST['key']['K']) ? 1 : null)) : null;
+	$n_value = isset($_POST['key']['N']) ? (in_array('2', $_POST['key']['N']) ? 2 : (in_array('1', $_POST['key']['N']) ? 1 : null)) : null;
+	$s_value = isset($_POST['key']['S']) ? (in_array('2', $_POST['key']['S']) ? 2 : (in_array('1', $_POST['key']['S']) ? 1 : null)) : null;
+	$h_value = isset($_POST['key']['H']) ? (in_array('2', $_POST['key']['H']) ? 2 : (in_array('1', $_POST['key']['H']) ? 1 : null)) : null;
+	$o_value = isset($_POST['key']['O']) ? (in_array('2', $_POST['key']['O']) ? 2 : (in_array('1', $_POST['key']['O']) ? 1 : null)) : null;
+	$statement = $pdo->prepare("UPDATE tbl_key SET P=?, M=?, K=?, N=?, S=?, H=?, O=? WHERE id=?");
+	$statement->execute(array(
+		$p_value,
+		$m_value,
+		$k_value,
+		$n_value,
+		$s_value,
+		$h_value,
+		$o_value,
+		$_REQUEST['id']
+	));
+}
+
 		$success_message = 'Product is updated successfully.';
 	}
 }
@@ -357,10 +544,25 @@ foreach ($result as $row) {
 
 // $statement = $pdo->prepare("SELECT * FROM tbl_product_color WHERE id=?");
 // $statement->execute(array($_REQUEST['id']));
-// $result = $statement->fetchAll(PDO::FETCH_ASSOC);							
+// $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 // foreach ($result as $row) {
 // 	$color_id[] = $row['color_id'];
 // }
+
+$keys = array();
+$statement = $pdo->prepare("SELECT P, M, K, N, S, H, O FROM tbl_key WHERE id=?");
+$statement->execute(array($_REQUEST['id']));
+$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+if ($result) {
+    $row = $result[0];
+    $keys['P'] = $row['P'];
+    $keys['M'] = $row['M'];
+    $keys['K'] = $row['K'];
+    $keys['N'] = $row['N'];
+    $keys['S'] = $row['S'];
+    $keys['H'] = $row['H'];
+    $keys['O'] = $row['O'];
+}
 ?>
 
 
@@ -504,6 +706,74 @@ foreach ($result as $row) {
 								<input type="text" name="gst_percentage"
 									value="<?php echo isset($_POST['gst_percentage']) ? htmlspecialchars($_POST['gst_percentage']) : $gst_percentage; ?>"
 									required class="form-control" placeholder="Max upto 18%">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Key</label>
+							<div class="col-sm-4">
+								<div class="grid-wrapper">
+									<div class="product-grid">
+										<div class="material-suitability-icon-container p">
+											<div class="material-suitability-icon header">P</div>
+											<div class="radio-group">
+												<label><input type="checkbox" name="key[P][]" value="1" <?php if(isset($keys['P']) && $keys['P'] == 1) echo 'checked'; ?>> 1</label>
+												<label><input type="checkbox" name="key[P][]" value="2" <?php if(isset($keys['P']) && $keys['P'] == 2) echo 'checked'; ?>> 2</label>
+											</div>
+										</div>
+										<div class="material-suitability-icon-container m">
+											<div class="material-suitability-icon header">M</div>
+											<div class="radio-group">
+												<label><input type="checkbox" name="key[M][]" value="1" <?php if(isset($keys['M']) && $keys['M'] == 1) echo 'checked'; ?>> 1</label>
+												<label><input type="checkbox" name="key[M][]" value="2" <?php if(isset($keys['M']) && $keys['M'] == 2) echo 'checked'; ?>> 2</label>
+											</div>
+										</div>
+										<div class="material-suitability-icon-container k">
+											<div class="material-suitability-icon header">K</div>
+											<div class="radio-group">
+												<label><input type="checkbox" name="key[K][]" value="1" <?php if(isset($keys['K']) && $keys['K'] == 1) echo 'checked'; ?>> 1</label>
+												<label><input type="checkbox" name="key[K][]" value="2" <?php if(isset($keys['K']) && $keys['K'] == 2) echo 'checked'; ?>> 2</label>
+											</div>
+										</div>
+										<div class="material-suitability-icon-container n">
+											<div class="material-suitability-icon header">N</div>
+											<div class="radio-group">
+												<label><input type="checkbox" name="key[N][]" value="1" <?php if(isset($keys['N']) && $keys['N'] == 1) echo 'checked'; ?>> 1</label>
+												<label><input type="checkbox" name="key[N][]" value="2" <?php if(isset($keys['N']) && $keys['N'] == 2) echo 'checked'; ?>> 2</label>
+											</div>
+										</div>
+										<div class="material-suitability-icon-container s">
+											<div class="material-suitability-icon header">S</div>
+											<div class="radio-group">
+												<label><input type="checkbox" name="key[S][]" value="1" <?php if(isset($keys['S']) && $keys['S'] == 1) echo 'checked'; ?>> 1</label>
+												<label><input type="checkbox" name="key[S][]" value="2" <?php if(isset($keys['S']) && $keys['S'] == 2) echo 'checked'; ?>> 2</label>
+											</div>
+										</div>
+										<div class="material-suitability-icon-container h">
+											<div class="material-suitability-icon header">H</div>
+											<div class="radio-group">
+												<label><input type="checkbox" name="key[H][]" value="1" <?php if(isset($keys['H']) && $keys['H'] == 1) echo 'checked'; ?>> 1</label>
+												<label><input type="checkbox" name="key[H][]" value="2" <?php if(isset($keys['H']) && $keys['H'] == 2) echo 'checked'; ?>> 2</label>
+											</div>
+										</div>
+										<div class="material-suitability-icon-container o">
+											<div class="material-suitability-icon header">O</div>
+											<div class="radio-group">
+												<label><input type="checkbox" name="key[O][]" value="1" <?php if(isset($keys['O']) && $keys['O'] == 1) echo 'checked'; ?>> 1</label>
+												<label><input type="checkbox" name="key[O][]" value="2" <?php if(isset($keys['O']) && $keys['O'] == 2) echo 'checked'; ?>> 2</label>
+											</div>
+										</div>
+									</div>
+									<div class="l-info-icons-container">
+										<div class="info-row">
+											<div class="icon small icon-rank-1"></div>
+											<span>Additional Application</span>
+										</div>
+										<div class="info-row">
+											<div class="icon small icon-rank-2"></div>
+											<span>Main Application</span>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 
