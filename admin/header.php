@@ -64,7 +64,7 @@ if (!isset($_SESSION['admin_session'])) {
 
 			<a href="index.php" class="logo">
 				<!-- <span class="logo-lg">DeadStock</span> -->
-				<span class="logo-lg"><img src="../icons/dead stock.png" alt="Logo" style="height:40px; margin-top:5px;"></span>
+				<span class="logo-lg"><img src="../assets/uploads/logo.png" alt="Logo" style="height:40px; margin-top:5px;"></span>
 			</a>
 
 			<nav class="navbar navbar-static-top d-flex justify-content-between px-3">

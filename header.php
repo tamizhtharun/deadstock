@@ -3,6 +3,28 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
+// Mobile detection function
+function isMobile() {
+    $userAgent = $_SERVER['HTTP_USER_AGENT'];
+    $mobileKeywords = array(
+        'Mobile', 'Android', 'iPhone', 'iPad', 'iPod', 'BlackBerry',
+        'Windows Phone', 'Opera Mini', 'IEMobile', 'Mobile Safari'
+    );
+
+    foreach ($mobileKeywords as $keyword) {
+        if (stripos($userAgent, $keyword) !== false) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Check if user is on mobile device
+if (isMobile()) {
+    include 'mobile-only.php';
+    exit();
+}
 require_once 'messages.php';
 include 'db_connection.php';
 $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
