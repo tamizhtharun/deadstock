@@ -158,7 +158,7 @@ if (isset($_POST['form2'])) {
         // }
 
         // updating the data
-        $final_name = 'seller-' . $_SESSION['seller_session']['seller_id'] . '.' . $ext;
+        $final_name = 'seller-' . $_SESSION['seller_session']['seller_id'] . '-' . time() . '.' . $ext;
         move_uploaded_file($path_tmp, '../assets/uploads/profile-pictures/' . $final_name);
         $_SESSION['seller_session']['seller_photo'] = $final_name;
 

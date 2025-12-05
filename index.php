@@ -288,7 +288,7 @@ if (!empty($topCategories)) {
                 <style>
                     /* Clean Professional Product Carousel */
                     .products-section {
-                        padding: 50px 0;
+                        padding-bottom: 50px;
                         background: #faf8f3;
                     }
 
@@ -399,11 +399,11 @@ if (!empty($topCategories)) {
 
                     .product-img {
                         position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        object-fit: cover;
+                        top: 10%;
+                        left: 10%;
+                        width: 80%;
+                        height: 80%;
+                        object-fit: contain;
                         transition: transform 0.3s;
                     }
 

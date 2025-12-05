@@ -42,7 +42,7 @@
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 1000 !important;
     border-bottom: 2px solid var(--copper-light);
     box-shadow: 0 4px 12px var(--shadow-copper);
 }
@@ -58,6 +58,7 @@
     text-decoration: none !important;
     /* border-bottom: 2px solid var(--copper-light); */
     box-shadow: 0 4px 12px var(--shadow-copper);
+    z-index: 1000;
 }
 
 .ds-nav-container {

@@ -61,18 +61,17 @@ session_start();
 <div class="header">   
 <nav class="ds-nav-container">
             <div class="ds-logo-section">
-                <a href="../index.php" class="ds-logo">
-                <img src="../assets/uploads/<?php echo $logo?>" alt="Logo" width="30" height="30">
-                    <span>Dead Stock</span>
+                <a href="../index" class="ds-logo">
+                <img src="../assets/uploads/<?php echo $logo?>" alt="Logo" height="50">
                 </a>
             </div>
 
-            <div class="ds-search-section">
+            <!-- <div class="ds-search-section">
                 <div class="ds-search-wrapper">
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Search products..." class="ds-search-input">
                 </div>
-            </div>
+            </div> -->
             <div class="ds-actions-section">
     <?php if(isset($_SESSION['user_session'])): ?>
       <button class="ds-btn-secondary" onclick="window.location.href='../seller_registration.php';" >Sell here</button>

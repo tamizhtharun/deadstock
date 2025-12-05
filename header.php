@@ -3,6 +3,28 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
+// Mobile detection function
+function isMobile() {
+    $userAgent = $_SERVER['HTTP_USER_AGENT'];
+    $mobileKeywords = array(
+        'Mobile', 'Android', 'iPhone', 'iPad', 'iPod', 'BlackBerry',
+        'Windows Phone', 'Opera Mini', 'IEMobile', 'Mobile Safari'
+    );
+
+    foreach ($mobileKeywords as $keyword) {
+        if (stripos($userAgent, $keyword) !== false) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Check if user is on mobile device
+if (isMobile()) {
+    include 'mobile-only.php';
+    exit();
+}
 require_once 'messages.php';
 include 'db_connection.php';
 $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
@@ -19,9 +41,9 @@ $user_id = $_SESSION['user_session']['id'] ?? null;
 ?>
 <?php
 // Check if the 'showLoginModal' query parameter exists
-if (isset($_GET['showLoginModal']) && $_GET['showLoginModal'] == 'true') {
-    echo "<script>window.addEventListener('DOMContentLoaded', function() { $('#staticBackdrop').modal('show'); });</script>";
-}
+// if (isset($_GET['showLoginModal']) && $_GET['showLoginModal'] == 'true') {
+//     echo "<script>window.addEventListener('DOMContentLoaded', function() { $('#staticBackdrop').modal('show'); });</script>";
+// }
 $error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : null;
 unset($_SESSION['error_message']);
 
@@ -132,7 +154,7 @@ unset($_SESSION['success_message']);
 
             <div class="ds-search-section">
     <div class="ds-search-wrapper">
-        <form action="search-result.php" method="GET" id="search-form">
+        <form action="/search-result.php" method="GET" id="search-form">
             <!-- <i class="fas fa-search"></i> -->
             <input type="text" id="search-bar" name="search_text" placeholder="Search products..."
                 class="ds-search-input" autocomplete="off" required aria-label="Search products">

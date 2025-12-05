@@ -122,8 +122,21 @@ if (isset($_POST['form1'])) {
 			$ai_id = $row[10];
 		}
 
+		// Generate Slug
+		$p_slug = strtolower($_POST['p_name']);
+		$p_slug = preg_replace('/[^a-z0-9\s-]/', '', $p_slug);
+		$p_slug = preg_replace('/[\s-]+/', '-', $p_slug);
+		$p_slug = trim($p_slug, '-');
+		// Check for duplicate slug
+		$statement_slug = $pdo->prepare("SELECT * FROM tbl_product WHERE p_slug=?");
+		$statement_slug->execute(array($p_slug));
+		$total = $statement_slug->rowCount();
+		if($total > 0) {
+			$p_slug = $p_slug . '-' . time(); // Append timestamp if duplicate
+		}
+
 		// Move the uploaded PDF file to the server
-		$pdf_final_name = 'product-catalogue-' . $ai_id . '.pdf';
+		$pdf_final_name = $p_slug . '.pdf';
 		move_uploaded_file($pdf_path_tmp, '../assets/uploads/product-catalogues/' . $pdf_final_name);
 
 		if (isset($_FILES['photo']['name']) && isset($_FILES['photo']['tmp_name'])) {
@@ -147,10 +160,9 @@ if (isset($_POST['form1'])) {
 			for ($i = 0; $i < count($photo); $i++) {
 				$my_ext1 = pathinfo($photo[$i], PATHINFO_EXTENSION);
 				if ($my_ext1 == 'jpg' || $my_ext1 == 'png' || $my_ext1 == 'jpeg' || $my_ext1 == 'gif') {
-					$final_name1[$m] = $z . '.' . $my_ext1;
+					$final_name1[$m] = time() . '_' . $m . '.' . $my_ext1;
 					move_uploaded_file($photo_temp[$i], "../assets/uploads/product-photos/" . $final_name1[$m]);
 					$m++;
-					$z++;
 				}
 			}
 
@@ -162,7 +174,7 @@ if (isset($_POST['form1'])) {
 			}
 		}
 
-		$final_name = 'product-featured-' . $ai_id . '.' . $ext;
+		$final_name = time() . '.' . $ext;
 		move_uploaded_file($path_tmp, '../assets/uploads/product-photos/' . $final_name);
 
 

@@ -22,7 +22,7 @@ if (isset($_GET['search_text'])) {
     // Display product suggestions in dropdown
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            echo '<a href="search-result.php?search_text=' . urlencode($row['p_name']) . '" class="suggestion-item">
+            echo '<a href="/search-result.php?search_text=' . urlencode($row['p_name']) . '" class="suggestion-item">
                     <div class="search-icon"></div>
                     <span>' . htmlspecialchars($row['p_name']) . '</span>
                   </a>';

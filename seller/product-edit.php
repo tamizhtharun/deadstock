@@ -265,15 +265,20 @@ if (isset($_POST['form1'])) {
 		}
 	}
 
-	$statement = $pdo->prepare("SHOW TABLE STATUS LIKE 'tbl_product'");
-	$statement->execute();
-	$result = $statement->fetchAll();
-	foreach ($result as $row) {
-		$ai_id = $row[10];
+	// Generate Slug for PDF
+	$p_slug = strtolower($_POST['p_name']);
+	$p_slug = preg_replace('/[^a-z0-9\s-]/', '', $p_slug);
+	$p_slug = preg_replace('/[\s-]+/', '-', $p_slug);
+	$p_slug = trim($p_slug, '-');
+	// Check for duplicate slug
+	$statement_slug = $pdo->prepare("SELECT * FROM tbl_product WHERE p_slug=? AND id != ?");
+	$statement_slug->execute(array($p_slug, $_REQUEST['id']));
+	$total = $statement_slug->rowCount();
+	if($total > 0) {
+		$p_slug = $p_slug . '-' . time(); // Append timestamp if duplicate
 	}
-	// Assuming $_REQUEST['id'] contains the current product ID
-	$current_product_id = $_REQUEST['id'];
-	$pdf_final_name = 'product-catalogue-' . $current_product_id . '.pdf';
+
+	$pdf_final_name = $p_slug . '.pdf';
 
 	// Move the uploaded PDF file to the server
 	move_uploaded_file($pdf_path_tmp, '../assets/uploads/product-catalogues/' . $pdf_final_name);
@@ -305,22 +310,13 @@ if (isset($_POST['form1'])) {
 			$photo_temp = $_FILES['photo']["tmp_name"];
 			$photo_temp = array_values(array_filter($photo_temp));
 
-			$statement = $pdo->prepare("SHOW TABLE STATUS LIKE 'tbl_product_photo'");
-			$statement->execute();
-			$result = $statement->fetchAll();
-			foreach ($result as $row) {
-				$next_id1 = $row[10];
-			}
-			$z = $next_id1;
-
 			$m = 0;
 			for ($i = 0; $i < count($photo); $i++) {
 				$my_ext1 = pathinfo($photo[$i], PATHINFO_EXTENSION);
 				if ($my_ext1 == 'jpg' || $my_ext1 == 'png' || $my_ext1 == 'jpeg' || $my_ext1 == 'gif') {
-					$final_name1[$m] = $z . '.' . $my_ext1;
+					$final_name1[$m] = time() . '-' . $m . '.' . $my_ext1;
 					move_uploaded_file($photo_temp[$i], "../assets/uploads/product-photos/" . $final_name1[$m]);
 					$m++;
-					$z++;
 				}
 			}
 
@@ -371,7 +367,7 @@ if (isset($_POST['form1'])) {
 				unlink($current_photo_path);
 			}
 
-			$final_name = 'product-featured-' . $_REQUEST['id'] . '.' . $ext;
+			$final_name = time() . '.' . $ext;
 			move_uploaded_file($path_tmp, '../assets/uploads/product-photos/' . $final_name);
 
 
@@ -441,23 +437,23 @@ if (isset($_POST['form1'])) {
 
 // Handle keys
 if (isset($_POST['key'])) {
-	$p_value = isset($_POST['key']['P']) ? (in_array('2', $_POST['key']['P']) ? 2 : (in_array('1', $_POST['key']['P']) ? 1 : null)) : null;
-	$m_value = isset($_POST['key']['M']) ? (in_array('2', $_POST['key']['M']) ? 2 : (in_array('1', $_POST['key']['M']) ? 1 : null)) : null;
-	$k_value = isset($_POST['key']['K']) ? (in_array('2', $_POST['key']['K']) ? 2 : (in_array('1', $_POST['key']['K']) ? 1 : null)) : null;
-	$n_value = isset($_POST['key']['N']) ? (in_array('2', $_POST['key']['N']) ? 2 : (in_array('1', $_POST['key']['N']) ? 1 : null)) : null;
-	$s_value = isset($_POST['key']['S']) ? (in_array('2', $_POST['key']['S']) ? 2 : (in_array('1', $_POST['key']['S']) ? 1 : null)) : null;
-	$h_value = isset($_POST['key']['H']) ? (in_array('2', $_POST['key']['H']) ? 2 : (in_array('1', $_POST['key']['H']) ? 1 : null)) : null;
-	$o_value = isset($_POST['key']['O']) ? (in_array('2', $_POST['key']['O']) ? 2 : (in_array('1', $_POST['key']['O']) ? 1 : null)) : null;
-	$statement = $pdo->prepare("UPDATE tbl_key SET P=?, M=?, K=?, N=?, S=?, H=?, O=? WHERE id=?");
+	$p_value = isset($_POST['key']['P']) ? (in_array('2', $_POST['key']['P']) ? 2 : (in_array('1', $_POST['key']['P']) ? 1 : 0)) : 0;
+	$m_value = isset($_POST['key']['M']) ? (in_array('2', $_POST['key']['M']) ? 2 : (in_array('1', $_POST['key']['M']) ? 1 : 0)) : 0;
+	$k_value = isset($_POST['key']['K']) ? (in_array('2', $_POST['key']['K']) ? 2 : (in_array('1', $_POST['key']['K']) ? 1 : 0)) : 0;
+	$n_value = isset($_POST['key']['N']) ? (in_array('2', $_POST['key']['N']) ? 2 : (in_array('1', $_POST['key']['N']) ? 1 : 0)) : 0;
+	$s_value = isset($_POST['key']['S']) ? (in_array('2', $_POST['key']['S']) ? 2 : (in_array('1', $_POST['key']['S']) ? 1 : 0)) : 0;
+	$h_value = isset($_POST['key']['H']) ? (in_array('2', $_POST['key']['H']) ? 2 : (in_array('1', $_POST['key']['H']) ? 1 : 0)) : 0;
+	$o_value = isset($_POST['key']['O']) ? (in_array('2', $_POST['key']['O']) ? 2 : (in_array('1', $_POST['key']['O']) ? 1 : 0)) : 0;
+	$statement = $pdo->prepare("INSERT INTO tbl_key (id, P, M, K, N, S, H, O) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE P=VALUES(P), M=VALUES(M), K=VALUES(K), N=VALUES(N), S=VALUES(S), H=VALUES(H), O=VALUES(O)");
 	$statement->execute(array(
+		$_REQUEST['id'],
 		$p_value,
 		$m_value,
 		$k_value,
 		$n_value,
 		$s_value,
 		$h_value,
-		$o_value,
-		$_REQUEST['id']
+		$o_value
 	));
 }
 
