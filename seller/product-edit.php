@@ -516,7 +516,7 @@ foreach ($result as $row) {
 if (!isset($ecat_id)) {
     $ecat_id = 0;
 }
-$statement = $pdo->prepare("SELECT * 
+$statement = $pdo->prepare("SELECT *
                         FROM tbl_end_category t1
                         JOIN tbl_mid_category t2
                         ON t1.mcat_id = t2.mcat_id
@@ -530,6 +530,11 @@ foreach ($result as $row) {
 	$mcat_id = $row['mcat_id'];
 	$tcat_id = $row['tcat_id'];
 }
+
+$tcat_id = isset($_POST['tcat_id']) ? $_POST['tcat_id'] : $tcat_id;
+$mcat_id = isset($_POST['mcat_id']) ? $_POST['mcat_id'] : $mcat_id;
+$ecat_id = isset($_POST['ecat_id']) ? $_POST['ecat_id'] : $ecat_id;
+$product_brand = isset($_POST['product_brand']) ? $_POST['product_brand'] : $product_brand;
 
 // $statement = $pdo->prepare("SELECT * FROM tbl_product_size WHERE id=?");
 // $statement->execute(array($_REQUEST['id']));
@@ -652,7 +657,7 @@ if ($result) {
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Product Name <span>*</span></label>
 							<div class="col-sm-4">
-								<input type="text" name="p_name" class="form-control" value="<?php echo htmlspecialchars($p_name); ?>">
+								<input type="text" name="p_name" class="form-control" readonly="readonly" value="<?php echo isset($_POST['p_name']) ? htmlspecialchars($_POST['p_name']) : htmlspecialchars($p_name); ?>">
 							</div>
 						</div>
 						<div class="form-group">
@@ -712,50 +717,50 @@ if ($result) {
 										<div class="material-suitability-icon-container p">
 											<div class="material-suitability-icon header">P</div>
 											<div class="radio-group">
-												<label><input type="checkbox" name="key[P][]" value="1" <?php if(isset($keys['P']) && $keys['P'] == 1) echo 'checked'; ?>> 1</label>
-												<label><input type="checkbox" name="key[P][]" value="2" <?php if(isset($keys['P']) && $keys['P'] == 2) echo 'checked'; ?>> 2</label>
+												<label><input type="checkbox" name="key[P][]" value="1" <?php if(isset($_POST['key']['P']) && in_array('1', $_POST['key']['P'])) echo 'checked'; elseif(isset($keys['P']) && $keys['P'] == 1) echo 'checked'; ?>> 1</label>
+												<label><input type="checkbox" name="key[P][]" value="2" <?php if(isset($_POST['key']['P']) && in_array('2', $_POST['key']['P'])) echo 'checked'; elseif(isset($keys['P']) && $keys['P'] == 2) echo 'checked'; ?>> 2</label>
 											</div>
 										</div>
 										<div class="material-suitability-icon-container m">
 											<div class="material-suitability-icon header">M</div>
 											<div class="radio-group">
-												<label><input type="checkbox" name="key[M][]" value="1" <?php if(isset($keys['M']) && $keys['M'] == 1) echo 'checked'; ?>> 1</label>
-												<label><input type="checkbox" name="key[M][]" value="2" <?php if(isset($keys['M']) && $keys['M'] == 2) echo 'checked'; ?>> 2</label>
+												<label><input type="checkbox" name="key[M][]" value="1" <?php if(isset($_POST['key']['M']) && in_array('1', $_POST['key']['M'])) echo 'checked'; elseif(isset($keys['M']) && $keys['M'] == 1) echo 'checked'; ?>> 1</label>
+												<label><input type="checkbox" name="key[M][]" value="2" <?php if(isset($_POST['key']['M']) && in_array('2', $_POST['key']['M'])) echo 'checked'; elseif(isset($keys['M']) && $keys['M'] == 2) echo 'checked'; ?>> 2</label>
 											</div>
 										</div>
 										<div class="material-suitability-icon-container k">
 											<div class="material-suitability-icon header">K</div>
 											<div class="radio-group">
-												<label><input type="checkbox" name="key[K][]" value="1" <?php if(isset($keys['K']) && $keys['K'] == 1) echo 'checked'; ?>> 1</label>
-												<label><input type="checkbox" name="key[K][]" value="2" <?php if(isset($keys['K']) && $keys['K'] == 2) echo 'checked'; ?>> 2</label>
+												<label><input type="checkbox" name="key[K][]" value="1" <?php if(isset($_POST['key']['K']) && in_array('1', $_POST['key']['K'])) echo 'checked'; elseif(isset($keys['K']) && $keys['K'] == 1) echo 'checked'; ?>> 1</label>
+												<label><input type="checkbox" name="key[K][]" value="2" <?php if(isset($_POST['key']['K']) && in_array('2', $_POST['key']['K'])) echo 'checked'; elseif(isset($keys['K']) && $keys['K'] == 2) echo 'checked'; ?>> 2</label>
 											</div>
 										</div>
 										<div class="material-suitability-icon-container n">
 											<div class="material-suitability-icon header">N</div>
 											<div class="radio-group">
-												<label><input type="checkbox" name="key[N][]" value="1" <?php if(isset($keys['N']) && $keys['N'] == 1) echo 'checked'; ?>> 1</label>
-												<label><input type="checkbox" name="key[N][]" value="2" <?php if(isset($keys['N']) && $keys['N'] == 2) echo 'checked'; ?>> 2</label>
+												<label><input type="checkbox" name="key[N][]" value="1" <?php if(isset($_POST['key']['N']) && in_array('1', $_POST['key']['N'])) echo 'checked'; elseif(isset($keys['N']) && $keys['N'] == 1) echo 'checked'; ?>> 1</label>
+												<label><input type="checkbox" name="key[N][]" value="2" <?php if(isset($_POST['key']['N']) && in_array('2', $_POST['key']['N'])) echo 'checked'; elseif(isset($keys['N']) && $keys['N'] == 2) echo 'checked'; ?>> 2</label>
 											</div>
 										</div>
 										<div class="material-suitability-icon-container s">
 											<div class="material-suitability-icon header">S</div>
 											<div class="radio-group">
-												<label><input type="checkbox" name="key[S][]" value="1" <?php if(isset($keys['S']) && $keys['S'] == 1) echo 'checked'; ?>> 1</label>
-												<label><input type="checkbox" name="key[S][]" value="2" <?php if(isset($keys['S']) && $keys['S'] == 2) echo 'checked'; ?>> 2</label>
+												<label><input type="checkbox" name="key[S][]" value="1" <?php if(isset($_POST['key']['S']) && in_array('1', $_POST['key']['S'])) echo 'checked'; elseif(isset($keys['S']) && $keys['S'] == 1) echo 'checked'; ?>> 1</label>
+												<label><input type="checkbox" name="key[S][]" value="2" <?php if(isset($_POST['key']['S']) && in_array('2', $_POST['key']['S'])) echo 'checked'; elseif(isset($keys['S']) && $keys['S'] == 2) echo 'checked'; ?>> 2</label>
 											</div>
 										</div>
 										<div class="material-suitability-icon-container h">
 											<div class="material-suitability-icon header">H</div>
 											<div class="radio-group">
-												<label><input type="checkbox" name="key[H][]" value="1" <?php if(isset($keys['H']) && $keys['H'] == 1) echo 'checked'; ?>> 1</label>
-												<label><input type="checkbox" name="key[H][]" value="2" <?php if(isset($keys['H']) && $keys['H'] == 2) echo 'checked'; ?>> 2</label>
+												<label><input type="checkbox" name="key[H][]" value="1" <?php if(isset($_POST['key']['H']) && in_array('1', $_POST['key']['H'])) echo 'checked'; elseif(isset($keys['H']) && $keys['H'] == 1) echo 'checked'; ?>> 1</label>
+												<label><input type="checkbox" name="key[H][]" value="2" <?php if(isset($_POST['key']['H']) && in_array('2', $_POST['key']['H'])) echo 'checked'; elseif(isset($keys['H']) && $keys['H'] == 2) echo 'checked'; ?>> 2</label>
 											</div>
 										</div>
 										<div class="material-suitability-icon-container o">
 											<div class="material-suitability-icon header">O</div>
 											<div class="radio-group">
-												<label><input type="checkbox" name="key[O][]" value="1" <?php if(isset($keys['O']) && $keys['O'] == 1) echo 'checked'; ?>> 1</label>
-												<label><input type="checkbox" name="key[O][]" value="2" <?php if(isset($keys['O']) && $keys['O'] == 2) echo 'checked'; ?>> 2</label>
+												<label><input type="checkbox" name="key[O][]" value="1" <?php if(isset($_POST['key']['O']) && in_array('1', $_POST['key']['O'])) echo 'checked'; elseif(isset($keys['O']) && $keys['O'] == 1) echo 'checked'; ?>> 1</label>
+												<label><input type="checkbox" name="key[O][]" value="2" <?php if(isset($_POST['key']['O']) && in_array('2', $_POST['key']['O'])) echo 'checked'; elseif(isset($keys['O']) && $keys['O'] == 2) echo 'checked'; ?>> 2</label>
 											</div>
 										</div>
 									</div>
@@ -800,19 +805,19 @@ if ($result) {
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Old Price<br><span style="font-size:10px;font-weight:normal;">(In INR)</span></label>
 							<div class="col-sm-4">
-								<input type="text" name="p_old_price" class="form-control" value="<?php echo $p_old_price; ?>">
+								<input type="text" name="p_old_price" class="form-control" value="<?php echo isset($_POST['p_old_price']) ? htmlspecialchars($_POST['p_old_price']) : $p_old_price; ?>">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Current Price <span>*</span><br><span style="font-size:10px;font-weight:normal;">(In INR)</span></label>
 							<div class="col-sm-4">
-								<input type="text" name="p_current_price" class="form-control" value="<?php echo $p_current_price; ?>">
+								<input type="text" name="p_current_price" class="form-control" value="<?php echo isset($_POST['p_current_price']) ? htmlspecialchars($_POST['p_current_price']) : $p_current_price; ?>">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Quantity <span>*</span></label>
 							<div class="col-sm-4">
-								<input type="text" name="p_qty" class="form-control" value="<?php echo $p_qty; ?>">
+								<input type="text" name="p_qty" class="form-control" value="<?php echo isset($_POST['p_qty']) ? htmlspecialchars($_POST['p_qty']) : $p_qty; ?>">
 							</div>
 						</div>
 						<div class="form-group">
