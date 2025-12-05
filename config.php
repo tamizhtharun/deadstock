@@ -1,4 +1,5 @@
 <?php
-define('RAZORPAY_KEY_ID', 'rzp_test_RnBSe1L1ROHN0V');      // Test Key ID
-define('RAZORPAY_KEY_SECRET', 'kfATzwv65lFnRnOY4aGK4YRq');  // Test Key Secret
+$env = parse_ini_file('.env');
+define('RAZORPAY_KEY_ID', $env['RAZORPAY_KEY_ID']);
+define('RAZORPAY_KEY_SECRET', $env['RAZORPAY_KEY_SECRET']);
 ?>

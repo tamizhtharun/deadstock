@@ -1,0 +1,7 @@
+# Environment variables
+.env
+
+# Other common ignores
+vendor/
+*.log
+error_log
