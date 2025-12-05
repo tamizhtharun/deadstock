@@ -154,7 +154,7 @@ unset($_SESSION['success_message']);
 
             <div class="ds-search-section">
     <div class="ds-search-wrapper">
-        <form action="search-result.php" method="GET" id="search-form">
+        <form action="/search-result.php" method="GET" id="search-form">
             <!-- <i class="fas fa-search"></i> -->
             <input type="text" id="search-bar" name="search_text" placeholder="Search products..."
                 class="ds-search-input" autocomplete="off" required aria-label="Search products">

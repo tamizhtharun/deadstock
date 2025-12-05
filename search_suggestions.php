@@ -41,7 +41,7 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        echo '<a href="search-result.php?search_text=' . urlencode($row['name']) . '" class="suggestion-item">
+        echo '<a href="/search-result.php?search_text=' . urlencode($row['name']) . '" class="suggestion-item">
                 <div class="search-icon"></div>
                 <span>' . htmlspecialchars($row['name']) . '</span>
               </a>';
