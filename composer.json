@@ -3,6 +3,7 @@
         "razorpay/razorpay": "*",
         "phpmailer/phpmailer": "^6.9",
         "mpdf/mpdf": "^8.0",
-        "dompdf/dompdf": "^3.1"
+        "dompdf/dompdf": "^3.1",
+        "setasign/fpdi": "^2.3"
     }
 }

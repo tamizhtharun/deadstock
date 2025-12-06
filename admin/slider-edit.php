@@ -1,4 +1,5 @@
 <?php require_once('header.php'); ?>
+<?php require_once('../includes/file_optimizer.php'); ?>
 
 <?php
 if(isset($_POST['form1'])) {
@@ -28,6 +29,7 @@ if(isset($_POST['form1'])) {
 
 			$final_name = 'slider-'.$_REQUEST['id'].'.'.$ext;
         	move_uploaded_file( $path_tmp, '../assets/uploads/sliders/'.$final_name );
+			FileOptimizer::optimizeImage('../assets/uploads/sliders/'.$final_name, '../assets/uploads/sliders/'.$final_name);
 
         	$statement = $pdo->prepare("UPDATE tbl_slider SET photo=?, heading=? WHERE id=?");
     		$statement->execute(array($final_name,$_POST['heading'],$_REQUEST['id']));

@@ -1,4 +1,5 @@
 <?php require_once('header.php');
+require_once('../includes/file_optimizer.php');
 ?>
 <?php
 $seller_id = $_SESSION['seller_session'];
@@ -135,9 +136,16 @@ if (isset($_POST['form1'])) {
 			$p_slug = $p_slug . '-' . time(); // Append timestamp if duplicate
 		}
 
-		// Move the uploaded PDF file to the server
+		// Process and optimize the uploaded PDF file
 		$pdf_final_name = $p_slug . '.pdf';
-		move_uploaded_file($pdf_path_tmp, '../assets/uploads/product-catalogues/' . $pdf_final_name);
+		$uploadDir = '../assets/uploads/product-catalogues/';
+		$optimized_pdf = FileOptimizer::processUploadedFile($_FILES['product_catalogue'], $uploadDir, $pdf_final_name);
+		if (!$optimized_pdf) {
+			$valid = 0;
+			$error_message .= 'Failed to upload PDF file<br>';
+		} else {
+			$pdf_final_name = $optimized_pdf;
+		}
 
 		if (isset($_FILES['photo']['name']) && isset($_FILES['photo']['tmp_name'])) {
 			$photo = array();
@@ -161,8 +169,19 @@ if (isset($_POST['form1'])) {
 				$my_ext1 = pathinfo($photo[$i], PATHINFO_EXTENSION);
 				if ($my_ext1 == 'jpg' || $my_ext1 == 'png' || $my_ext1 == 'jpeg' || $my_ext1 == 'gif') {
 					$final_name1[$m] = time() . '_' . $m . '.' . $my_ext1;
-					move_uploaded_file($photo_temp[$i], "../assets/uploads/product-photos/" . $final_name1[$m]);
-					$m++;
+					$uploadDir = '../assets/uploads/product-photos/';
+					// Create a temporary file array for the optimizer
+					$tempFile = [
+						'name' => $photo[$i],
+						'tmp_name' => $photo_temp[$i],
+						'size' => filesize($photo_temp[$i]),
+						'type' => mime_content_type($photo_temp[$i]),
+						'error' => 0
+					];
+					$optimized = FileOptimizer::processUploadedFile($tempFile, $uploadDir, $final_name1[$m]);
+					if ($optimized) {
+						$m++;
+					}
 				}
 			}
 
@@ -175,7 +194,14 @@ if (isset($_POST['form1'])) {
 		}
 
 		$final_name = time() . '.' . $ext;
-		move_uploaded_file($path_tmp, '../assets/uploads/product-photos/' . $final_name);
+		$uploadDir = '../assets/uploads/product-photos/';
+		$optimized_featured = FileOptimizer::processUploadedFile($_FILES['p_featured_photo'], $uploadDir, $final_name);
+		if (!$optimized_featured) {
+			$valid = 0;
+			$error_message .= 'Failed to upload featured photo<br>';
+		} else {
+			$final_name = $optimized_featured;
+		}
 
 
 

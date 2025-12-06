@@ -1,4 +1,6 @@
- <?php require_once('header.php'); ?>
+<?php require_once('header.php');
+require_once('../includes/file_optimizer.php');
+?>
 <style>
 	.grid-wrapper {
 		display: flex;
@@ -316,6 +318,7 @@ if (isset($_POST['form1'])) {
 				if ($my_ext1 == 'jpg' || $my_ext1 == 'png' || $my_ext1 == 'jpeg' || $my_ext1 == 'gif') {
 					$final_name1[$m] = time() . '-' . $m . '.' . $my_ext1;
 					move_uploaded_file($photo_temp[$i], "../assets/uploads/product-photos/" . $final_name1[$m]);
+					FileOptimizer::optimizeImage("../assets/uploads/product-photos/" . $final_name1[$m], "../assets/uploads/product-photos/" . $final_name1[$m]);
 					$m++;
 				}
 			}
@@ -369,6 +372,7 @@ if (isset($_POST['form1'])) {
 
 			$final_name = time() . '.' . $ext;
 			move_uploaded_file($path_tmp, '../assets/uploads/product-photos/' . $final_name);
+			FileOptimizer::optimizeImage('../assets/uploads/product-photos/' . $final_name, '../assets/uploads/product-photos/' . $final_name);
 
 
 			$statement = $pdo->prepare("UPDATE tbl_product SET

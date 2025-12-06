@@ -1,4 +1,5 @@
 <?php require_once('header.php'); ?>
+<?php require_once('../includes/file_optimizer.php'); ?>
 
 <?php
 if(isset($_POST['form1'])) {
