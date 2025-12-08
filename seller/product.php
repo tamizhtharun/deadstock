@@ -281,18 +281,26 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	let searchTimeout;
 	
-	// Search with debounce
+	// Search with debounce - wait 800ms after user stops typing
 	searchInput.addEventListener('input', function() {
 		clearTimeout(searchTimeout);
 		searchTimeout = setTimeout(function() {
 			applyFilters();
-		}, 500);
+		}, 800); // Increased delay to 800ms
 	});
 	
-	// Filter changes
+	// Filter changes - instant
 	approvalFilter.addEventListener('change', applyFilters);
 	featuredFilter.addEventListener('change', applyFilters);
 	perPageSelect.addEventListener('change', applyFilters);
+	
+	// Also trigger search on Enter key
+	searchInput.addEventListener('keypress', function(e) {
+		if (e.key === 'Enter') {
+			clearTimeout(searchTimeout);
+			applyFilters();
+		}
+	});
 	
 	function applyFilters() {
 		const params = new URLSearchParams();

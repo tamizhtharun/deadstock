@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function() {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(function() {
             applyFilters();
-        }, 500);
+        }, 800);
     });
     
     // Filter changes
