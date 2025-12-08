@@ -247,24 +247,24 @@ $featuredFilter = isset($_GET['featured']) ? $_GET['featured'] : '';
 </section>
 
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content shadow-lg rounded-lg">
-            <div class="modal-header border-bottom-0">
-                <h5 class="modal-title">Confirm Deletion</h5>
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
+                <h4 class="modal-title" id="confirmDeleteLabel"></h4>
             </div>
-            <div class="modal-body text-center">
-                <div class="mb-4">
-                    <i class="fa fa-exclamation-circle text-warning" style="font-size: 72px;"></i>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <i class="fa fa-exclamation-circle" style="font-size: 72px; color: #f0ad4e;"></i>
                 </div>
-                <h4>Are you sure?</h4>
-                <p class="text-muted">This product will be permanently deleted and cannot be recovered.</p>
+                <h4 style="text-align: center;">Are you sure?</h4>
+                <p style="text-align: center;">This product will be permanently deleted and cannot be recovered.</p>
             </div>
-            <div class="modal-footer border-top-0 justify-content-center">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <a href="#" class="btn btn-danger btn-ok">Delete</a>
             </div>
         </div>
@@ -278,9 +278,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	const approvalFilter = document.getElementById('approvalFilter');
 	const featuredFilter = document.getElementById('featuredFilter');
 	const perPageSelect = document.getElementById('perPageSelect');
-	
+
 	let searchTimeout;
-	
+
 	// Search with debounce
 	searchInput.addEventListener('input', function() {
 		clearTimeout(searchTimeout);
@@ -288,34 +288,42 @@ document.addEventListener('DOMContentLoaded', function() {
 			applyFilters();
 		}, 500);
 	});
-	
+
 	// Filter changes
 	approvalFilter.addEventListener('change', applyFilters);
 	featuredFilter.addEventListener('change', applyFilters);
 	perPageSelect.addEventListener('change', applyFilters);
-	
+
 	function applyFilters() {
 		const params = new URLSearchParams();
-		
+
 		if (searchInput.value.trim()) {
 			params.set('search', searchInput.value.trim());
 		}
-		
+
 		if (approvalFilter.value) {
 			params.set('approval', approvalFilter.value);
 		}
-		
+
 		if (featuredFilter.value) {
 			params.set('featured', featuredFilter.value);
 		}
-		
+
 		if (perPageSelect.value) {
 			params.set('per_page', perPageSelect.value);
 		}
-		
+
 		// Redirect with new parameters
 		window.location.href = 'product.php' + (params.toString() ? '?' + params.toString() : '');
 	}
+
+	// Delete confirmation modal functionality
+	$('#confirm-delete').on('show.bs.modal', function(e) {
+		var button = $(e.relatedTarget); // Button that triggered the modal
+		var href = button.data('href'); // Extract info from data-* attributes
+		var modal = $(this);
+		modal.find('.btn-ok').attr('href', href);
+	});
 });
 </script>
 
