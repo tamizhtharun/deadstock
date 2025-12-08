@@ -75,13 +75,16 @@ $statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
 			$result = $paginatedData['data'];
 			$paginationInfo = $paginatedData['pagination'];
 			
-			// Calculate total revenue
-			$totalRevenue = 0;
-			foreach ($result as $row) {
-				if ($row['order_status'] == 'delivered') {
-					$totalRevenue += $row['price'] * $row['quantity'];
-				}
-			}
+			// Calculate total revenue from ALL delivered orders (not just current page)
+			$revenueQuery = "SELECT SUM(t2.price * t2.quantity) as total_revenue
+						   FROM tbl_orders t2
+						   JOIN tbl_product t1 ON t2.product_id = t1.id
+						   JOIN tbl_brands t3 ON t1.product_brand = t3.brand_id
+						   WHERE " . $whereClause . " AND t2.order_status = 'delivered'";
+			
+			$revenueStmt = $pdo->prepare($revenueQuery);
+			$revenueStmt->execute($params);
+			$totalRevenue = $revenueStmt->fetchColumn() ?? 0;
 			?>
 			
 			<div class="modern-table-container">
@@ -216,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		clearTimeout(searchTimeout);
 		searchTimeout = setTimeout(function() {
 			applyFilters();
-		}, 500);
+		}, 800);
 	});
 	
 	// Filter changes

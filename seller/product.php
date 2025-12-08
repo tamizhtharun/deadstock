@@ -280,20 +280,20 @@ document.addEventListener('DOMContentLoaded', function() {
 	const perPageSelect = document.getElementById('perPageSelect');
 
 	let searchTimeout;
-
-	// Search with debounce
+	
+	// Search with debounce - wait 800ms after user stops typing
 	searchInput.addEventListener('input', function() {
 		clearTimeout(searchTimeout);
 		searchTimeout = setTimeout(function() {
 			applyFilters();
-		}, 500);
+		}, 800); // Increased delay to 800ms
 	});
-
-	// Filter changes
+	
+	// Filter changes - instant
 	approvalFilter.addEventListener('change', applyFilters);
 	featuredFilter.addEventListener('change', applyFilters);
 	perPageSelect.addEventListener('change', applyFilters);
-
+	
 	function applyFilters() {
 		const params = new URLSearchParams();
 
