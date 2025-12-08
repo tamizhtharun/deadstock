@@ -71,4 +71,13 @@
     </div>
 </div>
 
+<script>
+$('#confirm-delete').on('show.bs.modal', function(e) {
+	var button = $(e.relatedTarget); // Button that triggered the modal
+	var href = button.data('href'); // Extract info from data-* attributes
+	var modal = $(this);
+	modal.find('.btn-ok').attr('href', href);
+});
+</script>
+
 <?php require_once('footer.php'); ?>
