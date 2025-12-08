@@ -69,38 +69,26 @@ trackPageView('HP', 'Home page');
 
 <!-- advertisements section -->
 <div class="advertisements">
-    <div class="ad-column">
-        <a href="#" class="ad-link">
-            <div class="ad-container">
-                <img src="assets/uploads/ads/1.png" alt="Advertisement 1" class="ad-image">
-                <div class="ad-overlay">
-                    <span class="ad-text">Premium Tools Sale</span>
+    <?php
+    $statement = $pdo->prepare("SELECT a.*, t.tcat_name, t.tcat_slug FROM tbl_advertisements a LEFT JOIN tbl_top_category t ON a.tcat_id = t.tcat_id WHERE a.status=1 ORDER BY a.id DESC LIMIT 3");
+    $statement->execute();
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($result as $row) {
+        $link = 'search-result.php?type=top-category&slug=' . urlencode($row['tcat_slug']);
+        ?>
+        <div class="ad-column">
+            <a href="<?php echo $link; ?>" class="ad-link">
+                <div class="ad-container">
+                    <img src="assets/uploads/advertisements/<?php echo $row['photo']; ?>" alt="<?php echo $row['tcat_name']; ?>" class="ad-image">
+                    <div class="ad-overlay">
+                        <span class="ad-text"><?php echo $row['tcat_name']; ?></span>
+                    </div>
                 </div>
-            </div>
-        </a>
-    </div>
-    
-    <div class="ad-column">
-        <a href="#" class="ad-link">
-            <div class="ad-container">
-                <img src="assets/uploads/ads/2.png" alt="Advertisement 2" class="ad-image">
-                <div class="ad-overlay">
-                    <span class="ad-text">New Arrivals</span>
-                </div>
-            </div>
-        </a>
-    </div>
-    
-    <div class="ad-column">
-        <a href="#" class="ad-link">
-            <div class="ad-container">
-                <img src="assets/uploads/ads/3.png" alt="Advertisement 3" class="ad-image">
-                <div class="ad-overlay">
-                    <span class="ad-text">Special Offers</span>
-                </div>
-            </div>
-        </a>
-    </div>
+            </a>
+        </div>
+        <?php
+    }
+    ?>
 </div>
     </div>
 </div>

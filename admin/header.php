@@ -134,6 +134,14 @@ if (!isset($_SESSION['admin_session'])) {
 						</a>
 					</li>
 
+					<li class="treeview <?php if (($cur_page == 'advertisement.php') || ($cur_page == 'advertisement-add.php') || ($cur_page == 'advertisement-edit.php') || ($cur_page == 'advertisement-delete.php')) {
+											echo 'active';
+										} ?>">
+						<a href="advertisement.php">
+							<i class="fa fa-bullhorn"></i> <span>Manage Advertisement</span>
+						</a>
+					</li>
+
 					<li class="treeview <?php if (($cur_page == 'brand-management.php') || ($cur_page == 'brand-edit.php') || ($cur_page == 'brand-add.php') || ($cur_page == 'brand-delete.php')) {
 											echo 'active';
 										} ?>">
