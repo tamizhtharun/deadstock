@@ -1,12 +1,12 @@
 <?php
 require_once('../db_connection.php');
+require_once('includes/pagination.php');
 session_start();
 
 // Check if export_csv button is clicked - must be before any output
 if (isset($_POST['export_csv'])) {
-
     $seller_id = $_SESSION['seller_session']['seller_id'] ?? null;
-
+    
     // Build query with filters
     $query = "
         SELECT
@@ -23,9 +23,9 @@ if (isset($_POST['export_csv'])) {
             p.seller_id = :seller_id
             AND (b.bid_status = 2 OR b.bid_status = 3)
     ";
-
+    
     $bindings = ['seller_id' => $seller_id];
-
+    
     // Apply date filter
     if (!empty($_POST['from_date']) && !empty($_POST['to_date'])) {
         $query .= " AND DATE(b.bid_time) BETWEEN :fromDate AND :toDate";
@@ -38,7 +38,7 @@ if (isset($_POST['export_csv'])) {
         $query .= " AND DATE(b.bid_time) <= :toDate";
         $bindings['toDate'] = $_POST['to_date'];
     }
-
+    
     // Apply status filter
     if (!empty($_POST['status_filter'])) {
         if ($_POST['status_filter'] == 'approved') {
@@ -47,46 +47,33 @@ if (isset($_POST['export_csv'])) {
             $query .= " AND b.bid_status = 3";
         }
     }
-
+    
     $query .= " ORDER BY b.bid_time DESC";
-
+    
     try {
         $statement = $pdo->prepare($query);
         $statement->execute($bindings);
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-        // Set headers for CSV download after successful query
+        
+        // Set headers for CSV download
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename="bids-history.csv"');
-
-        // Output CSV data
+        
         $output = fopen('php://output', 'w');
-
-        // Write headers
         fputcsv($output, array('#', 'Product Name', 'Quantity', 'Price', 'Status', 'Bid Date'));
-
-        // Write data
+        
         $i = 0;
         foreach ($result as $row) {
             $i++;
             $bid_date = !empty($row['bid_time']) && $row['bid_time'] != '0000-00-00 00:00:00' ? '="' . date('d/m/Y', strtotime($row['bid_time'])) . '"' : 'N/A';
             $status = $row['bid_status'] == 2 ? 'Approved' : 'Refunded';
-            fputcsv($output, array(
-                $i,
-                $row['p_name'],
-                $row['bid_quantity'],
-                number_format($row['bid_price'], 2),
-                $status,
-                $bid_date
-            ));
+            fputcsv($output, array($i, $row['p_name'], $row['bid_quantity'], number_format($row['bid_price'], 2), $status, $bid_date));
         }
-
+        
         fclose($output);
         exit();
     } catch (Exception $e) {
-        // Log the error
         error_log("CSV Export Error: " . $e->getMessage());
-        // Redirect back with error message
         header('Location: ' . $_SERVER['PHP_SELF'] . '?error=export_failed');
         exit();
     }
@@ -96,208 +83,207 @@ require_once('header.php');
 
 $seller_id = $_SESSION['seller_session']['seller_id'];
 
-$fromDate = $_POST['fromDate'] ?? null;
-$toDate = $_POST['toDate'] ?? null;
-$filterStatus = $_POST['filterStatus'] ?? '';
+// Get items per page from request or use default
+$itemsPerPage = isset($_GET['per_page']) ? intval($_GET['per_page']) : 10;
+$itemsPerPage = in_array($itemsPerPage, [10, 25, 50, 100]) ? $itemsPerPage : 10;
 
-$query = "
-    SELECT 
-        p.p_featured_photo,
-        p.p_name,
-        b.bid_quantity,
-        b.bid_price,
-        b.bid_status,
-        b.bid_time
-    FROM 
-        bidding b
-    JOIN
-        tbl_product p ON b.product_id = p.id
-    WHERE 
-        p.seller_id = :seller_id
-        AND (b.bid_status = 2 OR b.bid_status = 3)
-";
+// Get search query and filters
+$searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
+$statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
 
-$bindings = ['seller_id' => $seller_id];
+// Build query with search and filters
+$whereConditions = ["p.seller_id = :seller_id", "(b.bid_status = 2 OR b.bid_status = 3)"];
+$params = [':seller_id' => $seller_id];
 
-if ($fromDate && $toDate) {
-    $query .= " AND DATE(b.bid_time) BETWEEN :fromDate AND :toDate";
-    $bindings['fromDate'] = $fromDate;
-    $bindings['toDate'] = $toDate;
+if (!empty($searchQuery)) {
+    $whereConditions[] = "p.p_name LIKE :search";
+    $params[':search'] = '%' . $searchQuery . '%';
 }
 
-if ($filterStatus !== '') {
-    if ($filterStatus == 'approved') {
-        $query .= " AND b.bid_status = 2";
-    } elseif ($filterStatus == 'refunded') {
-        $query .= " AND b.bid_status = 3";
+if ($statusFilter !== '') {
+    if ($statusFilter == 'approved') {
+        $whereConditions[] = "b.bid_status = 2";
+    } elseif ($statusFilter == 'refunded') {
+        $whereConditions[] = "b.bid_status = 3";
     }
 }
 
-$query .= " ORDER BY b.bid_time DESC";
-$statement = $pdo->prepare($query);
-$statement->execute($bindings);
-$bids = $statement->fetchAll(PDO::FETCH_ASSOC);
+$whereClause = implode(' AND ', $whereConditions);
+
+// Count query
+$countQuery = "SELECT COUNT(*) 
+               FROM bidding b
+               JOIN tbl_product p ON b.product_id = p.id
+               WHERE " . $whereClause;
+
+// Main query
+$query = "SELECT 
+            p.p_featured_photo,
+            p.p_name,
+            b.bid_quantity,
+            b.bid_price,
+            b.bid_status,
+            b.bid_time
+          FROM bidding b
+          JOIN tbl_product p ON b.product_id = p.id
+          WHERE " . $whereClause . "
+          ORDER BY b.bid_time DESC";
+
+// Initialize pagination
+$pagination = new ModernPagination($pdo, $itemsPerPage);
+$paginatedData = $pagination->paginate($query, $countQuery, $params);
+$result = $paginatedData['data'];
+$paginationInfo = $paginatedData['pagination'];
 ?>
 
 <section class="content-header">
     <div class="content-header-left">
         <h1>Bidding History</h1>
     </div>
+    <div class="content-header-right">
+        <form method="POST" action="" id="exportForm" style="display: inline;">
+            <input type="hidden" name="status_filter" id="hiddenStatusFilter">
+            <input type="hidden" name="from_date" id="hiddenFromDate">
+            <input type="hidden" name="to_date" id="hiddenToDate">
+            <button type="submit" name="export_csv" class="export-btn">
+                <i class="fa fa-file-csv"></i> Export to CSV
+            </button>
+        </form>
+    </div>
 </section>
 
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-        <div class="filter-container" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
-                <div class="date-filter-group">
-                    <label><strong>Filter by date range:</strong></label>
-                    <input 
-                        type="date" 
-                        id="fromDate" 
-                        name="fromDate"
-                        class="form-control input-sm" 
-                        style="display: inline-block; width: auto; margin: 0 10px;"
-                        value="<?php echo htmlspecialchars($fromDate); ?>"
-                    >
-                    <label>to</label>
-                    <input 
-                        type="date" 
-                        id="toDate" 
-                        name="toDate"
-                        class="form-control input-sm"  
-                        style="display: inline-block; width: auto; margin: 0 10px;"
-                        value="<?php echo htmlspecialchars($toDate); ?>"
-                    >
-                    <button type="button" id="clearDates" class="btn btn-default btn-sm">Clear Dates</button>
-                </div>
-                <div class="status-filter-group">
-                    <label><strong>Filter by status:</strong></label>
-                    <select
-                        id="statusFilter"
-                        name="filterStatus"
-                        class="form-control input-sm"
-                        style="display: inline-block; width: auto; margin-left: 10px;"
-                    >
-                        <option value="">All Status</option>
-                        <option value="approved" <?php echo $filterStatus === 'approved' ? 'selected' : ''; ?>>Approved</option>
-                        <option value="refunded" <?php echo $filterStatus === 'refunded' ? 'selected' : ''; ?>>Refunded</option>
-                    </select>
-                </div>
-                <div class="export-group">
-                    <form method="POST" action="" id="exportForm">
-                        <input type="hidden" name="seller_id" value="<?php echo $seller_id; ?>">
-                        <input type="hidden" name="status_filter" id="hiddenStatusFilter">
-                        <input type="hidden" name="from_date" id="hiddenFromDate">
-                        <input type="hidden" name="to_date" id="hiddenToDate">
-                        <button type="submit" name="export_csv" class="btn btn-primary btn-xs">Export to CSV</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="box box-info">
-                <div class="box-body table-responsive">
-                    <?php if (empty($bids)): ?>
-                        <div id="no-bids-message" class="no-bids-container" style="display: block;">
-                            <div style="text-align: center; padding: 40px 20px;">
-                                <i class="fa fa-search" style="font-size: 64px; color: #ccc; margin-bottom: 20px;"></i>
-                                <h3 style="color: #666;">No Orders Found</h3>
-                                <p style="color: #888; font-size: 16px;">There are no orders available for the selected filters.</p>
-                            </div>
+            <div class="modern-table-container">
+                <!-- Table Controls -->
+                <div class="table-controls">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Search by product name..." value="<?php echo htmlspecialchars($searchQuery); ?>">
+                        <i class="fa fa-search"></i>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <select id="statusFilter" class="filter-select">
+                            <option value="">All Status</option>
+                            <option value="approved" <?php echo $statusFilter === 'approved' ? 'selected' : ''; ?>>Approved</option>
+                            <option value="refunded" <?php echo $statusFilter === 'refunded' ? 'selected' : ''; ?>>Refunded</option>
+                        </select>
+                        
+                        <div class="entries-selector">
+                            <label>Show</label>
+                            <select id="perPageSelect">
+                                <option value="10" <?php echo $itemsPerPage == 10 ? 'selected' : ''; ?>>10</option>
+                                <option value="25" <?php echo $itemsPerPage == 25 ? 'selected' : ''; ?>>25</option>
+                                <option value="50" <?php echo $itemsPerPage == 50 ? 'selected' : ''; ?>>50</option>
+                                <option value="100" <?php echo $itemsPerPage == 100 ? 'selected' : ''; ?>>100</option>
+                            </select>
+                            <label>entries</label>
                         </div>
-                    <?php else: ?>
-                        <table id="example1" class="table table-bordered table-hover table-striped">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Product Photo</th>
-                                    <th>Product Name</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                    <th>Status</th>
-                                    <th>Bid Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($bids as $index => $bid): ?>
-                                    <tr>
-                                        <td><?php echo $index + 1; ?></td>
-                                        <td>
-                                            <img src="../assets/uploads/product-photos/<?php echo $bid['p_featured_photo']; ?>" 
-                                                 alt="Product Photo" 
-                                                 style="width:70px;">
-                                        </td>
-                                        <td><?php echo $bid['p_name']; ?></td>
-                                        <td><?php echo $bid['bid_quantity']; ?></td>
-                                        <td>₹<?php echo number_format($bid['bid_price'], 2); ?></td>
-                                        <td><?php echo $bid['bid_status'] == 2 ? 'Approved' : 'Refunded'; ?></td>
-                                        <td><?php echo (!empty($bid['bid_time']) && $bid['bid_time'] != '0000-00-00 00:00:00') ? date('d-m-Y', strtotime($bid['bid_time'])) : 'N/A'; ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    <?php endif; ?>
+                    </div>
                 </div>
+                
+                <?php if(empty($result)): ?>
+                    <div class="empty-state">
+                        <i class="fa fa-history"></i>
+                        <h3>No Bids Found</h3>
+                        <p>No bids match your search criteria.</p>
+                    </div>
+                <?php else: ?>
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Product Photo</th>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Bid Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $i = $paginationInfo['start_item'];
+                            foreach ($result as $bid) {
+                            ?>
+                            <tr>
+                                <td><?php echo $i; ?></td>
+                                <td>
+                                    <img src="../assets/uploads/product-photos/<?php echo $bid['p_featured_photo']; ?>" 
+                                         alt="Product Photo" 
+                                         style="width:60px;">
+                                </td>
+                                <td><?php echo htmlspecialchars($bid['p_name']); ?></td>
+                                <td class="quantity-cell"><?php echo $bid['bid_quantity']; ?></td>
+                                <td class="price-cell">₹<?php echo number_format($bid['bid_price'], 2); ?></td>
+                                <td>
+                                    <?php if($bid['bid_status'] == 2): ?>
+                                        <span class="status-badge status-approved">Approved</span>
+                                    <?php else: ?>
+                                        <span class="status-badge status-canceled">Refunded</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo (!empty($bid['bid_time']) && $bid['bid_time'] != '0000-00-00 00:00:00') ? date('M d, Y', strtotime($bid['bid_time'])) : 'N/A'; ?></td>
+                            </tr>
+                            <?php
+                                $i++;
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                    
+                    <!-- Pagination -->
+                    <?php echo $pagination->renderPagination(); ?>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 </section>
 
 <script>
-    // Add event listeners for filter changes and clear button
+// Search and filter functionality
 document.addEventListener('DOMContentLoaded', function() {
-    const fromDateInput = document.getElementById('fromDate');
-    const toDateInput = document.getElementById('toDate');
+    const searchInput = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
-    const clearDatesBtn = document.getElementById('clearDates');
-
-    // Function to submit the form
-    function submitFilter() {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = window.location.href;
-
-        // Add date inputs
-        const fromDate = createHiddenInput('fromDate', fromDateInput.value);
-        const toDate = createHiddenInput('toDate', toDateInput.value);
-        const status = createHiddenInput('filterStatus', statusFilter.value);
-
-        form.appendChild(fromDate);
-        form.appendChild(toDate);
-        form.appendChild(status);
-
-        document.body.appendChild(form);
-        form.submit();
-    }
-
-    // Function to create hidden input
-    function createHiddenInput(name, value) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = name;
-        input.value = value || '';
-        return input;
-    }
-
-    // Event listener for date inputs
-    fromDateInput.addEventListener('change', submitFilter);
-    toDateInput.addEventListener('change', submitFilter);
-
-    // Event listener for status filter
-    statusFilter.addEventListener('change', submitFilter);
-
-    // Event listener for clear dates button
-    clearDatesBtn.addEventListener('click', function() {
-        fromDateInput.value = '';
-        toDateInput.value = '';
-        submitFilter();
+    const perPageSelect = document.getElementById('perPageSelect');
+    
+    let searchTimeout;
+    
+    // Search with debounce
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+            applyFilters();
+        }, 500);
     });
-
-    // Handle CSV export form submission
-    document.getElementById('exportForm').addEventListener('submit', function(e) {
-        // Populate hidden fields with current filter values
+    
+    // Filter changes
+    statusFilter.addEventListener('change', applyFilters);
+    perPageSelect.addEventListener('change', applyFilters);
+    
+    function applyFilters() {
+        const params = new URLSearchParams();
+        
+        if (searchInput.value.trim()) {
+            params.set('search', searchInput.value.trim());
+        }
+        
+        if (statusFilter.value) {
+            params.set('status', statusFilter.value);
+        }
+        
+        if (perPageSelect.value) {
+            params.set('per_page', perPageSelect.value);
+        }
+        
+        // Redirect with new parameters
+        window.location.href = 'bids_history.php' + (params.toString() ? '?' + params.toString() : '');
+    }
+    
+    // Handle CSV export
+    document.getElementById('exportForm').addEventListener('submit', function() {
         document.getElementById('hiddenStatusFilter').value = statusFilter.value;
-        document.getElementById('hiddenFromDate').value = fromDateInput.value;
-        document.getElementById('hiddenToDate').value = toDateInput.value;
     });
 });
 </script>
