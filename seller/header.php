@@ -70,6 +70,7 @@ if (!isset($_SESSION['seller_session'])) {
 	<link rel="stylesheet" href="css/on-off-switch.css" />
 	<link rel="stylesheet" href="css/summernote.css">
 	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="css/modern-tables.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
@@ -254,8 +255,8 @@ if (!isset($_SESSION['seller_session'])) {
 						</a>
 					</li>
 
-					<li class="treeview <?php if (($cur_page == 'bidding-order.php') || ($cur_page == 'direct-order.php')) {
-											echo 'active';
+					<li class="treeview <?php if (($cur_page == 'bidding-order.php') || ($cur_page == 'direct-order.php') || ($cur_page == 'order-history.php')) {
+											echo 'active menu-open';
 										} ?>">
 						<a href="#">
 							<i class="nav-icon fas fa-shopping-cart"></i>
@@ -264,10 +265,10 @@ if (!isset($_SESSION['seller_session'])) {
 								<i class="fa fa-angle-left pull-right"></i>
 							</span>
 						</a>
-						<ul class="treeview-menu">
-							<li><a href="direct-order.php"><i class="fa fa-circle-o"></i> Direct Orders</a></li>
-							<li><a href="bidding-order.php"><i class="fa fa-circle-o"></i> Bid-Based Orders </a></li>
-							<li><a href="order-history.php"><i class="fa fa-circle-o"></i> All Orders History </a></li>
+						<ul class="treeview-menu" style="<?php if (($cur_page == 'bidding-order.php') || ($cur_page == 'direct-order.php') || ($cur_page == 'order-history.php')) { echo 'display: block;'; } ?>">
+							<li class="<?php echo ($cur_page == 'direct-order.php') ? 'active' : ''; ?>"><a href="direct-order.php"><i class="fa fa-circle-o"></i> Direct Orders</a></li>
+							<li class="<?php echo ($cur_page == 'bidding-order.php') ? 'active' : ''; ?>"><a href="bidding-order.php"><i class="fa fa-circle-o"></i> Bid-Based Orders </a></li>
+							<li class="<?php echo ($cur_page == 'order-history.php') ? 'active' : ''; ?>"><a href="order-history.php"><i class="fa fa-circle-o"></i> All Orders History </a></li>
 						</ul>
 					</li>
 
