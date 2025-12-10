@@ -124,7 +124,9 @@
 
 
 
-	    $("#example1").DataTable();
+	    $("#example1").DataTable({
+			"stateSave": true
+		});
 	    $('#example2').DataTable({
 	      "paging": true,
 	      "lengthChange": false,
