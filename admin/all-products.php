@@ -260,7 +260,7 @@ if (isset($_POST['reject_all'])) {
                                     <td><?php echo $row['p_qty']; ?></td>
                                     <!-- Update the Featured column -->
                                     <td>
-                                        <select class="form-control" style="width:auto;" onchange="updateFeatured(<?php echo $row['id']; ?>, this.value)" <?php echo $row['p_is_approve'] == 0 ? 'disabled' : ''; ?>>
+                                        <select class="form-control" id="featured-select-<?php echo $row['id']; ?>" style="width:auto;" onchange="updateFeatured(<?php echo $row['id']; ?>, this.value)" <?php echo $row['p_is_approve'] == 0 ? 'disabled' : ''; ?>>
                                             <option value="0" <?php echo $row['p_is_featured'] == 0 ? 'selected' : ''; ?>>No</option>
                                             <option value="1" <?php echo $row['p_is_featured'] == 1 ? 'selected' : ''; ?>>Yes</option>
                                         </select>
@@ -272,15 +272,13 @@ if (isset($_POST['reject_all'])) {
                                             <a href="javascript:void(0);" onclick="openSellerModal(<?php echo $row['seller_id']; ?>)">View Seller Details</a>
                                         </div>
                                     </td>
-                                    <td><?php echo $row['p_is_approve'] == 1 ? '<span class="badge badge-success" style="background-color:green;">Approved</span>' : '<span class="badge badge-danger" style="background-color:red;">Rejected</span>'; ?></td>
+                                    <td><span id="status-badge-<?php echo $row['id']; ?>" class="badge <?php echo $row['p_is_approve'] == 1 ? 'badge-success' : 'badge-danger'; ?>" style="background-color:<?php echo $row['p_is_approve'] == 1 ? 'green' : 'red'; ?>;"><?php echo $row['p_is_approve'] == 1 ? 'Approved' : 'Rejected'; ?></span></td>
                                     <td><?php echo (!empty($row['p_date']) && $row['p_date'] != '0000-00-00') ? date('d-m-Y', strtotime($row['p_date'])) : 'N/A'; ?></td>
                                     <td>
                                         <?php if ($row['p_is_approve'] == 1) { ?>
-                                            <a href="seller-product-approve-status.php?id=<?php echo $row['id']; ?>&status=0"
-                                                class="btn btn-warning btn-xs">Reject</a>
+                                            <button onclick="toggleApproval(<?php echo $row['id']; ?>, 1, this)" class="btn btn-warning btn-xs">Reject</button>
                                         <?php } else { ?>
-                                            <a href="seller-product-approve-status.php?id=<?php echo $row['id']; ?>&status=1"
-                                                class="btn btn-success btn-xs">Approve</a>
+                                            <button onclick="toggleApproval(<?php echo $row['id']; ?>, 0, this)" class="btn btn-success btn-xs">Approve</button>
                                         <?php } ?>
                                     </td>
                                 </tr>
@@ -379,6 +377,68 @@ if (isset($_POST['reject_all'])) {
             document.getElementById(tab).classList.add('active');
         });
     });
+
+    function toggleApproval(id, currentStatus, btn) {
+        var newStatus = currentStatus == 1 ? 0 : 1;
+        var originalText = btn.innerHTML;
+        
+        btn.innerHTML = 'Loading...';
+        btn.disabled = true;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "update_product_status.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
+                btn.disabled = false;
+                if (xhr.status == 200) {
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            var statusBadge = document.getElementById('status-badge-' + id);
+                            var featuredSelect = document.getElementById('featured-select-' + id);
+                            
+                            if (newStatus == 1) {
+                                btn.innerHTML = 'Reject';
+                                btn.className = 'btn btn-warning btn-xs';
+                                btn.setAttribute('onclick', 'toggleApproval(' + id + ', 1, this)');
+                                
+                                statusBadge.innerHTML = 'Approved';
+                                statusBadge.className = 'badge badge-success';
+                                statusBadge.style.backgroundColor = 'green';
+                                
+                                if (featuredSelect) featuredSelect.disabled = false;
+                            } else {
+                                btn.innerHTML = 'Approve';
+                                btn.className = 'btn btn-success btn-xs';
+                                btn.setAttribute('onclick', 'toggleApproval(' + id + ', 0, this)');
+                                
+                                statusBadge.innerHTML = 'Rejected';
+                                statusBadge.className = 'badge badge-danger';
+                                statusBadge.style.backgroundColor = 'red';
+                                
+                                if (featuredSelect) {
+                                    featuredSelect.value = '0';
+                                    featuredSelect.disabled = true;
+                                }
+                            }
+                        } else {
+                            alert('Error: ' + response.message);
+                            btn.innerHTML = originalText;
+                        }
+                    } catch (e) {
+                        console.error('Invalid JSON response', xhr.responseText);
+                        alert('Error updating status');
+                        btn.innerHTML = originalText;
+                    }
+                } else {
+                    alert('Request failed');
+                    btn.innerHTML = originalText;
+                }
+            }
+        };
+        xhr.send("id=" + id + "&p_is_approve=" + newStatus);
+    }
 
     function updateFeatured(productId, value) {
         var xhr = new XMLHttpRequest();
