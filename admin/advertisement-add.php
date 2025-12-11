@@ -1,4 +1,5 @@
 <?php require_once('header.php'); ?>
+<?php require_once('../includes/file_optimizer.php'); ?>
 
 <?php
 if(isset($_POST['form1'])) {
@@ -33,12 +34,17 @@ if(isset($_POST['form1'])) {
 
 	if($valid == 1) {
 		$final_name = 'advertisement-'.time().'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/advertisements/'.$final_name );
+        $optimized_filename = FileOptimizer::processUploadedFile($_FILES['photo'], '../assets/uploads/advertisements/', $final_name);
+        if ($optimized_filename === false) {
+            $valid = 0;
+            $error_message .= 'Failed to optimize and upload the photo<br>';
+        } else {
+            $final_name = $optimized_filename;
+            $statement = $pdo->prepare("INSERT INTO tbl_advertisements (title,photo,tcat_id,status) VALUES (?,?,?,?)");
+            $statement->execute(array($_POST['title'],$final_name, $_POST['tcat_id'] ?? '', $_POST['status']));
 
-        $statement = $pdo->prepare("INSERT INTO tbl_advertisements (title,photo,tcat_id,status) VALUES (?,?,?,?)");
-        $statement->execute(array($_POST['title'],$final_name, $_POST['tcat_id'] ?? '', $_POST['status']));
-
-	    $success_message = 'Advertisement is added successfully!';
+            $success_message = 'Advertisement is added successfully!';
+        }
 	}
 }
 ?>
