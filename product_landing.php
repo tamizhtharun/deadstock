@@ -783,8 +783,8 @@ $_SESSION['recently_viewed'] = array_slice($_SESSION['recently_viewed'], 0, 5);
 
       $sql = "SELECT id, p_name, p_current_price, p_old_price, p_featured_photo, p_slug
           FROM tbl_product
-          WHERE p_name AND p_is_approve = '1' LIKE :search_term
-          AND id != :current_id
+          WHERE p_name  LIKE :search_term
+          AND p_is_approve = 1 AND id != :current_id
           LIMIT 3";
 
       $stmt = $pdo->prepare($sql);
