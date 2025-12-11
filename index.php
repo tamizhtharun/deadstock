@@ -64,7 +64,7 @@ trackPageView('HP', 'Home page');
                 <span class="quote-bold"><?php echo htmlspecialchars($quote_span_text); ?></span>
                 <?php echo nl2br(htmlspecialchars($quote_text)); ?>
             </p>
-            <img src="assets/uploads/<?php echo $favicon ?>" alt="Logo" class="logo">
+            <img src="assets/uploads/<?php echo $favicon ?>" alt="Logo" class="logo" loading="lazy">
         </div>
 
 <!-- advertisements section -->
@@ -79,7 +79,7 @@ trackPageView('HP', 'Home page');
         <div class="ad-column">
             <a href="<?php echo $link; ?>" class="ad-link">
                 <div class="ad-container">
-                    <img src="assets/uploads/advertisements/<?php echo $row['photo']; ?>" alt="<?php echo $row['tcat_name']; ?>" class="ad-image">
+                    <img src="assets/uploads/advertisements/<?php echo $row['photo']; ?>" alt="<?php echo $row['tcat_name']; ?>" class="ad-image" loading="lazy">
                     <div class="ad-overlay">
                         <span class="ad-text"><?php echo $row['tcat_name']; ?></span>
                     </div>
@@ -529,10 +529,10 @@ if (!empty($topCategories)) {
 <script src="js/jquery-1.11.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-<script src="/deadstock/js/plugins.js"></script>
+<script src="/js/plugins.js"></script>
 
 
-<script src="/deadstock/js/script.js"></script>
+<script src="/js/script.js"></script>
 
 <style>
     .quote-container .quote {

@@ -63,34 +63,33 @@ unset($_SESSION['success_message']);
 <html lang="en">
 
 <head>
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> -->
-    <!-- <meta name="theme-color" content="#your-brand-color"> -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buy Machinary Tools at your desired price</title>
+    
+    <!-- Resource Hints for Performance -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="dns-prefetch" href="https://checkout.razorpay.com">
+    <link rel="dns-prefetch" href="https://code.jquery.com">
+    
     <link rel="icon" href="/assets/uploads/<?php echo $favicon; ?>">
+    
+    <!-- CSS Resources - Bootstrap 5.3.3 (single version) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/responsive.css">
     <link rel="stylesheet" href="/css/header.css">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Link Disply the featured categories in home page slider  -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous"> -->
     <link rel="stylesheet" type="text/css" href="/css/vendor.css">
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <link rel="stylesheet" type="text/css" href="/css/messages.css">
-    <!-- <?php if (basename($_SERVER['PHP_SELF']) == 'product_landing.php'): ?>
-        <link rel="stylesheet" href="/css/product_landing.css">
-    <?php endif; ?> -->
+    
+    <?php if (basename($_SERVER['PHP_SELF']) == 'checkout-page.php'): ?>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <?php endif; ?>
         <defs>
             <symbol xmlns="http://www.w3.org/2000/svg" id="cart" viewBox="0 0 24 24">
                 <path fill="currentColor"
@@ -335,7 +334,7 @@ unset($_SESSION['success_message']);
                         </div>
                         <div class="input-submit">
                             <button class="submit-btn" id="signin-btn" name="login">
-                                <label for="submit">Sign In</label>
+                                <label>Sign In</label>
                             </button>
                         </div>
                         <div class="sign-up-link">
@@ -369,7 +368,7 @@ unset($_SESSION['success_message']);
                         </div>
                         <div class="input-submit">
                             <button class="submit-btn" id="signup-btn" name="register">
-                                <label for="submit">Create Account</label>
+                                <label>Create Account</label>
                             </button>
                         </div>
                         <div class="sign-in-link">
@@ -386,7 +385,7 @@ unset($_SESSION['success_message']);
                         </div>
                         <div class="input-submit">
                             <button type="submit" class="submit-btn" id="forgot-password-btn" name="forgot_password">
-                                <label for="submit">Send Reset Link</label>
+                                <label>Send Reset Link</label>
                             </button>
                         </div>
                         <div class="back-to-login-link">
@@ -398,11 +397,12 @@ unset($_SESSION['success_message']);
         </div>
     </div>
 
+    <!-- JavaScript Resources - jQuery loaded without defer for inline script compatibility -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+        crossorigin="anonymous" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
@@ -538,13 +538,31 @@ unset($_SESSION['success_message']);
     });
 }
 
-// Fetch on page load and refresh every 30 seconds
+// Fetch on page load and refresh every 60 seconds (optimized from 30s)
+// Only update when page is visible to reduce server load
 let cartUpdateInterval;
 $(document).ready(function() {
     updateCartBadge();
-    if (!cartUpdateInterval) {
-        cartUpdateInterval = setInterval(updateCartBadge, 30000);
+    
+    // Only poll if not on static pages
+    const dynamicPages = ['cart.php', 'checkout-page.php', 'product_landing.php'];
+    const currentPage = window.location.pathname.split('/').pop();
+    
+    if (!cartUpdateInterval && dynamicPages.some(page => currentPage.includes(page.replace('.php', '')))) {
+        cartUpdateInterval = setInterval(function() {
+            // Only update if page is visible
+            if (!document.hidden) {
+                updateCartBadge();
+            }
+        }, 60000); // Reduced from 30s to 60s
     }
+    
+    // Clear interval on page unload
+    window.addEventListener('beforeunload', function() {
+        if (cartUpdateInterval) {
+            clearInterval(cartUpdateInterval);
+        }
+    });
 });
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -676,10 +694,9 @@ $(document).ready(function() {
             xhr.send();
         }
     </script>
-    <script src="/forgot-password.js"></script>
-
-    <script src="/js/index.js"></script>
-    <script src="/js/validation.js"></script>
+    <script src="/forgot-password.js" defer></script>
+    <script src="/js/index.js" defer></script>
+    <script src="/js/validation.js" defer></script>
 
 </body>
 

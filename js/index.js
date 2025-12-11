@@ -10,60 +10,6 @@ const btnclose = document.getElementById('btn-close');
 const closebtn = document.querySelector(".seller-close");
 console.log(closebtn);
 const sellerRegister = document.getElementById('seller-register')
-const sellerBtn = document.getElementById('seller-btn');
-const signinBtn = document.getElementById('signin-btn');
-const loginlink = document.getElementById('loginlink')
-
-
-// Add event listeners to the links
-signupLink.addEventListener('click', () => {
-  signinForm.style.display = 'none';
-  signupForm.style.display = 'block';
-  signinForm.reset();
-});
-
-signinLink.addEventListener('click', () => {
-  signinForm.style.display = 'block';
-  signupForm.style.display = 'none';
-  signupForm.reset();
-  sellerPasswordError.textContent = '';
-  passwordError.textContent = '';
-  emailErrorMessageElement.textContent = '';
-  errorMessageElement.textContent = '';
-
-
-});
-if (loginlink) {
-  loginlink.addEventListener('click', () => {
-    signinForm.style.display = 'block';
-    signupForm.style.display = 'none';
-  })
-}
-
-btnclose.addEventListener('click', () => {
-  signinForm.reset();
-  signupForm.reset();
-  sellerRegistrationForm.reset();
-  sellerRegistrationForm.reset();
-  errorMessageElement.textContent = '';
-  emailErrorMessageElement.textContent = '';
-  emailErrorMessage.textContent = '';
-  passwordError.textContent = '';
-  sellerphoneError.textContent = '';
-  selleremailerror.textContent = '';
-  sellerPasswordError.textContent = '';
-})
-
-loginbtn.addEventListener('click', () => {
-  signinForm.style.display = 'block';
-  signupForm.style.display = 'none';
-  resetform.style.display = 'none'
-})
-
-
-//phone number check at signup
-const phoneNumberInput = document.getElementById('phone-number');
-const errorMessageElement = document.getElementById('error-message');
 
 phoneNumberInput.addEventListener('input', () => {
   const phoneNumber = phoneNumberInput.value;
