@@ -8,7 +8,7 @@
   <form action="test\generatePDF.php" method="post">
 
 		<a type="submit" value="Generate PDF" href="test\generatePDF.php" class="btn btn-primary btn-sm">Export as PDF</a>
-		<a href="customer-csv.php" class="btn btn-primary btn-sm">Export as CSV</a>
+		<a href="#" class="btn btn-primary btn-sm">Export as CSV</a>
   </form>
 
 	</div>

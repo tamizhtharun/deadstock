@@ -25,7 +25,7 @@ if (is_array($result) && !empty($result)) {
         $username = isset($row['username']) ? $row['username'] : '';
         $email = isset($row['email']) ? $row['email'] : '';
         $contact_number = isset($row['phone_number']) ? $row['phone_number'] : '';
-        $joining_date = isset($row['registered_at']) ? $row['registered_at'] : '';
+        $joining_date = isset($row['created_at']) ? date('d-m-Y', strtotime($row['created_at'])) : '';
 
         $pdf->Cell(15, 12, $serial_number, 1, 0, 'C');
         $pdf->Cell(50, 12, $username, 1, 0, 'C');
