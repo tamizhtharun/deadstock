@@ -331,7 +331,9 @@ if (isset($_POST['form1'])) {
 			}
 		}
 
-		if ($path == '') {
+	$ecat_id_value = isset($_POST['ecat_id']) && $_POST['ecat_id'] !== '' ? $_POST['ecat_id'] : null;
+
+	if ($path == '') {
 			$statement = $pdo->prepare("UPDATE tbl_product SET
 								p_name=?,
 								tcat_id=?,
@@ -352,7 +354,7 @@ if (isset($_POST['form1'])) {
 				$_POST['p_name'],
 				$_POST['tcat_id'],
 				$_POST['mcat_id'],
-				isset($_POST['ecat_id']) ? $_POST['ecat_id'] : $current_ecat_id,
+				$ecat_id_value,
 				$product_brand,
 				$_POST['hsn_code'],
 				$_POST['gst_percentage'],
@@ -396,7 +398,7 @@ if (isset($_POST['form1'])) {
 				$_POST['p_name'],
 				$_POST['tcat_id'],
 				$_POST['mcat_id'],
-				isset($_POST['ecat_id']) ? $_POST['ecat_id'] : $current_ecat_id,
+				$ecat_id_value,
 				$product_brand,
 				$_POST['hsn_code'],
 				$_POST['gst_percentage'],
@@ -537,7 +539,7 @@ foreach ($result as $row) {
 
 $tcat_id = isset($_POST['tcat_id']) ? $_POST['tcat_id'] : $tcat_id;
 $mcat_id = isset($_POST['mcat_id']) ? $_POST['mcat_id'] : $mcat_id;
-$ecat_id = isset($_POST['ecat_id']) ? $_POST['ecat_id'] : $ecat_id;
+$ecat_id = isset($_POST['ecat_id']) && $_POST['ecat_id'] !== '' ? $_POST['ecat_id'] : $ecat_id;
 $product_brand = isset($_POST['product_brand']) ? $_POST['product_brand'] : $product_brand;
 
 // $statement = $pdo->prepare("SELECT * FROM tbl_product_size WHERE id=?");
