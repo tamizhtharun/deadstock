@@ -128,7 +128,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // 'tls'
                     $mail->Port       = 587;
 
-                        $mail->setFrom('support@thedeadstock.in', 'Deadstock-Support');
+                        $mail->setFrom('support@destock.in', 'Deadstock-Support');
                         $mail->addAddress($seller_email, $seller_name);
 
                         $mail->isHTML(true);
