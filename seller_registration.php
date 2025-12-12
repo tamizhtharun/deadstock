@@ -128,22 +128,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // 'tls'
                     $mail->Port       = 587;
 
-                        $mail->setFrom('support@destock.in', 'Deadstock-Support');
+                        $mail->setFrom('support@destock.in', 'Destock-Support');
                         $mail->addAddress($seller_email, $seller_name);
 
                         $mail->isHTML(true);
                         $mail->Subject = 'Seller Registration Confirmation';
-                        $verification_link = "http://localhost/deadstock/verify_seller.php?token=$verification_token";
+                        $verification_link = "https://destock.in/verify_seller.php?token=$verification_token";
 
                         $mail->Body = "
                             <div style='max-width: 480px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; font-family: Arial, sans-serif; background-color: #ffffff;'>
                                 <div style='text-align: center;'>
-                                    <img src='https://yourdomain.com/uploads/logo.png' alt='Deadstock' style='max-width: 80px; margin-bottom: 20px;'>
+                                    <img src='https://destock.in/assets/uploads/logo.png' alt='Destock' style='max-width: 80px; margin-bottom: 20px;'>
                                     <h2 style='color: #333;'>Confirm Your Seller Account</h2>
                                 </div>
                                 <div style='color: #666; font-size: 14px; line-height: 1.6; text-align: left;'>
                                     <p>Hi <strong>$seller_name</strong>,</p>
-                                    <p>Welcome to <strong>Deadstock</strong>! We're excited to have you as a seller on our platform.</p>
+                                    <p>Welcome to <strong>Destock</strong>! We're excited to have you as a seller on our platform.</p>
                                     <p>To complete your registration and start listing your products, please verify your email by clicking the button below:</p>
                                 </div>
                                 <div style='text-align: center; margin-top: 20px;'>

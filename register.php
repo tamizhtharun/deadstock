@@ -66,22 +66,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $mail->Body = "
                        <div style='max-width: 480px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; font-family: Arial, sans-serif; background-color: #ffffff;'>
                             <div style='text-align: center;'>
-                                <img src='https://yourdomain.com/uploads/logo.png' alt='Deadstock' style='max-width: 80px; margin-bottom: 20px;'>
+                                <img src='https://destock.in/assets/uploads/logo.png' alt='Destock' style='max-width: 80px; margin-bottom: 20px;'>
                                 <h2 style='color: #333;'>Confirm Your Email Address</h2>
                             </div>
                             <div style='color: #666; font-size: 14px; line-height: 1.6; text-align: left;'>
                                 <p>Hi <strong>$username</strong>,</p>
-                                <p>Welcome to <strong>Deadstock</strong>! You're just one step away from accessing all our exclusive wholesale stock bidding features.</p>
+                                <p>Welcome to <strong>Destock</strong>! You're just one step away from accessing all our exclusive wholesale stock bidding features.</p>
                                 <p>To get started, please verify your email by clicking the button below. This ensures you have full access to your account and can participate in our bidding platform.</p>
                             </div>
                             <div style='text-align: center; margin-top: 20px;'>
-                                <a href='http://localhost/deadstock/verify.php?token=$token' 
+                                <a href='https://destock.in/verify.php?token=$token' 
                                 style='display: inline-block; background-color: #000000; color: #ffffff; padding: 10px 20px; font-size: 14px; text-decoration: none; border-radius: 5px; font-weight: bold;'>
                                     Verify Email
                                 </a>
                             </div>
                             <div style='color: #999; font-size: 12px; text-align: center; margin-top: 20px;'>
-                                <p>If you didn’t sign up for Deadstock, you can safely ignore this email.</p>
+                                <p>If you didn’t sign up for Destock, you can safely ignore this email.</p>
                                 <p>For any assistance, feel free to reach out to our support team.</p>
                             </div>
                         </div>";
