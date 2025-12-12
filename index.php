@@ -240,7 +240,7 @@ if (!empty($topCategories)) {
                     document.addEventListener('DOMContentLoaded', function() {
                         new Swiper('#<?php echo $swiperId; ?>', {
                             slidesPerView: 2,
-                            spaceBetween: 16,
+                            spaceBetween: 0,
                             navigation: {
                                 nextEl: '#<?php echo $swiperId; ?>-next',
                                 prevEl: '#<?php echo $swiperId; ?>-prev',
@@ -248,21 +248,25 @@ if (!empty($topCategories)) {
                             breakpoints: {
                                 640: {
                                     slidesPerView: 3,
-                                    spaceBetween: 20,
+                                    spaceBetween: 0,
                                 },
                                 768: {
                                     slidesPerView: 4,
-                                    spaceBetween: 20,
+                                    spaceBetween: 0,
                                 },
                                 1024: {
                                     slidesPerView: 5,
-                                    spaceBetween: 24,
+                                    spaceBetween: 0,
                                 },
                                 1280: {
-                                    slidesPerView: 6,
-                                    spaceBetween: 24,
+                                    slidesPerView: 7,
+                                    spaceBetween: 4,
                                 },
+                                1538: {
+                                    slidesPerView: 10,
+                                    spaceBetween: 4,
                             },
+                        },
                             loop: false,
                             autoplay: {
                                 delay: 5000,
@@ -354,11 +358,6 @@ if (!empty($topCategories)) {
                         cursor: not-allowed;
                     }
 
-                    .swiper-slide{
-                        /* display: flex !important; */
-                        /* justify-content: center; */
-                        width: 200px !important;
-                    }
                     /* Product Card */
                     .product-card {
                         background: #ffffff;
@@ -367,7 +366,8 @@ if (!empty($topCategories)) {
                         transition: all 0.3s;
                         border: 1px solid #e5e5e5;
                         height: 100%;
-                        width: 200px !important;
+                        max-width: 200px;
+                        margin: 0 auto;
                         /* margin-right:5px !important; */
                     }
 
@@ -459,11 +459,6 @@ if (!empty($topCategories)) {
                             padding: 40px 0;
                         }
 
-                        .swiper-slide{
-                            /* display: flex !important; */
-                            /* justify-content: center; */
-                            width: 180px !important;
-                        }
                         .section-header {
                             flex-wrap: wrap;
                             gap: 16px;
