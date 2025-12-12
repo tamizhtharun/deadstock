@@ -14,22 +14,23 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #fdf8f3 0%, #fff5eb 100%);
-            min-height: 100vh;
+            height: 100vh !important;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #5a3a2a;
             position: relative;
-            overflow-x: hidden;
+            overflow-x: hidden !important;
         }
 
         /* Subtle background decoration */
         .bg-decoration {
             position: absolute;
-            width: 500px;
-            height: 500px;
+            /* width: 500px; */
+            /* height: 500px; */
+            overflow: hidden !important;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(184, 115, 51, 0.05), transparent);
+            /* background: radial-gradient(circle, rgba(184, 115, 51, 0.05), transparent); */
             pointer-events: none;
         }
 
