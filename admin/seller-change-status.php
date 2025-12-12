@@ -45,15 +45,15 @@ try {
 
         // Server settings
         $mail->isSMTP();
-        $mail->Host = 'p3plzcpnl508868.prod.phx3.secureserver.net';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'support@thedeadstock.in';
-        $mail->Password = 'Deadstock@2025';
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $mail->Port = 465;
+                    $mail->Host       = 'smtp.zoho.in';      // try smtp.zoho.in, or smtp.zoho.com if that fails
+                    $mail->SMTPAuth   = true;
+                    $mail->Username   = 'support@destock.in';
+                    $mail->Password   = '3q7Y4a0bnfni';
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // 'tls'
+                    $mail->Port       = 587;
 
         // Recipients
-        $mail->setFrom('support@thedeadstock.in', 'Deadstock');
+        $mail->setFrom('support@destock.in', 'Deadstock');
         $mail->addAddress($seller_email, $seller_name);
 
         // Content
@@ -63,7 +63,7 @@ try {
             <h1>Hello, {$seller_name}!</h1>
             <p>Your account has been activated by Admin. You can now log in and start using our platform.</p>
             <br>
-            <p>Best regards,<br>Deadstock</p>
+            <p>Best regards,<br>Destock</p>
 HTML;
 
         $mail->send();
