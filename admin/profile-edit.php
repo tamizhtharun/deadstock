@@ -66,11 +66,9 @@ if(isset($_POST['form2'])) {
 	$valid = 1;
 
 	$path = $_FILES['user_photo']['name'];
-    $path_tmp = $_FILES['user_photo']['tmp_name'];
 
     if($path!='') {
         $ext = pathinfo( $path, PATHINFO_EXTENSION );
-        $file_name = basename( $path, '.' . $ext );
         if( $ext!='jpg' && $ext!='png' && $ext!='jpeg' && $ext!='gif' ) {
             $valid = 0;
             $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
@@ -78,23 +76,29 @@ if(isset($_POST['form2'])) {
     }
 
     if($valid == 1) {
-
-    	// removing the existing photo
+    	// Remove the existing photo
     	if($_SESSION['admin_session']['user_photo']!='') {
     		unlink('../assets/uploads/profile-pictures/'.$_SESSION['admin_session']['user_photo']);	
     	}
-		$ext = pathinfo( $path, PATHINFO_EXTENSION );
-    	// updating the data
-    	$final_name = 'user-'.$_SESSION['admin_session']['id'].'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/profile-pictures/'.$final_name );
-        $_SESSION['admin_session']['user_photo'] = $final_name;
-
-        // updating the database
-		$statement = $pdo->prepare("UPDATE user_login SET user_photo=? WHERE id=?");
-		$statement->execute(array($final_name,$_SESSION['admin_session']['id']));
-
-        $success_message = 'User Photo is updated successfully.';
     	
+    	// Use FileOptimizer to process and optimize the image (will convert to WebP)
+    	require_once '../includes/file_optimizer.php';
+    	$final_name = 'user-'.$_SESSION['admin_session']['id'].'.'.$ext;
+    	$uploadDir = '../assets/uploads/profile-pictures/';
+    	
+    	$optimizedFilename = FileOptimizer::processUploadedFile($_FILES['user_photo'], $uploadDir, $final_name);
+    	
+    	if ($optimizedFilename) {
+    		$_SESSION['admin_session']['user_photo'] = $optimizedFilename;
+    		
+    		// updating the database
+			$statement = $pdo->prepare("UPDATE user_login SET user_photo=? WHERE id=?");
+			$statement->execute(array($optimizedFilename,$_SESSION['admin_session']['id']));
+
+        	$success_message = 'User Photo is updated successfully.';
+    	} else {
+    		$error_message .= 'Failed to upload photo<br>';
+    	}
     }
 }
 

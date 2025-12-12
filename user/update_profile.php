@@ -77,7 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($profilePhoto && $profilePhoto['error'] === UPLOAD_ERR_OK) {
         // Validate the file extension
         $path = $profilePhoto['name'];
-        $path_tmp = $profilePhoto['tmp_name'];
         $ext = pathinfo($path, PATHINFO_EXTENSION);
         $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
     
@@ -95,13 +94,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mkdir($uploadDir, 0777, true);
         }
     
-        $targetFilePath = $uploadDir . $profileImageFilename;
-    
-        // Move the uploaded file to the target directory
-        if (!move_uploaded_file($path_tmp, $targetFilePath)) {
+        // Use FileOptimizer to process and optimize the image (will convert to WebP)
+        require_once '../includes/file_optimizer.php';
+        $optimizedFilename = FileOptimizer::processUploadedFile($profilePhoto, $uploadDir, $profileImageFilename);
+        
+        if (!$optimizedFilename) {
             header('Location: profile.php?error=Failed to upload the profile photo');
             exit;
         }
+        
+        $profileImageFilename = $optimizedFilename; // This will have .webp extension
     }
     
     try {

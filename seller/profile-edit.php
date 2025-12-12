@@ -140,10 +140,7 @@ if (isset($_POST['form2'])) {
         $error_message .= 'Please select a photo to upload<br>';
     } else {
         $path = $_FILES['photo']['name'];
-        $path_tmp = $_FILES['photo']['tmp_name'];
-
         $ext = pathinfo($path, PATHINFO_EXTENSION);
-        $file_name = basename($path, '.' . $ext);
 
         if ($ext != 'jpg' && $ext != 'png' && $ext != 'jpeg' && $ext != 'gif') {
             $valid = 0;
@@ -152,21 +149,24 @@ if (isset($_POST['form2'])) {
     }
 
     if ($valid == 1) {
-        // removing the existing photo
-        // if($_SESSION['seller_session']['seller_id']!='') {
-        //     unlink('../assets/uploads/profile-pictures/'.$_SESSION['seller_session']['seller_id']); 
-        // }
-
-        // updating the data
+        // Use FileOptimizer to process and optimize the image (will convert to WebP)
+        require_once '../includes/file_optimizer.php';
         $final_name = 'seller-' . $_SESSION['seller_session']['seller_id'] . '-' . time() . '.' . $ext;
-        move_uploaded_file($path_tmp, '../assets/uploads/profile-pictures/' . $final_name);
-        $_SESSION['seller_session']['seller_photo'] = $final_name;
-
-        // updating the database
-        $statement = $pdo->prepare("UPDATE sellers SET seller_photo=? WHERE seller_id=?");
-        $statement->execute(array($final_name, $_SESSION['seller_session']['seller_id']));
-
-        $success_message = 'User Photo is updated successfully.';
+        $uploadDir = '../assets/uploads/profile-pictures/';
+        
+        $optimizedFilename = FileOptimizer::processUploadedFile($_FILES['photo'], $uploadDir, $final_name);
+        
+        if ($optimizedFilename) {
+            $_SESSION['seller_session']['seller_photo'] = $optimizedFilename;
+            
+            // updating the database
+            $statement = $pdo->prepare("UPDATE sellers SET seller_photo=? WHERE seller_id=?");
+            $statement->execute(array($optimizedFilename, $_SESSION['seller_session']['seller_id']));
+            
+            $success_message = 'User Photo is updated successfully.';
+        } else {
+            $error_message .= 'Failed to upload photo<br>';
+        }
     }
 }
 
