@@ -76,22 +76,30 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 })
 
-// Only bind bidding-order functions on pages that have bidding rows, to avoid conflicts with direct orders
-(function(){
-  const isBiddingPage = !!document.querySelector('.bid-order-row')
-  if (!isBiddingPage) {
-    return
-  }
-
-  window.updateOrderStatus = function(orderId, newStatus) {
+function updateOrderStatus(orderId, newStatus) {
+  if (newStatus === "shipped") {
+    const trackingId = prompt("Please enter the tracking ID:")
+    console.log(trackingId);
+    if (!trackingId) {
+      alert("Tracking ID is required for shipped status.")
+      return
+    }
+    if (!confirm(`Are you sure you want to update the order status to ${newStatus} with tracking ID ${trackingId}?`)) {
+      return
+    }
+    updateOrderStatusWithTracking(orderId, newStatus, trackingId)
+  } else {
     if (!confirm(`Are you sure you want to update the order status to ${newStatus}?`)) {
       return
     }
     updateOrderStatusWithTracking(orderId, newStatus)
   }
-
-  function updateOrderStatusWithTracking(orderId, newStatus, trackingId = null) {
+}
+function updateOrderStatusWithTracking(orderId, newStatus, trackingId = null) {
   let url = `process_bid_order.php?action=update_status&order_id=${orderId}&status=${newStatus}`
+  if (trackingId) {
+    url += `&tracking_id=${encodeURIComponent(trackingId)}`
+  }
 
   fetch(url)
     .then((response) => {
@@ -103,41 +111,27 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((data) => {
       if (data.success) {
         const row = document.querySelector(`tr[data-order-id="${orderId}"]`)
-        if (!row) {
-          console.warn('Row not found for order_id:', orderId)
-          alert(data.message)
-          return
-        }
-
         const statusCell = row.querySelector(".order-status")
         const actionCell = row.querySelector(".action-column")
         const processingTimeCell = row.querySelector(".processing-time")
-        const awbCell = row.querySelector(".awb-number")
+        const trackingIdCell = row.querySelector(".tracking-id")
 
-        if (statusCell) {
-          statusCell.innerHTML = `<span class="status-badge status-${newStatus}">${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}</span>`
-        }
+        statusCell.innerHTML = `<span class="status-badge status-${newStatus}">${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}</span>`
         row.setAttribute("data-status", newStatus)
 
         if (newStatus === "processing") {
-          if (processingTimeCell) {
-            processingTimeCell.textContent = data.processing_time || '-'
-          }
-          if (actionCell) updateActionButtons(actionCell, orderId, newStatus)
+          processingTimeCell.textContent = data.processing_time
+          updateActionButtons(actionCell, orderId, newStatus)
         } else if (newStatus === "shipped") {
-          if (awbCell && data.awb_number) {
-            awbCell.textContent = data.awb_number
-          }
-          if (actionCell) updateActionButtons(actionCell, orderId, newStatus)
+          trackingIdCell.textContent = data.tracking_id
+          updateActionButtons(actionCell, orderId, newStatus)
         } else {
-          if (actionCell) {
-            actionCell.innerHTML = `
-              <button class="btn-status-update disabled">
-                <i class="fa fa-lock"></i>
-                No Actions Available
-              </button>
-            `
-          }
+          actionCell.innerHTML = `
+            <button class="btn-status-update disabled">
+              <i class="fa fa-lock"></i>
+              No Actions Available
+            </button>
+          `
         }
 
         alert(data.message)
@@ -149,60 +143,9 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error:", error)
       alert("Failed to update order status: " + error.message)
     })
-  }
+}
 
-  window.trackShipment = function(orderId) {
-  fetch(`process_bid_order.php?action=track_shipment&order_id=${orderId}`)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-      return response.json()
-    })
-    .then((data) => {
-      if (data.success) {
-        // Display tracking information in a modal
-        let trackingInfo = ''
-        if (data.data && data.data.ShipmentData && data.data.ShipmentData.length > 0) {
-          const shipment = data.data.ShipmentData[0]
-          trackingInfo = `
-            <div style="text-align: left;">
-              <h4>Shipment Tracking Information</h4>
-              <p><strong>AWB Number:</strong> ${shipment.AWB || 'N/A'}</p>
-              <p><strong>Status:</strong> ${shipment.Status || 'N/A'}</p>
-              <p><strong>Location:</strong> ${shipment.Location || 'N/A'}</p>
-              <p><strong>Last Updated:</strong> ${shipment.StatusDateTime || 'N/A'}</p>
-              <p><strong>Description:</strong> ${shipment.StatusDescription || 'N/A'}</p>
-            </div>
-          `
-        } else {
-          trackingInfo = '<p>No tracking information available yet.</p>'
-        }
-        
-        // Create and show modal
-        const modal = document.createElement('div')
-        modal.innerHTML = `
-          <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; justify-content: center; align-items: center;">
-            <div style="background: white; padding: 20px; border-radius: 8px; max-width: 500px; width: 90%; max-height: 80%; overflow-y: auto;">
-              ${trackingInfo}
-              <div style="text-align: center; margin-top: 20px;">
-                <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Close</button>
-              </div>
-            </div>
-          </div>
-        `
-        document.body.appendChild(modal)
-      } else {
-        alert('Error tracking shipment: ' + data.message)
-      }
-    })
-    .catch((error) => {
-      console.error('Error:', error)
-      alert('Failed to track shipment: ' + error.message)
-    })
-  }
-
-  window.updateActionButtons = function(actionCell, orderId, status) {
+function updateActionButtons(actionCell, orderId, status) {
   if (status === "delivered" || status === "canceled") {
     actionCell.innerHTML = `
           <button class="btn-status-update disabled">
@@ -224,16 +167,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let buttonsHtml = ""
-    
-    // Add track shipment button if status is shipped
-    if (status === "shipped") {
-      buttonsHtml += `
-        <button onclick="trackShipment(${orderId})" class="btn-status-update" style="background: #28a745; color: white; margin: 2px;">
-          <i class="fa fa-search"></i> Track Shipment
-        </button>
-      `
-    }
-    
     nextStatuses.forEach((nextStatus) => {
       let icon = ""
       switch (nextStatus) {
@@ -263,9 +196,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     actionCell.innerHTML = `<div class="action-buttons">${buttonsHtml}</div>`
   }
-  }
+}
 
-  window.sendOrder = function(button) {
+function sendOrder(button) {
   if (!confirm("Are you sure you want to send this order to seller?")) {
     return
   }
@@ -317,9 +250,9 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error:", error)
       alert("Failed to send order. Please try again.")
     })
-  }
+}
 
-  window.sendAllOrders = function() {
+function sendAllOrders() {
   if (!confirm("Are you sure you want to send all orders to sellers?")) {
     return
   }
@@ -338,18 +271,18 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error:", error)
       alert("Failed to send all orders. Please try again.")
     })
-  }
+}
 
-  window.openImageModal = function(imgSrc) {
+function openImageModal(imgSrc) {
   const modal = document.getElementById("imageModal")
   const modalImg = document.getElementById("modalImage")
 
   modal.classList.add("show")
   modalImg.src = imgSrc
   document.body.style.overflow = "hidden"
-  }
+}
 
-  window.closeImageModal = function() {
+function closeImageModal() {
   const modal = document.getElementById("imageModal")
   const modalImg = document.getElementById("modalImage")
 
@@ -358,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
     modalImg.src = ""
   }, 300)
   document.body.style.overflow = "auto"
-  }
+}
 
 // Event listeners for modal closing
 document.addEventListener("DOMContentLoaded", () => {
@@ -790,6 +723,3 @@ function updateCertificationTab(certifications) {
   })
 })
 }
-
-// Close IIFE guard opened near top for bidding page checks
-})();

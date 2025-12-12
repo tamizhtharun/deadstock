@@ -363,6 +363,9 @@ require_once('header.php');
         toDate.max = today;
 
         // Initialize DataTable with basic configurations
+        if ($.fn.DataTable.isDataTable('#example1')) {
+            $('#example1').DataTable().destroy();
+        }
         let table = $('#example1').DataTable({
             "paging": true,
             "ordering": true,
