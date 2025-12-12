@@ -391,7 +391,7 @@ body::-webkit-scrollbar-thumb:hover {
 
 .category-box {
     position: relative;
-    flex: 0 0 360px;
+    flex: 0 0 290px;
     height: auto;
     min-height: 420px;
     background: linear-gradient(135deg, var(--cream-bg) 0%, var(--white) 100%);
@@ -753,11 +753,11 @@ body::-webkit-scrollbar-thumb:hover {
 .product-item {
     background: var(--white);
     border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 4px 12px var(--shadow-copper);
+    /* padding: 15px; */
+    /* box-shadow: 0 4px 12px var(--shadow-copper); */
     transition: all 0.3s ease;
     border: 2px solid transparent;
-    width: 200px;
+    width: 180px;
 }
 
 .product-item:hover {
