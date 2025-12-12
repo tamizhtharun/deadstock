@@ -9,30 +9,32 @@ require 'PHPMailer/src/SMTP.php';
 $mail = new PHPMailer(true);
 
 try {
-    // Server settings
-    $mail->isSMTP();
-    $mail->Host = 'p3plzcpnl508868.prod.phx3.secureserver.net';  // Use the actual server hostname from your error message
-    $mail->SMTPAuth = true;
-    $mail->Username = 'support@thedeadstock.in';
-    $mail->Password = 'Deadstock@2025';
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;  // Use SMTPS instead of STARTTLS
-    $mail->Port = 465;  // Port 465 for SMTPS
+    // STARTTLS (preferred)
+$mail->isSMTP();
+$mail->Host       = 'smtp.zoho.in';      // try smtp.zoho.in, or smtp.zoho.com if that fails
+$mail->SMTPAuth   = true;
+$mail->Username   = 'support@destock.in';
+$mail->Password   = '3q7Y4a0bnfni';
+$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // 'tls'
+$mail->Port       = 587;
+$mail->SMTPDebug  = 3; // very verbose - shows server replies
+$mail->Debugoutput = 'html'; // or 'echo' for CLI
     
     // Disable SSL verification for development (remove in production)
-    $mail->SMTPOptions = array(
-        'ssl' => array(
-            'verify_peer' => false,
-            'verify_peer_name' => false,
-            'allow_self_signed' => true
-        )
-    );
+    // $mail->SMTPOptions = array(
+    //     'ssl' => array(
+    //         'verify_peer' => false,
+    //         'verify_peer_name' => false,
+    //         'allow_self_signed' => true
+    //     )
+    // );
     
     // Enable debug mode for testing
     $mail->SMTPDebug = 2;  // 2 for detailed debug output
     $mail->Debugoutput = 'error_log';
     
     // Sender & Recipient
-    $mail->setFrom('support@thedeadstock.in', 'Deadstock');
+    $mail->setFrom('support@destock.in', 'Destock');
     $mail->addAddress('mailtotharun23@gmail.com', 'Tamil');
     
     // Content

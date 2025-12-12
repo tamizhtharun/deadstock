@@ -52,14 +52,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $mail = new PHPMailer(true);
                 try {
                     $mail->isSMTP();
-                    $mail->Host = 'smtp.gmail.com'; // Change to your mail server
-                    $mail->SMTPAuth = true;
-                    $mail->Username = 'deaddstock@gmail.com'; // Your email
-                    $mail->Password = 'fnsdadrefmosspym'; // App password if using Gmail
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                    $mail->Port = 587;
+                    $mail->Host       = 'smtp.zoho.in';      // try smtp.zoho.in, or smtp.zoho.com if that fails
+                    $mail->SMTPAuth   = true;
+                    $mail->Username   = 'support@destock.in';
+                    $mail->Password   = '3q7Y4a0bnfni';
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // 'tls'
+                    $mail->Port       = 587;
 
-                    $mail->setFrom('deaddstock@gmail.com', 'Deadstock');
+                    $mail->setFrom('support@destock.in', 'Destock-Support');
                     $mail->addAddress($email, $username);
                     $mail->isHTML(true);
                     $mail->Subject = 'Email Verification';

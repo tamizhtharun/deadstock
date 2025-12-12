@@ -26,10 +26,12 @@ function sendEmail($recipient_email, $subject, $message, $recipient_type, $attac
     try {
         // Server settings
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
+                    $mail->Host       = 'smtp.zoho.in';      // try smtp.zoho.in, or smtp.zoho.com if that fails
+                    $mail->SMTPAuth   = true;
+                    $mail->Username   = 'support@destock.in';
+                    $mail->Password   = '3q7Y4a0bnfni';
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // 'tls'
+                    $mail->Port       = 587;
 
         // Set sender based on recipient type
         if ($recipient_type === 'seller') {
