@@ -134,6 +134,15 @@
 	      "autoWidth": false
 	    });
 
+	    $('#example1').DataTable({
+	      "paging": true,
+	      "lengthChange": false,
+	      "searching": false,
+	      "ordering": true,
+	      "info": true,
+	      "autoWidth": false
+	    });
+
 	    $('#confirm-delete').on('show.bs.modal', function(e) {
 	      $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
 	    });
