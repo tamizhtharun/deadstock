@@ -1,3 +1,5 @@
+Options -Indexes
+
 RewriteEngine On
 
 # Redirect old URLs to new clean URLs (optional, for SEO)
@@ -21,3 +23,4 @@ RewriteRule ^(.*)$ $1.php [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . 404.php [L]
+RewriteRule . 403.php [L]

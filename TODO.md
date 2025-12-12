@@ -1,15 +1,11 @@
-# TODO: Secure DB Connection Passwords for VPS Hosting
+# TODO: Fix Pagination and Security Issues
 
 ## Completed Tasks
-- [x] Create .gitignore file to exclude .env file from version control
-- [x] Create .env.example file with template for environment variables
-- [x] Update db_connection.php to load DB credentials from .env file with fallback
-- [x] Update config.php to load Razorpay keys from .env file with fallback
-- [x] Create page_views table and run script to fix index page loading issue
+- [x] Add DataTable initialization for #example1 in admin/footer.php with options: paging true, lengthChange false, searching false, ordering true, info true, autoWidth false
+- [x] Prevent directory listing by adding "Options -Indexes" to .htaccess
+- [x] Fix "View catalogue" link in admin/all-products.php to show "No catalogue" when empty instead of linking to directory
 
-## Next Steps for Deployment
-- [ ] Copy .env.example to .env on VPS
-- [ ] Update .env with actual production values (DB credentials, Razorpay keys)
-- [ ] Ensure .env is not committed to repository (already in .gitignore)
-- [ ] Run `php database/run_page_views_sql.php` on server (update DB credentials if needed)
-- [ ] Test the application on VPS to verify connections work
+## Followup Steps
+- [ ] Test the pagination on the admin/all-products.php page to ensure it works correctly
+- [ ] Verify that custom filters (date and status) still work with pagination
+- [ ] Test that directory listing is disabled and catalogue links work properly

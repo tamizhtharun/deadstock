@@ -266,7 +266,7 @@ if (isset($_POST['reject_all'])) {
                                         </select>
                                     </td>
                                     <td><?php echo $row['tcat_name']; ?><br><?php echo $row['mcat_name']; ?><br><?php echo $row['ecat_name']; ?></td>
-                                    <td><a href="../assets/uploads/product-catalogues/<?php echo $row['product_catalogue'] ?>">View catalogue</a> </td>
+                                    <td><?php if (!empty($row['product_catalogue'])) { ?><a href="../assets/uploads/product-catalogues/<?php echo $row['product_catalogue'] ?>" target="_blank">View catalogue</a><?php } else { ?>No catalogue<?php } ?> </td>
                                     <td><?php echo $row['seller_id']; ?>
                                         <div>
                                             <a href="javascript:void(0);" onclick="openSellerModal(<?php echo $row['seller_id']; ?>)">View Seller Details</a>

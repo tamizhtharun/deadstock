@@ -173,7 +173,7 @@ if (!isset($_SESSION['admin_session'])) {
 					</li>
 
 
-					<li class="treeview <?php if (($cur_page == '#') || ($cur_page == 'seller-uploaded-products.php') || ($cur_page == 'seller-approved-products.php')  || ($cur_page == 'seller-rejected-products.php')  || ($cur_page == 'seller-products.php') || ($cur_page == 'seller-approved-product-view.php') || ($cur_page == 'seller-rejected-product-view.php')) {
+					<li class="treeview <?php if (($cur_page == 'all-products.php') || ($cur_page == 'seller-uploaded-products.php') || ($cur_page == 'seller-approved-products.php')  || ($cur_page == 'seller-rejected-products.php')  || ($cur_page == 'seller-products.php') || ($cur_page == 'seller-approved-product-view.php') || ($cur_page == 'seller-rejected-product-view.php')) {
 											echo 'active';
 										} ?>">
 						<a href="#">
