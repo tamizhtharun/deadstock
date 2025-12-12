@@ -1,6 +1,8 @@
 <?php
 ob_start();
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include("../db_connection.php");
 // include("inc/functions.php");
 // include("inc/CSRF_Protect.php");

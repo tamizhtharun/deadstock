@@ -423,6 +423,9 @@ unset($_SESSION['success_message']);
         fromDate.max = today;
         toDate.max = today;
 
+        if ($.fn.DataTable.isDataTable('#example1')) {
+            $('#example1').DataTable().destroy();
+        }
         let table = $('#example1').DataTable({
             "paging": true,
             "ordering": true,
