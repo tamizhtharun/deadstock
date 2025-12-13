@@ -426,11 +426,11 @@ unset($_SESSION['success_message']);
         if ($.fn.DataTable.isDataTable('#example1')) {
             $('#example1').DataTable().destroy();
         }
-        let table = $('#example1').DataTable({
-            "paging": true,
-            "ordering": true,
-            "info": true
-        });
+        // let table = $('#example1').DataTable({
+        //     "paging": true,
+        //     "ordering": true,
+        //     "info": true
+        // });
 
         $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
             let orderDate = new Date(data[5]); // Registration date column

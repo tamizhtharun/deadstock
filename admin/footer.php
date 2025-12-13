@@ -127,8 +127,8 @@
 
 	    $('#example2').DataTable({
 	      "paging": true,
-	      "lengthChange": false,
-	      "searching": false,
+	      "lengthChange": true,
+	      "searching": true,
 	      "ordering": true,
 	      "info": true,
 	      "autoWidth": false
@@ -136,8 +136,17 @@
 
 	    $('#example1').DataTable({
 	      "paging": true,
-	      "lengthChange": false,
-	      "searching": false,
+	      "lengthChange": true,
+	      "searching": true,
+	      "ordering": true,
+	      "info": true,
+	      "autoWidth": false
+	    });
+		// table.destroy();
+	    $('#example3').DataTable({
+	      "paging": true,
+	      "lengthChange": true,
+	      "searching": true,
 	      "ordering": true,
 	      "info": true,
 	      "autoWidth": false
