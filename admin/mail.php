@@ -12,10 +12,10 @@ use PHPMailer\PHPMailer\Exception;
 $success_message = '';
 $error_message = '';
 // Email configuration
-define('SELLER_EMAIL', 'deaddstock@gmail.com');
-define('SELLER_EMAIL_PASSWORD', 'fnsdadrefmosspym');
-define('USER_EMAIL', 'nithish2325@gmail.com');
-define('USER_EMAIL_PASSWORD', 'tjfqbwebxhlsmnyh');
+define('SELLER_EMAIL', 'support@destock.in');
+define('SELLER_EMAIL_PASSWORD', '3q7Y4a0bnfni');
+define('USER_EMAIL', 'support@destock.in');
+define('USER_EMAIL_PASSWORD', '3q7Y4a0bnfni');
 
 // Function to send email with different sender emails and proper attachment handling
 function sendEmail($recipient_email, $subject, $message, $recipient_type, $attachment = null)
