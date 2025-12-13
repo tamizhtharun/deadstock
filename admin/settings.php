@@ -185,6 +185,58 @@ if (isset($_POST['form5'])) { // Check if form5 is submitted
     $success_message = 'Seller terms and conditions updated successfully.';
 }
 
+if (isset($_POST['form_signature'])) {
+    $valid = 1;
+
+    $path = $_FILES['photo_signature']['name'];
+    $path_tmp = $_FILES['photo_signature']['tmp_name'];
+
+    if ($path == '') {
+        $valid = 0;
+        $error_message .= 'You must have to select a photo<br>';
+    } else {
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
+        $file_name = basename($path, '.' . $ext);
+        if ($ext != 'jpg' && $ext != 'png' && $ext != 'jpeg' && $ext != 'gif') {
+            $valid = 0;
+            $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
+        }
+    }
+
+    if ($valid == 1) {
+        // removing the existing photo
+        $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
+        $statement->execute();
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $signature = $row['signature'];
+            $filePath = __DIR__ . '/../assets/uploads/' . $signature;
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+
+        // updating the data
+        $final_name = 'signature' . '.' . $ext;
+        $upload_dir = '../assets/uploads/'; // define the upload directory
+
+        // create the directory if it doesn't exist
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true); // create the directory with recursive permissions
+        }
+
+        // move the uploaded file to the upload directory
+        if (move_uploaded_file($path_tmp, $upload_dir . $final_name)) {
+            // updating the database
+            $statement = $pdo->prepare("UPDATE tbl_settings SET signature=? WHERE id=1");
+            $statement->execute(array($final_name));
+            $success_message = 'Signature is updated successfully.';
+        } else {
+            $error_message = 'Failed to upload signature.';
+        }
+    }
+}
+
 
 
 if (isset($_POST['form6_0'])) {
@@ -911,6 +963,7 @@ foreach ($result as $row) {
     $quote_span_text = $row['quote_span_text'];
     $user_tc = $row['user_tc'];
     $seller_tc = $row['seller_tc'];
+    $signature = $row['signature'];
     $forget_password_message         = $row['forget_password_message'];
     // $total_recent_post_footer        = $row['total_recent_post_footer'];
     // $total_popular_post_footer       = $row['total_popular_post_footer'];
@@ -1024,6 +1077,7 @@ foreach ($result as $row) {
                     <li><a href="#tab_5" data-toggle="tab">Bid Settings</a></li>
                     <li><a href="#tab_6" data-toggle="tab">User T&C</a></li>
                     <li><a href="#tab_7" data-toggle="tab">Seller T&C</a></li>
+                    <li><a href="#tab_signature" data-toggle="tab">Signature</a></li>
 
                 </ul>
                 <div class="tab-content">
@@ -1272,12 +1326,36 @@ foreach ($result as $row) {
                         // if (isset($success_message)) {
                         //     echo '<div id="success-message" class="alert alert-success">' . htmlspecialchars($success_message) . '</div>';
                         // }
-                        // 
+                        //
                         ?>
                     </div>
 
-
-
+                    <div class="tab-pane" id="tab_signature">
+                        <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                            <div class="box box-info">
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-2 control-label">Existing Photo</label>
+                                        <div class="col-sm-6" style="padding-top:6px;">
+                                            <img src="../assets/uploads/<?php echo $signature; ?>" class="existing-photo" style="height:80px;">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-2 control-label">New Photo</label>
+                                        <div class="col-sm-6" style="padding-top:6px;">
+                                            <input type="file" name="photo_signature">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-2 control-label"></label>
+                                        <div class="col-sm-6">
+                                            <button type="submit" class="btn btn-success pull-left" name="form_signature">Update Signature</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
 
                     <div class="tab-pane" id="#">
 

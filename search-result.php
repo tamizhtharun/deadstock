@@ -2,13 +2,16 @@
 include 'header.php';
 include 'db_connection.php';
 
+// Check if this is an AJAX request
+$is_ajax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
 // Get search query and filters from URL
 $search_query = isset($_GET['search_text']) ? trim($_GET['search_text']) : '';
 $category_type = isset($_GET['type']) ? trim($_GET['type']) : '';
 $category_slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
 $category_id = 0; // Will be set based on slug
 $selected_category = isset($_GET['category']) ? trim($_GET['category']) : '';
-$price_filter = isset($_GET['price']) ? floatval($_GET['price']) : 0;
+$price_filter = isset($_GET['price']) ? floatval($_GET['price']) : 100000;
 $sort_by = isset($_GET['sort']) ? trim($_GET['sort']) : 'name_asc';
 
 // Convert slug to ID if slug is provided
@@ -98,7 +101,7 @@ if (!empty($selected_category)) {
 }
 
 // Add price filter
-if ($price_filter > 0) {
+if ($price_filter >= 0 && $price_filter < 100000) {
     $base_sql .= " AND p.p_current_price <= :price";
 }
 
@@ -134,7 +137,7 @@ if (!empty($selected_category)) {
     $stmt->bindParam(':selected_category', $selected_category, PDO::PARAM_INT);
 }
 
-if ($price_filter > 0) {
+if ($price_filter >= 0 && $price_filter < 100000) {
     $stmt->bindParam(':price', $price_filter, PDO::PARAM_INT);
 }
 
@@ -166,6 +169,71 @@ $categories = $cat_stmt ? $cat_stmt->fetchAll(PDO::FETCH_ASSOC) : [];
 // Get price range for filter
 $price_stmt = $pdo->query("SELECT MIN(p_current_price) as min_price, MAX(p_current_price) as max_price FROM tbl_product WHERE p_is_approve = '1'");
 $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
+
+// If AJAX request, only output the product results
+if ($is_ajax) {
+    ob_start();
+    ?>
+    <div class="search-header">
+        <h1 class="search-title">
+            <?php
+            if ($category_type && $category_id) {
+                echo "Products based on category";
+            } elseif (!empty($search_query)) {
+                echo "Search Results for \"" . htmlspecialchars($search_query) . "\"";
+            } else {
+                echo "All Products";
+            }
+            ?>
+        </h1>
+        <p class="search-summary">Found <?php echo $total_results; ?> results</p>
+    </div>
+
+    <?php if ($total_results > 0): ?>
+    <div class="search-grid">
+        <?php foreach ($products as $product): ?>
+            <div class="product-card" data-available="<?php echo $product['stock_quantity'] > 0 ? 'true' : 'false'; ?>">
+                <a href="product/<?php echo urlencode($product['p_slug']); ?>">
+                    <div class="product-img">
+                        <img src="assets/uploads/product-photos/<?php echo htmlspecialchars($product['p_featured_photo']); ?>"
+                             alt="<?php echo htmlspecialchars($product['p_name']); ?>"
+                             class="product-image">
+                    </div>
+                    <div class="product-details">
+                        <div class="product-name">
+                            <h2 class="product-name"><?php echo htmlspecialchars($product['p_name']); ?></h2>
+                        </div>
+                        <div class="product-meta">
+                            <i class="fas fa-tag"></i>
+                            <span class="product-category"><?php echo htmlspecialchars($product['mcat_name']); ?></span>
+                        </div>
+
+                        <div class="product-meta">
+                            <i class="fas fa-box"></i>
+                            <span class="product-stock">
+                                <?php echo $product['stock_quantity'] > 0 ? 'In Stock' : 'Out of Stock'; ?>
+                            </span>
+                        </div>
+                        <div class="price-tag">
+                            <p class="product-price">₹<?php echo number_format($product['p_current_price'], 2); ?></p>
+                            <p class="product-old-price">₹<?php echo number_format($product['p_old_price'], 2); ?></p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <?php else: ?>
+        <div class="no-results">
+            <i class="fas fa-search"></i>
+            <h2>No products found</h2>
+            <p>Try different keywords or browse our categories</p>
+        </div>
+    <?php endif; ?>
+    <?php
+    echo ob_get_clean();
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -213,16 +281,16 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
                     <div class="filter-group">
     <label class="filter-label" for="price-range">Maximum Price</label>
     <div class="price-slider-wrapper">
-        <input type="range" 
-               id="price-range" 
-               name="price" 
-               min="<?php echo floor($price_range['min_price']); ?>"
-               max="<?php echo ceil($price_range['max_price']); ?>"
-               value="<?php echo $price_filter ?: ceil($price_range['max_price']); ?>"
-               step="1">
+        <input type="range"
+               id="price-range"
+               name="price"
+               min="0"
+               max="100000"
+               value="<?php echo $price_filter ?: 100000; ?>"
+               step="1000">
         <div id="price-display">
             <span class="price-label">Max</span>
-            <span class="price-value">₹<?php echo number_format($price_filter ?: $price_range['max_price'], 2); ?></span>
+            <span class="price-value">₹<?php echo ($price_filter == 100000) ? '100000+' : number_format($price_filter ?: 100000, 2); ?></span>
         </div>
     </div>
 </div>
@@ -233,7 +301,7 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
         </aside>
 
         <!-- Search Results Container -->
-        <div class="search-results-container">
+        <div class="search-results-container" id="product-results">
             <div class="search-header">
                 <h1 class="search-title">
                     <?php 
@@ -297,7 +365,9 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
         document.addEventListener('DOMContentLoaded', function() {
     const priceRange = document.getElementById('price-range');
     const priceDisplay = document.getElementById('price-display');
-    
+    const filterForm = document.getElementById('filter-form');
+    const productResults = document.getElementById('product-results');
+
     if (priceRange && priceDisplay) {
         // Function to update slider appearance
         function updateSliderVisual() {
@@ -305,32 +375,62 @@ $price_range = $price_stmt->fetch(PDO::FETCH_ASSOC);
             const min = parseFloat(priceRange.min);
             const max = parseFloat(priceRange.max);
             const percentage = ((value - min) / (max - min)) * 100;
-            
+
             // Update the display text
-            priceDisplay.textContent = '₹' + value.toLocaleString('en-IN', {
-                maximumFractionDigits: 2,
-                minimumFractionDigits: 2
-            });
-            
+            if (value == 100000) {
+                priceDisplay.textContent = '₹100000+';
+            } else {
+                priceDisplay.textContent = '₹' + value.toLocaleString('en-IN', {
+                    maximumFractionDigits: 2,
+                    minimumFractionDigits: 2
+                });
+            }
+
             // Update the slider background gradient
-            priceRange.style.background = `linear-gradient(to right, 
-                #d4a574 0%, 
-                #b87333 ${percentage}%, 
-                #f5f5f5 ${percentage}%, 
+            priceRange.style.background = `linear-gradient(to right,
+                #d4a574 0%,
+                #b87333 ${percentage}%,
+                #f5f5f5 ${percentage}%,
                 #f5f5f5 100%)`;
         }
-        
+
         // Initialize on page load
         updateSliderVisual();
-        
+
         // Update on input (while dragging)
         priceRange.addEventListener('input', function() {
             updateSliderVisual();
         });
-        
+
         // Update on change (when released)
         priceRange.addEventListener('change', function() {
             updateSliderVisual();
+        });
+    }
+
+    // Handle form submission with AJAX
+    if (filterForm) {
+        filterForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent page reload
+
+            const formData = new FormData(filterForm);
+            const params = new URLSearchParams(formData);
+
+            // Make AJAX request
+            fetch(window.location.pathname + '?' + params.toString(), {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Update the product results container
+                productResults.innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         });
     }});
     </script>

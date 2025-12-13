@@ -503,22 +503,6 @@ function loadInvoiceContent(modal, orderId) {
                                 </div>
 <?php elseif($row['order_status'] === 'shipped'): ?>
     <div class="action-buttons">
-<<<<<<< HEAD
-        <button 
-            class="btn-status-update" 
-            onclick="updateOrderStatus(<?php echo $row['order_id']; ?>, 'delivered')">
-            <i class="fa fa-check-circle"></i> Delivered
-        </button>
-        <button 
-            class="btn-status-update" 
-            onclick="updateOrderStatus(<?php echo $row['order_id']; ?>, 'canceled')">
-            <i class="fa fa-times-circle"></i> Cancelled
-        </button>
-<a href="generate_invoice.php?order_id=<?php echo $row['order_id']; ?>" 
-   class="btn btn-sm mt-1" style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;">
-   <i class="fa fa-file-pdf-o"></i> Generate Invoice
-</a>
-=======
         <!-- <button
             class="btn-status-update"
             onclick="updateOrderStatus(<?php echo $first_order_id; ?>, 'delivered')">
@@ -543,7 +527,6 @@ function loadInvoiceContent(modal, orderId) {
     onclick="openInvoiceModal(<?php echo $first_order_id; ?>)">
     <i class="fa fa-file-pdf-o"></i> Generate Invoice
 </button>
->>>>>>> main
     </div>
 <?php else: ?>
                                 <button class="btn-status-update disabled">

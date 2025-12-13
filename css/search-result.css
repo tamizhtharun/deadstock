@@ -59,6 +59,7 @@ body {
   height: fit-content;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-light);
+  z-index: 10;
 }
 
 .filter-section {
@@ -144,6 +145,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   height: 4px;
   background: #e5e5e5;
   border-radius: 2px;
+  cursor: pointer;
 }
 
 input[type="range"]::-moz-range-track {
@@ -151,6 +153,7 @@ input[type="range"]::-moz-range-track {
   height: 4px;
   background: #e5e5e5;
   border-radius: 2px;
+  cursor: pointer;
 }
 /* Range Input Base */
 input[type="range"] {

@@ -139,7 +139,7 @@
     transform: translateY(-50%);
     color: var(--copper-primary);
     pointer-events: none;
-    transition: all var(--ds-transition-speed) ease;
+    /* transition: all var(--ds-transition-speed) ease; */
     z-index: 1;
 }
 
