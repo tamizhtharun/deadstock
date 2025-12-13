@@ -280,7 +280,7 @@ unset($_SESSION['success_message']);
             </div>
             <div class="box box-info">
                 <div class="box-body table-responsive">
-                    <table id="example1" class="table table-bordered table-hover table-striped">
+                    <table id="example5" class="table table-bordered table-hover table-striped">
                         <thead>
                             <tr>
                                 <th width="5px">#</th>
@@ -423,14 +423,14 @@ unset($_SESSION['success_message']);
         fromDate.max = today;
         toDate.max = today;
 
-        if ($.fn.DataTable.isDataTable('#example1')) {
-            $('#example1').DataTable().destroy();
+        if ($.fn.DataTable.isDataTable('#example5')) {
+            $('#example5').DataTable().destroy();
         }
-        // let table = $('#example1').DataTable({
-        //     "paging": true,
-        //     "ordering": true,
-        //     "info": true
-        // });
+        let table = $('#example5').DataTable({
+            "paging": true,
+            "ordering": true,
+            "info": true
+        });
 
         $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
             let orderDate = new Date(data[5]); // Registration date column
