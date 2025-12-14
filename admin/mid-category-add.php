@@ -19,6 +19,12 @@ if(isset($_POST['form1'])) {
 		// Saving data into the main table tbl_mid_category
 		$statement = $pdo->prepare("INSERT INTO tbl_mid_category (mcat_name,tcat_id) VALUES (?,?)");
 		$statement->execute(array($_POST['mcat_name'],$_POST['tcat_id']));
+		
+		// Clear homepage cache
+		$homeCache = __DIR__ . '/../cache/home.html';
+		if (file_exists($homeCache)) {
+			unlink($homeCache);
+		}
 	
     	$success_message = 'Mid Level Category is added successfully.';
     }

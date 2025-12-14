@@ -81,6 +81,12 @@ if(!isset($_REQUEST['id'])) {
 	// Delete from tbl_mid_category
 	$statement = $pdo->prepare("DELETE FROM tbl_mid_category WHERE mcat_id=?");
 	$statement->execute(array($_REQUEST['id']));
+	
+	// Clear homepage cache
+	$homeCache = __DIR__ . '/../cache/home.html';
+	if (file_exists($homeCache)) {
+		unlink($homeCache);
+	}
 
 	header('location: mid-category.php');
 ?>

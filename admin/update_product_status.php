@@ -54,6 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             $stmt->execute();
             
+            // Clear featured products cache
+            require_once('../includes/cache_helper.php');
+            clearCache('featured_products');
+            
             $response['success'] = true;
             $response['message'] = 'Status updated successfully';
         }

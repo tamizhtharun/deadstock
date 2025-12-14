@@ -57,6 +57,11 @@ if(isset($_POST['form1'])) {
 				// Update database with new photo and heading
 				$statement = $pdo->prepare("UPDATE tbl_slider SET photo=?, heading=? WHERE id=?");
 				$statement->execute(array($optimizedFilename,$_POST['heading'],$_REQUEST['id']));
+				
+				// Clear hero banner cache
+				require_once('../includes/cache_helper.php');
+				clearCache('hero_banner');
+				
 				$success_message = 'Slider updated successfully!';
 			} else {
 				$error_message .= 'Failed to save slider image<br>';
@@ -68,6 +73,11 @@ if(isset($_POST['form1'])) {
 		// Only update heading
 		$statement = $pdo->prepare("UPDATE tbl_slider SET heading=? WHERE id=?");
 		$statement->execute(array($_POST['heading'],$_REQUEST['id']));
+		
+		// Clear hero banner cache
+		require_once('../includes/cache_helper.php');
+		clearCache('hero_banner');
+		
 		$success_message = 'Slider updated successfully!';
 	}
 }

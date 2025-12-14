@@ -1,9 +1,11 @@
 <?php require_once('header.php');
 require_once('track_view.php');
+require_once('includes/cache_helper.php');
 trackPageView('HP', 'Home page');
 ?>
 <link rel="stylesheet" href="/css/index.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+<?php renderCached('categories', 300, function() use ($pdo, $quote_span_text, $quote_text, $favicon) { ?>
 <div class="category-pad">
     <div class="category-box">
         <ul class="categories">
@@ -40,7 +42,7 @@ trackPageView('HP', 'Home page');
                                             <a href="search-result.php?type=end-category&slug=<?php echo urlencode($row2['ecat_slug']); ?>">
                                                 <?php echo $row2['ecat_name']; ?>
                                             </a>
-                                        </li>
+                                </li>
                                     <?php
                                     }
                                     ?>
@@ -92,7 +94,9 @@ trackPageView('HP', 'Home page');
 </div>
     </div>
 </div>
+<?php }); ?>
 
+<?php renderCached('hero_banner', 300, function() use ($pdo) { ?>
 <!-- banner -->
 <div class="banner">
     <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
@@ -126,6 +130,7 @@ trackPageView('HP', 'Home page');
         </button>
     </div>
 </div>
+<?php }); ?>
 
 <!-- end banner  -->
 
@@ -137,6 +142,7 @@ trackPageView('HP', 'Home page');
 <!-- Live Bidding -->
 
 <!-- Display the product -->
+ <?php renderCached('featured_products', 300, function() use ($pdo) { ?>
  <?php
 // Replace your existing product carousel section with this code
 
@@ -514,8 +520,8 @@ if (!empty($topCategories)) {
 ?>
 
 
-
 <!-- End Display the product -->
+<?php }); ?>
 
 <!-- Display the Best selling Product -->
 <?php //require_once('best-selling-homepage.php')
@@ -553,6 +559,7 @@ if (!empty($topCategories)) {
         /* Bold "Buy" text slightly larger */
     }
 </style>
+
 
 
 <?php require_once('footer.php'); ?>

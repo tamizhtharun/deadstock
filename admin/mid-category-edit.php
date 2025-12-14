@@ -18,6 +18,12 @@ if(isset($_POST['form1'])) {
 		// updating into the database
 		$statement = $pdo->prepare("UPDATE tbl_mid_category SET mcat_name=?,tcat_id=? WHERE mcat_id=?");
 		$statement->execute(array($_POST['mcat_name'],$_POST['tcat_id'],$_REQUEST['id']));
+	
+	// Clear homepage cache
+	$homeCache = __DIR__ . '/../cache/home.html';
+	if (file_exists($homeCache)) {
+		unlink($homeCache);
+	}
 
     	$success_message = 'Mid Level Category is updated successfully.';
     }

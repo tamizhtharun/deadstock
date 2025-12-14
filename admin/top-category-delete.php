@@ -99,6 +99,12 @@ if(!isset($_REQUEST['id'])) {
 	// Delete from tbl_top_category
 	$statement = $pdo->prepare("DELETE FROM tbl_top_category WHERE tcat_id=?");
 	$statement->execute(array($_REQUEST['id']));
+	
+	// Clear homepage cache
+	$homeCache = __DIR__ . '/../cache/home.html';
+	if (file_exists($homeCache)) {
+		unlink($homeCache);
+	}
 
 	header('location: top-category.php');
 ?>
