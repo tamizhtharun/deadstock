@@ -299,7 +299,16 @@ $addresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             ondismiss: function() {
                                 orderButton.disabled = false;
                                 orderButton.textContent = 'Place Order';
-                            }
+                            },
+                            confirm_close: true,
+                            escape: true,
+                            animation: true,
+                            backdropclose: false
+                        },
+                        notes: {
+                            subtotal: data.subtotal,
+                            gst_amount: data.gst_amount,
+                            total: data.total
                         }
                     };
 

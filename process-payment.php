@@ -27,9 +27,10 @@ try {
     function getOrderItems($pdo) {
         $user_id = $_SESSION['user_session']['id'];
         $stmt = $pdo->prepare("
-            SELECT 
+            SELECT
                 p.id,
                 p.p_current_price,
+                p.gst_percentage,
                 c.quantity
             FROM tbl_cart c
             JOIN tbl_product p ON p.id = c.id
@@ -43,21 +44,25 @@ try {
     function calculateTotal($items) {
         $subtotal = 0;
         $total_gst = 0;
-        $gst_rate = 18; // GST rate in percentage
 
         foreach ($items as $item) {
             $item_total = $item['p_current_price'] * $item['quantity'];
-            $product_gst = $item_total * ($gst_rate / 100);
+            $product_gst = $item_total * ($item['gst_percentage'] / 100);
             $subtotal += $item_total;
             $total_gst += $product_gst;
         }
 
         $total = $subtotal + $total_gst;
-        return $total;
+        return [
+            'subtotal' => $subtotal,
+            'gst_amount' => $total_gst,
+            'total' => $total
+        ];
     }
 
     $items = getOrderItems($pdo);
-    $totalAmount = calculateTotal($items);
+    $summary = calculateTotal($items);
+    $totalAmount = $summary['total'];
 
     // Initialize Razorpay
     $api = new Api(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET);
