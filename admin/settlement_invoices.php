@@ -333,12 +333,11 @@ unset($_SESSION['success_message']);
                                         <i class="fa fa-eye"></i> View Products
                                     </a>
 
-                                    <a href="generate_invoice.php?invoice_number=<?php echo urlencode($invoice['invoice_number']); ?>"
-                                       class="btn btn-sm btn-primary"
-                                       title="View invoice"
-                                       target="_blank">
+                                    <button class="btn btn-sm btn-primary"
+                                            title="View invoice"
+                                            onclick="openInvoiceModal('<?php echo htmlspecialchars($invoice['invoice_number']); ?>')">
                                         <i class="fa fa-file-text"></i> View Invoice
-                                    </a>
+                                    </button>
 
                                     <?php if ($invoice['is_settled'] == 0 && $invoice['all_delivered'] == 1): ?>
                                     <form method="POST" action="settlement_process.php" style="display: inline;">
@@ -367,5 +366,8 @@ unset($_SESSION['success_message']);
         </div>
     </div>
 </section>
+
+<!-- Include the invoice modal -->
+<?php require_once('invoice_modal.php'); ?>
 
 <?php require_once('footer.php'); ?>

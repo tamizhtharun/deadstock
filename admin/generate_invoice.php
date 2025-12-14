@@ -589,173 +589,170 @@ function numberToWords($number) {
         </div>
     </div>
 
-    <!-- Invoice Actions Footer (cloned from modal) -->
-    <div class="invoice-modal-footer">
-        <button id="downloadInvoiceBtn" class="invoice-action-btn download-btn" onclick="downloadInvoicePDF()">
-            <i class="fa fa-download"></i> Download PDF
-        </button>
-        <button id="printInvoiceBtn" class="invoice-action-btn print-btn" onclick="printInvoice()">
-            <i class="fa fa-print"></i> Print
-        </button>
-    </div>
+    <?php
+    // Check if this is an AJAX request (for modal loading)
+    $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
+    if ($isAjax) {
+        // Output only the invoice content for modal
+        echo '<div class="invoice-wrapper">';
+        // Include the invoice HTML content here
+        ?>
+        <div class="invoice-container">
+            <!-- Header -->
+            <div class="invoice-header">
+                <div class="logo-section">
+                    <?php
+                    $logo_path = '../assets/uploads/logo.png';
+                    if (file_exists($logo_path)):
+                    ?>
+                        <img src="<?php echo $logo_path; ?>" alt="Company Logo">
+                    <?php else: ?>
+                        <h2>Destock</h2>
+                    <?php endif; ?>
+                </div>
+                <div class="company-details">
+                    <h1>TAX INVOICE</h1>
+                    <p><strong>DESTOCK</strong></p>
+                    <p>Imet Tooling India Pvt. Ltd.</p>
+                </div>
+            </div>
+
+            <!-- Invoice & Customer Info -->
+            <div class="invoice-info-grid">
+                <div class="info-box">
+                    <h3>Invoice Details</h3>
+                    <p><strong>Invoice No:</strong> <?php echo htmlspecialchars($invoice_number); ?></p>
+                    <p><strong>Invoice Date:</strong> <?php echo !empty($first_order['processing_time']) ? date('d M, Y', strtotime($first_order['processing_time'])) : date('d M, Y'); ?></p>
+                    <p><strong>Order Type:</strong> <?php echo ucfirst($order_type); ?></p>
+                    <?php if (!empty($first_order['tracking_id'])): ?>
+                    <p><strong>Tracking ID:</strong> <?php echo htmlspecialchars($first_order['tracking_id']); ?></p>
+                    <?php endif; ?>
+                </div>
+
+                <div class="info-box">
+                    <h3>Bill To / Ship To</h3>
+                    <p><strong>Name:</strong> <?php echo !empty($first_order['full_name']) ? htmlspecialchars($first_order['full_name']) : htmlspecialchars($first_order['username']); ?></p>
+                    <p><strong>Email:</strong> <?php echo htmlspecialchars($first_order['email']); ?></p>
+                    <p><strong>Phone:</strong> <?php echo !empty($first_order['delivery_phone']) ? htmlspecialchars($first_order['delivery_phone']) : htmlspecialchars($first_order['phone_number']); ?></p>
+                    <?php if (!empty($first_order['address'])): ?>
+                    <p><strong>Address:</strong><br>
+                        <?php echo htmlspecialchars($first_order['address']); ?><br>
+                        <?php echo htmlspecialchars($first_order['city']) . ', ' . htmlspecialchars($first_order['state']) . ' - ' . htmlspecialchars($first_order['pincode']); ?>
+                    </p>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="product-section">
+                <h3>Product Details</h3>
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-right">Unit Price</th>
+                            <th class="text-center">HSN Code</th>
+                            <th class="text-right">Tax (GST)</th>
+                            <th class="text-right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($orders as $order): ?>
+                            <?php
+                            $product_subtotal = $order['price'] * $order['quantity'];
+                            $product_tax = $product_subtotal * ($order['gst_percentage'] / 100);
+                            $product_total = $product_subtotal + $product_tax;
+                            ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($order['p_name']); ?></td>
+                                <td class="text-center"><?php echo $order['quantity']; ?></td>
+                                <td class="text-right">₹<?php echo number_format($order['price'], 2); ?></td>
+                                <td class="text-center"><?php echo htmlspecialchars($order['hsn_code'] ?? '1234'); ?></td>
+                                <td class="text-right">₹<?php echo number_format($product_tax, 2); ?> (<?php echo $order['gst_percentage']; ?>%)</td>
+                                <td class="text-right"><strong>₹<?php echo number_format($product_total, 2); ?></strong></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Summary -->
+            <div class="summary-section">
+                <div class="summary-box">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span>₹<?php echo number_format($subtotal, 2); ?></span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax (GST):</span>
+                        <span>₹<?php echo number_format($tax_amount, 2); ?></span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Grand Total:</span>
+                        <span>₹<?php echo number_format($grand_total, 2); ?></span>
+                    </div>
+                    <div class="amount-words">
+                        <strong>Amount in Words:</strong><br>
+                        <?php echo ucfirst(numberToWords(floor($grand_total))); ?> Rupees Only
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="invoice-footer">
+                <div class="signature-section">
+                    <div class="signature-box">
+                        <?php
+                        $signature_path = '../assets/uploads/signature.png';
+                        if (file_exists($signature_path)):
+                        ?>
+                            <img src="<?php echo $signature_path; ?>" alt="Signature">
+                        <?php endif; ?>
+                        <div class="signature-line">
+                            Authorized Signature
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Computer Generated Text - Absolute positioned at bottom -->
+        <div class="computer-generated">
+            This is a computer-generated invoice and does not require a physical signature.
+        </div>
+        <?php
+        echo '</div>';
+        exit; // Exit after outputting the invoice content for AJAX
+    } else {
+        // Regular page load - include modal and show full page
+        ?>
+        <!-- Include the invoice modal -->
+        <?php require_once('invoice_modal.php'); ?>
+
+        <script>
+        // Automatically open the invoice modal when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the invoice content and move it to the modal
+            const invoiceWrapper = document.querySelector('.invoice-wrapper');
+            const modalContent = document.getElementById('invoiceContent');
+
+            if (invoiceWrapper && modalContent) {
+                // Move the invoice content to the modal
+                modalContent.innerHTML = '';
+                modalContent.appendChild(invoiceWrapper);
+
+                // Show the modal
+                const modal = document.getElementById('invoiceModal');
+                if (modal) {
+                    modal.style.display = 'block';
+                }
+            }
+        });
+        </script>
+        <?php
+    }
+    ?>
 </body>
 </html>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-<script>
-let currentOrderId = null;
-
-// Make functions global
-window.downloadInvoicePDF = function() {
-    console.log('Download function called');
-    const downloadBtn = document.getElementById('downloadInvoiceBtn');
-
-    if (typeof html2pdf === 'undefined') {
-        alert('PDF library is not loaded yet. Please check your internet connection and try again.');
-        return;
-    }
-
-    const invoiceElement = document.querySelector('.invoice-wrapper');
-    if (!invoiceElement) {
-        alert('Invoice content not found. Please wait for the invoice to load.');
-        return;
-    }
-
-    // Get invoice number for filename
-    const invoiceNumElement = invoiceElement.querySelector('.info-box p');
-    let filename = 'Invoice.pdf';
-    if (invoiceNumElement) {
-        const text = invoiceNumElement.textContent;
-        const match = text.match(/Invoice No:\s*(.+)/);
-        if (match) {
-            filename = match[1].trim() + '.pdf';
-        }
-    }
-
-    const opt = {
-        margin: 0,
-        filename: filename,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: {
-            scale: 2,
-            useCORS: true,
-            logging: true,
-            allowTaint: true
-        },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    // Show loading state
-    const originalText = downloadBtn.innerHTML;
-    downloadBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Generating...';
-    downloadBtn.disabled = true;
-
-    html2pdf().set(opt).from(invoiceElement).save()
-        .then(() => {
-            console.log('PDF generated successfully');
-            downloadBtn.innerHTML = originalText;
-            downloadBtn.disabled = false;
-        })
-        .catch(err => {
-            console.error('PDF Generation Error:', err);
-            alert('Error generating PDF: ' + (err.message || err));
-            downloadBtn.innerHTML = originalText;
-            downloadBtn.disabled = false;
-        });
-};
-
-window.printInvoice = function() {
-    console.log('Print function called');
-    const invoiceWrapper = document.querySelector('.invoice-wrapper');
-    if (!invoiceWrapper) return;
-
-    // Open new window
-    const printWindow = window.open('', '_blank', 'height=600,width=800');
-    if (!printWindow) {
-        alert('Please allow popups for this website to print the invoice.');
-        return;
-    }
-
-    printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Print Invoice</title>
-            <style>
-                @page { size: A4; margin: 0; }
-                body { margin: 0; padding: 0; background: white; font-family: Arial, sans-serif; }
-                .invoice-wrapper { width: 100% !important; box-shadow: none !important; margin: 0 !important; }
-                .no-print { display: none !important; }
-            </style>
-        </head>
-        <body>
-            ${invoiceWrapper.outerHTML}
-            <script>
-                window.onload = function() {
-                    setTimeout(function() {
-                        window.print();
-                        window.close();
-                    }, 500);
-                };
-            <\/script>
-        </body>
-        </html>
-    `);
-    printWindow.document.close();
-    printWindow.focus();
-};
-</script>
-
-<style>
-.invoice-modal-footer {
-    padding: 20px;
-    background: #f8f9fa;
-    border-top: 1px solid #dee2e6;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.invoice-action-btn {
-    padding: 12px 30px;
-    border: none;
-    border-radius: 5px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.download-btn {
-    background: #28a745;
-    color: #fff;
-}
-
-.download-btn:hover {
-    background: #218838;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
-}
-
-.print-btn {
-    background: #007bff;
-    color: #fff;
-}
-
-.print-btn:hover {
-    background: #0056b3;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
-}
-
-@media print {
-    .invoice-modal-footer {
-        display: none;
-    }
-}
-</style>
