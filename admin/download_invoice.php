@@ -6,25 +6,15 @@
 
 require_once('../db_connection.php');
 
-// Get order_id from GET
-$order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : null;
+// Get invoice_number from GET
+$invoice_number = isset($_GET['invoice_number']) ? $_GET['invoice_number'] : null;
 
-if (!$order_id) {
-    die("Invalid order ID");
+if (!$invoice_number) {
+    die("Invalid invoice number");
 }
 
 // Get invoice number for filename
-$invoice_filename = 'Invoice';
-try {
-    $stmt = $pdo->prepare("SELECT invoice_number FROM tbl_orders WHERE id = ?");
-    $stmt->execute([$order_id]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($result && !empty($result['invoice_number'])) {
-        $invoice_filename = $result['invoice_number'];
-    }
-} catch (Exception $e) {
-    // Use default filename if query fails
-}
+$invoice_filename = $invoice_number;
 
 // Load invoice HTML
 ob_start();

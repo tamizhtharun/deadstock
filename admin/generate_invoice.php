@@ -1,5 +1,6 @@
 <?php
 require_once('../db_connection.php');
+require_once('invoice_helper.php');
 
 // Helper function to fetch settings
 function getSettings($pdo) {
@@ -8,27 +9,14 @@ function getSettings($pdo) {
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-// Helper function to fetch direct order details (with HSN code)
-function getDirectOrderDetails($pdo, $order_id_param) {
-    // Check if order_id_param is numeric (tbl_orders.id) or string (order_id)
-    if (is_numeric($order_id_param)) {
-        // If numeric, it's tbl_orders.id, get the order_id first
-        $stmt = $pdo->prepare("SELECT order_id FROM tbl_orders WHERE id = ? AND order_type = 'direct'");
-        $stmt->execute([$order_id_param]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$result) return [];
-        $order_id = $result['order_id'];
-    } else {
-        // If string, it's already the order_id
-        $order_id = $order_id_param;
-    }
-
-    // Fetch all products for this order_id
+// Helper function to fetch direct order details by invoice_number (with HSN code)
+function getDirectOrderDetails($pdo, $invoice_number) {
+    // Fetch all products for this invoice_number
     $stmt = $pdo->prepare("SELECT
         o.id, o.order_id, o.invoice_number, o.price, o.quantity, o.order_status,
         o.processing_time, o.tracking_id, o.created_at,
         p.id AS product_id, p.p_name, p.hsn_code, p.p_featured_photo, p.gst_percentage,
-        s.seller_name, s.seller_cname, s.seller_email, s.seller_phone, s.seller_address,
+        s.seller_id, s.seller_name, s.seller_cname, s.seller_email, s.seller_phone, s.seller_address,
         u.username, u.email, u.phone_number,
         ua.full_name, ua.phone_number as delivery_phone, ua.address, ua.city, ua.state, ua.pincode
         FROM tbl_orders o
@@ -36,9 +24,9 @@ function getDirectOrderDetails($pdo, $order_id_param) {
         JOIN sellers s ON p.seller_id = s.seller_id
         JOIN users u ON o.user_id = u.id
         LEFT JOIN users_addresses ua ON o.address_id = ua.id
-        WHERE o.order_id = ? AND o.order_type = 'direct'
+        WHERE o.invoice_number = ? AND o.order_type = 'direct'
         ORDER BY o.created_at ASC");
-    $stmt->execute([$order_id]);
+    $stmt->execute([$invoice_number]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -62,7 +50,7 @@ function getBiddingOrderDetails($pdo, $order_id_param) {
         o.id, o.order_id, o.invoice_number, b.bid_price AS price, b.bid_quantity AS quantity,
         o.order_status, o.processing_time, o.tracking_id, o.created_at,
         p.id AS product_id, p.p_name, p.hsn_code, p.p_featured_photo, p.gst_percentage,
-        s.seller_name, s.seller_cname, s.seller_email, s.seller_phone, s.seller_address,
+        s.seller_id, s.seller_name, s.seller_cname, s.seller_email, s.seller_phone, s.seller_address,
         u.username, u.email, u.phone_number,
         ua.full_name, ua.phone_number as delivery_phone, ua.address, ua.city, ua.state, ua.pincode
         FROM tbl_orders o
@@ -77,34 +65,33 @@ function getBiddingOrderDetails($pdo, $order_id_param) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+$invoice_number = isset($_GET['invoice_number']) ? $_GET['invoice_number'] : null;
 $order_id_param = isset($_GET['order_id']) ? $_GET['order_id'] : null;
-if (!$order_id_param) { echo "<h2>Invalid order ID.</h2>"; exit; }
 
-$orders = getDirectOrderDetails($pdo, $order_id_param);
+// If invoice_number is not provided, try to get it from order_id
+if (!$invoice_number && $order_id_param) {
+    $stmt = $pdo->prepare("SELECT invoice_number FROM tbl_orders WHERE id = ? AND order_type = 'direct'");
+    $stmt->execute([$order_id_param]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($result) {
+        $invoice_number = $result['invoice_number'];
+    }
+}
+
+if (!$invoice_number) { echo "<h2>Invalid invoice number.</h2>"; exit; }
+
+$orders = getDirectOrderDetails($pdo, $invoice_number);
 $order_type = 'direct';
 
 if (!$orders || empty($orders)) {
-    $orders = getBiddingOrderDetails($pdo, $order_id_param);
-    $order_type = 'bid';
-    if (!$orders || empty($orders)) { echo "<h2>Order not found.</h2>"; exit; }
+    // For bidding orders, we need to handle differently since they might not have invoice_number directly
+    // But for now, assume direct orders only
+    echo "<h2>Order not found.</h2>"; exit;
 }
-
-if (!$orders || empty($orders)) { echo "<h2>Order not found.</h2>"; exit; }
 
 $settings = getSettings($pdo);
 
-// Calculate totals for all products in the order
-$subtotal = 0;
-$tax_amount = 0;
-foreach ($orders as $order) {
-    $product_subtotal = $order['price'] * $order['quantity'];
-    $product_tax = $product_subtotal * ($order['gst_percentage'] / 100);
-    $subtotal += $product_subtotal;
-    $tax_amount += $product_tax;
-}
-$grand_total = $subtotal + $tax_amount;
-
-// Use the first order for customer and invoice details
+// Use the first order for customer details
 $first_order = $orders[0];
 
 function numberToWords($number) {
@@ -147,7 +134,6 @@ function numberToWords($number) {
     return ucfirst($string);
 }
 
-$invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -155,16 +141,51 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice - <?php echo htmlspecialchars($invoice_number); ?></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .invoice-actions {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+        .invoice-actions .btn {
+            margin-left: 10px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-print {
+            background-color: #5bc0de;
+            color: white;
+        }
+        .btn-download {
+            background-color: #5cb85c;
+            color: white;
+        }
+        .btn-print:hover, .btn-download:hover {
+            opacity: 0.8;
+        }
+        @media print {
+            .invoice-actions {
+                display: none;
+            }
+        }
+    </style>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         body {
             font-family: 'Arial', sans-serif;
             background: #f5f5f5;
             color: #000;
             padding: 20px 0;
         }
-        
+
         .invoice-wrapper {
             width: 210mm;
             margin: 0 auto;
@@ -172,14 +193,14 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             position: relative;
         }
-        
+
         .invoice-container {
             width: 100%;
             height: 100%;
             padding: 12mm;
             padding-bottom: 25mm;
         }
-        
+
         /* Header */
         .invoice-header {
             width: 100%;
@@ -187,21 +208,21 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
             padding-bottom: 12px;
             border-bottom: 2px solid #000;
         }
-        
+
         .invoice-header::after {
             content: "";
             display: table;
             clear: both;
         }
-        
+
         .logo-section {
             float: left;
             width: 50%;
         }
-        
+
         .logo-section img { max-width: 150px; height: auto; }
         .logo-section h2 { color: #000; font-size: 24px; }
-        
+
         .company-details {
             float: right;
             width: 50%;
@@ -209,30 +230,30 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
         }
         .company-details h1 { color: #000; font-size: 24px; margin-bottom: 8px; font-weight: 700; }
         .company-details p { color: #000; line-height: 1.5; font-size: 12px; margin: 2px 0; }
-        
+
         /* Info Grid */
         .invoice-info-grid {
             width: 100%;
             margin-bottom: 15px;
         }
-        
+
         .invoice-info-grid::after {
             content: "";
             display: table;
             clear: both;
         }
-        
+
         .info-box {
             float: left;
             width: 48%;
             border: 1px solid #000;
             padding: 12px;
         }
-        
+
         .info-box:first-child {
             margin-right: 4%;
         }
-        
+
         .info-box h3 {
             color: #000;
             font-size: 12px;
@@ -242,24 +263,24 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
             border-bottom: 1px solid #000;
             padding-bottom: 5px;
         }
-        
+
         .info-box p {
             color: #000;
             line-height: 1.6;
             font-size: 11px;
             margin: 3px 0;
         }
-        
+
         .info-box strong {
             display: inline-block;
             min-width: 90px;
         }
-        
+
         /* Product Table */
         .product-section {
             margin: 15px 0;
         }
-        
+
         .product-section h3 {
             background: #949494ff;
             color: #fff;
@@ -268,13 +289,13 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
             margin-bottom: 0;
             text-transform: uppercase;
         }
-        
+
         .product-table {
             width: 100%;
             border-collapse: collapse;
             border: 1px solid #000;
         }
-        
+
         .product-table th {
             padding: 8px;
             text-align: left;
@@ -285,29 +306,29 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
             font-size: 11px;
             text-transform: uppercase;
         }
-        
+
         .product-table td {
             padding: 8px;
             border: 1px solid #000000ff;
             color: #000;
             font-size: 11px;
         }
-        
+
         .text-right { text-align: right; }
         .text-center { text-align: center; }
-        
+
         /* Summary */
         .summary-section {
             width: 100%;
             margin: 15px 0;
         }
-        
+
         .summary-section::after {
             content: "";
             display: table;
             clear: both;
         }
-        
+
         .summary-box {
             float: right;
             width: 350px;
@@ -315,7 +336,7 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
             border: 2px solid #000;
             padding: 12px;
         }
-        
+
         .summary-row {
             display: flex;
             justify-content: space-between;
@@ -323,9 +344,9 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
             font-size: 12px;
             border-bottom: 1px solid #ddd;
         }
-        
+
         .summary-row:last-child { border-bottom: none; }
-        
+
         .summary-row.total {
             border-top: 2px solid #000;
             margin-top: 8px;
@@ -333,7 +354,7 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
             font-size: 14px;
             font-weight: 700;
         }
-        
+
         .amount-words {
             background: #f9f9f9;
             padding: 8px;
@@ -343,35 +364,31 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
             font-size: 10px;
             border: 1px solid #000;
         }
-        
+
         /* Footer */
         .invoice-footer {
-            /* position: relative; */
-            /* bottom: 0; */
-            /* right: 0; */
-            /* margin-top: 50px; */
             padding-top: 12px;
             border-top: 2px solid #000;
         }
-        
+
         .signature-section {
             margin-top: 20px;
             text-align: right;
         }
-        
+
         .signature-box {
             display: inline-block;
             text-align: center;
             background-color: transparent;
         }
-        
+
         .signature-box img {
             max-width: 100px;
             height: auto;
             margin-bottom: 5px;
             background-color: transparent;
         }
-        
+
         .signature-line {
             border-top: 2px solid #000;
             padding-top: 5px;
@@ -379,7 +396,7 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
             font-weight: 600;
             font-size: 11px;
         }
-        
+
         .computer-generated {
             position: absolute;
             bottom: 8mm;
@@ -390,63 +407,38 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
             font-size: 10px;
             font-style: italic;
         }
-        
+
         /* Print Styles */
         @media print {
             @page {
                 size: A4;
                 margin: 0;
             }
-            
+
             body {
                 background: white;
                 padding: 0;
             }
-            
+
             .invoice-wrapper {
                 width: 210mm;
                 margin: 0;
                 box-shadow: none;
                 position: relative;
             }
-            
+
             .invoice-container {
                 padding: 12mm;
                 padding-bottom: 25mm;
             }
-
-            .company-details {
-            float: right;
-            width: 50%;
-            text-align: right;
-            }
-
-            
-
-            
         }
-        
+
         @media (max-width: 768px) {
             .invoice-wrapper {
                 width: 100%;
                 min-height: auto;
             }
-            
-            .invoice-info-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .invoice-header {
-                flex-direction: column;
-            }
-            
-            .company-details {
-                float: right;
-                text-align: right;
-                margin-top: 15px;
-                max-width: 100%;
-            }
-            
+
             .summary-box {
                 width: 100%;
             }
@@ -454,6 +446,20 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
     </style>
 </head>
 <body>
+
+
+    <?php
+    // Calculate totals for all orders
+    $subtotal = 0;
+    $tax_amount = 0;
+    foreach ($orders as $order) {
+        $product_subtotal = $order['price'] * $order['quantity'];
+        $product_tax = $product_subtotal * ($order['gst_percentage'] / 100);
+        $subtotal += $product_subtotal;
+        $tax_amount += $product_tax;
+    }
+    $grand_total = $subtotal + $tax_amount;
+    ?>
     <div class="invoice-wrapper">
         <div class="invoice-container">
             <!-- Header -->
@@ -465,16 +471,13 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
                     ?>
                         <img src="<?php echo $logo_path; ?>" alt="Company Logo">
                     <?php else: ?>
-                        <h2>DEADSTOCK</h2>
+                        <h2>Destock</h2>
                     <?php endif; ?>
                 </div>
                 <div class="company-details">
                     <h1>TAX INVOICE</h1>
-                    <p><strong><?php echo !empty($settings['site_name']) ? htmlspecialchars($settings['site_name']) : 'Destock'; ?></strong></p>
-                    <p><?php echo !empty($settings['footer_address']) ? nl2br(htmlspecialchars($settings['footer_address'])) : 'Imet Tooling India Pvt Ltd'; ?></p>
-                    <p>Email: <?php echo !empty($settings['contact_email']) ? htmlspecialchars($settings['contact_email']) : 'support@destock.in'; ?></p>
-                    <p>Phone: <?php echo !empty($settings['contact_phone']) ? htmlspecialchars($settings['contact_phone']) : '+91 xxxxxxx'; ?></p>
-                    <p>GST: <?php echo !empty($settings['gstin']) ? htmlspecialchars($settings['gstin']) : 'XXXXXXXXXXXX'; ?></p>
+                    <p><strong>DESTOCK</strong></p>
+                    <p>Imet Tooling India Pvt. Ltd.</p>
                 </div>
             </div>
 
@@ -484,7 +487,6 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
                     <h3>Invoice Details</h3>
                     <p><strong>Invoice No:</strong> <?php echo htmlspecialchars($invoice_number); ?></p>
                     <p><strong>Invoice Date:</strong> <?php echo !empty($first_order['processing_time']) ? date('d M, Y', strtotime($first_order['processing_time'])) : date('d M, Y'); ?></p>
-                    <p><strong>Order ID:</strong> <?php echo htmlspecialchars($first_order['order_id']); ?></p>
                     <p><strong>Order Type:</strong> <?php echo ucfirst($order_type); ?></p>
                     <?php if (!empty($first_order['tracking_id'])): ?>
                     <p><strong>Tracking ID:</strong> <?php echo htmlspecialchars($first_order['tracking_id']); ?></p>
@@ -512,6 +514,7 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
                     <thead>
                         <tr>
                             <th>Product Name</th>
+                            <!-- <th>Seller</th> -->
                             <th class="text-center">Quantity</th>
                             <th class="text-right">Unit Price</th>
                             <th class="text-center">HSN Code</th>
@@ -528,6 +531,7 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
                             ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($order['p_name']); ?></td>
+                                <!-- <td><?php echo htmlspecialchars($order['seller_name']); ?></td> -->
                                 <td class="text-center"><?php echo $order['quantity']; ?></td>
                                 <td class="text-right">₹<?php echo number_format($order['price'], 2); ?></td>
                                 <td class="text-center"><?php echo htmlspecialchars($order['hsn_code'] ?? '1234'); ?></td>
@@ -578,11 +582,180 @@ $invoice_number = $first_order['invoice_number'] ?? $first_order['order_id'];
                 </div>
             </div>
         </div>
-        
+
         <!-- Computer Generated Text - Absolute positioned at bottom -->
         <div class="computer-generated">
             This is a computer-generated invoice and does not require a physical signature.
         </div>
     </div>
+
+    <!-- Invoice Actions Footer (cloned from modal) -->
+    <div class="invoice-modal-footer">
+        <button id="downloadInvoiceBtn" class="invoice-action-btn download-btn" onclick="downloadInvoicePDF()">
+            <i class="fa fa-download"></i> Download PDF
+        </button>
+        <button id="printInvoiceBtn" class="invoice-action-btn print-btn" onclick="printInvoice()">
+            <i class="fa fa-print"></i> Print
+        </button>
+    </div>
 </body>
 </html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+let currentOrderId = null;
+
+// Make functions global
+window.downloadInvoicePDF = function() {
+    console.log('Download function called');
+    const downloadBtn = document.getElementById('downloadInvoiceBtn');
+
+    if (typeof html2pdf === 'undefined') {
+        alert('PDF library is not loaded yet. Please check your internet connection and try again.');
+        return;
+    }
+
+    const invoiceElement = document.querySelector('.invoice-wrapper');
+    if (!invoiceElement) {
+        alert('Invoice content not found. Please wait for the invoice to load.');
+        return;
+    }
+
+    // Get invoice number for filename
+    const invoiceNumElement = invoiceElement.querySelector('.info-box p');
+    let filename = 'Invoice.pdf';
+    if (invoiceNumElement) {
+        const text = invoiceNumElement.textContent;
+        const match = text.match(/Invoice No:\s*(.+)/);
+        if (match) {
+            filename = match[1].trim() + '.pdf';
+        }
+    }
+
+    const opt = {
+        margin: 0,
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+            scale: 2,
+            useCORS: true,
+            logging: true,
+            allowTaint: true
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // Show loading state
+    const originalText = downloadBtn.innerHTML;
+    downloadBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Generating...';
+    downloadBtn.disabled = true;
+
+    html2pdf().set(opt).from(invoiceElement).save()
+        .then(() => {
+            console.log('PDF generated successfully');
+            downloadBtn.innerHTML = originalText;
+            downloadBtn.disabled = false;
+        })
+        .catch(err => {
+            console.error('PDF Generation Error:', err);
+            alert('Error generating PDF: ' + (err.message || err));
+            downloadBtn.innerHTML = originalText;
+            downloadBtn.disabled = false;
+        });
+};
+
+window.printInvoice = function() {
+    console.log('Print function called');
+    const invoiceWrapper = document.querySelector('.invoice-wrapper');
+    if (!invoiceWrapper) return;
+
+    // Open new window
+    const printWindow = window.open('', '_blank', 'height=600,width=800');
+    if (!printWindow) {
+        alert('Please allow popups for this website to print the invoice.');
+        return;
+    }
+
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Print Invoice</title>
+            <style>
+                @page { size: A4; margin: 0; }
+                body { margin: 0; padding: 0; background: white; font-family: Arial, sans-serif; }
+                .invoice-wrapper { width: 100% !important; box-shadow: none !important; margin: 0 !important; }
+                .no-print { display: none !important; }
+            </style>
+        </head>
+        <body>
+            ${invoiceWrapper.outerHTML}
+            <script>
+                window.onload = function() {
+                    setTimeout(function() {
+                        window.print();
+                        window.close();
+                    }, 500);
+                };
+            <\/script>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+};
+</script>
+
+<style>
+.invoice-modal-footer {
+    padding: 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.invoice-action-btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.download-btn {
+    background: #28a745;
+    color: #fff;
+}
+
+.download-btn:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+.print-btn {
+    background: #007bff;
+    color: #fff;
+}
+
+.print-btn:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+}
+
+@media print {
+    .invoice-modal-footer {
+        display: none;
+    }
+}
+</style>

@@ -327,18 +327,25 @@ unset($_SESSION['success_message']);
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <a href="settlement_invoice_details.php?invoice_number=<?php echo urlencode($invoice['invoice_number']); ?>&seller_id=<?php echo $seller_id; ?>" 
+                                    <a href="settlement_invoice_details.php?invoice_number=<?php echo urlencode($invoice['invoice_number']); ?>&seller_id=<?php echo $seller_id; ?>"
                                        class="btn btn-sm btn-info"
                                        title="View product breakdown">
                                         <i class="fa fa-eye"></i> View Products
                                     </a>
-                                    
+
+                                    <a href="generate_invoice.php?invoice_number=<?php echo urlencode($invoice['invoice_number']); ?>"
+                                       class="btn btn-sm btn-primary"
+                                       title="View invoice"
+                                       target="_blank">
+                                        <i class="fa fa-file-text"></i> View Invoice
+                                    </a>
+
                                     <?php if ($invoice['is_settled'] == 0 && $invoice['all_delivered'] == 1): ?>
                                     <form method="POST" action="settlement_process.php" style="display: inline;">
                                         <input type="hidden" name="invoice_number" value="<?php echo htmlspecialchars($invoice['invoice_number']); ?>">
                                         <input type="hidden" name="seller_id" value="<?php echo $seller_id; ?>">
-                                        <button type="submit" 
-                                                name="settle_invoice" 
+                                        <button type="submit"
+                                                name="settle_invoice"
                                                 class="btn btn-sm btn-success"
                                                 onclick="return confirm('Settle ₹<?php echo number_format($invoice['net_settlement'], 2); ?> for Invoice <?php echo htmlspecialchars($invoice['invoice_number']); ?>?');">
                                             <i class="fa fa-check"></i> Settle

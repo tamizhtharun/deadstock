@@ -126,6 +126,7 @@ class ComposerStaticInit19dce85914a0d40ff610e42a7553729f
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Dompdf\\Cpdf' => __DIR__ . '/..' . '/dompdf/dompdf/lib/Cpdf.php',
+        'FPDF' => __DIR__ . '/..' . '/setasign/fpdf/fpdf.php',
         'Requests' => __DIR__ . '/..' . '/rmccue/requests/library/Requests.php',
     );
 

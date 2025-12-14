@@ -1,11 +1,14 @@
-# TODO: Fix Pagination and Security Issues
+# TODO: Add View Invoice button with print/download options on the invoice page
 
-## Completed Tasks
-- [x] Add DataTable initialization for #example1 in admin/footer.php with options: paging true, lengthChange false, searching false, ordering true, info true, autoWidth false
-- [x] Prevent directory listing by adding "Options -Indexes" to .htaccess
-- [x] Fix "View catalogue" link in admin/all-products.php to show "No catalogue" when empty instead of linking to directory
+## Tasks
+- [x] Modify admin/download_invoice.php to accept invoice_number instead of order_id
+- [x] Add single "View Invoice" button to actions column in admin/settlement_invoices.php
+- [x] Add print and download buttons to the generate_invoice.php page
+- [ ] Test the new buttons functionality
 
-## Followup Steps
-- [ ] Test the pagination on the admin/all-products.php page to ensure it works correctly
-- [ ] Verify that custom filters (date and status) still work with pagination
-- [ ] Test that directory listing is disabled and catalogue links work properly
+## Details
+- Single "View Invoice" button links to generate_invoice.php?invoice_number=...
+- Print and Download buttons are now on the invoice viewing page itself
+- Print button uses window.print() JavaScript
+- Download button links to download_invoice.php?invoice_number=...
+- Buttons are positioned fixed in top-right corner of invoice page
