@@ -335,7 +335,7 @@ unset($_SESSION['success_message']);
 
                                     <button class="btn btn-sm btn-primary"
                                             title="View invoice"
-                                            onclick="openInvoiceModal('<?php echo htmlspecialchars($invoice['invoice_number']); ?>')">
+                                            onclick="openInvoiceModalByInvoice('<?php echo htmlspecialchars($invoice['invoice_number']); ?>')">
                                         <i class="fa fa-file-text"></i> View Invoice
                                     </button>
 

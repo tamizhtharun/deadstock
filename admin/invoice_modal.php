@@ -164,6 +164,30 @@ window.openInvoiceModal = function(orderId) {
         });
 };
 
+// New function to handle invoice by invoice_number
+window.openInvoiceModalByInvoice = function(invoiceNumber) {
+    const modal = document.getElementById('invoiceModal');
+    const content = document.getElementById('invoiceContent');
+
+    if (!modal || !content) {
+        console.error('Modal elements not found');
+        return;
+    }
+
+    modal.style.display = 'block';
+    content.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fa fa-spinner fa-spin fa-3x"></i><p>Loading invoice...</p></div>';
+
+    fetch(`generate_invoice.php?invoice_number=${encodeURIComponent(invoiceNumber)}`)
+        .then(response => response.text())
+        .then(html => {
+            content.innerHTML = html;
+        })
+        .catch(error => {
+            content.innerHTML = '<div style="text-align: center; padding: 50px; color: red;"><i class="fa fa-exclamation-triangle fa-3x"></i><p>Error loading invoice</p></div>';
+            console.error('Error:', error);
+        });
+};
+
 window.downloadInvoicePDF = function() {
     console.log('Download function called');
     const downloadBtn = document.getElementById('downloadInvoiceBtn');
