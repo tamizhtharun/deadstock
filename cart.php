@@ -45,7 +45,7 @@ if (isset($_GET['delete_all'])) {
     <div class="container py-5">
         <!-- Cart Header -->
         <div class="cart-header mb-4">
-            <h1 class="cart-title">Shopping Cart</h1>
+            <!-- <h1 class="cart-title">Shopping Cart</h1> -->
             <div class="cart-steps">
                 <div class="step1">
                     <span class="step-number1">1</span>
@@ -91,64 +91,64 @@ if (isset($_GET['delete_all'])) {
                                 $total_savings += $savings;
                                 ?>
                                 <div class="cart-item" data-id="<?php echo $item['id']; ?>">
-                                    <!-- Remove button moved to top right -->
+                                    <!-- Remove button -->
                                     <a href="cart.php?remove=<?php echo $item['id']; ?>" class="remove-item"
                                         data-cart-item-id="<?php echo $item['id']; ?>"
                                         onclick="return confirm('Remove this item?')">
                                         <i class="fas fa-times"></i>
                                     </a>
 
-                                    <div class="row align-items-center">
-                                        <div class="col-md-2">
+                                    <div class="row align-items-center g-3">
+                                        <!-- Product Image -->
+                                        <div class="col-3 col-md-2">
                                             <div class="item-image">
                                                 <img src="assets/uploads/product-photos/<?php echo $item['p_featured_photo']; ?>"
-                                                    alt="<?php echo $item['p_name']; ?>" class="img-fluid rounded">
+                                                    alt="<?php echo $item['p_name']; ?>" class="img-fluid">
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <h3 class="item-title"><a href="product_landing.php?id=<?php echo $item['id']; ?>">
-                                                    <?php echo $item['p_name']; ?></a></h3>
-                                            <div class="item-meta">
-                                                <span class="text-muted">SKU: <?php echo $item['id']; ?></span>
-                                            </div>
+                                        
+                                        <!-- Product Details -->
+                                        <div class="col-9 col-md-4">
+                                            <h3 class="item-title">
+                                                <a href="product_landing.php?id=<?php echo $item['id']; ?>">
+                                                    <?php echo $item['p_name']; ?>
+                                                </a>
+                                            </h3>
+                                            <div class="item-meta">SKU: <?php echo $item['id']; ?></div>
                                             <div class="price-section">
-                                                <div class="current-price">
-                                                    ₹<?php echo number_format($item['p_current_price'], 2); ?></div>
-                                                <!-- <?php if ($item['p_old_price'] > $item['p_current_price']): ?> -->
-                                                    <div class="old-price">
-                                                        ₹<?php echo number_format($item['p_old_price'], 2); ?></div>
-
+                                                <span class="current-price">₹<?php echo number_format($item['p_current_price'], 2); ?></span>
+                                                <?php if ($item['p_old_price'] > $item['p_current_price']): ?>
+                                                    <span class="old-price">₹<?php echo number_format($item['p_old_price'], 2); ?></span>
                                                 <?php endif; ?>
                                             </div>
                                             <?php if ($savings > 0): ?>
-                                                <div class="item-savings text-success">
-                                                    You save: ₹<?php echo number_format($savings, 2); ?>
+                                                <div class="item-savings">
+                                                    Saved: ₹<?php echo number_format($savings, 2); ?>
                                                 </div>
                                             <?php endif; ?>
                                         </div>
-                                        <div class="col-md-3">
+                                        
+                                        <!-- Quantity Controls -->
+                                        <div class="col-6 col-md-2">
                                             <div class="quantity-controls">
                                                 <form action="" method="post" class="quantity-form"
                                                     data-price="<?php echo $item['p_current_price']; ?>">
                                                     <input type="hidden" name="cart_id" value="<?php echo $item['id']; ?>">
-                                                    <div class="input-group">
-
-                                                        <input type="number" name="cart_quantity"
-                                                            value="<?php echo $item['quantity']; ?>" min="1" max="99"
-                                                            class="form-control text-center quantity-input"
-                                                            data-item-id="<?php echo $item['id']; ?>">
-
-                                                    </div>
+                                                    <input type="number" name="cart_quantity"
+                                                        value="<?php echo $item['quantity']; ?>" min="1" max="99"
+                                                        class="quantity-input"
+                                                        data-item-id="<?php echo $item['id']; ?>">
                                                 </form>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <div class="total-price" style="font-size: 1.3rem; font-weight: bold; color: #000;">
+                                        
+                                        <!-- Total Price -->
+                                        <div class="col-6 col-md-4">
+                                            <div class="total-price">
                                                 Subtotal: ₹<?php echo number_format($sub_total, 2); ?><br>
-                                                <small class="text-muted">GST (<?php echo $item['gst_percentage']; ?>%): ₹<?php echo number_format($product_gst, 2); ?></small><br>
-                                                <strong>Total: ₹<?php echo number_format($sub_total + $product_gst, 2); ?></strong>
+                                                <small>GST (<?php echo $item['gst_percentage']; ?>%): ₹<?php echo number_format($product_gst, 2); ?></small><br>
+                                                <strong>₹<?php echo number_format($sub_total + $product_gst, 2); ?></strong>
                                             </div>
-                                            <!-- <button class="bid-btn btn btn-success custom-btn">Bid</button> -->
                                         </div>
                                     </div>
                                 </div>
@@ -157,11 +157,10 @@ if (isset($_GET['delete_all'])) {
                         else:
                             ?>
                             <div class="empty-cart text-center py-5">
-                                <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+                                <i class="fas fa-shopping-cart fa-4x mb-3"></i>
                                 <h3>Your cart is empty</h3>
                                 <p class="text-muted">Browse our products and add items to your cart</p>
-                                <a href="index.php" class="continue-btn" style="text-decoration: none;">Continue
-                                    Shopping</a>
+                                <a href="index.php" class="continue-btn">Continue Shopping</a>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -232,8 +231,8 @@ if (isset($_GET['delete_all'])) {
         </div>
 
         <!-- Recently Viewed -->
-        <div class="recently-viewed mt-5">
-            <h3 class="section-title mb-4">Recently Viewed</h3>
+        <div class="recently-viewed">
+            <h3 class="section-title">Recently Viewed</h3>
             <div class="row row-cols-2 row-cols-md-5 g-2">
                 <!-- Add your recently viewed items here -->
                 <?php

@@ -73,20 +73,22 @@ if (!$invoice_number && $order_id_param) {
     $stmt = $pdo->prepare("SELECT invoice_number FROM tbl_orders WHERE id = ? AND order_type = 'direct'");
     $stmt->execute([$order_id_param]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($result) {
+    if ($result && $result['invoice_number']) {
         $invoice_number = $result['invoice_number'];
     }
 }
 
-if (!$invoice_number) { echo "<h2>Invalid invoice number.</h2>"; exit; }
+if (!$invoice_number) {
+    echo "<h2>Invalid invoice number.</h2>";
+    exit;
+}
 
 $orders = getDirectOrderDetails($pdo, $invoice_number);
 $order_type = 'direct';
 
 if (!$orders || empty($orders)) {
-    // For bidding orders, we need to handle differently since they might not have invoice_number directly
-    // But for now, assume direct orders only
-    echo "<h2>Order not found.</h2>"; exit;
+    echo "<h2>Order not found.</h2>";
+    exit;
 }
 
 $settings = getSettings($pdo);
@@ -95,43 +97,77 @@ $settings = getSettings($pdo);
 $first_order = $orders[0];
 
 function numberToWords($number) {
-    $hyphen = '-'; $conjunction = ' and '; $separator = ', '; $negative = 'negative ';
+    $hyphen = '-'; 
+    $conjunction = ' and '; 
+    $separator = ', ';
+    $negative = 'negative ';
+    
     $dictionary = [
         0 => 'zero', 1 => 'one', 2 => 'two', 3 => 'three', 4 => 'four', 5 => 'five',
         6 => 'six', 7 => 'seven', 8 => 'eight', 9 => 'nine', 10 => 'ten', 11 => 'eleven',
         12 => 'twelve', 13 => 'thirteen', 14 => 'fourteen', 15 => 'fifteen', 16 => 'sixteen',
         17 => 'seventeen', 18 => 'eighteen', 19 => 'nineteen', 20 => 'twenty', 30 => 'thirty',
         40 => 'forty', 50 => 'fifty', 60 => 'sixty', 70 => 'seventy', 80 => 'eighty',
-        90 => 'ninety', 100 => 'hundred', 1000 => 'thousand', 100000 => 'lakh', 10000000 => 'crore'
+        90 => 'ninety'
     ];
 
     if (!is_numeric($number)) return false;
     if ($number < 0) return $negative . numberToWords(abs($number));
-    $string = null;
-    if (strpos($number, '.') !== false) list($number, $fraction) = explode('.', $number);
-
-    switch (true) {
-        case $number < 21: $string = $dictionary[$number]; break;
-        case $number < 100:
-            $tens = ((int) ($number / 10)) * 10; $units = $number % 10;
-            $string = $dictionary[$tens]; if ($units) $string .= $hyphen . $dictionary[$units];
-            break;
-        case $number < 1000:
-            $hundreds = (int) ($number / 100); $remainder = $number % 100;
-            $string = $dictionary[$hundreds] . ' ' . $dictionary[100];
-            if ($remainder) $string .= $conjunction . numberToWords($remainder);
-            break;
-        default:
-            $baseUnit = pow(10, floor(log($number, 10) / 2) * 2);
-            $numBaseUnits = (int) ($number / $baseUnit); $remainder = $number % $baseUnit;
-            $string = numberToWords($numBaseUnits) . ' ' . $dictionary[$baseUnit];
-            if ($remainder) {
-                $string .= $remainder < 100 ? $conjunction : $separator;
-                $string .= numberToWords($remainder);
-            }
-            break;
+    
+    $string = '';
+    if (strpos($number, '.') !== false) {
+        list($number, $fraction) = explode('.', $number);
     }
-    return ucfirst($string);
+    
+    $number = (int) $number;
+
+    // Handle crores (10,000,000+)
+    if ($number >= 10000000) {
+        $crores = (int) ($number / 10000000);
+        $string .= numberToWords($crores) . ' crore';
+        $number %= 10000000;
+        if ($number > 0) $string .= $separator;
+    }
+    
+    // Handle lakhs (100,000+)
+    if ($number >= 100000) {
+        $lakhs = (int) ($number / 100000);
+        $string .= numberToWords($lakhs) . ' lakh';
+        $number %= 100000;
+        if ($number > 0) $string .= $separator;
+    }
+    
+    // Handle thousands (1,000+)
+    if ($number >= 1000) {
+        $thousands = (int) ($number / 1000);
+        $string .= numberToWords($thousands) . ' thousand';
+        $number %= 1000;
+        if ($number > 0) $string .= $conjunction;
+    }
+    
+    // Handle hundreds (100+)
+    if ($number >= 100) {
+        $hundreds = (int) ($number / 100);
+        $string .= $dictionary[$hundreds] . ' hundred';
+        $number %= 100;
+        if ($number > 0) $string .= $conjunction;
+    }
+    
+    // Handle numbers less than 100
+    if ($number > 0) {
+        if ($number < 21) {
+            $string .= $dictionary[$number];
+        } else {
+            $tens = ((int) ($number / 10)) * 10;
+            $units = $number % 10;
+            $string .= $dictionary[$tens];
+            if ($units) {
+                $string .= $hyphen . $dictionary[$units];
+            }
+        }
+    }
+    
+    return trim($string);
 }
 
 ?>

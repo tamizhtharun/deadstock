@@ -140,8 +140,8 @@
 let currentOrderId = null;
 
 // Make functions global
-window.openInvoiceModal = function(invoiceNumber) {
-    currentOrderId = invoiceNumber;
+window.openInvoiceModal = function(orderId) {
+    currentOrderId = orderId;
     const modal = document.getElementById('invoiceModal');
     const content = document.getElementById('invoiceContent');
 
@@ -153,7 +153,7 @@ window.openInvoiceModal = function(invoiceNumber) {
     modal.style.display = 'block';
     content.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fa fa-spinner fa-spin fa-3x"></i><p>Loading invoice...</p></div>';
 
-    fetch(`generate_invoice.php?invoice_number=${invoiceNumber}`)
+    fetch(`generate_invoice.php?order_id=${orderId}`)
         .then(response => response.text())
         .then(html => {
             content.innerHTML = html;
