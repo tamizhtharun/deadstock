@@ -42,6 +42,12 @@ if(isset($_POST['form1'])) {
             $final_name = $optimized_filename;
             $statement = $pdo->prepare("INSERT INTO tbl_advertisements (title,photo,tcat_id,status) VALUES (?,?,?,?)");
             $statement->execute(array($_POST['title'],$final_name, $_POST['tcat_id'] ?? '', $_POST['status']));
+            
+            // Clear homepage cache
+            $homeCache = __DIR__ . '/../cache/home.html';
+            if (file_exists($homeCache)) {
+                unlink($homeCache);
+            }
 
             $success_message = 'Advertisement is added successfully!';
         }

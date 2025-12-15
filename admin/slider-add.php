@@ -64,6 +64,10 @@ if(isset($_POST['form1'])) {
 				$statement = $pdo->prepare("INSERT INTO tbl_slider (photo,heading) VALUES (?,?)");
 				$statement->execute(array($optimizedFilename,$_POST['heading']));
 				
+				// Clear hero banner cache
+				require_once('../includes/cache_helper.php');
+				clearCache('hero_banner');
+				
 				$success_message = 'Slider added successfully!';
 				unset($_POST['heading']);
 			} else {

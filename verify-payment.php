@@ -1,7 +1,14 @@
 <?php
-// verify-payment.php
+// verify-payment.php - IMPORTANT: No whitespace before this tag
+ob_start(); // Start output buffering to catch any stray output
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // Don't display errors, only log them
+ini_set('log_errors', 1);
+
 header('Content-Type: application/json');
 session_start();
+
+// Include required files
 require_once 'config.php';
 // require_once 'header.php';
 require_once 'db_connection.php';
@@ -134,14 +141,43 @@ try {
     // Commit transaction
     $pdo->commit();
     
+    // Clean any output buffers before sending JSON
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+    
     echo json_encode(['success' => true]);
     
 } catch (SignatureVerificationError $e) {
-    $pdo->rollBack();
+    // Only rollback if transaction is active
+    if (isset($pdo) && $pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    
+    // Log the error
+    error_log('Payment signature verification failed: ' . $e->getMessage());
+    
+    // Clean any output buffers before sending JSON
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+    
     http_response_code(400);
     echo json_encode(['success' => false, 'error' => 'Invalid payment signature']);
 } catch (Exception $e) {
-    $pdo->rollBack();
+    // Only rollback if transaction is active
+    if (isset($pdo) && $pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    
+    // Log the error with full details
+    error_log('Payment verification error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+    
+    // Clean any output buffers before sending JSON
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+    
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }

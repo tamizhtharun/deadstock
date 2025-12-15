@@ -21,6 +21,13 @@ if(isset($_POST['form1'])) {
 		if($path == '') {
 			$statement = $pdo->prepare("UPDATE tbl_advertisements SET title=?, tcat_id=?, status=? WHERE id=?");
     		$statement->execute(array($_POST['title'], $_POST['tcat_id'] ?? '', $_POST['status'],$_REQUEST['id']));
+    		
+    		// Clear homepage cache
+    		$homeCache = __DIR__ . '/../cache/home.html';
+    		if (file_exists($homeCache)) {
+    			unlink($homeCache);
+    		}
+    		
 		    $success_message = 'Advertisement is updated successfully!';
 		} else {
 
@@ -35,6 +42,13 @@ if(isset($_POST['form1'])) {
         		$final_name = $optimized_filename;
         		$statement = $pdo->prepare("UPDATE tbl_advertisements SET title=?, photo=?, tcat_id=?, status=? WHERE id=?");
         		$statement->execute(array($_POST['title'],$final_name, $_POST['tcat_id'] ?? '', $_POST['status'],$_REQUEST['id']));
+        		
+        		// Clear homepage cache
+        		$homeCache = __DIR__ . '/../cache/home.html';
+        		if (file_exists($homeCache)) {
+        			unlink($homeCache);
+        		}
+        		
         		$success_message = 'Advertisement is updated successfully!';
         	}
 		}

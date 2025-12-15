@@ -485,7 +485,7 @@ function loadInvoiceContent(modal, orderId, sellerId) {
     class="btn btn-sm mt-1"
     style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;"
     onclick="openInvoiceModal(<?php echo $first_order_id; ?>, <?php echo $first_seller_id; ?>)">
-    <i class="fa fa-file-pdf-o"></i> Generate Invoice
+    <i class="fa fa-file-pdf-o"></i> Invoice - PDF
 </button>
                             <?php elseif($row['order_status'] === 'processing'): ?>
                                 <div class="action-buttons">
@@ -503,7 +503,7 @@ function loadInvoiceContent(modal, orderId, sellerId) {
     class="btn btn-sm mt-1"
     style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;"
     onclick="openInvoiceModal(<?php echo $first_order_id; ?>, <?php echo $first_seller_id; ?>)">
-    <i class="fa fa-file-pdf-o"></i> Generate Invoice
+    <i class="fa fa-file-pdf-o"></i> Invoice PDF
 </button>
                                 </div>
 <?php elseif($row['order_status'] === 'shipped'): ?>

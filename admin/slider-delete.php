@@ -29,6 +29,10 @@ if(!isset($_REQUEST['id'])) {
 	// Delete from tbl_slider
 	$statement = $pdo->prepare("DELETE FROM tbl_slider WHERE id=?");
 	$statement->execute(array($_REQUEST['id']));
+	
+	// Clear hero banner cache
+	require_once('../includes/cache_helper.php');
+	clearCache('hero_banner');
 
 	header('location: slider.php');
 ?>

@@ -1,7 +1,7 @@
 <?php
 ob_start();
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+if (basename($_SERVER['PHP_SELF']) === 'index.php') {
+    ini_set('session.use_cookies', 0);
 }
 
 // Mobile detection function

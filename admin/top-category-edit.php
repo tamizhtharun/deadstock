@@ -67,7 +67,13 @@ if(isset($_POST['form1'])) {
 			$statement->execute(array($final_name, $_REQUEST['id']));
 		}
 
-		$success_message = 'Top Category is updated successfully.';
+		// Clear homepage cache
+	$homeCache = __DIR__ . '/../cache/home.html';
+	if (file_exists($homeCache)) {
+		unlink($homeCache);
+	}
+
+	$success_message = 'Top Category is updated successfully.';
 	}
 }
 ?>
