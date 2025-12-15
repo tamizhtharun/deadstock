@@ -31,7 +31,8 @@ if (isset($_POST['export_csv'])) {
         SUM(o.price * o.quantity) AS total_amount,
         GROUP_CONCAT(CONCAT('Price: ₹', FORMAT(o.price, 0), ', Qty: ', o.quantity) ORDER BY p.p_name SEPARATOR '; ') AS price_quantity_details,
         GROUP_CONCAT(o.id) AS order_ids,
-        GROUP_CONCAT(DISTINCT p.seller_id) AS seller_ids
+                        GROUP_CONCAT(DISTINCT p.seller_id) AS seller_ids,
+        o.invoice_number AS invoice_number
     FROM
         tbl_orders o
     JOIN
@@ -96,7 +97,7 @@ if (isset($_POST['export_csv'])) {
 
             fputcsv($output, array(
                 $i,
-                $row['order_number'],
+                $row['invoice_number'],
                 $row['product_names'],
                 $row['seller_names'], // Seller names
                 $row['full_name'], // Customer name
@@ -126,7 +127,7 @@ require_once('header.php');
 <script src="js/invoice_actions.js"></script>
 <script>
 // Define openInvoiceModal globally at the top to ensure it's always available
-window.openInvoiceModal = function(orderId) {
+window.openInvoiceModal = function(orderId, sellerId) {
     // Check if modal exists
     const modal = document.getElementById('invoiceModal');
     if (!modal) {
@@ -139,21 +140,21 @@ window.openInvoiceModal = function(orderId) {
         }
         // Use the found modal
         retryModal.style.display = 'block';
-        loadInvoiceContent(retryModal, orderId);
+        loadInvoiceContent(retryModal, orderId, sellerId);
         return;
     }
-    
+
     modal.style.display = 'block';
-    loadInvoiceContent(modal, orderId);
+    loadInvoiceContent(modal, orderId, sellerId);
 };
 
-function loadInvoiceContent(modal, orderId) {
+function loadInvoiceContent(modal, orderId, sellerId) {
     const content = modal.querySelector('.invoice-modal-body') || document.getElementById('invoiceContent');
     if (!content) return;
-    
+
     content.innerHTML = '<div style="text-align: center; padding: 50px;"><i class="fa fa-spinner fa-spin fa-3x"></i><p>Loading invoice...</p></div>';
-    
-    fetch(`generate_invoice.php?order_id=${orderId}`)
+
+    fetch(`generate_invoice.php?order_id=${orderId}&seller_id=${sellerId}&modal=1`)
         .then(response => response.text())
         .then(html => {
             content.innerHTML = html;
@@ -310,7 +311,7 @@ function loadInvoiceContent(modal, orderId) {
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th width="120">Order ID</th>
+                        <th width="120">Invoice Number</th>
                         <th width="200">Product</th>
                         <!-- <th width="100">Seller Details</th> -->
                         <th>Customer Details</th>
@@ -327,10 +328,9 @@ function loadInvoiceContent(modal, orderId) {
                 <?php
                     $i = 0;
                     $statement = $pdo->prepare("SELECT
-                        o.order_id AS order_number,
+                        o.invoice_number AS invoice_number,
                         GROUP_CONCAT(DISTINCT p.p_name ORDER BY p.p_name SEPARATOR ', ') AS product_names,
                         GROUP_CONCAT(DISTINCT s.seller_name ORDER BY s.seller_name SEPARATOR ', ') AS seller_names,
-                        GROUP_CONCAT(DISTINCT s.seller_cname ORDER BY s.seller_cname SEPARATOR ', ') AS seller_cnames,
                         u.username,
                         u.id AS user_id,
                         u.email,
@@ -342,13 +342,12 @@ function loadInvoiceContent(modal, orderId) {
                         ua.state,
                         ua.pincode,
                         o.order_status,
-                        o.created_at,
+                        MAX(o.created_at) AS created_at,
                         o.tracking_id,
                         o.delhivery_awb,
                         o.delhivery_shipment_status,
                         o.delhivery_created_at,
                         o.address_id,
-                        MAX(o.created_at) AS created_at,
                         SUM(o.price * o.quantity) AS total_amount,
                         GROUP_CONCAT(CONCAT('Price: ₹', FORMAT(o.price, 0), ', Qty: ', o.quantity) ORDER BY p.p_name SEPARATOR '; ') AS price_quantity_details,
                         GROUP_CONCAT(o.id) AS order_ids
@@ -365,7 +364,7 @@ function loadInvoiceContent(modal, orderId) {
                     WHERE
                         o.order_type = 'direct'
                     GROUP BY
-                        o.order_id, u.id
+                        o.invoice_number
                     ORDER BY
                         MAX(o.created_at) DESC");
                     $statement->execute();
@@ -384,7 +383,7 @@ function loadInvoiceContent(modal, orderId) {
                         data-status="<?php echo $row['order_status']; ?>">
                         <td><?php echo $i; ?></td>
                         <td>
-                            <strong><?php echo $row['order_number']; ?></strong><br>
+                            <strong><?php echo $row['invoice_number']; ?></strong><br>
                             <small class="text-muted"><?php echo date('M d, Y', strtotime($row['created_at'])); ?></small>
                         </td>
                         <td>
@@ -482,6 +481,12 @@ function loadInvoiceContent(modal, orderId) {
                                 <button class="btn-status-update ">
                                     <i class="fa fa-clock-o"></i> Waiting for Seller
                                 </button>
+                                <button
+    class="btn btn-sm mt-1"
+    style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;"
+    onclick="openInvoiceModal(<?php echo $first_order_id; ?>, <?php echo $first_seller_id; ?>)">
+    <i class="fa fa-file-pdf-o"></i> Generate Invoice
+</button>
                             <?php elseif($row['order_status'] === 'processing'): ?>
                                 <div class="action-buttons">
                                     <!-- <button
@@ -497,7 +502,7 @@ function loadInvoiceContent(modal, orderId) {
                                     <button
     class="btn btn-sm mt-1"
     style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;"
-    onclick="openInvoiceModal(<?php echo $first_order_id; ?>)">
+    onclick="openInvoiceModal(<?php echo $first_order_id; ?>, <?php echo $first_seller_id; ?>)">
     <i class="fa fa-file-pdf-o"></i> Generate Invoice
 </button>
                                 </div>
@@ -524,14 +529,17 @@ function loadInvoiceContent(modal, orderId) {
         <button
     class="btn btn-sm mt-1"
     style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;"
-    onclick="openInvoiceModal(<?php echo $first_order_id; ?>)">
+    onclick="openInvoiceModal(<?php echo $first_order_id; ?>, <?php echo $first_seller_id; ?>)">
     <i class="fa fa-file-pdf-o"></i> Generate Invoice
 </button>
     </div>
 <?php else: ?>
-                                <button class="btn-status-update disabled">
-                                    <i class="fa fa-lock"></i> No Actions Available
-                                </button>
+                                <button
+    class="btn btn-sm mt-1"
+    style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;"
+    onclick="openInvoiceModal(<?php echo $first_order_id; ?>, <?php echo $first_seller_id; ?>)">
+    <i class="fa fa-file-pdf-o"></i> Generate Invoice
+</button>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -747,16 +755,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function updateOrderStatus(orderId, newStatus) {
-<<<<<<< HEAD
-    let trackingId = null;
-
-    if (newStatus === 'shipped') {
-        trackingId = prompt("Please enter tracking ID:");
-        if (!trackingId) return;
-    }
-
-=======
->>>>>>> main
     $.ajax({
         url: 'process_direct_order.php',
         type: 'GET',
@@ -774,18 +772,6 @@ function updateOrderStatus(orderId, newStatus) {
                     const statusCell = row.querySelector('.order-status');
                     statusCell.innerHTML = `<span class='status-badge status-${newStatus}'>${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}</span>`;
 
-<<<<<<< HEAD
-                    // Update action column
-                    const actionCell = row.querySelector('.action-column');
-if (newStatus === 'shipped') {
-    actionCell.innerHTML = `
-        <div class="action-buttons">
-<a href="generate_invoice.php?order_id=${orderId}" 
-   class="btn btn-sm mt-1" target="_blank" style="color: #007bff; font-weight: 600; border-radius: 4px; padding: 5px 10px; background-color: transparent; border: 1px solid #007bff;">
-   <i class="fa fa-file-pdf-o"></i> Generate Invoice
-</a>
-        </div>`;
-=======
                     // Update Delhivery AWB if available
                     if (response.awb_number) {
                         const awbCell = row.querySelector('.delhivery-awb');
@@ -830,7 +816,6 @@ if (newStatus === 'shipped') {
                                    <i class="fa fa-file-pdf-o"></i> Generate Invoice
                                 </a>
                             </div>`;
->>>>>>> main
                     } else if (newStatus === 'delivered' || newStatus === 'canceled') {
                         actionCell.innerHTML = `<button class="btn-status-update disabled"><i class="fa fa-lock"></i> No Actions Available</button>`;
                     } else {

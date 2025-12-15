@@ -4,6 +4,7 @@
         "phpmailer/phpmailer": "^6.9",
         "mpdf/mpdf": "^8.0",
         "dompdf/dompdf": "^3.1",
-        "setasign/fpdi": "^2.3"
+        "setasign/fpdi": "^2.3",
+        "setasign/fpdf": "^1.8"
     }
 }

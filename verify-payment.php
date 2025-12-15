@@ -53,11 +53,18 @@ try {
     
     // Begin transaction
     $pdo->beginTransaction();
-    
-    // Generate invoice number
-    $invoice_number = generateInvoiceNumber($pdo);
-    
-    // Insert orders
+
+    // Group items by seller_id
+    $itemsBySeller = [];
+    foreach ($items as $item) {
+        $seller_id = $item['seller_id'];
+        if (!isset($itemsBySeller[$seller_id])) {
+            $itemsBySeller[$seller_id] = [];
+        }
+        $itemsBySeller[$seller_id][] = $item;
+    }
+
+    // Insert orders, generating separate invoice numbers for each seller
     $stmt = $pdo->prepare("
         INSERT INTO tbl_orders (
             order_id,
@@ -91,25 +98,30 @@ try {
             :processing_time
         )
     ");
-    
-    // Insert each item as a separate order
-    foreach ($items as $item) {
-        $orderData = [
-            'order_id' => $_POST['razorpay_order_id'],
-            'invoice_number' => $invoice_number,
-            'product_id' => $item['id'],
-            'user_id' => $_SESSION['user_session']['id'],
-            'seller_id' => $item['seller_id'],
-            'quantity' => $item['quantity'],
-            'price' => $item['p_current_price'],
-            'order_status' => 'processing',
-            'payment_id' => $_POST['razorpay_payment_id'],
-            'address_id' => $address_id,
-            'processing_time' => NULL,
-            'order_type' => 'direct'
-        ];
-        
-        $stmt->execute($orderData);
+
+    // Insert each item as a separate order, with invoice numbers per seller
+    foreach ($itemsBySeller as $seller_id => $sellerItems) {
+        // Generate a unique invoice number for this seller
+        $invoice_number = generateInvoiceNumber($pdo);
+
+        foreach ($sellerItems as $item) {
+            $orderData = [
+                'order_id' => $_POST['razorpay_order_id'],
+                'invoice_number' => $invoice_number,
+                'product_id' => $item['id'],
+                'user_id' => $_SESSION['user_session']['id'],
+                'seller_id' => $item['seller_id'],
+                'quantity' => $item['quantity'],
+                'price' => $item['p_current_price'],
+                'order_status' => 'processing',
+                'payment_id' => $_POST['razorpay_payment_id'],
+                'address_id' => $address_id,
+                'processing_time' => NULL,
+                'order_type' => 'direct'
+            ];
+
+            $stmt->execute($orderData);
+        }
     }
     
     // Clear cart
